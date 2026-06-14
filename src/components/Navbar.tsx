@@ -22,6 +22,7 @@ const FAQSection         = lazy(() => import("./FAQSection"));
 const MatchCoach         = lazy(() => import("./MatchCoach"));
 const HighRiskEngine     = lazy(() => import("./HighRiskEngine"));
 const SliderCalculator   = lazy(() => import("./SliderCalculator"));
+const MatchAutopsy       = lazy(() => import("./MatchAutopsy"));
 
 const ease = [0.16, 1, 0.3, 1] as const;
 
@@ -76,7 +77,7 @@ function LiveUserBadge() {
   );
 }
 
-type ActiveSheet = "events" | "quicksale" | "tools" | "matches" | "blog" | "garage" | "specialist" | "synergy" | "leaderboard" | "formations" | "faq" | "matchcoach" | "highrisk" | "slider" | null;
+type ActiveSheet = "events" | "quicksale" | "tools" | "matches" | "blog" | "garage" | "specialist" | "synergy" | "leaderboard" | "formations" | "faq" | "matchcoach" | "highrisk" | "slider" | "autopsy" | null;
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
@@ -140,6 +141,7 @@ export default function Navbar() {
     { key: "matchcoach"   as ActiveSheet, icon: "🧠", label: "Coach Card" },
     { key: "highrisk"     as ActiveSheet, icon: "⚠️", label: "High-Risk Engine" },
     { key: "slider"       as ActiveSheet, icon: "🎛️", label: "Slider Calculator" },
+    { key: "autopsy"      as ActiveSheet, icon: "🔬", label: "Taktik Otopsi" },
     ...(user ? [{ key: "garage" as ActiveSheet, icon: "🗄️", label: `${t("garage.label")}${garageCount > 0 ? ` (${garageCount})` : ''}` }] : []),
   ];
 
@@ -159,6 +161,7 @@ export default function Navbar() {
         matchcoach:  { icon: "🧠", title: "Pre-Match Coach Card", sub: "Maç öncesi analiz & güven" },
         highrisk:    { icon: "⚠️", title: "High-Risk Engine", sub: "Strategy Against Stronger Opponents" },
         slider:      { icon: "🎛️", title: "Slider Calculator", sub: "Advanced Settings" },
+        autopsy:     { icon: "🔬", title: "Taktik Otopsi", sub: "Neden Kaybettin? — Profesyonel Teşhis" },
       } as const)[activeSheet]
     : null;
 
@@ -177,6 +180,7 @@ export default function Navbar() {
     : activeSheet === "matchcoach"  ? <MatchCoach />
     : activeSheet === "highrisk"    ? <HighRiskEngine />
     : activeSheet === "slider"      ? <SliderCalculator />
+    : activeSheet === "autopsy"     ? <MatchAutopsy />
     : null;
 
   return (
