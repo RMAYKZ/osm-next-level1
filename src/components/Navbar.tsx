@@ -54,7 +54,7 @@ function LiveUserBadge() {
         style={{ width: 6, height: 6, borderRadius: "50%", background: "#22c55e", display: "block", boxShadow: "0 0 6px #22c55e" }}
       />
       <span style={{ fontSize: 10, fontWeight: 800, color: "#4ade80", letterSpacing: "0.04em" }}>
-        {count}
+        {count} Online
       </span>
     </div>
   );
