@@ -37,3 +37,15 @@ Thumbs.db
 
 # Scripts (tek seferlik araçlar)
 scripts/
+
+.vercel
+
+# Test & dev artifacts
+.playwright-mcp/
+.vite-dev.log
+*.png
+*.jpeg
+*.jpg
+!public/*.png
+!public/*.jpg
+!public/*.svg
