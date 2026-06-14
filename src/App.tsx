@@ -24,7 +24,6 @@ import CommentSection from "./components/CommentSection";
 import Footer from "./components/Footer";
 import LiveEventBanner from "./components/LiveEventBanner";
 import PremiumUpdateBanner from "./components/PremiumUpdateBanner";
-import ChatWidget from "./components/ChatWidget";
 import { PwaInstallBanner } from "./components/PwaInstallBanner";
 
 export default function App() {
@@ -101,9 +100,6 @@ export default function App() {
               </div>
             </div>
           </div>
-
-          {/* ── ChatWidget — fixed viewport overlay, sitewide ── */}
-          <ChatWidget />
 
           {/* ── PWA Install Banner — bottom of screen ── */}
           <PwaInstallBanner />

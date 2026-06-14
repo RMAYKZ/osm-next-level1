@@ -18,6 +18,7 @@ export const aiChat = onCall(
     secrets: [geminiKey],
     timeoutSeconds: 120,
     memory: "256MiB",
+    invoker: "public",
   },
   async (request) => {
     if (!request.auth) throw new HttpsError("unauthenticated", "Login required.");
@@ -35,14 +36,19 @@ export const aiChat = onCall(
       const { reply, tacticCard } = await orchestrate(messages, userId, apiKey, lang, tacticSession);
       return { reply, tacticCard };
     } catch (err) {
-      const msg = err instanceof Error ? err.message.toLowerCase() : "";
-      if (msg.includes("rate") || msg.includes("quota") || msg.includes("429"))
+      console.error("[aiChat] Gemini error:", err instanceof Error ? err.message : String(err));
+      const msg = err instanceof Error ? err.message.toLowerCase() : String(err).toLowerCase();
+      if (msg.includes("rate") || msg.includes("quota") || msg.includes("429") || msg.includes("resource_exhausted"))
         throw new HttpsError("resource-exhausted", "Rate limit reached. Please try again shortly.");
-      if (msg.includes("api key") || msg.includes("auth") || msg.includes("401") || msg.includes("403"))
-        throw new HttpsError("unauthenticated", "Invalid API key.");
+      if (msg.includes("api key") || msg.includes("api_key") || msg.includes("invalid_argument") || msg.includes("permission") || msg.includes("401") || msg.includes("403"))
+        throw new HttpsError("permission-denied", "Invalid API key.");
       if (msg.includes("timeout") || msg.includes("deadline"))
         throw new HttpsError("deadline-exceeded", "Request timed out.");
-      throw new HttpsError("internal", "AI service error.");
+      if (msg.includes("not found") || msg.includes("404") || msg.includes("not_found"))
+        throw new HttpsError("not-found", "AI model not found.");
+      if (msg.includes("unavailable") || msg.includes("503") || msg.includes("overload"))
+        throw new HttpsError("unavailable", "AI service temporarily unavailable.");
+      throw new HttpsError("internal", `AI service error: ${msg.slice(0, 120)}`);
     }
   }
 );
