@@ -25,16 +25,15 @@ const SliderCalculator   = lazy(() => import("./SliderCalculator"));
 
 const ease = [0.16, 1, 0.3, 1] as const;
 
-// Saate + güne göre deterministik aktif kullanıcı sayısı
+// Saate + güne göre deterministik aktif kullanıcı sayısı (10-25 arası)
 function getLiveCount(): number {
   const now = new Date();
   const h = now.getHours();
   const d = now.getDay();
-  // Saatlik baz: OSM oyuncuları akşam taktik bakar
-  const BASE = [7,5,4,3,3,5,9,14,20,24,27,29,31,33,30,28,33,42,58,74,82,70,55,36];
-  const base = BASE[h] * (d === 0 || d === 6 ? 1.4 : 1); // hafta sonu %40 fazla
-  const seed = (((h + 1) * (d + 1) * 2654435761) >>> 0) % 17;
-  return Math.max(4, Math.round(base + seed - 8));
+  const BASE = [10,10,10,10,10,10,11,12,13,14,14,15,15,16,15,14,15,17,19,21,22,20,17,13];
+  const base = BASE[h] * (d === 0 || d === 6 ? 1.12 : 1);
+  const seed = (((h + 1) * (d + 1) * 2654435761) >>> 0) % 7;
+  return Math.min(25, Math.max(10, Math.round(base + seed - 3)));
 }
 
 function LiveUserBadge() {
