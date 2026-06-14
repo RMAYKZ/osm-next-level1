@@ -1,68 +1,62 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://osmnextlevel.com</loc>
-    <lastmod>2026-02-07</lastmod>
+    <lastmod>2026-06-14</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
+    <xhtml:link rel="alternate" hreflang="tr" href="https://osmnextlevel.com"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://osmnextlevel.com"/>
+    <xhtml:link rel="alternate" hreflang="hu" href="https://osmnextlevel.com"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://osmnextlevel.com"/>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://osmnextlevel.com"/>
   </url>
   <url>
     <loc>https://osmnextlevel.com/#anti-taktik</loc>
-    <lastmod>2026-02-07</lastmod>
+    <lastmod>2026-06-14</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.95</priority>
   </url>
   <url>
+    <loc>https://osmnextlevel.com/#premium</loc>
+    <lastmod>2026-06-14</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://osmnextlevel.com/#weekly-meta</loc>
+    <lastmod>2026-06-14</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
     <loc>https://osmnextlevel.com/#kadro-analiz</loc>
-    <lastmod>2026-02-07</lastmod>
+    <lastmod>2026-06-14</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
     <loc>https://osmnextlevel.com/#hizli-satis</loc>
-    <lastmod>2026-02-07</lastmod>
+    <lastmod>2026-06-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://osmnextlevel.com/#araclar</loc>
-    <lastmod>2026-02-07</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.75</priority>
-  </url>
-  <url>
-    <loc>https://osmnextlevel.com/#premium</loc>
-    <lastmod>2026-02-07</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
     <loc>https://osmnextlevel.com/#gunun-maclari</loc>
-    <lastmod>2026-02-07</lastmod>
+    <lastmod>2026-06-14</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://osmnextlevel.com/#liderlik</loc>
-    <lastmod>2026-02-07</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.65</priority>
   </url>
   <url>
     <loc>https://osmnextlevel.com/#videolar</loc>
-    <lastmod>2026-02-07</lastmod>
+    <lastmod>2026-06-14</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://osmnextlevel.com/#hakkimda</loc>
-    <lastmod>2026-02-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  <url>
     <loc>https://osmnextlevel.com/#yorumlar</loc>
-    <lastmod>2026-02-07</lastmod>
+    <lastmod>2026-06-14</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.5</priority>
   </url>
