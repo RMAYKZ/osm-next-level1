@@ -39,8 +39,24 @@ function getLiveCount(): number {
 function LiveUserBadge() {
   const [count, setCount] = useState(getLiveCount);
   useEffect(() => {
-    const id = setInterval(() => setCount(getLiveCount()), 60_000);
-    return () => clearInterval(id);
+    // Base: dakikada bir sıfırla
+    const baseId = setInterval(() => setCount(getLiveCount()), 60_000);
+    // Fluctuation: 2-5 saniyede ±1, organik hareket
+    let cancelled = false;
+    const tick = () => {
+      if (cancelled) return;
+      setCount(prev => {
+        const delta = Math.random() > 0.5 ? 1 : -1;
+        return Math.min(25, Math.max(10, prev + delta));
+      });
+      setTimeout(tick, 2500 + Math.floor(Math.random() * 2500));
+    };
+    const firstId = setTimeout(tick, 2000 + Math.floor(Math.random() * 1500));
+    return () => {
+      cancelled = true;
+      clearInterval(baseId);
+      clearTimeout(firstId);
+    };
   }, []);
   return (
     <div style={{
