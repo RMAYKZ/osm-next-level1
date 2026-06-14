@@ -158,18 +158,44 @@ export const syncMatches = onCall({ region: "europe-west1" }, async (request) =>
 
   try {
     const ALLOWED_COMPETITIONS = new Set(["PL", "CL", "WC", "BL1", "PD", "SA", "FL1", "ELC", "PPL", "DED", "BSA", "EC"]);
+    // Tournaments often missing from general /matches endpoint on free tier — fetch separately
+    const EXTRA_COMPETITION_CODES = ["WC", "EC", "CL"];
 
     if (!request.auth) throw new HttpsError("unauthenticated", "Admin girişi gerekli.");
 
     const token = resolveToken();
     const dateISO = todayISOInIstanbul();
-    const url = `https://api.football-data.org/v4/matches?dateFrom=${dateISO}&dateTo=${dateISO}`;
+    const headers = { "X-Auth-Token": token };
 
-    const res = await fetch(url, { headers: { "X-Auth-Token": token } });
+    // 1) General endpoint
+    const res = await fetch(
+      `https://api.football-data.org/v4/matches?dateFrom=${dateISO}&dateTo=${dateISO}`,
+      { headers }
+    );
     if (!res.ok) throw new HttpsError("unavailable", `API Hatası: ${res.status}`);
 
     const body = await res.json() as FdResponse;
-    const allMatches: any[] = body.matches ?? [];
+    const matchMap = new Map<number, any>();
+    for (const m of (body.matches ?? [])) matchMap.set(m.id, m);
+
+    // 2) Competition-specific endpoints (silently skip on error)
+    await Promise.all(
+      EXTRA_COMPETITION_CODES.map(async (code) => {
+        try {
+          const r = await fetch(
+            `https://api.football-data.org/v4/competitions/${code}/matches?dateFrom=${dateISO}&dateTo=${dateISO}`,
+            { headers }
+          );
+          if (!r.ok) return;
+          const b = await r.json() as FdResponse;
+          for (const m of (b.matches ?? [])) matchMap.set(m.id, m);
+        } catch {
+          // ignore
+        }
+      })
+    );
+
+    const allMatches = Array.from(matchMap.values());
     const total = allMatches.length;
     console.log("DEBUG_API_TOPLAM_MAC_SAYISI:", total);
     console.log("DEBUG_TUM_LIG_KODLARI:", allMatches.map(m => m.competition?.code));
