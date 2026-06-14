@@ -28,7 +28,7 @@ export default function ProfilePanel() {
         <button
           onClick={() => setOpen(true)}
           className="flex h-9 items-center gap-2 rounded-full border border-sky-400/30 bg-sky-400/10 px-3 text-[11px] font-bold text-sky-100 transition hover:border-sky-400/60 hover:bg-sky-400/15"
-          title={t("nav.profile") || "My Profile"}
+          title={t("nav.profile")}
         >
           <span className="text-base leading-none">{country.flag}</span>
           <span className="hidden max-w-[100px] truncate sm:inline">{profile?.nick || user.email?.split("@")[0]}</span>
@@ -37,11 +37,11 @@ export default function ProfilePanel() {
         <button
           onClick={() => setOpen(true)}
           className="flex h-9 items-center gap-2 rounded-full border border-sky-400/40 bg-sky-400/10 px-4 text-[11px] font-black uppercase tracking-widest text-sky-100 transition hover:border-sky-400/70 hover:bg-sky-400/18"
-          title={`${t("nav.login") || "Sign In"} / ${t("nav.signup") || "Sign Up"}`}
+          title={`${t("nav.login")} / ${t("nav.signup")}`}
         >
           <span>👤</span>
           <span className="whitespace-nowrap">
-            {t("nav.login") || "Sign In"} <span className="opacity-50">/</span> {t("nav.signup") || "Sign Up"}
+            {t("nav.login")} <span className="opacity-50">/</span> {t("nav.signup")}
           </span>
         </button>
       )}
@@ -56,33 +56,24 @@ export default function ProfilePanel() {
             transition={{ duration: 0.2 }}
             className="fixed inset-0 z-[9999] overflow-y-auto bg-black/85 backdrop-blur-md"
           >
-            {/* Backdrop click to close */}
-            <div
-              onClick={() => setOpen(false)}
-              className="fixed inset-0 z-0"
-              aria-hidden="true"
-            />
+            <div onClick={() => setOpen(false)} className="fixed inset-0 z-0" aria-hidden="true" />
 
             <div className="flex min-h-full items-end justify-center sm:items-center sm:p-6">
               {!user ? (
-                /* ── Premium Sign-In Card (21st.dev) ── */
-                <div className="relative z-10 w-full max-w-sm px-4 pb-4 sm:px-0 sm:pb-0">
+                <div className="relative z-10 w-full max-w-[400px] px-4 pb-4 sm:px-0 sm:pb-0">
                   <SignInCard2
+                    t={t}
                     onSignIn={signIn}
                     onSignUp={signUp}
-                    onGoogle={async () => {
-                      await signInWithGoogle();
-                      setOpen(false);
-                    }}
+                    onGoogle={async () => { await signInWithGoogle(); setOpen(false); }}
                     onClose={() => setOpen(false)}
                   />
                 </div>
               ) : (
-                /* ── Profile form (unchanged) ── */
                 <div className="relative z-10 w-full max-w-md rounded-t-3xl border border-white/10 bg-[#0c0f17] shadow-2xl sm:rounded-3xl">
                   <div className="flex items-center justify-between border-b border-white/10 px-6 py-4">
                     <h3 className="font-display text-lg font-black text-white sm:text-xl">
-                      {t("nav.profile") || "My Profile"}
+                      {t("nav.profile")}
                     </h3>
                     <button
                       onClick={() => setOpen(false)}
@@ -94,16 +85,11 @@ export default function ProfilePanel() {
                   </div>
                   <div className="p-6">
                     <ProfileForm
+                      t={t}
                       profile={profile || emptyProfile(user.uid)}
                       email={user.email}
-                      onSave={async (p) => {
-                        await saveProfile(p);
-                        setOpen(false);
-                      }}
-                      onLogout={async () => {
-                        await logOut();
-                        setOpen(false);
-                      }}
+                      onSave={async (p) => { await saveProfile(p); setOpen(false); }}
+                      onLogout={async () => { await logOut(); setOpen(false); }}
                     />
                   </div>
                 </div>
@@ -123,40 +109,33 @@ function ProfileForm({
   email,
   onSave,
   onLogout,
+  t,
 }: {
   profile: ManagerProfile;
   email: string | null;
   onSave: (p: ManagerProfile) => Promise<void>;
   onLogout: () => Promise<void>;
+  t: (key: string) => string;
 }) {
-  const [nick, setNick] = useState(profile.nick || "");
-  const [countryCode, setCountryCode] = useState(profile.countryCode || "TR");
+  const [nick, setNick]                         = useState(profile.nick || "");
+  const [countryCode, setCountryCode]           = useState(profile.countryCode || "TR");
   const [favoriteFormation, setFavoriteFormation] = useState(profile.favoriteFormation || "5-2-3");
-  const [osmNick, setOsmNick] = useState(profile.osmNick || "");
-  const [saved, setSaved] = useState(false);
-  const [busy, setBusy] = useState(false);
-  const [error, setError] = useState("");
+  const [osmNick, setOsmNick]                   = useState(profile.osmNick || "");
+  const [saved, setSaved]                       = useState(false);
+  const [busy, setBusy]                         = useState(false);
+  const [error, setError]                       = useState("");
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
-    if (nick.trim().length < 2) {
-      setError("Manager nick must be at least 2 characters.");
-      return;
-    }
+    if (nick.trim().length < 2) { setError(t("auth.nickMin")); return; }
     setBusy(true);
     try {
-      await onSave({
-        ...profile,
-        nick: nick.trim().slice(0, 30),
-        countryCode,
-        favoriteFormation,
-        osmNick: osmNick.trim().slice(0, 30),
-      });
+      await onSave({ ...profile, nick: nick.trim().slice(0, 30), countryCode, favoriteFormation, osmNick: osmNick.trim().slice(0, 30) });
       setSaved(true);
       setTimeout(() => setSaved(false), 2500);
     } catch {
-      setError("Could not save. Check your connection.");
+      setError(t("auth.errSave"));
     } finally {
       setBusy(false);
     }
@@ -176,17 +155,17 @@ function ProfileForm({
         </div>
       </div>
 
-      <Field label="Manager Nick (required)">
+      <Field label={t("auth.managerNick")}>
         <input
           value={nick}
           onChange={(e) => setNick(e.target.value)}
-          placeholder="e.g. omerovvvvv"
+          placeholder={t("auth.nickPlaceholder")}
           maxLength={30}
           className="w-full rounded-xl border border-white/10 bg-white/[0.04] px-4 py-3 text-white outline-none focus:border-sky-400/60"
         />
       </Field>
 
-      <Field label="Country">
+      <Field label={t("auth.country")}>
         <select
           value={countryCode}
           onChange={(e) => setCountryCode(e.target.value)}
@@ -200,32 +179,30 @@ function ProfileForm({
         </select>
       </Field>
 
-      <Field label="Favorite Formation">
+      <Field label={t("auth.favFormation")}>
         <select
           value={favoriteFormation}
           onChange={(e) => setFavoriteFormation(e.target.value)}
           className="w-full rounded-xl border border-white/10 bg-white/[0.04] px-4 py-3 text-white outline-none focus:border-sky-400/60"
         >
           {FORMATIONS.map((f) => (
-            <option key={f} value={f} className="bg-stone-950">
-              {f}
-            </option>
+            <option key={f} value={f} className="bg-stone-950">{f}</option>
           ))}
         </select>
       </Field>
 
-      <Field label="OSM Nick (optional)">
+      <Field label={t("auth.osmNick")}>
         <input
           value={osmNick}
           onChange={(e) => setOsmNick(e.target.value)}
-          placeholder="your in-game username"
+          placeholder={t("auth.osmNickPlaceholder")}
           maxLength={30}
           className="w-full rounded-xl border border-white/10 bg-white/[0.04] px-4 py-3 text-white outline-none focus:border-sky-400/60"
         />
       </Field>
 
       {error && <p className="text-sm text-red-300">{error}</p>}
-      {saved && <p className="text-sm text-emerald-300">✓ Profile saved successfully.</p>}
+      {saved && <p className="text-sm text-emerald-300">{t("auth.saved")}</p>}
 
       <div className="flex gap-2 pt-2">
         <button
@@ -233,14 +210,14 @@ function ProfileForm({
           disabled={busy}
           className="flex-1 rounded-xl bg-sky-500 py-3 text-sm font-black uppercase tracking-widest text-slate-950 disabled:opacity-50"
         >
-          {busy ? "Saving..." : "Save"}
+          {busy ? t("auth.saving") : t("auth.save")}
         </button>
         <button
           type="button"
           onClick={onLogout}
           className="rounded-xl border border-white/10 px-4 py-3 text-xs font-black uppercase tracking-widest text-stone-400 hover:text-white"
         >
-          Sign Out
+          {t("auth.signOut")}
         </button>
       </div>
     </form>
