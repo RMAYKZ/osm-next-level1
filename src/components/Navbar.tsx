@@ -25,6 +25,42 @@ const SliderCalculator   = lazy(() => import("./SliderCalculator"));
 
 const ease = [0.16, 1, 0.3, 1] as const;
 
+// Saate + güne göre deterministik aktif kullanıcı sayısı
+function getLiveCount(): number {
+  const now = new Date();
+  const h = now.getHours();
+  const d = now.getDay();
+  // Saatlik baz: OSM oyuncuları akşam taktik bakar
+  const BASE = [7,5,4,3,3,5,9,14,20,24,27,29,31,33,30,28,33,42,58,74,82,70,55,36];
+  const base = BASE[h] * (d === 0 || d === 6 ? 1.4 : 1); // hafta sonu %40 fazla
+  const seed = (((h + 1) * (d + 1) * 2654435761) >>> 0) % 17;
+  return Math.max(4, Math.round(base + seed - 8));
+}
+
+function LiveUserBadge() {
+  const [count, setCount] = useState(getLiveCount);
+  useEffect(() => {
+    const id = setInterval(() => setCount(getLiveCount()), 60_000);
+    return () => clearInterval(id);
+  }, []);
+  return (
+    <div style={{
+      display: "inline-flex", alignItems: "center", gap: 5,
+      background: "rgba(34,197,94,0.08)", border: "1px solid rgba(34,197,94,0.22)",
+      borderRadius: 999, padding: "3px 9px",
+    }}>
+      <motion.span
+        animate={{ opacity: [1, 0.25, 1] }}
+        transition={{ duration: 2, repeat: Infinity }}
+        style={{ width: 6, height: 6, borderRadius: "50%", background: "#22c55e", display: "block", boxShadow: "0 0 6px #22c55e" }}
+      />
+      <span style={{ fontSize: 10, fontWeight: 800, color: "#4ade80", letterSpacing: "0.04em" }}>
+        {count}
+      </span>
+    </div>
+  );
+}
+
 type ActiveSheet = "events" | "quicksale" | "tools" | "matches" | "blog" | "garage" | "specialist" | "synergy" | "leaderboard" | "formations" | "faq" | "matchcoach" | "highrisk" | "slider" | null;
 
 export default function Navbar() {
@@ -169,7 +205,10 @@ export default function Navbar() {
             </motion.div>
             <div className="flex flex-col justify-center leading-none me-4">
               <span className="font-display text-sm font-bold tracking-widest text-white md:text-base">OSM NEXT LEVEL</span>
-              <span className="mt-0.5 text-[9px] uppercase tracking-widest text-sky-400/80 md:text-[10px]">by omerovvvvv · 26/27</span>
+              <div className="flex items-center gap-2 mt-0.5">
+                <span className="text-[9px] uppercase tracking-widest text-sky-400/80 md:text-[10px]">by omerovvvvv · 26/27</span>
+                <LiveUserBadge />
+              </div>
             </div>
           </a>
 
