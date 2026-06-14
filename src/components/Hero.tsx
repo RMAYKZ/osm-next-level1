@@ -6,9 +6,7 @@ import { siteMeta } from "../data/tactics";
 const EASE = [0.16, 1, 0.3, 1] as const;
 
 const GLASS: React.CSSProperties = {
-  background: "rgba(9,11,33,0.82)",
-  backdropFilter: "blur(20px)",
-  WebkitBackdropFilter: "blur(20px)",
+  background: "rgba(9,11,33,0.92)",
   border: "1px solid rgba(34,211,238,0.14)",
   borderRadius: 20,
 };
@@ -175,7 +173,7 @@ function StatPill({ value, label, color }: { value: string; label: string; color
 
 // Feature quick-access card
 type FeatureDef = typeof FEATURE_DEFS[number];
-function FeatureCard({ feat, label, desc, index }: { feat: FeatureDef; label: string; desc: string; index: number }) {
+function FeatureCard({ feat, label, desc, index, isMobile }: { feat: FeatureDef; label: string; desc: string; index: number; isMobile: boolean }) {
   return (
     <motion.a
       href={`#${feat.id}`}
@@ -193,8 +191,7 @@ function FeatureCard({ feat, label, desc, index }: { feat: FeatureDef; label: st
         textDecoration: "none",
         position: "relative",
         overflow: "hidden",
-        backdropFilter: "blur(16px)",
-        WebkitBackdropFilter: "blur(16px)",
+        ...(isMobile ? {} : { backdropFilter: "blur(16px)", WebkitBackdropFilter: "blur(16px)" }),
       }}
     >
       {/* hover glow */}
@@ -269,9 +266,22 @@ function RotatingTag() {
 }
 
 // ── Main Hero ─────────────────────────────────────────────────────────────────
+function useIsMobile() {
+  const [mobile, setMobile] = useState(() => typeof window !== "undefined" && window.innerWidth < 768);
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 767px)");
+    setMobile(mq.matches);
+    const h = (e: MediaQueryListEvent) => setMobile(e.matches);
+    mq.addEventListener("change", h);
+    return () => mq.removeEventListener("change", h);
+  }, []);
+  return mobile;
+}
+
 export default function Hero() {
   const { t, lang } = useLang();
   const hs = HERO_STRINGS[lang];
+  const isMobile = useIsMobile();
 
   return (
     <section
@@ -284,33 +294,33 @@ export default function Hero() {
         <PitchGrid />
         {/* Ambient glows */}
         <motion.div
-          animate={{ opacity: [0.4, 0.8, 0.4], scale: [1, 1.08, 1] }}
-          transition={{ duration: 9, repeat: Infinity, ease: "easeInOut" }}
+          animate={isMobile ? { opacity: 0.55 } : { opacity: [0.4, 0.8, 0.4], scale: [1, 1.08, 1] }}
+          transition={isMobile ? {} : { duration: 9, repeat: Infinity, ease: "easeInOut" }}
           style={{
             position: "absolute", top: "5%", left: "5%",
             width: "45%", height: "55%", borderRadius: "50%",
             background: "radial-gradient(ellipse, rgba(34,211,238,0.12) 0%, transparent 70%)",
-            filter: "blur(60px)",
+            ...(isMobile ? {} : { filter: "blur(60px)" }),
           }}
         />
         <motion.div
-          animate={{ opacity: [0.3, 0.65, 0.3], scale: [1, 1.06, 1] }}
-          transition={{ duration: 11, repeat: Infinity, ease: "easeInOut", delay: 2 }}
+          animate={isMobile ? { opacity: 0.45 } : { opacity: [0.3, 0.65, 0.3], scale: [1, 1.06, 1] }}
+          transition={isMobile ? {} : { duration: 11, repeat: Infinity, ease: "easeInOut", delay: 2 }}
           style={{
             position: "absolute", top: "10%", right: "5%",
             width: "40%", height: "50%", borderRadius: "50%",
             background: "radial-gradient(ellipse, rgba(139,92,246,0.12) 0%, transparent 70%)",
-            filter: "blur(80px)",
+            ...(isMobile ? {} : { filter: "blur(80px)" }),
           }}
         />
         <motion.div
-          animate={{ opacity: [0.2, 0.5, 0.2] }}
-          transition={{ duration: 7, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+          animate={isMobile ? { opacity: 0.35 } : { opacity: [0.2, 0.5, 0.2] }}
+          transition={isMobile ? {} : { duration: 7, repeat: Infinity, ease: "easeInOut", delay: 1 }}
           style={{
             position: "absolute", bottom: "5%", left: "30%",
             width: "40%", height: "40%", borderRadius: "50%",
             background: "radial-gradient(ellipse, rgba(52,211,153,0.08) 0%, transparent 70%)",
-            filter: "blur(70px)",
+            ...(isMobile ? {} : { filter: "blur(70px)" }),
           }}
         />
         {/* Top accent line */}
@@ -510,7 +520,7 @@ export default function Hero() {
               whileTap={{ scale: 0.96 }}
               style={{
                 display: "inline-flex", alignItems: "center", gap: 8,
-                background: "linear-gradient(135deg, rgba(34,211,238,0.18), rgba(99,102,241,0.18))",
+                background: "linear-gradient(135deg, rgba(34,211,238,0.22), rgba(99,102,241,0.22))",
                 border: "1px solid rgba(34,211,238,0.4)",
                 borderRadius: 12,
                 padding: "13px 28px",
@@ -520,8 +530,6 @@ export default function Hero() {
                 textDecoration: "none",
                 textTransform: "uppercase",
                 letterSpacing: "0.1em",
-                backdropFilter: "blur(16px)",
-                WebkitBackdropFilter: "blur(16px)",
                 boxShadow: "0 0 20px rgba(34,211,238,0.12)",
               }}
             >
@@ -554,7 +562,7 @@ export default function Hero() {
           marginBottom: "clamp(32px, 5vw, 48px)",
         }}>
           {FEATURE_DEFS.map((feat, i) => (
-            <FeatureCard key={i} feat={feat} label={hs[feat.lk]} desc={hs[feat.dk]} index={i} />
+            <FeatureCard key={i} feat={feat} label={hs[feat.lk]} desc={hs[feat.dk]} index={i} isMobile={isMobile} />
           ))}
         </div>
 

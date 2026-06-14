@@ -156,8 +156,6 @@ export default function LiveEventBanner() {
         top: 0, left: 0,
         width: "100%",
         zIndex: 50,
-        backdropFilter: "blur(14px)",
-        WebkitBackdropFilter: "blur(14px)",
         fontFamily: "'Inter', 'Segoe UI', system-ui, sans-serif",
         ...(isLive ? {
           background: "linear-gradient(135deg, rgba(30,4,6,0.97) 0%, rgba(10,18,42,0.97) 45%, rgba(20,4,28,0.97) 100%)",

@@ -1,24 +1,31 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, lazy, Suspense } from "react";
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import LanguageSwitcher from "./LanguageSwitcher";
 import ThemeSwitcher from "./ThemeSwitcher";
 import ProfilePanel from "./ProfilePanel";
-import OSMEventsSchedule from "./OSMEventsSchedule";
-import QuickSaleTechnique from "./QuickSaleTechnique";
-import ManagerTools from "./ManagerTools";
-import MatchPredictions from "./MatchPredictions";
-import Blog from "./Blog";
-import TacticGarage from "./TacticGarage";
-import SpecialistMatrix from "./SpecialistMatrix";
-import NationalitySynergy from "./NationalitySynergy";
 import { useLang } from "../contexts/LanguageContext";
 import { useAuth } from "../contexts/AuthContext";
 import { useSavedTactics } from "../contexts/SavedTacticsContext";
 
+const OSMEventsSchedule  = lazy(() => import("./OSMEventsSchedule"));
+const QuickSaleTechnique = lazy(() => import("./QuickSaleTechnique"));
+const ManagerTools       = lazy(() => import("./ManagerTools"));
+const MatchPredictions   = lazy(() => import("./MatchPredictions"));
+const Blog               = lazy(() => import("./Blog"));
+const TacticGarage       = lazy(() => import("./TacticGarage"));
+const SpecialistMatrix   = lazy(() => import("./SpecialistMatrix"));
+const NationalitySynergy = lazy(() => import("./NationalitySynergy"));
+const Leaderboard        = lazy(() => import("./Leaderboard"));
+const FormationsOverview = lazy(() => import("./FormationsOverview"));
+const FAQSection         = lazy(() => import("./FAQSection"));
+const MatchCoach         = lazy(() => import("./MatchCoach"));
+const HighRiskEngine     = lazy(() => import("./HighRiskEngine"));
+const SliderCalculator   = lazy(() => import("./SliderCalculator"));
+
 const ease = [0.16, 1, 0.3, 1] as const;
 
-type ActiveSheet = "events" | "quicksale" | "tools" | "matches" | "blog" | "garage" | "specialist" | "synergy" | null;
+type ActiveSheet = "events" | "quicksale" | "tools" | "matches" | "blog" | "garage" | "specialist" | "synergy" | "leaderboard" | "formations" | "faq" | "matchcoach" | "highrisk" | "slider" | null;
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
@@ -65,7 +72,6 @@ export default function Navbar() {
     { href: "#anasayfa",    label: t("nav.home") },
     { href: "#anti-taktik", label: t("nav.anti") },
     { href: "#premium",     label: t("nav.premium") },
-    { href: "#liderlik",    label: t("nav.leaderboard") },
     { href: "#hakkimda",    label: t("nav.about") },
   ];
 
@@ -77,6 +83,12 @@ export default function Navbar() {
     { key: "blog",      icon: "📚", label: t("blog.badge") },
     { key: "specialist" as ActiveSheet, icon: "🎯", label: t("specialist.label") },
     { key: "synergy"    as ActiveSheet, icon: "🌍", label: t("synergy.label") },
+    { key: "leaderboard"  as ActiveSheet, icon: "🏆", label: t("nav.leaderboard") },
+    { key: "formations"   as ActiveSheet, icon: "📋", label: `${t("form.title1")} ${t("form.title2")}` },
+    { key: "faq"          as ActiveSheet, icon: "❓", label: "FAQ" },
+    { key: "matchcoach"   as ActiveSheet, icon: "🧠", label: "Coach Card" },
+    { key: "highrisk"     as ActiveSheet, icon: "⚠️", label: "High-Risk Engine" },
+    { key: "slider"       as ActiveSheet, icon: "🎛️", label: "Slider Calculator" },
     ...(user ? [{ key: "garage" as ActiveSheet, icon: "🗄️", label: `${t("garage.label")}${garageCount > 0 ? ` (${garageCount})` : ''}` }] : []),
   ];
 
@@ -87,9 +99,15 @@ export default function Navbar() {
         tools:     { icon: "🛠️", title: t("tools.badge"),   sub: `${t("tools.title1")} ${t("tools.title2")}` },
         matches:   { icon: "⚽", title: t("matches.badge"), sub: `${t("matches.titleA")} ${t("matches.titleB")}` },
         blog:      { icon: "📚", title: t("blog.badge"),    sub: `${t("blog.title1")} ${t("blog.title2")}` },
-        garage:     { icon: "🗄️", title: t("garage.title"),     sub: t("garage.sub") },
-        specialist: { icon: "🎯", title: t("specialist.title"), sub: t("specialist.sub") },
-        synergy:    { icon: "🌍", title: t("synergy.title"),    sub: t("synergy.sub") },
+        garage:      { icon: "🗄️", title: t("garage.title"),        sub: t("garage.sub") },
+        specialist:  { icon: "🎯", title: t("specialist.title"),   sub: t("specialist.sub") },
+        synergy:     { icon: "🌍", title: t("synergy.title"),      sub: t("synergy.sub") },
+        leaderboard: { icon: "🏆", title: t("leader.title1") + " " + t("leader.title2"), sub: t("leader.desc") },
+        formations:  { icon: "📋", title: `${t("form.title1")} ${t("form.title2")}`, sub: t("form.desc") },
+        faq:         { icon: "❓", title: t("faq.title"), sub: t("faq.badge") },
+        matchcoach:  { icon: "🧠", title: "Pre-Match Coach Card", sub: "Maç öncesi analiz & güven" },
+        highrisk:    { icon: "⚠️", title: "High-Risk Engine", sub: "Strategy Against Stronger Opponents" },
+        slider:      { icon: "🎛️", title: "Slider Calculator", sub: "Advanced Settings" },
       } as const)[activeSheet]
     : null;
 
@@ -99,9 +117,15 @@ export default function Navbar() {
     : activeSheet === "tools"     ? <ManagerTools />
     : activeSheet === "matches"   ? <MatchPredictions />
     : activeSheet === "blog"      ? <Blog />
-    : activeSheet === "garage"     ? <TacticGarage />
-    : activeSheet === "specialist" ? <SpecialistMatrix />
-    : activeSheet === "synergy"    ? <NationalitySynergy />
+    : activeSheet === "garage"      ? <TacticGarage />
+    : activeSheet === "specialist"  ? <SpecialistMatrix />
+    : activeSheet === "synergy"     ? <NationalitySynergy />
+    : activeSheet === "leaderboard" ? <Leaderboard />
+    : activeSheet === "formations"  ? <FormationsOverview />
+    : activeSheet === "faq"         ? <FAQSection />
+    : activeSheet === "matchcoach"  ? <MatchCoach />
+    : activeSheet === "highrisk"    ? <HighRiskEngine />
+    : activeSheet === "slider"      ? <SliderCalculator />
     : null;
 
   return (
@@ -109,8 +133,8 @@ export default function Navbar() {
       <nav
         className={`sticky top-0 z-50 w-full transition-all duration-500 ${
           scrolled
-            ? "bg-slate-900/90 backdrop-blur-xl shadow-2xl shadow-black/50"
-            : "bg-black/90 backdrop-blur-md border-b border-white/5"
+            ? "bg-slate-900/[0.97] md:bg-slate-900/90 md:backdrop-blur-xl shadow-2xl shadow-black/50"
+            : "bg-black/[0.97] md:bg-black/90 md:backdrop-blur-md border-b border-white/5"
         }`}
       >
         {/* Razor-thin gradient bottom border */}
@@ -439,7 +463,9 @@ export default function Navbar() {
 
                 {/* Scrollable content */}
                 <div style={{ flex: 1, overflowY: "auto", WebkitOverflowScrolling: "touch" } as React.CSSProperties}>
-                  {sheetComponent}
+                  <Suspense fallback={<div style={{ display: "flex", alignItems: "center", justifyContent: "center", height: 200, color: "#475569", fontSize: 13 }}>Yükleniyor…</div>}>
+                    {sheetComponent}
+                  </Suspense>
                 </div>
               </motion.div>
             </motion.div>

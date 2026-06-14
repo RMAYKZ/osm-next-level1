@@ -390,7 +390,7 @@ export default defineConfig(({ mode }) => {
       devChatPlugin(env.GEMINI_API_KEY ?? ""),
       VitePWA({
         registerType: "autoUpdate",
-        includeAssets: ["favicon.png", "apple-touch-icon.svg", "robots.txt", "pwa-icon.svg"],
+        includeAssets: ["favicon.png", "apple-touch-icon.svg", "robots.txt", "pwa-icon.svg", "osm-logo.png"],
         manifest: {
           name: "OSM Next Level",
           short_name: "OSM NL",
@@ -423,7 +423,7 @@ export default defineConfig(({ mode }) => {
           ],
         },
         workbox: {
-          globPatterns: ["**/*.{js,css,html,ico,svg,woff,woff2}"],
+          globPatterns: ["**/*.{js,css,html,ico,png,svg,woff,woff2}"],
           globIgnores: ["**/og-image.png", "**/hero-bg.jpg"],
           maximumFileSizeToCacheInBytes: 3 * 1024 * 1024,
           runtimeCaching: [

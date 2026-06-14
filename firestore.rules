@@ -2,23 +2,61 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    // User-owned data
+    // ── User-owned data ──────────────────────────────────────────────────
     match /users/{userId}/{document=**} {
       allow read, write: if request.auth != null && request.auth.uid == userId;
     }
 
-    // Premium code claiming — one device per code, forever
+    // ── Premium code claiming ────────────────────────────────────────────
     match /usedCodes/{code} {
-      // Anyone can look up a specific code (needed to check if it's taken)
-      allow get: if true;
-      // A code can be claimed once; data must include a non-empty deviceId
+      allow get:    if true;
       allow create: if request.resource.data.keys().hasAll(['deviceId', 'usedAt'])
                     && request.resource.data.deviceId is string
                     && request.resource.data.deviceId.size() > 0;
-      // Once claimed it can never change hands
       allow update, delete: if false;
-      // No listing — prevents bulk enumeration of claimed codes
-      allow list: if false;
+      allow list:   if false;
+    }
+
+    // ── Comments ─────────────────────────────────────────────────────────
+    // Public can read approved comments; anyone can submit (approved=false enforced);
+    // only authenticated users (admin) can approve / delete.
+    match /comments/{commentId} {
+      allow read: if true;
+      allow create: if request.resource.data.keys().hasAll(['author', 'text', 'approved', 'createdAt'])
+                    && request.resource.data.approved == false
+                    && request.resource.data.author is string
+                    && request.resource.data.author.size() >= 2
+                    && request.resource.data.text is string
+                    && request.resource.data.text.size() >= 8;
+      allow update, delete: if request.auth != null;
+    }
+
+    // ── Profiles (Leaderboard) ───────────────────────────────────────────
+    match /profiles/{userId} {
+      allow read: if true;
+      allow write: if request.auth != null && request.auth.uid == userId;
+
+      match /stats/{statId} {
+        allow read: if true;
+        allow write: if request.auth != null && request.auth.uid == userId;
+      }
+    }
+
+    // ── Match predictions ────────────────────────────────────────────────
+    match /matches/{matchId} {
+      allow read: if true;
+      // Only authenticated users (admin) can create/delete matches
+      allow create, delete: if request.auth != null;
+      // Anyone can cast a vote (update only the votes sub-field)
+      allow update: if true;
+    }
+
+    // ── Email subscriptions (CommunityHub) ──────────────────────────────
+    match /emails/{emailId} {
+      allow create: if request.resource.data.keys().hasAll(['email'])
+                    && request.resource.data.email is string
+                    && request.resource.data.email.size() > 4;
+      allow read, update, delete: if request.auth != null;
     }
 
   }

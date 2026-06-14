@@ -9,16 +9,10 @@ import Navbar from "./components/Navbar";
 import Hero from "./components/Hero";
 import WeeklyMeta from "./components/WeeklyMeta";
 import AntiTacticFinder from "./components/AntiTacticFinder";
-import SliderCalculator from "./components/SliderCalculator";
 import MetaShareCard from "./components/MetaShareCard";
-import HighRiskEngine from "./components/HighRiskEngine";
-import MatchCoach from "./components/MatchCoach";
 import PremiumTactics from "./components/PremiumTactics";
-import FormationsOverview from "./components/FormationsOverview";
-import FAQSection from "./components/FAQSection";
 import CommunityHub from "./components/CommunityHub";
 import YouTubeVideos from "./components/YouTubeVideos";
-import Leaderboard from "./components/Leaderboard";
 import About from "./components/About";
 import CommentSection from "./components/CommentSection";
 import Footer from "./components/Footer";
@@ -82,16 +76,10 @@ export default function App() {
                 <Navbar />
                 <PremiumUpdateBanner />
                 <Hero />
+                <PremiumTactics />
                 <AntiTacticFinder />
                 <WeeklyMeta />
                 <MetaShareCard />
-                <SliderCalculator />
-                <HighRiskEngine />
-                <MatchCoach />
-                <PremiumTactics />
-                <Leaderboard />
-                <FormationsOverview />
-                <FAQSection />
                 <CommunityHub />
                 <YouTubeVideos />
                 <About />
