@@ -1,0 +1,25 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // User-owned data
+    match /users/{userId}/{document=**} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+
+    // Premium code claiming — one device per code, forever
+    match /usedCodes/{code} {
+      // Anyone can look up a specific code (needed to check if it's taken)
+      allow get: if true;
+      // A code can be claimed once; data must include a non-empty deviceId
+      allow create: if request.resource.data.keys().hasAll(['deviceId', 'usedAt'])
+                    && request.resource.data.deviceId is string
+                    && request.resource.data.deviceId.size() > 0;
+      // Once claimed it can never change hands
+      allow update, delete: if false;
+      // No listing — prevents bulk enumeration of claimed codes
+      allow list: if false;
+    }
+
+  }
+}

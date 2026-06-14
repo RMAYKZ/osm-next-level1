@@ -1,0 +1,574 @@
+/* ── Section ── */
+.mc-section {
+  position: relative;
+  padding: 80px 20px;
+  overflow: hidden;
+}
+
+.mc-inner {
+  max-width: 860px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 1;
+}
+
+/* Ambient glows */
+.mc-glow {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 0;
+  filter: blur(90px);
+}
+.mc-glow-l {
+  top: 0; left: -10%;
+  width: 40%; height: 40%;
+  background: radial-gradient(ellipse, rgba(34, 211, 238, 0.07) 0%, transparent 70%);
+}
+.mc-glow-r {
+  bottom: 0; right: -10%;
+  width: 45%; height: 45%;
+  background: radial-gradient(ellipse, rgba(168, 85, 247, 0.07) 0%, transparent 70%);
+}
+
+/* ── Header ── */
+.mc-header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.mc-badge-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(34, 211, 238, 0.9);
+  background: rgba(34, 211, 238, 0.08);
+  border: 1px solid rgba(34, 211, 238, 0.22);
+  border-radius: 999px;
+  padding: 5px 14px;
+  margin-bottom: 16px;
+}
+
+.mc-badge-dot {
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: rgba(34, 211, 238, 0.9);
+  animation: mc-pulse 2.2s infinite ease-in-out;
+}
+
+@keyframes mc-pulse {
+  0%, 100% { opacity: 0.4; transform: scale(0.8); }
+  50%       { opacity: 1;   transform: scale(1.2); }
+}
+
+.mc-title {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: clamp(30px, 5.5vw, 46px);
+  font-weight: 900;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: #fff;
+  margin: 0 0 10px;
+}
+
+.mc-subtitle {
+  font-size: clamp(12px, 2vw, 14px);
+  color: rgba(255, 255, 255, 0.4);
+  line-height: 1.65;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* ── Selector Grid ── */
+.mc-selector-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto auto;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+@media (max-width: 600px) {
+  .mc-selector-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.mc-sel-card {
+  background: rgba(9, 11, 33, 0.88);
+  border: 1px solid rgba(34, 211, 238, 0.1);
+  border-radius: 14px;
+  padding: 18px;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+.mc-opp-card {
+  grid-column: 1 / -1;
+}
+
+.mc-sel-label {
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.28);
+  margin-bottom: 12px;
+}
+
+/* Location toggle */
+.mc-toggle-row {
+  display: flex;
+  gap: 8px;
+}
+
+.mc-toggle-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 10px 14px;
+  border-radius: 9px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.03);
+  color: rgba(255, 255, 255, 0.38);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  cursor: pointer;
+  transition: all 0.18s ease;
+}
+
+.mc-toggle-btn:hover:not(.active) {
+  border-color: rgba(255, 255, 255, 0.15);
+  color: rgba(255, 255, 255, 0.65);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.mc-toggle-icon { font-size: 14px; }
+
+/* Strength row */
+.mc-str-row {
+  display: flex;
+  gap: 7px;
+}
+
+.mc-str-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  padding: 9px 8px;
+  border-radius: 9px;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  background: rgba(255, 255, 255, 0.03);
+  color: rgba(255, 255, 255, 0.35);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  cursor: pointer;
+  transition: all 0.18s ease;
+}
+
+.mc-str-btn:hover:not(.active) {
+  border-color: rgba(255, 255, 255, 0.14);
+  color: rgba(255, 255, 255, 0.6);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+/* Opponent grid */
+.mc-opp-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 7px;
+}
+
+@media (max-width: 480px) {
+  .mc-opp-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+.mc-opp-btn {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 9px 12px;
+  border-radius: 9px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: rgba(255, 255, 255, 0.02);
+  color: rgba(255, 255, 255, 0.38);
+  cursor: pointer;
+  transition: all 0.18s ease;
+  text-align: left;
+}
+
+.mc-opp-btn:hover:not(.active) {
+  border-color: rgba(255, 255, 255, 0.13);
+  color: rgba(255, 255, 255, 0.6);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.mc-opp-icon { font-size: 14px; flex-shrink: 0; }
+.mc-opp-lbl  { font-size: 11px; font-weight: 700; letter-spacing: 0.01em; line-height: 1.3; }
+
+/* ── Hint ── */
+.mc-hint {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 32px;
+  border: 1px dashed rgba(255, 255, 255, 0.07);
+  border-radius: 14px;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.28);
+}
+.mc-hint-icon { font-size: 20px; }
+
+/* ── Result panel ── */
+.mc-result {
+  background: rgba(9, 11, 33, 0.9);
+  border: 1px solid rgba(34, 211, 238, 0.14);
+  border-radius: 16px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  overflow: hidden;
+}
+
+/* shared block label */
+.mc-block-label {
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.25);
+  margin-bottom: 12px;
+}
+
+/* ── Row 1: Confidence + Probability ── */
+.mc-row-top {
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  gap: 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+@media (max-width: 580px) {
+  .mc-row-top { grid-template-columns: 1fr; }
+}
+
+/* Confidence block */
+.mc-conf-block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 28px 20px;
+  border-right: 1px solid rgba(255, 255, 255, 0.05);
+  gap: 12px;
+}
+
+@media (max-width: 580px) {
+  .mc-conf-block { border-right: none; border-bottom: 1px solid rgba(255, 255, 255, 0.05); }
+}
+
+.mc-dial-wrap {
+  position: relative;
+  width: 140px;
+  height: 140px;
+}
+
+.mc-dial-svg { display: block; }
+
+.mc-dial-center {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+}
+
+.mc-dial-num {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 38px;
+  font-weight: 900;
+  letter-spacing: -0.01em;
+  line-height: 1;
+}
+
+.mc-dial-sub {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.28);
+  text-align: center;
+  max-width: 80px;
+  line-height: 1.3;
+}
+
+.mc-badge-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 14px;
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+/* Probability block */
+.mc-prob-block {
+  padding: 28px 24px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.mc-prob-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+.mc-prob-row:last-child { margin-bottom: 0; }
+
+.mc-prob-label {
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.3);
+  width: 72px;
+  flex-shrink: 0;
+}
+
+.mc-prob-track {
+  flex: 1;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.mc-prob-fill {
+  height: 100%;
+  border-radius: 999px;
+}
+
+.mc-prob-pct {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 14px;
+  font-weight: 900;
+  width: 36px;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+/* ── Row 2: Counter Formation ── */
+.mc-counter-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 22px 24px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  gap: 16px;
+}
+
+.mc-counter-left { flex: 1; }
+
+.mc-counter-fm {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: clamp(22px, 4vw, 32px);
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  color: #fff;
+  line-height: 1;
+  margin-bottom: 4px;
+}
+
+.mc-counter-opp {
+  font-size: 11px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.38);
+  letter-spacing: 0.03em;
+}
+
+.mc-gp-block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  flex-shrink: 0;
+}
+
+.mc-gp-icon {
+  font-size: 28px;
+  line-height: 1;
+}
+
+.mc-gp-text {
+  font-size: 11px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.55);
+  text-align: center;
+}
+
+/* ── Row 3: Sliders ── */
+.mc-sliders-block {
+  padding: 22px 24px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.mc-sliders-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.mc-sliders-header .mc-block-label { margin-bottom: 0; }
+
+.mc-opt-toggle {
+  display: flex;
+  gap: 6px;
+}
+
+.mc-opt-btn {
+  padding: 5px 12px;
+  border-radius: 7px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: transparent;
+  color: rgba(255, 255, 255, 0.32);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  transition: all 0.18s ease;
+}
+
+.mc-opt-btn:hover:not(.active) {
+  border-color: rgba(255, 255, 255, 0.18);
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.mc-bars-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.mc-bar-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.mc-bar-label {
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.28);
+  width: 64px;
+  flex-shrink: 0;
+}
+
+.mc-bar-track {
+  flex: 1;
+  height: 5px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 999px;
+  overflow: hidden;
+  position: relative;
+}
+
+.mc-bar-fill {
+  height: 100%;
+  border-radius: 999px;
+}
+
+.mc-bar-val {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 14px;
+  font-weight: 900;
+  width: 28px;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+/* ── Row 4: Line Tactics ── */
+.mc-line-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 18px 24px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.mc-line-group {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.mc-line-label {
+  font-size: 8px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.22);
+}
+
+.mc-line-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  white-space: nowrap;
+}
+
+/* ── Row 5: Coach Note ── */
+.mc-note-block {
+  padding: 22px 24px;
+}
+
+.mc-note-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.mc-note-icon { font-size: 15px; }
+
+.mc-note-title {
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.28);
+}
+
+.mc-note-text {
+  font-size: 13px;
+  line-height: 1.7;
+  color: rgba(255, 255, 255, 0.62);
+  margin: 0;
+  max-width: 680px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mc-badge-dot { animation: none; }
+  .mc-bar-fill,
+  .mc-prob-fill { transition: none; }
+}

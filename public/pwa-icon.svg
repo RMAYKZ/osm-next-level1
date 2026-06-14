@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="40%" r="60%">
+      <stop offset="0%" stop-color="#0f1140"/>
+      <stop offset="100%" stop-color="#060818"/>
+    </radialGradient>
+    <radialGradient id="ball" cx="42%" cy="38%" r="55%">
+      <stop offset="0%" stop-color="#f87171"/>
+      <stop offset="100%" stop-color="#dc2626"/>
+    </radialGradient>
+  </defs>
+
+  <!-- Background (safe area for maskable) -->
+  <rect width="512" height="512" fill="url(#bg)"/>
+
+  <!-- Red circle -->
+  <circle cx="256" cy="210" r="155" fill="url(#ball)"/>
+
+  <!-- Football seam lines -->
+  <circle cx="256" cy="210" r="155" fill="none" stroke="rgba(255,255,255,0.18)" stroke-width="3"/>
+  <!-- Horizontal seam -->
+  <path d="M105 210 Q180 185 256 210 Q332 235 407 210" fill="none" stroke="rgba(255,255,255,0.22)" stroke-width="3"/>
+  <!-- Vertical seam -->
+  <path d="M256 58 Q282 130 256 210 Q230 290 256 362" fill="none" stroke="rgba(255,255,255,0.22)" stroke-width="3"/>
+  <!-- Diagonal seam 1 -->
+  <path d="M155 117 Q215 165 256 210 Q297 255 357 303" fill="none" stroke="rgba(255,255,255,0.14)" stroke-width="2.5"/>
+  <!-- Diagonal seam 2 -->
+  <path d="M357 117 Q297 165 256 210 Q215 255 155 303" fill="none" stroke="rgba(255,255,255,0.14)" stroke-width="2.5"/>
+
+  <!-- "NL" monogram -->
+  <text x="256" y="240"
+    text-anchor="middle"
+    font-family="Arial Black, Arial, sans-serif"
+    font-size="96"
+    font-weight="900"
+    fill="white"
+    opacity="0.95"
+    letter-spacing="-4">NL</text>
+
+  <!-- OSM NEXT LEVEL label -->
+  <text x="256" y="410"
+    text-anchor="middle"
+    font-family="Arial, sans-serif"
+    font-size="30"
+    font-weight="700"
+    fill="rgba(255,255,255,0.55)"
+    letter-spacing="5">OSM NEXT LEVEL</text>
+</svg>

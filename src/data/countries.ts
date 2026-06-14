@@ -1,0 +1,46 @@
+export interface Country {
+  code: string;
+  name: string;
+  flag: string;
+}
+
+export const COUNTRIES: Country[] = [
+  { code: "TR", name: "Türkiye", flag: "🇹🇷" },
+  { code: "GB", name: "United Kingdom", flag: "🇬🇧" },
+  { code: "US", name: "United States", flag: "🇺🇸" },
+  { code: "DE", name: "Deutschland", flag: "🇩🇪" },
+  { code: "FR", name: "France", flag: "🇫🇷" },
+  { code: "ES", name: "España", flag: "🇪🇸" },
+  { code: "IT", name: "Italia", flag: "🇮🇹" },
+  { code: "PT", name: "Portugal", flag: "🇵🇹" },
+  { code: "BR", name: "Brasil", flag: "🇧🇷" },
+  { code: "AR", name: "Argentina", flag: "🇦🇷" },
+  { code: "MX", name: "México", flag: "🇲🇽" },
+  { code: "NL", name: "Nederland", flag: "🇳🇱" },
+  { code: "BE", name: "België", flag: "🇧🇪" },
+  { code: "HU", name: "Magyarország", flag: "🇭🇺" },
+  { code: "PL", name: "Polska", flag: "🇵🇱" },
+  { code: "RO", name: "România", flag: "🇷🇴" },
+  { code: "GR", name: "Ελλάδα", flag: "🇬🇷" },
+  { code: "RU", name: "Россия", flag: "🇷🇺" },
+  { code: "UA", name: "Україна", flag: "🇺🇦" },
+  { code: "SA", name: "السعودية", flag: "🇸🇦" },
+  { code: "AE", name: "الإمارات", flag: "🇦🇪" },
+  { code: "EG", name: "مصر", flag: "🇪🇬" },
+  { code: "MA", name: "المغرب", flag: "🇲🇦" },
+  { code: "DZ", name: "Algérie", flag: "🇩🇿" },
+  { code: "ID", name: "Indonesia", flag: "🇮🇩" },
+  { code: "MY", name: "Malaysia", flag: "🇲🇾" },
+  { code: "TH", name: "ประเทศไทย", flag: "🇹🇭" },
+  { code: "VN", name: "Việt Nam", flag: "🇻🇳" },
+  { code: "PH", name: "Philippines", flag: "🇵🇭" },
+  { code: "IN", name: "India", flag: "🇮🇳" },
+  { code: "JP", name: "日本", flag: "🇯🇵" },
+  { code: "KR", name: "대한민국", flag: "🇰🇷" },
+  { code: "CN", name: "中国", flag: "🇨🇳" },
+  { code: "AU", name: "Australia", flag: "🇦🇺" },
+  { code: "CA", name: "Canada", flag: "🇨🇦" },
+  { code: "ZA", name: "South Africa", flag: "🇿🇦" },
+  { code: "NG", name: "Nigeria", flag: "🇳🇬" },
+  { code: "OTHER", name: "Diğer / Other", flag: "🌍" },
+];

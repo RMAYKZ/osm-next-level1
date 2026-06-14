@@ -1,0 +1,1018 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Find Your Counter</title>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#04060f;display:flex;justify-content:center;padding:16px;font-family:'Inter',sans-serif;min-height:100vh}
+.root{background:#07091a;border-radius:16px;overflow:hidden;border:1px solid rgba(255,255,255,0.07);width:100%;max-width:1140px}
+.page-hdr{padding:14px 22px 10px;background:rgba(255,255,255,0.012);border-bottom:1px solid rgba(255,255,255,0.06);display:flex;align-items:center;justify-content:space-between}
+.hdr-left{display:flex;flex-direction:column;gap:4px}
+.badge{display:inline-flex;align-items:center;gap:5px;background:rgba(0,229,255,0.1);border:1px solid rgba(0,229,255,0.28);border-radius:20px;padding:3px 10px;font-size:8px;font-weight:700;letter-spacing:2px;color:#00e5ff}
+.bdot{width:5px;height:5px;border-radius:50%;background:#00e5ff;animation:blink 2s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.25}}
+.main-title{font-family:'Rajdhani',sans-serif;font-size:32px;font-weight:700;letter-spacing:2px;color:#fff;line-height:1}
+.main-title span{color:#00e5ff}
+.reset-btn{font-size:9px;font-weight:600;letter-spacing:1.5px;color:rgba(255,255,255,0.35);background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:20px;padding:5px 14px;cursor:pointer;transition:all .2s}
+.reset-btn:hover{color:#fff;border-color:rgba(255,255,255,0.25)}
+.body{display:grid;grid-template-columns:275px 1fr}
+.left{padding:14px;border-right:1px solid rgba(255,255,255,0.06);display:flex;flex-direction:column;gap:11px}
+.slbl{font-size:7.5px;font-weight:700;letter-spacing:2px;color:rgba(255,255,255,0.3);display:flex;align-items:center;gap:5px;margin-bottom:5px}
+.snum{width:14px;height:14px;border-radius:50%;background:rgba(0,229,255,0.12);border:1px solid rgba(0,229,255,0.28);color:#00e5ff;font-size:7px;display:flex;align-items:center;justify-content:center;font-weight:700;flex-shrink:0}
+.seg{display:flex;gap:4px}
+.sbtn{flex:1;padding:7px;border-radius:7px;font-size:9.5px;font-weight:600;cursor:pointer;border:1px solid rgba(255,255,255,0.07);background:rgba(255,255,255,0.03);color:rgba(255,255,255,0.35);transition:all .18s;text-align:center}
+.sbtn.on{background:rgba(0,229,255,0.1);border-color:rgba(0,229,255,0.35);color:#00e5ff}
+.strseg .sbtn.on{background:rgba(255,215,0,0.09);border-color:rgba(255,215,0,0.35);color:#ffd700}
+.tlist{display:flex;flex-direction:column;gap:4px;max-height:360px;overflow-y:auto;padding-right:2px}
+.tlist::-webkit-scrollbar{width:3px}.tlist::-webkit-scrollbar-track{background:transparent}.tlist::-webkit-scrollbar-thumb{background:rgba(0,229,255,0.2);border-radius:3px}
+.ti{padding:7px 9px;border-radius:7px;background:rgba(255,255,255,0.025);border:1px solid rgba(255,255,255,0.055);cursor:pointer;transition:all .18s}
+.ti:hover{background:rgba(255,255,255,0.05)}
+.ti.on{background:rgba(0,229,255,0.07);border-color:rgba(0,229,255,0.3)}
+.tirow{display:flex;align-items:center;gap:7px;margin-bottom:4px}
+.tico{width:22px;height:22px;border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0;background:rgba(0,229,255,0.09)}
+.tiname{font-size:10px;font-weight:600;color:rgba(255,255,255,0.82);line-height:1.2}
+.tisub{font-size:8px;color:rgba(255,255,255,0.28)}
+.barrow{display:flex;align-items:center;gap:5px}
+.barbg{flex:1;height:2px;background:rgba(255,255,255,0.07);border-radius:2px;overflow:hidden}
+.barfill{height:100%;background:linear-gradient(90deg,#ff4757,#ffd700,#00e5ff);border-radius:2px}
+.barpct{font-size:8px;color:rgba(255,255,255,0.28);min-width:20px;text-align:right}
+.right{padding:14px;display:flex;flex-direction:column;gap:9px}
+.rsteplbl{font-size:7.5px;font-weight:700;letter-spacing:2px;color:rgba(255,255,255,0.3);display:flex;align-items:center;gap:5px}
+.tachdr{display:flex;gap:7px;align-items:stretch}
+.taccard{flex:1;padding:9px 11px;border-radius:9px}
+.taccard.yours{background:rgba(0,229,255,0.07);border:1px solid rgba(0,229,255,0.22)}
+.taccard.opp{background:rgba(255,0,128,0.07);border:1px solid rgba(255,0,128,0.22)}
+.taclbl{font-size:7px;font-weight:700;letter-spacing:2px;margin-bottom:2px}
+.taccard.yours .taclbl{color:rgba(0,229,255,0.55)}
+.taccard.opp .taclbl{color:rgba(255,0,128,0.55)}
+.tacname{font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:700;line-height:1.3;color:#fff}
+.gptag{display:flex;align-items:center;gap:5px;margin-top:5px;padding-top:5px;border-top:1px solid rgba(255,255,255,0.08)}
+.gplbl{font-size:7px;font-weight:700;letter-spacing:1.5px;color:#00e5ff}
+.gpico{font-size:11px}
+.gptxt{font-size:10px;font-weight:600;color:rgba(255,255,255,0.75)}
+.arrsep{color:rgba(255,255,255,0.2);font-size:14px;display:flex;align-items:center;padding:0 2px;flex-shrink:0}
+.ftbadge{background:rgba(0,229,255,0.1);border:1px solid rgba(0,229,255,0.28);border-radius:7px;padding:5px 7px;font-size:7px;font-weight:700;color:#00e5ff;text-align:center;line-height:1.5;flex-shrink:0}
+.midrow{display:flex;gap:11px;align-items:flex-start}
+.main-pitch-wrap{border-radius:10px;overflow:hidden;flex-shrink:0;width:200px;box-shadow:0 0 30px rgba(0,229,255,0.08),0 0 0 1px rgba(0,229,255,0.1)}
+.statscol{flex:1;display:flex;flex-direction:column;gap:7px}
+.stats3{display:flex;gap:5px}
+.statbox{flex:1;background:rgba(255,255,255,0.035);border:1px solid rgba(255,255,255,0.065);border-radius:8px;padding:6px 7px;text-align:center}
+.statlbl{font-size:7px;font-weight:700;letter-spacing:1.5px;color:rgba(255,255,255,0.28);margin-bottom:1px}
+.statval{font-family:'Rajdhani',sans-serif;font-size:20px;font-weight:700;line-height:1}
+.statbar{height:2px;border-radius:2px;margin-top:3px;opacity:.6}
+.sucbox{background:rgba(255,255,255,0.025);border:1px solid rgba(255,255,255,0.06);border-radius:8px;padding:7px 10px}
+.suctop{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px}
+.suclbl{font-size:7px;font-weight:700;letter-spacing:2px;color:rgba(255,255,255,0.28)}
+.sucval{font-family:'Rajdhani',sans-serif;font-size:14px;font-weight:700;color:#ffd700;display:flex;align-items:center;gap:4px}
+.sucbadge{font-size:7px;padding:2px 5px;border-radius:3px;background:rgba(255,215,0,0.12);border:1px solid rgba(255,215,0,0.28);color:#ffd700;letter-spacing:.8px;font-weight:700}
+.sucbar{height:3px;background:rgba(255,255,255,0.07);border-radius:3px;overflow:hidden}
+.sucfill{height:100%;border-radius:3px;background:linear-gradient(90deg,#ff4757 0%,#ffd700 55%,#00e5ff 90%);transition:width .7s cubic-bezier(.19,1,.22,1)}
+.lt-header{font-size:7.5px;font-weight:700;letter-spacing:2px;color:rgba(255,255,255,0.28);margin-bottom:4px}
+.lt-main{display:flex;gap:9px;align-items:flex-start}
+.lt-pitch-wrap{flex-shrink:0;width:112px;border-radius:8px;overflow:hidden;box-shadow:0 0 16px rgba(0,0,0,0.4)}
+.lt-rows{flex:1;display:flex;flex-direction:column;gap:5px}
+.ltrow{display:flex;align-items:center;gap:7px;padding:6px 8px;border-radius:8px;border:1px solid rgba(255,255,255,0.07);background:rgba(255,255,255,0.03);transition:all .18s;cursor:default}
+.ltrow:hover{background:rgba(255,255,255,0.06);transform:translateX(2px)}
+.ltrlbl{font-size:6.5px;font-weight:700;letter-spacing:1.5px;color:rgba(255,255,255,0.28);min-width:52px}
+.ltrval{font-size:10px;font-weight:600;flex:1;line-height:1.2}
+.leds{display:flex;gap:3px}
+.led{width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,0.12);transition:all .3s}
+.led.fwd.on{background:#4fc3f7;box-shadow:0 0 6px rgba(79,195,247,.9)}
+.led.mid.on{background:#ff9800;box-shadow:0 0 6px rgba(255,152,0,.9)}
+.led.def.on{background:#ff9800;box-shadow:0 0 6px rgba(255,152,0,.9)}
+.morow{display:flex;gap:6px}
+.mocard{flex:1;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:9px;padding:7px 9px;display:flex;align-items:center;gap:7px;transition:all .18s;cursor:default}
+.mocard:hover{background:rgba(255,255,255,0.055);transform:translateY(-1px)}
+.mochar{font-size:26px;flex-shrink:0;line-height:1}
+.moinfo{flex:1}
+.molbl{font-size:6.5px;font-weight:700;letter-spacing:1.8px;color:rgba(0,229,255,.6);margin-bottom:2px}
+.moval{font-size:10px;font-weight:600;color:#fff}
+.moled{width:8px;height:8px;border-radius:50%;background:#00e5ff;box-shadow:0 0 6px rgba(0,229,255,.7);flex-shrink:0;transition:all .3s}
+.moled.off{background:rgba(255,255,255,0.12);box-shadow:none}
+.coach{background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.06);border-radius:8px;padding:8px 10px;font-size:9.5px;color:rgba(255,255,255,0.42);line-height:1.6;font-style:italic}
+@keyframes playerIn{from{opacity:0;transform:scale(0.05)}to{opacity:1;transform:scale(1)}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+.ltrow{animation:fadeUp .3s ease both}
+.ltrow:nth-child(1){animation-delay:.04s}.ltrow:nth-child(2){animation-delay:.08s}.ltrow:nth-child(3){animation-delay:.12s}
+.ti{animation:fadeUp .28s ease both}
+</style>
+</head>
+<body>
+<div class="root">
+  <div class="page-hdr">
+    <div class="hdr-left">
+      <div class="badge"><span class="bdot"></span>TACTICAL ANALYSIS ENGINE</div>
+      <div class="main-title">FIND YOUR <span>COUNTER</span></div>
+    </div>
+    <button class="reset-btn" onclick="doReset()">RESET</button>
+  </div>
+  <div class="body">
+    <div class="left">
+      <div>
+        <div class="slbl"><span class="snum">1</span> MATCH LOCATION</div>
+        <div class="seg" id="locseg">
+          <button class="sbtn on" onclick="setSeg('locseg',this)">HOME MATCH</button>
+          <button class="sbtn" onclick="setSeg('locseg',this)">AWAY</button>
+        </div>
+      </div>
+      <div>
+        <div class="slbl"><span class="snum">2</span> OPPONENT TACTIC</div>
+        <div class="tlist" id="tlist"></div>
+      </div>
+      <div>
+        <div class="slbl"><span class="snum">3</span> SQUAD STRENGTH</div>
+        <div class="seg strseg" id="strseg">
+          <button class="sbtn on" onclick="setSeg('strseg',this)">STRONGER</button>
+          <button class="sbtn" onclick="setSeg('strseg',this)">EQUAL</button>
+          <button class="sbtn" onclick="setSeg('strseg',this)">WEAKER</button>
+        </div>
+      </div>
+    </div>
+    <div class="right">
+      <div class="rsteplbl"><span class="snum">4</span> RECOMMENDED ANTI-TACTIC</div>
+      <div class="tachdr">
+        <div class="taccard yours"><div class="taclbl">YOUR TACTIC</div><div class="tacname" id="yourName">—</div></div>
+        <div class="arrsep">→</div>
+        <div class="taccard opp">
+          <div class="taclbl">OPPONENT COUNTER</div>
+          <div class="tacname" id="oppName">—</div>
+          <div class="gptag"><div class="gplbl">GAME PLAN</div><div class="gpico" id="gpIcon">⚽</div><div class="gptxt" id="gpText">—</div></div>
+        </div>
+        <div class="ftbadge">★<br>FIELD<br>TESTED</div>
+      </div>
+      <div class="midrow">
+        <div class="main-pitch-wrap">
+          <canvas id="mainCanvas" width="200" height="270" style="display:block;border-radius:10px"></canvas>
+        </div>
+        <div class="statscol">
+          <div class="stats3">
+            <div class="statbox"><div class="statlbl">PRESSURE</div><div class="statval" id="vP" style="color:#ff4757">—</div><div class="statbar" style="background:linear-gradient(90deg,#ff4757,rgba(255,71,87,.08))"></div></div>
+            <div class="statbox"><div class="statlbl">STYLE</div><div class="statval" id="vS" style="color:#ffd700">—</div><div class="statbar" style="background:linear-gradient(90deg,#ffd700,rgba(255,215,0,.08))"></div></div>
+            <div class="statbox"><div class="statlbl">TEMPO</div><div class="statval" id="vT" style="color:#00e5ff">—</div><div class="statbar" style="background:linear-gradient(90deg,#00e5ff,rgba(0,229,255,.08))"></div></div>
+          </div>
+          <div class="sucbox">
+            <div class="suctop"><div class="suclbl">SUCCESS RATE</div><div class="sucval"><span class="sucbadge" id="sucBadge">—</span><span id="vSR">—</span></div></div>
+            <div class="sucbar"><div class="sucfill" id="srBar" style="width:0%"></div></div>
+          </div>
+          <div>
+            <div class="lt-header">LINE TACTICS</div>
+            <div class="lt-main">
+              <div class="lt-pitch-wrap"><canvas id="ltCanvas" width="112" height="152" style="display:block"></canvas></div>
+              <div class="lt-rows">
+                <div class="ltrow"><div class="ltrlbl">FORWARDS</div><div class="ltrval" id="ltF" style="color:#4fc3f7">—</div><div class="leds"><div class="led fwd"></div><div class="led fwd"></div><div class="led fwd"></div></div></div>
+                <div class="ltrow"><div class="ltrlbl">MIDFIELDERS</div><div class="ltrval" id="ltM" style="color:#ff9800">—</div><div class="leds"><div class="led mid"></div><div class="led mid"></div><div class="led mid"></div></div></div>
+                <div class="ltrow"><div class="ltrlbl">DEFENDERS</div><div class="ltrval" id="ltD" style="color:#ff9800">—</div><div class="leds"><div class="led def"></div><div class="led def"></div><div class="led def"></div></div></div>
+              </div>
+            </div>
+          </div>
+          <div class="morow">
+            <div class="mocard"><div class="mochar" id="markChar">🧍</div><div class="moinfo"><div class="molbl">MARKING</div><div class="moval" id="ltK">—</div></div><div class="moled" id="markLed"></div></div>
+            <div class="mocard"><div class="mochar" id="offChar">🚩</div><div class="moinfo"><div class="molbl">OFFSIDE TRAP</div><div class="moval" id="ltO">—</div></div><div class="moled off" id="offLed"></div></div>
+          </div>
+        </div>
+      </div>
+      <div class="coach" id="coachNote">Bir formasyon seçin.</div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════════
+//  EXACT OSM FORMATIONS — copied from screenshots
+//  x: 0=left, 1=right  |  y: 0=own goal(bottom), 1=opp goal(top)
+//  col: gk=#ffd700  def=#00e5ff  mid=#00ff88  fwd=#ff4757
+// ═══════════════════════════════════════════════════════════
+const FM = {
+
+  // ── 4-3-3 A (img1): LW ST RW / CAM CM CM / LB CB CB RB / GK
+  '4-3-3-A': [
+    {r:'GK',  x:.50, y:.06, c:'#ffd700', s:'gk'},
+    {r:'LB',  x:.10, y:.22, c:'#00e5ff', s:'def'},
+    {r:'CB',  x:.34, y:.20, c:'#00e5ff', s:'def'},
+    {r:'CB',  x:.66, y:.20, c:'#00e5ff', s:'def'},
+    {r:'RB',  x:.90, y:.22, c:'#00e5ff', s:'def'},
+    {r:'CM',  x:.24, y:.50, c:'#00ff88', s:'mid'},
+    {r:'CAM', x:.50, y:.56, c:'#00ff88', s:'mid'},
+    {r:'CM',  x:.76, y:.50, c:'#00ff88', s:'mid'},
+    {r:'LW',  x:.10, y:.82, c:'#ff4757', s:'fwd'},
+    {r:'ST',  x:.50, y:.86, c:'#ff4757', s:'fwd'},
+    {r:'RW',  x:.90, y:.82, c:'#ff4757', s:'fwd'},
+  ],
+
+  // ── 4-3-3 B (img2): LW ST RW / CM CDM CM / LB CB CB RB / GK
+  '4-3-3-B': [
+    {r:'GK',  x:.50, y:.06, c:'#ffd700', s:'gk'},
+    {r:'LB',  x:.10, y:.22, c:'#00e5ff', s:'def'},
+    {r:'CB',  x:.34, y:.20, c:'#00e5ff', s:'def'},
+    {r:'CB',  x:.66, y:.20, c:'#00e5ff', s:'def'},
+    {r:'RB',  x:.90, y:.22, c:'#00e5ff', s:'def'},
+    {r:'CM',  x:.22, y:.52, c:'#00ff88', s:'mid'},
+    {r:'CDM', x:.50, y:.44, c:'#00ff88', s:'mid'},
+    {r:'CM',  x:.78, y:.52, c:'#00ff88', s:'mid'},
+    {r:'LW',  x:.10, y:.82, c:'#ff4757', s:'fwd'},
+    {r:'ST',  x:.50, y:.86, c:'#ff4757', s:'fwd'},
+    {r:'RW',  x:.90, y:.82, c:'#ff4757', s:'fwd'},
+  ],
+
+  // ── 4-5-1 (img3): ST / LM CM CDM CM RM / LB CB CB RB / GK
+  '4-5-1': [
+    {r:'GK',  x:.50, y:.06, c:'#ffd700', s:'gk'},
+    {r:'LB',  x:.10, y:.22, c:'#00e5ff', s:'def'},
+    {r:'CB',  x:.34, y:.20, c:'#00e5ff', s:'def'},
+    {r:'CB',  x:.66, y:.20, c:'#00e5ff', s:'def'},
+    {r:'RB',  x:.90, y:.22, c:'#00e5ff', s:'def'},
+    {r:'LM',  x:.08, y:.50, c:'#00ff88', s:'mid'},
+    {r:'CM',  x:.30, y:.52, c:'#00ff88', s:'mid'},
+    {r:'CDM', x:.50, y:.46, c:'#00ff88', s:'mid'},
+    {r:'CM',  x:.70, y:.52, c:'#00ff88', s:'mid'},
+    {r:'RM',  x:.92, y:.50, c:'#00ff88', s:'mid'},
+    {r:'ST',  x:.50, y:.82, c:'#ff4757', s:'fwd'},
+  ],
+
+  // ── 4-2-3-1 (img4): ST / LM CAM CM RM / CM CM / LB CB CB RB / GK
+  '4-2-3-1': [
+    {r:'GK',  x:.50, y:.06, c:'#ffd700', s:'gk'},
+    {r:'LB',  x:.10, y:.22, c:'#00e5ff', s:'def'},
+    {r:'CB',  x:.34, y:.20, c:'#00e5ff', s:'def'},
+    {r:'CB',  x:.66, y:.20, c:'#00e5ff', s:'def'},
+    {r:'RB',  x:.90, y:.22, c:'#00e5ff', s:'def'},
+    {r:'CM',  x:.36, y:.40, c:'#00ff88', s:'mid'},
+    {r:'CM',  x:.64, y:.40, c:'#00ff88', s:'mid'},
+    {r:'LM',  x:.12, y:.64, c:'#00ff88', s:'mid'},
+    {r:'CAM', x:.50, y:.66, c:'#00ff88', s:'mid'},
+    {r:'RM',  x:.88, y:.64, c:'#00ff88', s:'mid'},
+    {r:'ST',  x:.50, y:.84, c:'#ff4757', s:'fwd'},
+  ],
+
+  // ── 4-4-2 A (img5): ST ST / LM CM CM RM / LB CB CB RB / GK
+  '4-4-2-A': [
+    {r:'GK',  x:.50, y:.06, c:'#ffd700', s:'gk'},
+    {r:'LB',  x:.10, y:.22, c:'#00e5ff', s:'def'},
+    {r:'CB',  x:.34, y:.20, c:'#00e5ff', s:'def'},
+    {r:'CB',  x:.66, y:.20, c:'#00e5ff', s:'def'},
+    {r:'RB',  x:.90, y:.22, c:'#00e5ff', s:'def'},
+    {r:'LM',  x:.08, y:.50, c:'#00ff88', s:'mid'},
+    {r:'CM',  x:.34, y:.50, c:'#00ff88', s:'mid'},
+    {r:'CM',  x:.66, y:.50, c:'#00ff88', s:'mid'},
+    {r:'RM',  x:.92, y:.50, c:'#00ff88', s:'mid'},
+    {r:'ST',  x:.36, y:.82, c:'#ff4757', s:'fwd'},
+    {r:'ST',  x:.64, y:.82, c:'#ff4757', s:'fwd'},
+  ],
+
+  // ── 4-4-2 B (img6): ST ST / CM CAM CM / CM CDM CM / LB CB CB RB / GK
+  '4-4-2-B': [
+    {r:'GK',  x:.50, y:.06, c:'#ffd700', s:'gk'},
+    {r:'LB',  x:.10, y:.22, c:'#00e5ff', s:'def'},
+    {r:'CB',  x:.34, y:.20, c:'#00e5ff', s:'def'},
+    {r:'CB',  x:.66, y:.20, c:'#00e5ff', s:'def'},
+    {r:'RB',  x:.90, y:.22, c:'#00e5ff', s:'def'},
+    {r:'CDM', x:.50, y:.38, c:'#00ff88', s:'mid'},
+    {r:'CM',  x:.24, y:.48, c:'#00ff88', s:'mid'},
+    {r:'CAM', x:.50, y:.56, c:'#00ff88', s:'mid'},
+    {r:'CM',  x:.76, y:.48, c:'#00ff88', s:'mid'},
+    {r:'ST',  x:.34, y:.82, c:'#ff4757', s:'fwd'},
+    {r:'ST',  x:.66, y:.82, c:'#ff4757', s:'fwd'},
+  ],
+
+  // ── 5-2-3 A (img7): LW ST RW / CM CM / LB CB CB CB RB / GK
+  '5-2-3-A': [
+    {r:'GK',  x:.50, y:.06, c:'#ffd700', s:'gk'},
+    {r:'LB',  x:.06, y:.24, c:'#00e5ff', s:'def'},
+    {r:'CB',  x:.26, y:.20, c:'#00e5ff', s:'def'},
+    {r:'CB',  x:.50, y:.18, c:'#00e5ff', s:'def'},
+    {r:'CB',  x:.74, y:.20, c:'#00e5ff', s:'def'},
+    {r:'RB',  x:.94, y:.24, c:'#00e5ff', s:'def'},
+    {r:'CM',  x:.34, y:.50, c:'#00ff88', s:'mid'},
+    {r:'CM',  x:.66, y:.50, c:'#00ff88', s:'mid'},
+    {r:'LW',  x:.10, y:.82, c:'#ff4757', s:'fwd'},
+    {r:'ST',  x:.50, y:.86, c:'#ff4757', s:'fwd'},
+    {r:'RW',  x:.90, y:.82, c:'#ff4757', s:'fwd'},
+  ],
+
+  // ── 5-2-3 B (img8): LW ST RW / CDM CDM / LB CB CB CB RB / GK
+  '5-2-3-B': [
+    {r:'GK',  x:.50, y:.06, c:'#ffd700', s:'gk'},
+    {r:'LB',  x:.06, y:.24, c:'#00e5ff', s:'def'},
+    {r:'CB',  x:.26, y:.20, c:'#00e5ff', s:'def'},
+    {r:'CB',  x:.50, y:.18, c:'#00e5ff', s:'def'},
+    {r:'CB',  x:.74, y:.20, c:'#00e5ff', s:'def'},
+    {r:'RB',  x:.94, y:.24, c:'#00e5ff', s:'def'},
+    {r:'CDM', x:.34, y:.48, c:'#00ff88', s:'mid'},
+    {r:'CDM', x:.66, y:.48, c:'#00ff88', s:'mid'},
+    {r:'LW',  x:.10, y:.82, c:'#ff4757', s:'fwd'},
+    {r:'ST',  x:.50, y:.86, c:'#ff4757', s:'fwd'},
+    {r:'RW',  x:.90, y:.82, c:'#ff4757', s:'fwd'},
+  ],
+
+  // ── 5-3-2 (img9): ST ST / CAM CM CM / LB CB CB CB RB / GK
+  '5-3-2': [
+    {r:'GK',  x:.50, y:.06, c:'#ffd700', s:'gk'},
+    {r:'LB',  x:.06, y:.24, c:'#00e5ff', s:'def'},
+    {r:'CB',  x:.26, y:.20, c:'#00e5ff', s:'def'},
+    {r:'CB',  x:.50, y:.18, c:'#00e5ff', s:'def'},
+    {r:'CB',  x:.74, y:.20, c:'#00e5ff', s:'def'},
+    {r:'RB',  x:.94, y:.24, c:'#00e5ff', s:'def'},
+    {r:'CM',  x:.22, y:.52, c:'#00ff88', s:'mid'},
+    {r:'CAM', x:.50, y:.58, c:'#00ff88', s:'mid'},
+    {r:'CM',  x:.78, y:.52, c:'#00ff88', s:'mid'},
+    {r:'ST',  x:.34, y:.82, c:'#ff4757', s:'fwd'},
+    {r:'ST',  x:.66, y:.82, c:'#ff4757', s:'fwd'},
+  ],
+
+  // ── 5-3-1-1 (img10): ST / ST / CAM CM CAM / LB CB CB CB RB / GK
+  '5-3-1-1': [
+    {r:'GK',  x:.50, y:.06, c:'#ffd700', s:'gk'},
+    {r:'LB',  x:.06, y:.24, c:'#00e5ff', s:'def'},
+    {r:'CB',  x:.26, y:.20, c:'#00e5ff', s:'def'},
+    {r:'CB',  x:.50, y:.18, c:'#00e5ff', s:'def'},
+    {r:'CB',  x:.74, y:.20, c:'#00e5ff', s:'def'},
+    {r:'RB',  x:.94, y:.24, c:'#00e5ff', s:'def'},
+    {r:'CAM', x:.22, y:.52, c:'#00ff88', s:'mid'},
+    {r:'CM',  x:.50, y:.48, c:'#00ff88', s:'mid'},
+    {r:'CAM', x:.78, y:.52, c:'#00ff88', s:'mid'},
+    {r:'ST',  x:.50, y:.68, c:'#ff4757', s:'fwd'},
+    {r:'ST',  x:.50, y:.84, c:'#ff4757', s:'fwd'},
+  ],
+
+  // ── 5-4-1 A (img11): ST / LM CM CM RM / LB CB CB CB RB / GK
+  '5-4-1-A': [
+    {r:'GK',  x:.50, y:.06, c:'#ffd700', s:'gk'},
+    {r:'LB',  x:.06, y:.24, c:'#00e5ff', s:'def'},
+    {r:'CB',  x:.26, y:.20, c:'#00e5ff', s:'def'},
+    {r:'CB',  x:.50, y:.18, c:'#00e5ff', s:'def'},
+    {r:'CB',  x:.74, y:.20, c:'#00e5ff', s:'def'},
+    {r:'RB',  x:.94, y:.24, c:'#00e5ff', s:'def'},
+    {r:'LM',  x:.10, y:.52, c:'#00ff88', s:'mid'},
+    {r:'CM',  x:.34, y:.50, c:'#00ff88', s:'mid'},
+    {r:'CM',  x:.66, y:.50, c:'#00ff88', s:'mid'},
+    {r:'RM',  x:.90, y:.52, c:'#00ff88', s:'mid'},
+    {r:'ST',  x:.50, y:.82, c:'#ff4757', s:'fwd'},
+  ],
+
+  // ── 5-4-1 B (img12): ST / CAM / CM CDM CM / LB CB CB CB RB / GK
+  '5-4-1-B': [
+    {r:'GK',  x:.50, y:.06, c:'#ffd700', s:'gk'},
+    {r:'LB',  x:.06, y:.24, c:'#00e5ff', s:'def'},
+    {r:'CB',  x:.26, y:.20, c:'#00e5ff', s:'def'},
+    {r:'CB',  x:.50, y:.18, c:'#00e5ff', s:'def'},
+    {r:'CB',  x:.74, y:.20, c:'#00e5ff', s:'def'},
+    {r:'RB',  x:.94, y:.24, c:'#00e5ff', s:'def'},
+    {r:'CDM', x:.50, y:.38, c:'#00ff88', s:'mid'},
+    {r:'CM',  x:.22, y:.50, c:'#00ff88', s:'mid'},
+    {r:'CAM', x:.50, y:.58, c:'#00ff88', s:'mid'},
+    {r:'CM',  x:.78, y:.50, c:'#00ff88', s:'mid'},
+    {r:'ST',  x:.50, y:.82, c:'#ff4757', s:'fwd'},
+  ],
+
+  // ── 6-3-1 A (img13): ST / CAM / CM CB CM / LB CB CB CB RB / GK
+  '6-3-1-A': [
+    {r:'GK',  x:.50, y:.06, c:'#ffd700', s:'gk'},
+    {r:'LB',  x:.06, y:.22, c:'#00e5ff', s:'def'},
+    {r:'CB',  x:.24, y:.18, c:'#00e5ff', s:'def'},
+    {r:'CB',  x:.42, y:.18, c:'#00e5ff', s:'def'},
+    {r:'CB',  x:.58, y:.30, c:'#00e5ff', s:'def'},
+    {r:'CB',  x:.76, y:.18, c:'#00e5ff', s:'def'},
+    {r:'RB',  x:.94, y:.22, c:'#00e5ff', s:'def'},
+    {r:'CM',  x:.22, y:.52, c:'#00ff88', s:'mid'},
+    {r:'CAM', x:.50, y:.62, c:'#00ff88', s:'mid'},
+    {r:'CM',  x:.78, y:.52, c:'#00ff88', s:'mid'},
+    {r:'ST',  x:.50, y:.82, c:'#ff4757', s:'fwd'},
+  ],
+
+  // ── 6-3-1 B (img14): ST / CAM CAM / CM / LB CB CB CB CB RB / GK
+  '6-3-1-B': [
+    {r:'GK',  x:.50, y:.06, c:'#ffd700', s:'gk'},
+    {r:'LB',  x:.06, y:.22, c:'#00e5ff', s:'def'},
+    {r:'CB',  x:.22, y:.18, c:'#00e5ff', s:'def'},
+    {r:'CB',  x:.38, y:.16, c:'#00e5ff', s:'def'},
+    {r:'CB',  x:.62, y:.16, c:'#00e5ff', s:'def'},
+    {r:'CB',  x:.78, y:.18, c:'#00e5ff', s:'def'},
+    {r:'RB',  x:.94, y:.22, c:'#00e5ff', s:'def'},
+    {r:'CM',  x:.50, y:.42, c:'#00ff88', s:'mid'},
+    {r:'CAM', x:.24, y:.56, c:'#00ff88', s:'mid'},
+    {r:'CAM', x:.76, y:.56, c:'#00ff88', s:'mid'},
+    {r:'ST',  x:.50, y:.82, c:'#ff4757', s:'fwd'},
+  ],
+};
+
+// Attack arrows per formation
+const AR = {
+  '4-3-3-A': [
+    {x1:.10,y1:.82,x2:.04,y2:.94,cx:.03,cy:.88,c:'#ff4757',w:2.4},
+    {x1:.90,y1:.82,x2:.96,y2:.94,cx:.97,cy:.88,c:'#ff4757',w:2.4},
+    {x1:.50,y1:.86,x2:.50,y2:.95,cx:.50,cy:.91,c:'#ff4757',w:2.6},
+    {x1:.24,y1:.50,x2:.16,y2:.72,cx:.14,cy:.62,c:'#00ff88',w:1.6},
+    {x1:.76,y1:.50,x2:.84,y2:.72,cx:.86,cy:.62,c:'#00ff88',w:1.6},
+    {x1:.50,y1:.56,x2:.50,y2:.76,cx:.50,cy:.67,c:'#00ff88',w:1.4},
+  ],
+  '4-3-3-B': [
+    {x1:.10,y1:.82,x2:.04,y2:.94,cx:.03,cy:.88,c:'#ff4757',w:2.4},
+    {x1:.90,y1:.82,x2:.96,y2:.94,cx:.97,cy:.88,c:'#ff4757',w:2.4},
+    {x1:.50,y1:.86,x2:.50,y2:.95,cx:.50,cy:.91,c:'#ff4757',w:2.6},
+    {x1:.22,y1:.52,x2:.14,y2:.72,cx:.12,cy:.63,c:'#00ff88',w:1.6},
+    {x1:.78,y1:.52,x2:.86,y2:.72,cx:.88,cy:.63,c:'#00ff88',w:1.6},
+    {x1:.50,y1:.44,x2:.50,y2:.66,cx:.50,cy:.56,c:'#00ff88',w:1.3},
+  ],
+  '4-5-1': [
+    {x1:.50,y1:.82,x2:.50,y2:.93,cx:.50,cy:.88,c:'#ff4757',w:2.4},
+    {x1:.08,y1:.50,x2:.05,y2:.68,cx:.03,cy:.60,c:'#00ff88',w:1.6},
+    {x1:.92,y1:.50,x2:.95,y2:.68,cx:.97,cy:.60,c:'#00ff88',w:1.6},
+    {x1:.30,y1:.52,x2:.38,y2:.68,cx:.32,cy:.61,c:'#00ff88',w:1.3},
+    {x1:.70,y1:.52,x2:.62,y2:.68,cx:.68,cy:.61,c:'#00ff88',w:1.3},
+    {x1:.50,y1:.46,x2:.50,y2:.68,cx:.50,cy:.58,c:'#00ff88',w:1.3},
+  ],
+  '4-2-3-1': [
+    {x1:.50,y1:.84,x2:.50,y2:.94,cx:.50,cy:.90,c:'#ff4757',w:2.6},
+    {x1:.12,y1:.64,x2:.07,y2:.78,cx:.05,cy:.72,c:'#00ff88',w:1.7},
+    {x1:.88,y1:.64,x2:.93,y2:.78,cx:.95,cy:.72,c:'#00ff88',w:1.7},
+    {x1:.50,y1:.66,x2:.50,y2:.78,cx:.50,cy:.73,c:'#00ff88',w:1.4},
+    {x1:.36,y1:.40,x2:.12,y2:.60,cx:.20,cy:.52,c:'#00ff88',w:1.2},
+    {x1:.64,y1:.40,x2:.88,y2:.60,cx:.80,cy:.52,c:'#00ff88',w:1.2},
+  ],
+  '4-4-2-A': [
+    {x1:.36,y1:.82,x2:.28,y2:.93,cx:.29,cy:.88,c:'#ff4757',w:2.2},
+    {x1:.64,y1:.82,x2:.72,y2:.93,cx:.71,cy:.88,c:'#ff4757',w:2.2},
+    {x1:.08,y1:.50,x2:.06,y2:.70,cx:.04,cy:.61,c:'#00ff88',w:1.6},
+    {x1:.92,y1:.50,x2:.94,y2:.70,cx:.96,cy:.61,c:'#00ff88',w:1.6},
+    {x1:.34,y1:.50,x2:.34,y2:.68,cx:.34,cy:.60,c:'#00ff88',w:1.3},
+    {x1:.66,y1:.50,x2:.66,y2:.68,cx:.66,cy:.60,c:'#00ff88',w:1.3},
+  ],
+  '4-4-2-B': [
+    {x1:.34,y1:.82,x2:.26,y2:.93,cx:.27,cy:.88,c:'#ff4757',w:2.2},
+    {x1:.66,y1:.82,x2:.74,y2:.93,cx:.73,cy:.88,c:'#ff4757',w:2.2},
+    {x1:.24,y1:.48,x2:.16,y2:.68,cx:.14,cy:.59,c:'#00ff88',w:1.5},
+    {x1:.76,y1:.48,x2:.84,y2:.68,cx:.86,cy:.59,c:'#00ff88',w:1.5},
+    {x1:.50,y1:.56,x2:.50,y2:.74,cx:.50,cy:.66,c:'#00ff88',w:1.3},
+    {x1:.50,y1:.38,x2:.50,y2:.54,cx:.50,cy:.47,c:'#00ff88',w:1.2},
+  ],
+  '5-2-3-A': [
+    {x1:.10,y1:.82,x2:.04,y2:.94,cx:.03,cy:.88,c:'#ff4757',w:2.4},
+    {x1:.90,y1:.82,x2:.96,y2:.94,cx:.97,cy:.88,c:'#ff4757',w:2.4},
+    {x1:.50,y1:.86,x2:.50,y2:.95,cx:.50,cy:.91,c:'#ff4757',w:2.6},
+    {x1:.06,y1:.24,x2:.06,y2:.46,cx:.04,cy:.36,c:'#00e5ff',w:1.4},
+    {x1:.94,y1:.24,x2:.94,y2:.46,cx:.96,cy:.36,c:'#00e5ff',w:1.4},
+    {x1:.34,y1:.50,x2:.34,y2:.70,cx:.34,cy:.61,c:'#00ff88',w:1.4},
+    {x1:.66,y1:.50,x2:.66,y2:.70,cx:.66,cy:.61,c:'#00ff88',w:1.4},
+  ],
+  '5-2-3-B': [
+    {x1:.10,y1:.82,x2:.04,y2:.94,cx:.03,cy:.88,c:'#ff4757',w:2.4},
+    {x1:.90,y1:.82,x2:.96,y2:.94,cx:.97,cy:.88,c:'#ff4757',w:2.4},
+    {x1:.50,y1:.86,x2:.50,y2:.95,cx:.50,cy:.91,c:'#ff4757',w:2.6},
+    {x1:.06,y1:.24,x2:.06,y2:.46,cx:.04,cy:.36,c:'#00e5ff',w:1.4},
+    {x1:.94,y1:.24,x2:.94,y2:.46,cx:.96,cy:.36,c:'#00e5ff',w:1.4},
+    {x1:.34,y1:.48,x2:.34,y2:.68,cx:.34,cy:.59,c:'#00ff88',w:1.4},
+    {x1:.66,y1:.48,x2:.66,y2:.68,cx:.66,cy:.59,c:'#00ff88',w:1.4},
+  ],
+  '5-3-2': [
+    {x1:.34,y1:.82,x2:.26,y2:.93,cx:.27,cy:.88,c:'#ff4757',w:2.2},
+    {x1:.66,y1:.82,x2:.74,y2:.93,cx:.73,cy:.88,c:'#ff4757',w:2.2},
+    {x1:.06,y1:.24,x2:.06,y2:.46,cx:.04,cy:.36,c:'#00e5ff',w:1.4},
+    {x1:.94,y1:.24,x2:.94,y2:.46,cx:.96,cy:.36,c:'#00e5ff',w:1.4},
+    {x1:.22,y1:.52,x2:.30,y2:.70,cx:.24,cy:.62,c:'#00ff88',w:1.4},
+    {x1:.78,y1:.52,x2:.70,y2:.70,cx:.76,cy:.62,c:'#00ff88',w:1.4},
+  ],
+  '5-3-1-1': [
+    {x1:.50,y1:.84,x2:.50,y2:.94,cx:.50,cy:.90,c:'#ff4757',w:2.4},
+    {x1:.50,y1:.68,x2:.50,y2:.80,cx:.50,cy:.75,c:'#ff4757',w:2.0},
+    {x1:.06,y1:.24,x2:.06,y2:.46,cx:.04,cy:.36,c:'#00e5ff',w:1.4},
+    {x1:.94,y1:.24,x2:.94,y2:.46,cx:.96,cy:.36,c:'#00e5ff',w:1.4},
+    {x1:.22,y1:.52,x2:.30,y2:.62,cx:.24,cy:.58,c:'#00ff88',w:1.3},
+    {x1:.78,y1:.52,x2:.70,y2:.62,cx:.76,cy:.58,c:'#00ff88',w:1.3},
+  ],
+  '5-4-1-A': [
+    {x1:.50,y1:.82,x2:.50,y2:.93,cx:.50,cy:.88,c:'#ff4757',w:2.4},
+    {x1:.06,y1:.24,x2:.06,y2:.46,cx:.04,cy:.36,c:'#00e5ff',w:1.5},
+    {x1:.94,y1:.24,x2:.94,y2:.46,cx:.96,cy:.36,c:'#00e5ff',w:1.5},
+    {x1:.10,y1:.52,x2:.08,y2:.70,cx:.06,cy:.62,c:'#00ff88',w:1.4},
+    {x1:.90,y1:.52,x2:.92,y2:.70,cx:.94,cy:.62,c:'#00ff88',w:1.4},
+    {x1:.50,y1:.50,x2:.50,y2:.68,cx:.50,cy:.60,c:'#00ff88',w:1.3},
+  ],
+  '5-4-1-B': [
+    {x1:.50,y1:.82,x2:.50,y2:.93,cx:.50,cy:.88,c:'#ff4757',w:2.4},
+    {x1:.06,y1:.24,x2:.06,y2:.46,cx:.04,cy:.36,c:'#00e5ff',w:1.5},
+    {x1:.94,y1:.24,x2:.94,y2:.46,cx:.96,cy:.36,c:'#00e5ff',w:1.5},
+    {x1:.22,y1:.50,x2:.28,y2:.66,cx:.23,cy:.59,c:'#00ff88',w:1.4},
+    {x1:.78,y1:.50,x2:.72,y2:.66,cx:.77,cy:.59,c:'#00ff88',w:1.4},
+    {x1:.50,y1:.58,x2:.50,y2:.74,cx:.50,cy:.67,c:'#00ff88',w:1.3},
+  ],
+  '6-3-1-A': [
+    {x1:.50,y1:.82,x2:.50,y2:.93,cx:.50,cy:.88,c:'#ff4757',w:2.4},
+    {x1:.06,y1:.22,x2:.06,y2:.44,cx:.04,cy:.34,c:'#00e5ff',w:1.3},
+    {x1:.94,y1:.22,x2:.94,y2:.44,cx:.96,cy:.34,c:'#00e5ff',w:1.3},
+    {x1:.22,y1:.52,x2:.28,y2:.68,cx:.23,cy:.61,c:'#00ff88',w:1.3},
+    {x1:.78,y1:.52,x2:.72,y2:.68,cx:.77,cy:.61,c:'#00ff88',w:1.3},
+    {x1:.50,y1:.62,x2:.50,y2:.76,cx:.50,cy:.70,c:'#00ff88',w:1.3},
+  ],
+  '6-3-1-B': [
+    {x1:.50,y1:.82,x2:.50,y2:.93,cx:.50,cy:.88,c:'#ff4757',w:2.4},
+    {x1:.06,y1:.22,x2:.06,y2:.44,cx:.04,cy:.34,c:'#00e5ff',w:1.3},
+    {x1:.94,y1:.22,x2:.94,y2:.44,cx:.96,cy:.34,c:'#00e5ff',w:1.3},
+    {x1:.24,y1:.56,x2:.30,y2:.70,cx:.25,cy:.64,c:'#00ff88',w:1.3},
+    {x1:.76,y1:.56,x2:.70,y2:.70,cx:.75,cy:.64,c:'#00ff88',w:1.3},
+    {x1:.50,y1:.42,x2:.50,y2:.60,cx:.50,cy:.52,c:'#00ff88',w:1.2},
+  ],
+};
+
+// ─── TACTIC DATA ──────────────────────────────────────────────────────
+// ── LINE TACTICS REFERENCE (OSM exact values) ──────────────────────────
+// Forwards:  0=Hold Up Play  1=Mixed  2=Attack Only
+// Midfield:  0=Protect Def.  1=Stay in position  2=Box to Box / Get Forward
+// Defence:   0=Defend deep   1=Normal             2=High Line
+// LED index = position within the 3-dot row (0=left, 1=mid, 2=right = most aggressive)
+
+const TD = [
+  // ── 4-3-3 A → counter: 4-5-1 Mid Block
+  // Fwd: Attack Only (2) | Mid: Stay in position (1) | Def: Defend deep (0)
+  // Marking: Zone | Offside: Off
+  {icon:'🔥',fm:'4-3-3-A',
+   label:'4-3-3 A (Wing Play)',
+   counter:'4-5-1 (Mid Block)',
+   gp:{icon:'🏃',text:'Wing Play'},
+   p:63,s:70,t:73,sr:78,badge:'SOLID',
+   f:'Attack only',     fL:2,
+   m:'Stay in position',mL:1,
+   d:'Defend deep',     dL:0,
+   mrk:'Zone marking',mrkOn:true, off:'No',offOn:false,
+   markChar:'🧍',offChar:'🚩',
+   note:'"vs 4-3-3 A: pack the midfield with 5 — deny wing space and strike fast on the counter."'},
+
+  // ── 4-3-3 B → counter: 4-4-2 A Press High
+  // Fwd: Attack Only (2) | Mid: Box to Box (2) | Def: High Line (2)
+  // Marking: Man | Offside: Yes
+  {icon:'🎯',fm:'4-3-3-B',
+   label:'4-3-3 B (Wing / CDM)',
+   counter:'4-4-2 A (Press High)',
+   gp:{icon:'🎯',text:'Shoot on sight'},
+   p:66,s:68,t:76,sr:82,badge:'STRONG',
+   f:'Attack only',fL:2,
+   m:'Box to box',  mL:2,
+   d:'High line',   dL:2,
+   mrk:'Man marking',mrkOn:true, off:'Yes',offOn:true,
+   markChar:'🤼',offChar:'🏁',
+   note:'"vs 4-3-3 B: press their CDM and win possession — your 4-4-2 dominates the numbers."'},
+
+  // ── 4-5-1 → counter: 4-2-3-1 Exploit AM
+  // Fwd: Attack Only (2) | Mid: Protect the defence (0) | Def: Defend deep (0)
+  // Marking: Zone | Offside: No
+  {icon:'📗',fm:'4-5-1',
+   label:'4-5-1 (Possession)',
+   counter:'4-2-3-1 (Exploit AM)',
+   gp:{icon:'🔄',text:'Possession'},
+   p:45,s:80,t:60,sr:62,badge:'AVERAGE',
+   f:'Attack only',         fL:2,
+   m:'Protect the defence', mL:0,
+   d:'Defend deep',         dL:0,
+   mrk:'Zone marking',mrkOn:true, off:'No',offOn:false,
+   markChar:'🧍',offChar:'🚩',
+   note:'"vs 4-5-1: use your AM to drop between their lines — lone striker pins back 4 effectively."'},
+
+  // ── 4-2-3-1 Shoot on Sight → counter: 4-4-2 A Flat Press
+  // Fwd: Attack Only (2) | Mid: Box to Box (2) | Def: High Line (2)
+  // Marking: Man | Offside: Yes
+  {icon:'⚡',fm:'4-2-3-1',
+   label:'4-2-3-1 (Shoot on Sight)',
+   counter:'4-4-2 A (Flat Press)',
+   gp:{icon:'⚡',text:'Shoot on sight'},
+   p:71,s:58,t:82,sr:84,badge:'STRONG',
+   f:'Attack only',fL:2,
+   m:'Box to box',  mL:2,
+   d:'High line',   dL:2,
+   mrk:'Man marking',mrkOn:true, off:'Yes',offOn:true,
+   markChar:'🤼',offChar:'🏁',
+   note:'"vs 4-2-3-1: press their double-pivot high — cut the supply line to their attacking trio."'},
+
+  // ── 4-4-2 A Passing → counter: 4-3-3 A Wing Overload
+  // Fwd: Attack Only (2) | Mid: Stay in position (1) | Def: Defend deep (0)
+  // Marking: Zone | Offside: No
+  {icon:'🛡',fm:'4-4-2-A',
+   label:'4-4-2 A (Passing Game)',
+   counter:'4-3-3 A (Wing Overload)',
+   gp:{icon:'⚽',text:'Passing game'},
+   p:67,s:61,t:79,sr:87,badge:'STRONG',
+   f:'Attack only',     fL:2,
+   m:'Stay in position',mL:1,
+   d:'Defend deep',     dL:0,
+   mrk:'Zone marking',mrkOn:true, off:'No',offOn:false,
+   markChar:'🧍',offChar:'🚩',
+   note:'"vs 4-4-2 A: overload the wings — their fullbacks will be exposed to your LW+RW bursts."'},
+
+  // ── 4-4-2 B CDM/CAM → counter: 4-3-3 B Wide Press
+  // Fwd: Attack Only (2) | Mid: Stay in position (1) | Def: Normal (1)
+  // Marking: Zone | Offside: No
+  {icon:'💠',fm:'4-4-2-B',
+   label:'4-4-2 B (CDM / CAM)',
+   counter:'4-3-3 B (Wide Press)',
+   gp:{icon:'🔄',text:'Passing game'},
+   p:60,s:72,t:68,sr:75,badge:'SOLID',
+   f:'Attack only',     fL:2,
+   m:'Stay in position',mL:1,
+   d:'Normal',          dL:1,
+   mrk:'Zone marking',mrkOn:true, off:'No',offOn:false,
+   markChar:'🧍',offChar:'🚩',
+   note:'"vs 4-4-2 B: target half-spaces around their CDM — their CAM line becomes isolated."'},
+
+  // ── 5-2-3 A Wing Attack → counter: 4-2-3-1 Press & Win
+  // Fwd: Attack Only (2) | Mid: Box to Box (2) | Def: High Line (2)
+  // Marking: Man | Offside: Yes
+  {icon:'⚔️',fm:'5-2-3-A',
+   label:'5-2-3 A (Wing Attack)',
+   counter:'4-2-3-1 (Press & Win)',
+   gp:{icon:'⚡',text:'Counter attack'},
+   p:55,s:72,t:78,sr:74,badge:'SOLID',
+   f:'Attack only',fL:2,
+   m:'Box to box',  mL:2,
+   d:'High line',   dL:2,
+   mrk:'Man marking',mrkOn:true, off:'Yes',offOn:true,
+   markChar:'🤼',offChar:'🏁',
+   note:'"vs 5-2-3 A: exploit the gap behind their 2-man midfield with quick vertical passes."'},
+
+  // ── 5-2-3 B CDM Double Pivot → counter: 4-3-3 A Wing Blast
+  // Fwd: Attack Only (2) | Mid: Stay in position (1) | Def: Defend deep (0)
+  // Marking: Zone | Offside: No
+  {icon:'🔰',fm:'5-2-3-B',
+   label:'5-2-3 B (CDM Double Pivot)',
+   counter:'4-3-3 A (Wing Blast)',
+   gp:{icon:'🏃',text:'Wing play'},
+   p:58,s:68,t:74,sr:71,badge:'SOLID',
+   f:'Attack only',     fL:2,
+   m:'Stay in position',mL:1,
+   d:'Defend deep',     dL:0,
+   mrk:'Zone marking',mrkOn:true, off:'No',offOn:false,
+   markChar:'🧍',offChar:'🚩',
+   note:'"vs 5-2-3 B: blast wide — their double CDMs cannot cover the full width of the pitch."'},
+
+  // ── 5-3-2 Defensive Counter → counter: 4-2-3-1 AM Exploit
+  // Fwd: Attack Only (2) | Mid: Box to Box (2) | Def: High Line (2)
+  // Marking: Man | Offside: Yes
+  {icon:'🏰',fm:'5-3-2',
+   label:'5-3-2 (Defensive Counter)',
+   counter:'4-2-3-1 (AM Exploit)',
+   gp:{icon:'⚡',text:'Counter attack'},
+   p:55,s:72,t:78,sr:74,badge:'SOLID',
+   f:'Attack only',fL:2,
+   m:'Box to box',  mL:2,
+   d:'High line',   dL:2,
+   mrk:'Man marking',mrkOn:true, off:'Yes',offOn:true,
+   markChar:'🤼',offChar:'🏁',
+   note:'"vs 5-3-2: use your AM to exploit the space behind their mid-3 before they recover."'},
+
+  // ── 5-3-1-1 Shadow Striker → counter: 4-4-2 A Compact
+  // Fwd: Attack Only (2) | Mid: Stay in position (1) | Def: Defend deep (0)
+  // Marking: Man | Offside: Yes
+  {icon:'👁',fm:'5-3-1-1',
+   label:'5-3-1-1 (Shadow Striker)',
+   counter:'4-4-2 A (Compact)',
+   gp:{icon:'👁',text:'Shoot on sight'},
+   p:58,s:68,t:70,sr:72,badge:'SOLID',
+   f:'Attack only',     fL:2,
+   m:'Stay in position',mL:1,
+   d:'Defend deep',     dL:0,
+   mrk:'Man marking',mrkOn:true, off:'Yes',offOn:true,
+   markChar:'🤼',offChar:'🏁',
+   note:'"vs 5-3-1-1: compact 4-4-2 marks both strikers tight and wins midfield numbers."'},
+
+  // ── 5-4-1 A Flat 4 Mid → counter: 4-3-3 A Wide Attack
+  // Fwd: Hold Up Play (0) | Mid: Protect the defence (0) | Def: Defend deep (0)
+  // Marking: Zone | Offside: No
+  {icon:'🔒',fm:'5-4-1-A',
+   label:'5-4-1 A (Flat 4 Mid)',
+   counter:'4-3-3 A (Wide Attack)',
+   gp:{icon:'🛡',text:'Counter attack'},
+   p:40,s:85,t:55,sr:69,badge:'SOLID',
+   f:'Hold up play',        fL:0,
+   m:'Protect the defence', mL:0,
+   d:'Defend deep',         dL:0,
+   mrk:'Zone marking',mrkOn:true, off:'No',offOn:false,
+   markChar:'🧍',offChar:'🚩',
+   note:'"vs 5-4-1 A: stretch wide with LW+RW — their 5 CBs cannot cover the full pitch width."'},
+
+  // ── 5-4-1 B CDM+CAM → counter: 4-3-3 A Wide Blast
+  // Fwd: Hold Up Play (0) | Mid: Protect the defence (0) | Def: Defend deep (0)
+  // Marking: Zone | Offside: No
+  {icon:'🏯',fm:'5-4-1-B',
+   label:'5-4-1 B (CDM+CAM Diamond)',
+   counter:'4-3-3 A (Wide Blast)',
+   gp:{icon:'🛡',text:'Counter attack'},
+   p:42,s:83,t:57,sr:67,badge:'SOLID',
+   f:'Hold up play',        fL:0,
+   m:'Protect the defence', mL:0,
+   d:'Defend deep',         dL:0,
+   mrk:'Zone marking',mrkOn:true, off:'No',offOn:false,
+   markChar:'🧍',offChar:'🚩',
+   note:'"vs 5-4-1 B: wide play exploits their narrow diamond — fullbacks have acres of space."'},
+
+  // ── 6-3-1 A Ultra Def + CAM → counter: 4-4-2 A Overload Wide
+  // Fwd: Hold Up Play (0) | Mid: Protect the defence (0) | Def: Defend deep (0)
+  // Marking: Zone | Offside: No
+  {icon:'🔐',fm:'6-3-1-A',
+   label:'6-3-1 A (Ultra Def + CAM)',
+   counter:'4-4-2 A (Overload Wide)',
+   gp:{icon:'⚓',text:'Long ball'},
+   p:35,s:88,t:50,sr:65,badge:'AVERAGE',
+   f:'Hold up play',        fL:0,
+   m:'Protect the defence', mL:0,
+   d:'Defend deep',         dL:0,
+   mrk:'Zone marking',mrkOn:true, off:'No',offOn:false,
+   markChar:'🧍',offChar:'🚩',
+   note:'"vs 6-3-1 A: hit over the top with long balls — their 6-man line leaves acres behind."'},
+
+  // ── 6-3-1 B Dual CAM → counter: 4-4-2 A Wide Flood
+  // Fwd: Hold Up Play (0) | Mid: Protect the defence (0) | Def: Defend deep (0)
+  // Marking: Zone | Offside: No
+  {icon:'🛡',fm:'6-3-1-B',
+   label:'6-3-1 B (Dual CAM)',
+   counter:'4-4-2 A (Wide Flood)',
+   gp:{icon:'⚓',text:'Long ball'},
+   p:33,s:90,t:48,sr:63,badge:'AVERAGE',
+   f:'Hold up play',        fL:0,
+   m:'Protect the defence', mL:0,
+   d:'Defend deep',         dL:0,
+   mrk:'Zone marking',mrkOn:true, off:'No',offOn:false,
+   markChar:'🧍',offChar:'🚩',
+   note:'"vs 6-3-1 B: flood both wings — their dual CAMs cannot track back fast enough."'},
+];
+
+// ─── CANVAS ENGINE ────────────────────────────────────────────────────
+function toXY(nx,ny,cw,ch,pad){
+  const pl=pad,pr=cw-pad,pt=pad,pb=ch-pad;
+  return {x:pl+nx*(pr-pl), y:pb-ny*(pb-pt)};
+}
+
+function drawBg(ctx,cw,ch,pad){
+  const pl=pad,pr=cw-pad,pt=pad,pb=ch-pad,pw=pr-pl,ph=pb-pt;
+  const ns=8;
+  for(let i=0;i<ns;i++){ctx.fillStyle=i%2===0?'#1b5e2c':'#1f6a32';ctx.fillRect(pl+i*(pw/ns),pt,pw/ns,ph);}
+  ctx.strokeStyle='rgba(255,255,255,0.32)';ctx.lineWidth=1;ctx.strokeRect(pl,pt,pw,ph);
+  ctx.beginPath();ctx.moveTo(pl,pt+ph/2);ctx.lineTo(pr,pt+ph/2);ctx.stroke();
+  ctx.beginPath();ctx.arc(pl+pw/2,pt+ph/2,ph*.12,0,Math.PI*2);ctx.stroke();
+  ctx.fillStyle='rgba(255,255,255,0.4)';ctx.beginPath();ctx.arc(pl+pw/2,pt+ph/2,2,0,Math.PI*2);ctx.fill();
+  ctx.strokeStyle='rgba(255,255,255,0.2)';ctx.lineWidth=0.8;
+  ctx.strokeRect(pl+pw*.22,pb-ph*.26,pw*.56,ph*.26);
+  ctx.strokeRect(pl+pw*.35,pb-ph*.11,pw*.30,ph*.11);
+  ctx.strokeRect(pl+pw*.22,pt,pw*.56,ph*.26);
+  ctx.strokeRect(pl+pw*.35,pt,pw*.30,ph*.11);
+  ctx.strokeStyle='rgba(255,255,255,0.45)';ctx.lineWidth=1.4;
+  ctx.strokeRect(pl+pw*.36,pb,pw*.28,6);
+  ctx.strokeRect(pl+pw*.36,pt-6,pw*.28,6);
+  ctx.fillStyle='rgba(255,255,255,0.4)';
+  ctx.beginPath();ctx.arc(pl+pw*.5,pt+ph*.18,1.5,0,Math.PI*2);ctx.fill();
+  ctx.beginPath();ctx.arc(pl+pw*.5,pb-ph*.18,1.5,0,Math.PI*2);ctx.fill();
+  const vg=ctx.createRadialGradient(cw/2,ch/2,ch*.2,cw/2,ch/2,ch*.75);
+  vg.addColorStop(0,'rgba(0,0,0,0)');vg.addColorStop(1,'rgba(0,0,0,0.3)');
+  ctx.fillStyle=vg;ctx.fillRect(0,0,cw,ch);
+}
+
+function drawCurvedArrow(ctx,x1,y1,cpx,cpy,x2,y2,col,lw,progress){
+  if(progress<=0)return;
+  ctx.save();
+  ctx.strokeStyle=col;ctx.lineWidth=lw;ctx.lineCap='round';ctx.lineJoin='round';
+  ctx.shadowColor=col;ctx.shadowBlur=7;ctx.globalAlpha=0.88;
+  const steps=40;
+  ctx.beginPath();
+  for(let i=0;i<=steps*progress;i++){
+    const t=i/steps;
+    const bx=(1-t)*(1-t)*x1+2*(1-t)*t*cpx+t*t*x2;
+    const by=(1-t)*(1-t)*y1+2*(1-t)*t*cpy+t*t*y2;
+    i===0?ctx.moveTo(bx,by):ctx.lineTo(bx,by);
+  }
+  ctx.stroke();
+  if(progress>=0.98){
+    const t=0.96;
+    const bx2=(1-t)*(1-t)*x1+2*(1-t)*t*cpx+t*t*x2;
+    const by2=(1-t)*(1-t)*y1+2*(1-t)*t*cpy+t*t*y2;
+    const angle=Math.atan2(y2-by2,x2-bx2);
+    const al=lw*3.5,aa=0.42;
+    ctx.globalAlpha=0.95;ctx.fillStyle=col;
+    ctx.beginPath();ctx.moveTo(x2,y2);
+    ctx.lineTo(x2-al*Math.cos(angle-aa),y2-al*Math.sin(angle-aa));
+    ctx.lineTo(x2-al*Math.cos(angle+aa),y2-al*Math.sin(angle+aa));
+    ctx.closePath();ctx.fill();
+  }
+  ctx.restore();
+}
+
+function drawDot(ctx,x1,y1,cpx,cpy,x2,y2,col,t){
+  const bx=(1-t)*(1-t)*x1+2*(1-t)*t*cpx+t*t*x2;
+  const by=(1-t)*(1-t)*y1+2*(1-t)*t*cpy+t*t*y2;
+  const fade=t<0.15?t/0.15:t>0.85?(1-t)/0.15:1;
+  ctx.save();ctx.globalAlpha=0.9*fade;
+  ctx.shadowColor=col;ctx.shadowBlur=9;
+  ctx.fillStyle='#fff';ctx.beginPath();ctx.arc(bx,by,2.8,0,Math.PI*2);ctx.fill();
+  ctx.fillStyle=col;ctx.beginPath();ctx.arc(bx,by,1.6,0,Math.PI*2);ctx.fill();
+  ctx.restore();
+}
+
+function drawPlayer(ctx,x,y,role,col,size,entranceProgress,pulsePhase){
+  const r=size==='fwd'?9:size==='gk'?9:8;
+  const lw=size==='fwd'?2.3:size==='gk'?2:1.8;
+  if(size==='fwd'||size==='gk'){
+    ctx.save();ctx.globalAlpha=(1-pulsePhase)*0.45;ctx.strokeStyle=col;ctx.lineWidth=0.9;
+    ctx.shadowColor=col;ctx.shadowBlur=8;
+    ctx.beginPath();ctx.arc(x,y,r+pulsePhase*9,0,Math.PI*2);ctx.stroke();ctx.restore();
+  }
+  ctx.save();ctx.globalAlpha=entranceProgress;
+  const sc2=0.1+0.9*entranceProgress;
+  ctx.translate(x,y);ctx.scale(sc2,sc2);ctx.translate(-x,-y);
+  ctx.shadowColor=col;ctx.shadowBlur=12;
+  ctx.fillStyle='#07091a';ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);ctx.fill();
+  ctx.strokeStyle=col;ctx.lineWidth=lw;ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);ctx.stroke();
+  ctx.shadowBlur=0;
+  const fs=role.length>3?4.5:role.length>2?5:6;
+  ctx.fillStyle=col;ctx.font=`700 ${fs}px Inter,sans-serif`;ctx.textAlign='center';ctx.textBaseline='middle';
+  ctx.fillText(role,x,y+0.5);
+  ctx.restore();
+}
+
+let mainRAF=null,mainStart=null,mainFmKey=null;
+let ltRAF=null,ltStart=null;
+
+function renderMain(fmKey){
+  mainFmKey=fmKey;
+  if(mainRAF){cancelAnimationFrame(mainRAF);mainRAF=null;}
+  mainStart=null;
+  const canvas=document.getElementById('mainCanvas');
+  const ctx=canvas.getContext('2d');
+  const cw=canvas.width,ch=canvas.height,pad=9;
+  const players=FM[fmKey]||FM['4-4-2-A'];
+  const arrows=AR[fmKey]||AR['4-4-2-A'];
+  const ARROW_START=0.55, ARROW_STAGGER=0.1, ARROW_DUR=0.5;
+  const PLAYER_STAGGER=0.07;
+
+  function frame(ts){
+    if(!mainStart)mainStart=ts;
+    const el=(ts-mainStart)/1000;
+    ctx.clearRect(0,0,cw,ch);
+    drawBg(ctx,cw,ch,pad);
+    arrows.forEach((a,i)=>{
+      const delay=ARROW_START+i*ARROW_STAGGER;
+      const prog=Math.min(Math.max((el-delay)/ARROW_DUR,0),1);
+      const p1=toXY(a.x1,a.y1,cw,ch,pad),p2=toXY(a.x2,a.y2,cw,ch,pad),cp=toXY(a.cx,a.cy,cw,ch,pad);
+      drawCurvedArrow(ctx,p1.x,p1.y,cp.x,cp.y,p2.x,p2.y,a.c,a.w,prog);
+      if(prog>=1){
+        const dotT=((el-delay-ARROW_DUR+i*0.15)*0.4)%1;
+        drawDot(ctx,p1.x,p1.y,cp.x,cp.y,p2.x,p2.y,a.c,Math.max(0,dotT));
+      }
+    });
+    players.forEach((p,i)=>{
+      const delay=i*PLAYER_STAGGER;
+      const prog=Math.min(Math.max((el-delay)/0.3,0),1);
+      if(prog<=0)return;
+      const {x,y}=toXY(p.x,p.y,cw,ch,pad);
+      const pulse=(el*0.55+i*0.22)%1;
+      drawPlayer(ctx,x,y,p.r,p.c,p.s,prog,pulse);
+    });
+    mainRAF=requestAnimationFrame(frame);
+  }
+  mainRAF=requestAnimationFrame(frame);
+}
+
+function renderLT(fwdTxt,midTxt){
+  if(ltRAF){cancelAnimationFrame(ltRAF);ltRAF=null;}
+  ltStart=null;
+  const canvas=document.getElementById('ltCanvas');
+  const ctx=canvas.getContext('2d');
+  const cw=canvas.width,ch=canvas.height,pad=6;
+
+  function toL(nx,ny){return toXY(nx,ny,cw,ch,pad);}
+  function arrow(x1,y1,cpx,cpy,x2,y2,col,lw,prog){
+    drawCurvedArrow(ctx,x1,y1,cpx,cpy,x2,y2,col,lw,prog);
+  }
+
+  function frame(ts){
+    if(!ltStart)ltStart=ts;
+    const el=(ts-ltStart)/1000;
+    ctx.clearRect(0,0,cw,ch);
+    drawBg(ctx,cw,ch,pad);
+
+    // FWD — blue upward arrow (OSM "Forwards" = blue #4fc3f7)
+    {const p1=toL(.5,.78),p2=toL(.5,.93),cp=toL(.5,.86);
+    const pr=Math.min(el/0.4,1);
+    arrow(p1.x,p1.y,cp.x,cp.y,p2.x,p2.y,'#4fc3f7',3.5,pr);}
+    // If Hold Up Play, show stub arrow (shorter = less aggressive)
+    if(fwdTxt==='Hold up play'||fwdTxt==='Hold Up Play'){
+      const p1=toL(.5,.76),p2=toL(.5,.83),cp=toL(.5,.80);
+      const pr=Math.min(el/0.4,1);
+      ctx.save();ctx.globalAlpha=0.4;
+      arrow(p1.x,p1.y,cp.x,cp.y,p2.x,p2.y,'#4fc3f7',2,pr);
+      ctx.restore();
+    }
+
+    // MID
+    const md=0.2, mp=Math.min(Math.max((el-md)/0.4,0),1);
+    const cx=toL(.5,.5);
+    if(midTxt==='Stay in position'){
+      // OSM "Stay in position" = cross arrows from center (Hold Position)
+      [{dx:.22,dy:0},{dx:-.22,dy:0},{dx:0,dy:.10},{dx:0,dy:-.10}].forEach(({dx,dy})=>{
+        const e=toL(.5+dx,.5+dy);
+        arrow(cx.x,cx.y,(cx.x+e.x)/2,(cx.y+e.y)/2,e.x,e.y,'#ff9800',2,mp);
+      });
+      ctx.save();ctx.globalAlpha=mp;ctx.fillStyle='#ff9800';ctx.shadowColor='#ff9800';ctx.shadowBlur=6;
+      ctx.beginPath();ctx.arc(cx.x,cx.y,3.5,0,Math.PI*2);ctx.fill();ctx.restore();
+    } else if(midTxt==='Box to box'||midTxt==='Box to Box'){
+      // Curved sweep left and right — aggressive midfield
+      const p1l=toL(.5,.56),cpl=toL(.28,.44),p2l=toL(.16,.50);
+      const p1r=toL(.5,.56),cpr=toL(.72,.44),p2r=toL(.84,.50);
+      arrow(p1l.x,p1l.y,cpl.x,cpl.y,p2l.x,p2l.y,'#ff9800',2,mp);
+      arrow(p1r.x,p1r.y,cpr.x,cpr.y,p2r.x,p2r.y,'#ff9800',2,mp);
+    } else if(midTxt==='Get forward'||midTxt==='Get Forward'){
+      const pa=toL(.36,.50),pb2=toL(.36,.70),pco=toL(.36,.61);
+      const pa2=toL(.64,.50),pb3=toL(.64,.70),pco2=toL(.64,.61);
+      arrow(pa.x,pa.y,pco.x,pco.y,pb2.x,pb2.y,'#ff9800',2,mp);
+      arrow(pa2.x,pa2.y,pco2.x,pco2.y,pb3.x,pb3.y,'#ff9800',2,mp);
+    } else if(midTxt==='Protect the defence'||midTxt==='Protect Def.'){
+      // OSM "Protect the defence" = arcs sweeping back toward defence
+      const p1l=toL(.38,.52),cpl=toL(.30,.38),p2l=toL(.26,.30);
+      const p1r=toL(.62,.52),cpr=toL(.70,.38),p2r=toL(.74,.30);
+      arrow(p1l.x,p1l.y,cpl.x,cpl.y,p2l.x,p2l.y,'#ff9800',2,mp);
+      arrow(p1r.x,p1r.y,cpr.x,cpr.y,p2r.x,p2r.y,'#ff9800',2,mp);
+    } else if(midTxt==='Normal'){
+      // Normal = gentle forward pass
+      const p1=toL(.5,.50),p2=toL(.5,.68),cp=toL(.5,.60);
+      arrow(p1.x,p1.y,cp.x,cp.y,p2.x,p2.y,'#ff9800',2,mp);
+    } else {
+      // fallback
+      const p1=toL(.5,.5),p2=toL(.5,.70),cp=toL(.5,.61);
+      arrow(p1.x,p1.y,cp.x,cp.y,p2.x,p2.y,'#ff9800',2,mp);
+    }
+
+    // DEF — orange down arrow (OSM "Defenders" = orange)
+    {const p1=toL(.5,.28),p2=toL(.5,.14),cp=toL(.5,.21);
+    const pr=Math.min(Math.max((el-.35)/.4,0),1);
+    arrow(p1.x,p1.y,cp.x,cp.y,p2.x,p2.y,'#ff9800',3,pr);
+    ctx.save();ctx.globalAlpha=Math.min(el/.55,.85);ctx.fillStyle='#ff9800';ctx.shadowColor='#ff9800';ctx.shadowBlur=5;
+    ctx.beginPath();ctx.arc(p1.x,p1.y,3,0,Math.PI*2);ctx.fill();ctx.restore();}
+
+    // Travelling dots after arrows fully drawn
+    if(el>1.2){
+      const fp1=toL(.5,.78),fp2=toL(.5,.93),fcp=toL(.5,.86);
+      drawDot(ctx,fp1.x,fp1.y,fcp.x,fcp.y,fp2.x,fp2.y,'#4fc3f7',((el-1.2)*.5)%1);
+    }
+    ltRAF=requestAnimationFrame(frame);
+  }
+  ltRAF=requestAnimationFrame(frame);
+}
+
+// ─── UI ───────────────────────────────────────────────────────────────
+const tlistEl=document.getElementById('tlist');
+TD.forEach((d,i)=>{
+  const div=document.createElement('div');
+  div.className='ti'+(i===0?' on':'');
+  div.style.animationDelay=(i*.04)+'s';
+  div.onclick=()=>pick(div,i);
+  div.innerHTML=`<div class="tirow"><div class="tico">${d.icon}</div><div><div class="tiname">${d.label}</div><div class="tisub">Counter: ${d.counter}</div></div></div><div class="barrow"><div class="barbg"><div class="barfill" style="width:${d.sr}%"></div></div><div class="barpct">${d.sr}%</div></div>`;
+  tlistEl.appendChild(div);
+});
+
+function updateLeds(rowIdx,activeIdx,cls){
+  const rows=document.querySelectorAll('.ltrow');
+  if(!rows[rowIdx])return;
+  rows[rowIdx].querySelectorAll('.led.'+cls).forEach((l,i)=>l.classList.toggle('on',i===activeIdx));
+}
+
+function pick(elRef,i){
+  document.querySelectorAll('.ti').forEach(x=>x.classList.remove('on'));
+  elRef.classList.add('on');
+  const d=TD[i];
+  document.getElementById('yourName').textContent=d.label;
+  document.getElementById('oppName').textContent=d.counter;
+  document.getElementById('gpIcon').textContent=d.gp.icon;
+  document.getElementById('gpText').textContent=d.gp.text;
+  document.getElementById('vP').textContent=d.p;
+  document.getElementById('vS').textContent=d.s;
+  document.getElementById('vT').textContent=d.t;
+  document.getElementById('srBar').style.width=d.sr+'%';
+  document.getElementById('vSR').textContent=d.sr+'%';
+  document.getElementById('sucBadge').textContent=d.badge;
+  document.getElementById('ltF').textContent=d.f;
+  document.getElementById('ltM').textContent=d.m;
+  document.getElementById('ltD').textContent=d.d;
+  document.getElementById('ltK').textContent=d.mrk;
+  document.getElementById('ltO').textContent=d.off;
+  document.getElementById('markChar').textContent=d.markChar;
+  document.getElementById('offChar').textContent=d.offChar;
+  document.getElementById('markLed').className='moled'+(d.mrkOn?'':' off');
+  document.getElementById('offLed').className='moled'+(d.offOn?'':' off');
+  document.getElementById('coachNote').textContent=d.note;
+  updateLeds(0,d.fL,'fwd');
+  updateLeds(1,d.mL,'mid');
+  updateLeds(2,d.dL,'def');
+  renderMain(d.fm);
+  renderLT(d.f,d.m);
+}
+
+function setSeg(id,btn){
+  document.querySelectorAll('#'+id+' .sbtn').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+}
+function doReset(){
+  document.querySelectorAll('.ti').forEach((t,i)=>t.classList.toggle('on',i===0));
+  pick(document.querySelector('.ti'),0);
+}
+
+pick(document.querySelector('.ti'),0);
+</script>
+</body>
+</html>

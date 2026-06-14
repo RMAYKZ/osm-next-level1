@@ -1,0 +1,29 @@
+.mscard-section {
+  padding: 80px 20px;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.mscard-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 36px;
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.2s ease, background 0.25s ease, border-color 0.25s ease, color 0.25s ease;
+  backdrop-filter: blur(8px);
+}
+
+.mscard-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 32px rgba(34, 211, 238, 0.18);
+}
+
+.mscard-btn:active {
+  transform: scale(0.97);
+  box-shadow: none;
+}

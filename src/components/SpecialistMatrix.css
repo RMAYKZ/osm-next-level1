@@ -1,0 +1,416 @@
+/* ── Section ── */
+.sm-section {
+  position: relative;
+  padding: 80px 20px;
+  overflow: hidden;
+}
+
+.sm-inner {
+  max-width: 860px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 1;
+}
+
+/* Ambient glows */
+.sm-glow {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 0;
+  filter: blur(80px);
+}
+
+.sm-glow-tl {
+  top: 0; left: -10%;
+  width: 40%; height: 40%;
+  background: radial-gradient(ellipse, rgba(139, 92, 246, 0.07) 0%, transparent 70%);
+}
+
+.sm-glow-br {
+  bottom: 0; right: -10%;
+  width: 45%; height: 45%;
+  background: radial-gradient(ellipse, rgba(0, 229, 255, 0.06) 0%, transparent 70%);
+}
+
+/* ── Header ── */
+.sm-header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.sm-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(167, 139, 250, 0.9);
+  background: rgba(139, 92, 246, 0.1);
+  border: 1px solid rgba(139, 92, 246, 0.22);
+  border-radius: 999px;
+  padding: 5px 14px;
+  margin-bottom: 16px;
+}
+
+.sm-badge-dot {
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: rgba(167, 139, 250, 0.9);
+  animation: sm-pulse 2s infinite ease-in-out;
+}
+
+@keyframes sm-pulse {
+  0%, 100% { opacity: 0.5; transform: scale(0.85); }
+  50%       { opacity: 1;   transform: scale(1.15); }
+}
+
+.sm-title {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: clamp(28px, 5vw, 42px);
+  font-weight: 900;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: #fff;
+  margin: 0 0 10px;
+}
+
+.sm-subtitle {
+  font-size: clamp(12px, 2vw, 14px);
+  color: rgba(255, 255, 255, 0.42);
+  line-height: 1.65;
+  max-width: 560px;
+  margin: 0 auto;
+}
+
+/* ── Player Grid ── */
+.sm-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+@media (max-width: 600px) {
+  .sm-grid { grid-template-columns: 1fr; }
+}
+
+/* ── Player Card ── */
+.sm-player-card {
+  background: rgba(9, 11, 33, 0.82);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 14px;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  transition: border-color 0.25s;
+}
+
+.sm-player-card.complete {
+  border-color: rgba(var(--pos-color, 0, 229, 255), 0.22);
+}
+
+.sm-player-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.sm-player-num {
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.28);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  flex-shrink: 0;
+}
+
+.sm-complete-dot {
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: #34d399;
+}
+
+.sm-pos-group {
+  display: flex;
+  gap: 3px;
+}
+
+.sm-pos-btn {
+  padding: 3px 8px;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  background: rgba(255, 255, 255, 0.04);
+  color: rgba(255, 255, 255, 0.3);
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.sm-pos-btn:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.sm-name-input {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #fff;
+  outline: none;
+  transition: border-color 0.15s;
+  box-sizing: border-box;
+}
+
+.sm-name-input::placeholder { color: rgba(255, 255, 255, 0.2); }
+.sm-name-input:focus { border-color: rgba(167, 139, 250, 0.4); }
+
+/* ── Stat row ── */
+.sm-stat-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
+}
+
+.sm-stat-field {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.sm-stat-label {
+  font-size: 8px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.25);
+}
+
+.sm-stat-input {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 7px;
+  padding: 6px 8px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #fff;
+  text-align: center;
+  outline: none;
+  transition: border-color 0.15s;
+  box-sizing: border-box;
+  -moz-appearance: textfield;
+}
+
+.sm-stat-input::-webkit-outer-spin-button,
+.sm-stat-input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+.sm-stat-input::placeholder { color: rgba(255, 255, 255, 0.15); font-size: 11px; }
+.sm-stat-input:focus { border-color: rgba(167, 139, 250, 0.38); }
+
+/* ── Actions ── */
+.sm-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 24px;
+}
+
+.sm-reset-btn {
+  padding: 7px 18px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  background: rgba(255, 255, 255, 0.04);
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.sm-reset-btn:hover {
+  border-color: rgba(255, 71, 87, 0.35);
+  color: #ff4757;
+  background: rgba(255, 71, 87, 0.07);
+}
+
+/* ── Result Card ── */
+.sm-result-card {
+  position: relative;
+  background: rgba(9, 11, 33, 0.92);
+  border: 1px solid rgba(167, 139, 250, 0.2);
+  border-radius: 16px;
+  padding: 22px 22px 8px;
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  overflow: hidden;
+}
+
+.sm-result-shimmer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(105deg, transparent 30%, rgba(167, 139, 250, 0.08) 50%, transparent 70%);
+  transform: skewX(-12deg);
+  z-index: 0;
+}
+
+.sm-result-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+  position: relative;
+  z-index: 1;
+}
+
+.sm-result-icon {
+  font-size: 24px;
+  line-height: 1;
+}
+
+.sm-result-title {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 18px;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #fff;
+}
+
+.sm-result-sub {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: rgba(167, 139, 250, 0.6);
+  text-transform: uppercase;
+}
+
+/* ── Role Rows ── */
+.sm-roles {
+  position: relative;
+  z-index: 1;
+}
+
+.sm-role-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.sm-role-row.last {
+  border-bottom: none;
+  padding-bottom: 14px;
+}
+
+.sm-role-left {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  min-width: 200px;
+  flex-shrink: 0;
+}
+
+.sm-role-icon {
+  font-size: 18px;
+  line-height: 1;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.sm-role-label {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 13px;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.85);
+  margin-bottom: 3px;
+}
+
+.sm-role-logic {
+  font-size: 9px;
+  color: rgba(255, 255, 255, 0.28);
+  line-height: 1.4;
+}
+
+.sm-role-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 5px;
+}
+
+.sm-role-name {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 16px;
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: 0.02em;
+}
+
+.sm-role-stats {
+  display: flex;
+  gap: 5px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.sm-stat-pill {
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  padding: 2px 8px;
+  border-radius: 999px;
+  border: 1px solid transparent;
+}
+
+.sm-role-empty {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.22);
+  font-style: italic;
+}
+
+/* ── Empty result state ── */
+.sm-result-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 28px;
+  background: rgba(9, 11, 33, 0.5);
+  border: 1px dashed rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  color: rgba(255, 255, 255, 0.3);
+  font-size: 13px;
+}
+
+.sm-result-empty-icon {
+  font-size: 20px;
+}
+
+@media (max-width: 640px) {
+  .sm-role-row { flex-direction: column; gap: 8px; }
+  .sm-role-left { min-width: unset; }
+  .sm-role-right { align-items: flex-start; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sm-badge-dot { animation: none; }
+  .sm-result-shimmer { animation: none; }
+}

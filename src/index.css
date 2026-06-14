@@ -1,0 +1,682 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+@import "@fontsource-variable/geist";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme {
+  --font-display: "Barlow Condensed", system-ui, sans-serif;
+  --font-body: "Inter", system-ui, sans-serif;
+  --font-hero: "Barlow Condensed", system-ui, sans-serif;
+}
+
+html,
+body {
+  color: #f8fafc;
+  font-family: var(--font-body);
+  font-size: 16px;
+  letter-spacing: 0.01em;
+  overflow-x: hidden;
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+/* Mobilde hiçbir öğe yatay taşmayı tetiklemesin */
+@media (max-width: 768px) {
+  html, body { max-width: 100vw; }
+  .section-title { word-break: break-word; hyphens: auto; }
+}
+
+body {
+  margin: 0;
+  padding: 0;
+}
+
+* { box-sizing: border-box; }
+
+::-webkit-scrollbar { width: 10px; }
+::-webkit-scrollbar-track { background: #020617; }
+::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 999px; border: 2px solid #020617; }
+::-webkit-scrollbar-thumb:hover { background: #334155; }
+
+::selection { background: rgba(96, 165, 250, 0.35); color: #eff6ff; }
+
+.opus-noise {
+  position: relative;
+}
+
+.opus-noise::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: -1;
+  opacity: 0.32;
+  background-image:
+    linear-gradient(to right, rgba(255,255,255,0.035) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255,255,255,0.028) 1px, transparent 1px);
+  background-size: 64px 64px;
+  mask-image: radial-gradient(circle at 50% 20%, black, transparent 72%);
+}
+
+.opus-glass {
+  background:
+    linear-gradient(180deg, rgba(15, 23, 42, 0.82), rgba(9, 9, 11, 0.78)),
+    radial-gradient(circle at top left, rgba(96, 165, 250, 0.07), transparent 20rem);
+  border: 1px solid rgba(148, 163, 184, 0.11);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.05), 0 30px 90px -58px rgba(0,0,0,0.95);
+  backdrop-filter: blur(20px);
+}
+
+.opus-card {
+  background: linear-gradient(180deg, rgba(20, 20, 20, 0.92), rgba(10, 10, 10, 0.9));
+  border: 1px solid rgba(255,255,255,0.09);
+  box-shadow: 0 20px 70px -52px rgba(0,0,0,0.95);
+}
+
+.opus-card-soft {
+  background: rgba(255,255,255,0.035);
+  border: 1px solid rgba(255,255,255,0.08);
+}
+
+.section-title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: -0.018em;
+  text-transform: uppercase;
+}
+
+.opus-kicker {
+  color: #67e8f9;
+  font-family: "Inter", system-ui, sans-serif;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+
+.badge-pro {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  border: 1px solid rgba(96, 165, 250, 0.22);
+  background: rgba(96, 165, 250, 0.07);
+  color: #bfdbfe;
+  border-radius: 999px;
+  padding: 0.45rem 0.8rem;
+  font-family: var(--font-display);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.premium-button {
+  background: linear-gradient(135deg, #2563eb, #0891b2 50%, #06b6d4);
+  box-shadow: 0 20px 45px -24px rgba(6, 182, 212, 0.6);
+}
+
+.premium-button:hover { filter: brightness(1.08); }
+
+.text-gold { color: #67e8f9; }
+.text-cream { color: #f0f9ff; }
+
+/* ── Hero brand title — Barlow Condensed, wins over RTL Cairo override ── */
+.hero-brand-title {
+  font-family: "Barlow Condensed", system-ui, sans-serif !important;
+  font-weight: 900;
+}
+
+/* ── HeroTitle shimmer ── */
+@keyframes htitle-shimmer {
+  0%   { background-position: 0% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.htitle-shimmer-top {
+  animation: htitle-shimmer 5s linear infinite;
+}
+.htitle-shimmer-lvl {
+  animation: htitle-shimmer 3.5s linear infinite;
+  animation-delay: -1.2s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .htitle-shimmer-top,
+  .htitle-shimmer-lvl {
+    animation: none !important;
+    background-position: 50% 0 !important;
+  }
+}
+
+@keyframes soft-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(200%); }
+}
+
+/* ── Hero title shimmer gradient ── */
+@keyframes title-shimmer {
+  0%   { background-position: -250% center; }
+  100% { background-position: 250% center; }
+}
+
+.hero-shimmer-text {
+  color: #22d3ee;
+}
+
+.animate-float { animation: soft-float 5.5s ease-in-out infinite; }
+
+/* ============================================ */
+/* 🎬 HERO BAŞLIK ANİMASYONLARI (CSS-only, GPU-dostu, kasma riski sıfır) */
+/* ============================================ */
+
+/* Her kelime yukarıdan kayarak gelir */
+.hero-word {
+  opacity: 0;
+  transform: translateY(40px);
+  animation: heroSlideUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* "LEVEL" özel: yukarıdan gelir + altın parıltı efekti */
+.hero-level {
+  opacity: 0;
+  transform: translateY(50px) scale(0.95);
+  animation: heroLevelReveal 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Diğer elemanlar: sadece fade-in (badge, paragraf, butonlar) */
+.hero-fade {
+  opacity: 0;
+  transform: translateY(16px);
+  animation: heroFadeIn 0.6s ease-out forwards;
+}
+
+@keyframes heroSlideUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes heroLevelReveal {
+  0% {
+    opacity: 0;
+    transform: translateY(50px) scale(0.95);
+    filter: brightness(0.6);
+  }
+  60% {
+    opacity: 1;
+    transform: translateY(-4px) scale(1.02);
+    filter: brightness(1.3);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: brightness(1);
+  }
+}
+
+@keyframes heroFadeIn {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 📱 MOBİL OPTİMİZASYON — Ağır efektleri telefonlarda hafiflet */
+@media (max-width: 768px) {
+  /* Backdrop blur mobilde çok pahalı, kaldırıyoruz */
+  .opus-glass,
+  .opus-noise::before {
+    backdrop-filter: none !important;
+  }
+  .opus-glass {
+    background: linear-gradient(180deg, rgba(24, 22, 20, 0.96), rgba(12, 10, 9, 0.96));
+  }
+  /* Büyük blur'lu dekoratif daireleri mobilde gizle (en çok yoran kısım) */
+  .mobile-hide-glow {
+    display: none !important;
+  }
+  /* Yüzen animasyonu mobilde durdur */
+  .animate-float {
+    animation: none;
+  }
+  /* Grid noise desenini hafiflet */
+  .opus-noise::before {
+    opacity: 0.18;
+    background-size: 80px 80px;
+  }
+}
+
+/* Cihaz "hareketi azalt" diyorsa tüm animasyonları kapat */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+/* ============================================ */
+/* 🎨 TEMA B — MODERN SPORTS DASHBOARD: Futuristic teknolojik */
+/* A: koyu lüks + Oswald + oval premium */
+/* B: koyu lacivert + Space Grotesk + sert köşeli + cyan/mor neon */
+/* ============================================ */
+[data-theme="b"] {
+  --font-display: "Barlow Condensed", system-ui, sans-serif;
+  --font-body: "Inter", system-ui, sans-serif;
+}
+
+[data-theme="b"] body {
+  color: #e2e8f0;
+  font-family: "Inter", system-ui, sans-serif;
+  letter-spacing: -0.005em;
+  background:
+    radial-gradient(ellipse 70% 40% at 50% -5%, rgba(6, 182, 212, 0.28), transparent 60%),
+    radial-gradient(circle at 8% 18%, rgba(34, 211, 238, 0.16), transparent 28rem),
+    radial-gradient(circle at 92% 22%, rgba(168, 85, 247, 0.18), transparent 30rem),
+    linear-gradient(180deg, #050a14 0%, #060e1f 45%, #050816 100%);
+}
+
+/* Sıvı dashboard hissi için yumuşak grid arka plan */
+[data-theme="b"] body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.05;
+  background-image:
+    linear-gradient(rgba(34, 211, 238, 0.7) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(34, 211, 238, 0.5) 1px, transparent 1px);
+  background-size: 80px 80px;
+  mask-image: radial-gradient(ellipse at top, black 30%, transparent 80%);
+}
+
+/* Tema B headings */
+[data-theme="b"] .font-display,
+[data-theme="b"] .section-title,
+[data-theme="b"] h1,
+[data-theme="b"] h2,
+[data-theme="b"] h3 {
+  font-family: "Barlow Condensed", system-ui, sans-serif !important;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+/* Sadece sayısal göstergeler JetBrains Mono ile (scoreboard hissi) */
+[data-theme="b"] .tabular-nums,
+[data-theme="b"] [class*="font-mono"] {
+  font-family: "JetBrains Mono", "Consolas", monospace !important;
+  letter-spacing: -0.02em;
+  font-weight: 700;
+}
+
+[data-theme="b"] .opus-noise::before {
+  opacity: 0.14;
+  background-image:
+    repeating-linear-gradient(90deg, rgba(255,255,255,0.05) 0 1px, transparent 1px 80px),
+    linear-gradient(to bottom, rgba(255,255,255,0.025) 1px, transparent 1px);
+  background-size: auto, 100% 64px;
+}
+
+/* Tema B: modern dashboard cam paneller (orta yuvarlaklık, cyan neon kenar) */
+[data-theme="b"] .opus-glass {
+  background: linear-gradient(180deg, rgba(11, 20, 40, 0.92), rgba(5, 12, 28, 0.88));
+  border: 1px solid rgba(34, 211, 238, 0.22);
+  border-radius: 16px !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.04),
+    0 0 40px -16px rgba(34, 211, 238, 0.25),
+    0 25px 80px -50px rgba(0, 0, 0, 0.9);
+  backdrop-filter: blur(12px);
+}
+
+[data-theme="b"] .opus-card {
+  background: linear-gradient(180deg, rgba(8, 18, 36, 0.95), rgba(4, 12, 26, 0.93));
+  border: 1px solid rgba(34, 211, 238, 0.18);
+  border-radius: 14px !important;
+}
+
+[data-theme="b"] .opus-card-soft {
+  background: rgba(34, 211, 238, 0.05);
+  border: 1px solid rgba(34, 211, 238, 0.18);
+  border-radius: 12px !important;
+}
+
+/* Tema B köşeler: orta yuvarlaklık (A çok yuvarlak, B ortada profesyonel) */
+[data-theme="b"] .rounded-3xl,
+[data-theme="b"] .rounded-\[2rem\] { border-radius: 16px !important; }
+[data-theme="b"] .rounded-2xl { border-radius: 12px !important; }
+[data-theme="b"] .rounded-xl { border-radius: 10px !important; }
+
+[data-theme="b"] .opus-kicker {
+  color: #22d3ee;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+}
+
+[data-theme="b"] .badge-pro {
+  color: #cffafe;
+  background: rgba(34, 211, 238, 0.10);
+  border: 1px solid rgba(34, 211, 238, 0.35);
+  border-radius: 999px !important;
+  font-family: "Inter", system-ui, sans-serif !important;
+}
+
+[data-theme="b"] .premium-button {
+  background: linear-gradient(135deg, #0891b2, #06b6d4 45%, #a855f7);
+  box-shadow: 0 0 28px -8px rgba(34, 211, 238, 0.55), 0 20px 45px -20px rgba(168, 85, 247, 0.45);
+  color: #ffffff;
+  border-radius: 12px !important;
+}
+
+[data-theme="b"] .text-gold { color: #22d3ee; }
+[data-theme="b"] .text-cream { color: #f0f9ff; }
+
+/* Navbar tema B */
+[data-theme="b"] nav.bg-\[\#06080d\]\/90,
+[data-theme="b"] nav.bg-\[\#06080d\]\/55 {
+  background: rgba(5, 10, 22, 0.90) !important;
+  border-bottom-color: rgba(34, 211, 238, 0.22) !important;
+}
+
+[data-theme="b"] .section-title { letter-spacing: 0.02em; }
+[data-theme="b"] .bg-clip-text { -webkit-text-fill-color: transparent; }
+
+/* Tema B scrollbar — neon cyan */
+[data-theme="b"] ::-webkit-scrollbar-track { background: #050a14; }
+[data-theme="b"] ::-webkit-scrollbar-thumb {
+  background: #155e75;
+  border-color: #050a14;
+  border-radius: 0;
+}
+[data-theme="b"] ::-webkit-scrollbar-thumb:hover { background: #06b6d4; }
+
+/* ============================================
+ * 🌍 RTL / ARABIC LAYOUT SUPPORT
+ * ============================================ */
+
+/* Arabic font stack — Cairo loads from Google Fonts in index.html */
+[dir="rtl"] body {
+  font-family: "Cairo", "Segoe UI", "Tahoma", system-ui, sans-serif;
+  letter-spacing: 0;
+}
+
+/* Display / heading font override for Arabic */
+[dir="rtl"] .font-display,
+[dir="rtl"] .section-title,
+[dir="rtl"] h1,
+[dir="rtl"] h2,
+[dir="rtl"] h3 {
+  font-family: "Cairo", "Segoe UI", system-ui, sans-serif !important;
+  letter-spacing: 0;
+}
+
+/* Badge and kicker elements — reduced letter-spacing for Arabic */
+[dir="rtl"] .badge-pro,
+[dir="rtl"] .opus-kicker {
+  font-family: "Cairo", "Segoe UI", system-ui, sans-serif;
+  letter-spacing: 0.03em;
+}
+
+/* Flip physical text-left to logical text-start (right in RTL) */
+[dir="rtl"] .text-left {
+  text-align: right;
+}
+
+/* Table header text alignment for FormationsOverview */
+[dir="rtl"] th {
+  text-align: right;
+}
+
+/* Form inputs: direction and alignment */
+[dir="rtl"] input,
+[dir="rtl"] textarea,
+[dir="rtl"] select {
+  direction: rtl;
+  text-align: right;
+}
+
+/* Select dropdown options: keep readable in RTL */
+[dir="rtl"] option {
+  direction: rtl;
+}
+
+/* Fix the Navbar desktop underline indicator (left-0 in LTR) */
+[dir="rtl"] .group span.absolute {
+  left: auto;
+  right: 0;
+}
+
+/* Mono / tabular fonts stay LTR in Arabic (numbers, stats) */
+[dir="rtl"] .font-mono,
+[dir="rtl"] [class*="tabular-nums"],
+[dir="rtl"] .font-mono * {
+  direction: ltr;
+  unicode-bidi: embed;
+}
+
+/* Theme B — zero letter-spacing also in Arabic mode */
+[dir="rtl"][data-theme="b"] body {
+  letter-spacing: 0;
+}
+
+/* ============================================
+ * Hero title: sweeping shine loop
+ * ============================================ */
+@keyframes hero-title-shine {
+  0%   { background-position: 0% 50%; }
+  100% { background-position: 100% 50%; }
+}
+
+.hero-title-shine {
+  animation: hero-title-shine 4s linear infinite;
+  animation-delay: 0.85s;
+}
+
+@keyframes pulse-glow {
+  0%, 100% { text-shadow: 0 0 10px #22d3ee, 0 0 20px rgba(34, 211, 238, 0.4); }
+  50%       { text-shadow: 0 0 25px #22d3ee, 0 0 50px rgba(34, 211, 238, 0.6); }
+}
+
+.pulse-glow-title {
+  color: #ffffff;
+  animation: pulse-glow 2.5s ease-in-out infinite;
+}
+
+/* ============================================
+ * Hero title: shimmering gradient
+ * ============================================ */
+@keyframes text-shimmer {
+  0%   { filter: hue-rotate(0deg)  drop-shadow(0 0 10px rgba(6, 182, 212, 0.5)); }
+  100% { filter: hue-rotate(30deg) drop-shadow(0 0 20px rgba(6, 182, 212, 0.8)); }
+}
+
+.text-shimmer-title {
+  animation: text-shimmer 3s infinite linear;
+}
+
+/* Touch: remove 300ms tap delay on all interactive elements */
+button, a, [role="button"] {
+  touch-action: manipulation;
+}
+
+/* ============================================
+ * Smooth entry animation
+ * ============================================ */
+@keyframes smooth-fade-in {
+  0%   { opacity: 0; transform: translateY(10px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+.animate-smooth-entry {
+  animation: smooth-fade-in 0.8s ease-out forwards;
+  will-change: opacity, transform;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-title-shine    { animation: none; background-position: 50% 50%; }
+  .pulse-glow-title    { animation: none; text-shadow: 0 0 15px #22d3ee; }
+  .text-shimmer-title  { animation: none; filter: drop-shadow(0 0 12px rgba(6, 182, 212, 0.6)); }
+  .animate-smooth-entry { animation: none; opacity: 1; transform: none; }
+}
+
+/* ============================================
+ * Aceternity BackgroundGradientAnimation
+ * Keyframes + Tailwind v4 @theme utilities
+ * ============================================ */
+
+@keyframes moveVertical {
+  0%, 100% { transform: translateY(-50%); }
+  50%       { transform: translateY(50%);  }
+}
+
+@keyframes moveInCircle {
+  0%   { transform: rotate(0deg);   }
+  50%  { transform: rotate(180deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes moveHorizontal {
+  0%, 100% { transform: translateX(-50%) translateY(-10%); }
+  50%       { transform: translateX(50%)  translateY(10%);  }
+}
+
+@theme {
+  --animate-first:  moveVertical   30s ease    infinite;
+  --animate-second: moveInCircle   20s reverse infinite;
+  --animate-third:  moveInCircle   40s linear  infinite;
+  --animate-fourth: moveHorizontal 40s ease    infinite;
+  --animate-fifth:  moveInCircle   20s ease    infinite;
+}
+
+@theme inline {
+  --font-heading: var(--font-sans);
+  --font-sans: 'Geist Variable', sans-serif;
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --color-foreground: var(--foreground);
+  --color-background: var(--background);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+}
+
+:root {
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.145 0 0);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.145 0 0);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.145 0 0);
+  --primary: oklch(0.205 0 0);
+  --primary-foreground: oklch(0.985 0 0);
+  --secondary: oklch(0.97 0 0);
+  --secondary-foreground: oklch(0.205 0 0);
+  --muted: oklch(0.97 0 0);
+  --muted-foreground: oklch(0.556 0 0);
+  --accent: oklch(0.97 0 0);
+  --accent-foreground: oklch(0.205 0 0);
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: oklch(0.922 0 0);
+  --input: oklch(0.922 0 0);
+  --ring: oklch(0.708 0 0);
+  --chart-1: oklch(0.87 0 0);
+  --chart-2: oklch(0.556 0 0);
+  --chart-3: oklch(0.439 0 0);
+  --chart-4: oklch(0.371 0 0);
+  --chart-5: oklch(0.269 0 0);
+  --radius: 0.625rem;
+  --sidebar: oklch(0.985 0 0);
+  --sidebar-foreground: oklch(0.145 0 0);
+  --sidebar-primary: oklch(0.205 0 0);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.97 0 0);
+  --sidebar-accent-foreground: oklch(0.205 0 0);
+  --sidebar-border: oklch(0.922 0 0);
+  --sidebar-ring: oklch(0.708 0 0);
+}
+
+.dark {
+  --background: oklch(0.145 0 0);
+  --foreground: oklch(0.985 0 0);
+  --card: oklch(0.205 0 0);
+  --card-foreground: oklch(0.985 0 0);
+  --popover: oklch(0.205 0 0);
+  --popover-foreground: oklch(0.985 0 0);
+  --primary: oklch(0.922 0 0);
+  --primary-foreground: oklch(0.205 0 0);
+  --secondary: oklch(0.269 0 0);
+  --secondary-foreground: oklch(0.985 0 0);
+  --muted: oklch(0.269 0 0);
+  --muted-foreground: oklch(0.708 0 0);
+  --accent: oklch(0.269 0 0);
+  --accent-foreground: oklch(0.985 0 0);
+  --destructive: oklch(0.704 0.191 22.216);
+  --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 15%);
+  --ring: oklch(0.556 0 0);
+  --chart-1: oklch(0.87 0 0);
+  --chart-2: oklch(0.556 0 0);
+  --chart-3: oklch(0.439 0 0);
+  --chart-4: oklch(0.371 0 0);
+  --chart-5: oklch(0.269 0 0);
+  --sidebar: oklch(0.205 0 0);
+  --sidebar-foreground: oklch(0.985 0 0);
+  --sidebar-primary: oklch(0.488 0.243 264.376);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.269 0 0);
+  --sidebar-accent-foreground: oklch(0.985 0 0);
+  --sidebar-border: oklch(1 0 0 / 10%);
+  --sidebar-ring: oklch(0.556 0 0);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+  html {
+    @apply font-sans;
+  }
+}

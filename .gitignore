@@ -1,0 +1,39 @@
+# Dependencies
+node_modules/
+functions/node_modules/
+
+# Build output
+dist/
+functions/lib/
+
+# Environment variables — NEVER commit these
+.env
+.env.local
+.env.production
+.env*.local
+functions/.env
+
+# Firebase
+.firebase/
+firebase-debug.log
+firestore-debug.log
+
+# Firebase service account keys — ASLA commit etme!
+*.json
+!package.json
+!package-lock.json
+!tsconfig.json
+!components.json
+!firebase.json
+!skills-lock.json
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+
+# Scripts (tek seferlik araçlar)
+scripts/
