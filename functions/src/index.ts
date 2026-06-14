@@ -134,13 +134,19 @@ function resolveToken() {
   return "2e7b9492427041daa8ec41fd3e14ec58";
 }
 function todayISOInIstanbul() {
-  return new Date().toISOString().split("T")[0];
+  return new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Istanbul" }).format(new Date());
 }
-function toIstanbulDate(dateStr: string) {
-  return dateStr.split("T")[0];
+function toIstanbulDate(utcStr: string) {
+  const parts = new Intl.DateTimeFormat("en-GB", {
+    timeZone: "Europe/Istanbul", day: "2-digit", month: "2-digit", year: "numeric",
+  }).formatToParts(new Date(utcStr));
+  const get = (type: string) => parts.find(p => p.type === type)?.value ?? "";
+  return `${get("day")}/${get("month")}/${get("year")}`;
 }
-function toIstanbulTime(dateStr: string) {
-  return dateStr.substring(11, 16);
+function toIstanbulTime(utcStr: string) {
+  return new Intl.DateTimeFormat("en-GB", {
+    timeZone: "Europe/Istanbul", hour: "2-digit", minute: "2-digit", hour12: false,
+  }).format(new Date(utcStr));
 }
 
 interface FdResponse {
@@ -162,16 +168,19 @@ export const syncMatches = onCall({ region: "europe-west1" }, async (request) =>
     const res = await fetch(url, { headers: { "X-Auth-Token": token } });
     if (!res.ok) throw new HttpsError("unavailable", `API Hatası: ${res.status}`);
 
-    const data = await res.json() as FdResponse;
-    console.log("DEBUG_API_TOPLAM_MAC_SAYISI:", data.matches?.length);
-    console.log("DEBUG_TUM_LIG_KODLARI:", data.matches?.map(m => m.competition.code));
+    const body = await res.json() as FdResponse;
+    const allMatches: any[] = body.matches ?? [];
+    const total = allMatches.length;
+    console.log("DEBUG_API_TOPLAM_MAC_SAYISI:", total);
+    console.log("DEBUG_TUM_LIG_KODLARI:", allMatches.map(m => m.competition?.code));
+
+    const eligible = allMatches.filter(m => ALLOWED_COMPETITIONS.has(m.competition?.code));
+    const filtered = eligible.length;
 
     let added = 0;
     let skipped = 0;
 
-    for (const m of data.matches) {
-      if (!ALLOWED_COMPETITIONS.has(m.competition.code)) continue;
-
+    for (const m of eligible) {
       const docId = `fd_${m.id}`;
       const ref = db.collection("matches").doc(docId);
 
@@ -190,12 +199,17 @@ export const syncMatches = onCall({ region: "europe-west1" }, async (request) =>
         status: "open",
         source: "football-data.org",
         fdMatchId: m.id,
+        votesHome: 0,
+        votesDraw: 0,
+        votesAway: 0,
+        totalVotes: 0,
+        omerPick: "",
         createdAt: FieldValue.serverTimestamp(),
       });
       added++;
     }
 
-    return { added, skipped };
+    return { added, skipped, total, filtered };
   } catch (err) {
     console.error("KRITIK_HATA:", err);
     throw err;
