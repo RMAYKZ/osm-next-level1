@@ -34,7 +34,7 @@ export default function CommunityHub() {
         import("firebase/firestore"),
         getDb(),
       ]);
-      await addDoc(collection(db, "subscribers"), {
+      await addDoc(collection(db, "emails"), {
         email: email.trim().toLowerCase(),
         createdAt: serverTimestamp(),
       });

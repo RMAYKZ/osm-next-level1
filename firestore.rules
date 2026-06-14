@@ -51,6 +51,17 @@ service cloud.firestore {
       allow update: if true;
     }
 
+    // ── Community Meta Vote ──────────────────────────────────────────────
+    // One document per week (e.g. "2026-W24"), tally map stores vote counts.
+    // Read is public; write is open to allow anonymous voting (client enforces
+    // one-vote-per-week via localStorage, consistent with /matches pattern).
+    match /metaVotes/{weekId} {
+      allow read: if true;
+      allow create: if request.resource.data.keys().hasOnly(['tally', 'weekKey'])
+                    && request.resource.data.tally is map;
+      allow update: if true;
+    }
+
     // ── Email subscriptions (CommunityHub) ──────────────────────────────
     match /emails/{emailId} {
       allow create: if request.resource.data.keys().hasAll(['email'])

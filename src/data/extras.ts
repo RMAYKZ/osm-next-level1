@@ -349,8 +349,35 @@ export function getLocalizedDailyTactic(t: TFn): DailyTactic {
   };
 }
 
-export function getLocalizedPremiumTactics(_t: TFn): PremiumTactic[] {
-  return premiumTactics;
+const PLAY_STYLE_KEY: Record<string, string> = {
+  "Kontra Atak":      "ptv.kontraAtak",
+  "Kanatları Kullan": "ptv.kanatKullan",
+};
+const FIELD_KEY: Record<string, string> = {
+  "Sadece Hücum":   "ptv.sadeceHucum",
+  "Defans Yardım":  "ptv.defansYardim",
+  "Pozisyon Koru":  "ptv.pozisyonKoru",
+  "Geride Kal":     "ptv.geridKal",
+  "Alan Savunması": "ptv.alanSavunmasi",
+  "Kapalı":         "ptv.kapali",
+  "Kapalı*":        "ptv.kapaliStar",
+};
+
+export function getLocalizedPremiumTactics(t: TFn): PremiumTactic[] {
+  const tv = (key: string, fallback: string) => { const v = t(key); return v === key ? fallback : v; };
+  return premiumTactics.map(tac => ({
+    ...tac,
+    name:          tv(`ptactic.${tac.id}.name`,      tac.name),
+    scenario:      tv(`ptactic.${tac.id}.scenario`,  tac.scenario),
+    playStyle:     PLAY_STYLE_KEY[tac.playStyle]  ? tv(PLAY_STYLE_KEY[tac.playStyle],  tac.playStyle)  : tac.playStyle,
+    forward:       FIELD_KEY[tac.forward]         ? tv(FIELD_KEY[tac.forward],         tac.forward)    : tac.forward,
+    midfield:      FIELD_KEY[tac.midfield]        ? tv(FIELD_KEY[tac.midfield],        tac.midfield)   : tac.midfield,
+    defenseLine:   FIELD_KEY[tac.defenseLine]     ? tv(FIELD_KEY[tac.defenseLine],     tac.defenseLine): tac.defenseLine,
+    defenseShape:  FIELD_KEY[tac.defenseShape]    ? tv(FIELD_KEY[tac.defenseShape],    tac.defenseShape):tac.defenseShape,
+    offside:       FIELD_KEY[tac.offside]         ? tv(FIELD_KEY[tac.offside],         tac.offside)    : tac.offside,
+    note:          tv(`ptactic.${tac.id}.note`,      tac.note),
+    warning:       tac.warning ? tv(`ptactic.${tac.id}.warning`, tac.warning) : undefined,
+  }));
 }
 
 export function getLocalizedChangelog(t: TFn): (Omit<ChangelogEntry, "title" | "description"> & { title: string; description: string; typeLabel: string })[] {

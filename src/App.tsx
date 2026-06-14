@@ -11,6 +11,7 @@ import WeeklyMeta from "./components/WeeklyMeta";
 import AntiTacticFinder from "./components/AntiTacticFinder";
 import MetaShareCard from "./components/MetaShareCard";
 import PremiumTactics from "./components/PremiumTactics";
+import MetaVote from "./components/MetaVote";
 import CommunityHub from "./components/CommunityHub";
 import YouTubeVideos from "./components/YouTubeVideos";
 import About from "./components/About";
@@ -80,6 +81,7 @@ export default function App() {
                 <AntiTacticFinder />
                 <WeeklyMeta />
                 <MetaShareCard />
+                <MetaVote />
                 <CommunityHub />
                 <YouTubeVideos />
                 <About />
