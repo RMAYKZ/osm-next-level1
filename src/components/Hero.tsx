@@ -3,7 +3,6 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useLang } from "../contexts/LanguageContext";
 import { siteMeta } from "../data/tactics";
 import { TacticalPitchScene } from "./ui/tactical-pitch";
-import { Spotlight } from "./ui/spotlight";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 
@@ -322,258 +321,153 @@ export default function Hero() {
         ))}
       </motion.div>
 
-      {/* ── Main content — split layout desktop / stacked mobile ── */}
-      <div
-        style={{
-          flex: 1,
-          display: "flex",
-          flexDirection: isMobile ? "column" : "row",
-          alignItems: "stretch",
+      {/* ── TOP: compact header ── */}
+      <Reveal delay={0.1} y={20} rotX={-10} lite>
+        <div style={{
+          paddingTop: "clamp(72px, 12vw, 110px)",
+          paddingBottom: 16,
+          textAlign: "center",
           position: "relative",
           zIndex: 2,
-        }}
-      >
-        {/* ── LEFT: text panel ── */}
-        <div
-          style={{
-            flex: isMobile ? "none" : "0 0 52%",
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
-            padding: isMobile
-              ? "clamp(100px, 14vw, 160px) clamp(20px, 6vw, 80px) clamp(40px, 6vw, 60px)"
-              : "clamp(80px, 10vw, 130px) clamp(32px, 5vw, 72px) clamp(40px, 6vw, 80px)",
-            textAlign: "center",
-          }}
-        >
-        {/* 3D perspective context — desktop only */}
-        <div style={isMobile ? { width: "100%" } : { perspective: "1400px", perspectiveOrigin: "50% 20%", width: "100%" }}>
-
-          {/* Rotating sub-tag */}
-          <Reveal delay={0.05} y={20} rotX={-10} lite={isMobile}>
-            <RotatingTag />
-          </Reveal>
-
-          {/* ── Badge pill ── */}
-          <Reveal delay={0.15} y={30} rotX={-20} lite={isMobile}>
-            <div style={{ marginBottom: 36, display: "flex", justifyContent: "center" }}>
-              <div style={{
-                display: "inline-flex", alignItems: "center", gap: 10,
-                border: "1px solid rgba(255,255,255,0.18)",
-                borderRadius: 999,
-                padding: "9px 20px",
-                background: "rgba(255,255,255,0.04)",
-              }}>
-                <motion.span
-                  animate={isMobile ? undefined : { opacity: [1, 0.3, 1] }}
-                  transition={{ duration: 2.2, repeat: Infinity }}
-                  style={{ width: 6, height: 6, borderRadius: "50%", background: "#fff", display: "block", flexShrink: 0 }}
-                />
-                <span style={{ fontSize: 11.5, fontWeight: 600, color: "rgba(255,255,255,0.7)", letterSpacing: "0.1em", textTransform: "uppercase" }}>
-                  {hs.badge}
-                </span>
-              </div>
-            </div>
-          </Reveal>
-
-          {/* ── Main heading ── */}
-          <Reveal delay={0.28} y={70} rotX={-25} lite={isMobile}>
-            <h1
-              style={{
-                margin: "0 0 24px",
-                fontFamily: "'Outfit', system-ui, sans-serif",
-                fontWeight: 900,
-                lineHeight: 0.88,
-                letterSpacing: "-0.025em",
-                color: "#ffffff",
-              }}
-            >
-              <span style={{ display: "block", fontSize: "clamp(3.8rem, 13vw, 9.5rem)", color: "#ffffff" }}>
-                {hs.title1}
-              </span>
-              <span style={{
-                display: "block",
-                fontSize: "clamp(3.2rem, 11vw, 8rem)",
-                color: "#ffffff",
-                lineHeight: 0.90,
-              }}>
-                {hs.title2}
-              </span>
-              <span style={{
-                display: "block",
-                fontSize: "clamp(0.65rem, 1.6vw, 0.9rem)",
-                fontWeight: 500,
-                letterSpacing: "0.28em",
-                color: "rgba(255,255,255,0.3)",
-                marginTop: 18,
-                lineHeight: 1,
-                textTransform: "uppercase",
-              }}>
-                {hs.sub}
-              </span>
-            </h1>
-          </Reveal>
-
-          {/* ── Subtitle ── */}
-          <Reveal delay={0.45} y={35} rotX={-12} lite={isMobile}>
-            <p style={{
-              margin: "0 auto 44px",
-              fontSize: "clamp(14px, 1.9vw, 17px)",
-              color: "rgba(255,255,255,0.42)",
-              lineHeight: 1.75,
-              maxWidth: 480,
-              fontWeight: 400,
-            }}>
-              {hs.subtitle}
-            </p>
-          </Reveal>
-
-          {/* ── CTA Buttons ── */}
-          <Reveal delay={0.58} y={28} rotX={-8} lite={isMobile}>
-            <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap", marginBottom: 52 }}>
-              <motion.a
-                href="#anti-taktik"
-                whileHover={{ scale: 1.04, y: -2 }}
-                whileTap={{ scale: 0.96 }}
-                style={{
-                  display: "inline-flex", alignItems: "center", gap: 8,
-                  background: "#ffffff",
-                  borderRadius: 999,
-                  padding: "15px 36px",
-                  color: "#000000",
-                  fontSize: 13.5,
-                  fontWeight: 700,
-                  textDecoration: "none",
-                  letterSpacing: "0.06em",
-                  textTransform: "uppercase",
-                  boxShadow: "0 8px 32px rgba(255,255,255,0.15)",
-                }}
-              >
-                ⚔️ {hs.cta1}
-              </motion.a>
-              <motion.a
-                href="#premium"
-                whileHover={{ scale: 1.04, y: -2, borderColor: "rgba(255,255,255,0.45)" }}
-                whileTap={{ scale: 0.96 }}
-                style={{
-                  display: "inline-flex", alignItems: "center", gap: 8,
-                  background: "transparent",
-                  border: "1px solid rgba(255,255,255,0.22)",
-                  borderRadius: 999,
-                  padding: "15px 36px",
-                  color: "rgba(255,255,255,0.72)",
-                  fontSize: 13.5,
-                  fontWeight: 600,
-                  textDecoration: "none",
-                  letterSpacing: "0.06em",
-                  textTransform: "uppercase",
-                  backdropFilter: isMobile ? undefined : "blur(8px)",
-                }}
-              >
-                👑 {hs.cta2}
-              </motion.a>
-              <motion.a
-                href="https://buymeacoffee.com/omerovvvvv"
-                target="_blank"
-                rel="noreferrer"
-                whileHover={{ scale: 1.04, y: -2 }}
-                whileTap={{ scale: 0.96 }}
-                style={{
-                  display: "inline-flex", alignItems: "center", gap: 8,
-                  background: "rgba(255,221,0,0.12)",
-                  border: "1px solid rgba(255,221,0,0.35)",
-                  borderRadius: 999,
-                  padding: "15px 28px",
-                  color: "#FFD700",
-                  fontSize: 13.5,
-                  fontWeight: 700,
-                  textDecoration: "none",
-                  letterSpacing: "0.06em",
-                  textTransform: "uppercase",
-                  backdropFilter: isMobile ? undefined : "blur(8px)",
-                }}
-              >
-                ☕ Support
-              </motion.a>
-            </div>
-          </Reveal>
-
-          {/* ── Stats row ── */}
-          <Reveal delay={0.72} y={20} rotX={-6} lite={isMobile}>
+        }}>
+          {/* Badge */}
+          <div style={{ display: "flex", justifyContent: "center", marginBottom: 14 }}>
             <div style={{
-              display: "flex",
-              gap: "clamp(24px, 5vw, 60px)",
-              justifyContent: "center",
-              flexWrap: "wrap",
-              paddingTop: 32,
-              borderTop: "1px solid rgba(255,255,255,0.07)",
+              display: "inline-flex", alignItems: "center", gap: 8,
+              border: "1px solid rgba(255,255,255,0.15)",
+              borderRadius: 999, padding: "6px 16px",
+              background: "rgba(255,255,255,0.04)",
             }}>
-              {[
-                { val: "16+",   lbl: hs.years },
-                { val: "#1",    lbl: hs.worldRank },
-                { val: "100+",  lbl: hs.tested },
-                { val: "26/27", lbl: hs.season },
-              ].map((s) => (
-                <div key={s.lbl} style={{ textAlign: "center" }}>
-                  <div style={{
-                    fontSize: "clamp(1.4rem, 4vw, 2.2rem)",
-                    fontWeight: 900,
-                    color: "#ffffff",
-                    letterSpacing: "-0.03em",
-                    lineHeight: 1,
-                  }}>
-                    {s.val}
-                  </div>
-                  <div style={{
-                    fontSize: 10,
-                    fontWeight: 600,
-                    color: "rgba(255,255,255,0.28)",
-                    textTransform: "uppercase",
-                    letterSpacing: "0.14em",
-                    marginTop: 6,
-                  }}>
-                    {s.lbl}
-                  </div>
-                </div>
-              ))}
+              <motion.span
+                animate={{ opacity: [1, 0.3, 1] }}
+                transition={{ duration: 2.2, repeat: Infinity }}
+                style={{ width: 5, height: 5, borderRadius: "50%", background: "#fff", display: "block", flexShrink: 0 }}
+              />
+              <span style={{ fontSize: 10, fontWeight: 600, color: "rgba(255,255,255,0.6)", letterSpacing: "0.12em", textTransform: "uppercase" }}>
+                {hs.badge}
+              </span>
             </div>
-          </Reveal>
-
-        </div>
-        </div>{/* end left panel */}
-
-        {/* ── RIGHT: Spline 3D scene (desktop only) ── */}
-        {!isMobile && (
-          <div
-            style={{
-              flex: "0 0 48%",
-              position: "relative",
-              overflow: "hidden",
-            }}
-          >
-            <Spotlight
-              className="absolute -top-40 left-0 md:left-20 md:-top-10"
-              fill="white"
-            />
-            <TacticalPitchScene />
-            {/* left fade to blend with text panel */}
-            <div
-              aria-hidden
-              style={{
-                position: "absolute",
-                inset: 0,
-                left: 0,
-                top: 0,
-                width: "28%",
-                background: "linear-gradient(90deg, #000000 0%, transparent 100%)",
-                pointerEvents: "none",
-              }}
-            />
           </div>
-        )}
 
-      </div>{/* end split wrapper */}
+          {/* Title — compact */}
+          <h1 style={{
+            margin: "0 0 10px",
+            fontFamily: "'Outfit', system-ui, sans-serif",
+            fontWeight: 900,
+            lineHeight: 0.9,
+            letterSpacing: "-0.02em",
+            color: "#fff",
+          }}>
+            <span style={{ display: "block", fontSize: "clamp(2.2rem, 8vw, 4.5rem)" }}>
+              {hs.title1}
+            </span>
+            <span style={{ display: "block", fontSize: "clamp(1.9rem, 7vw, 3.8rem)", lineHeight: 0.92 }}>
+              {hs.title2}
+            </span>
+            <span style={{
+              display: "block",
+              fontSize: "clamp(0.55rem, 1.3vw, 0.75rem)",
+              fontWeight: 500,
+              letterSpacing: "0.26em",
+              color: "rgba(255,255,255,0.28)",
+              marginTop: 10,
+              textTransform: "uppercase",
+            }}>
+              {hs.sub}
+            </span>
+          </h1>
+
+          {/* Subtitle — single line */}
+          <p style={{
+            margin: "10px auto 0",
+            fontSize: "clamp(11px, 1.5vw, 13px)",
+            color: "rgba(255,255,255,0.35)",
+            lineHeight: 1.6,
+            maxWidth: 420,
+          }}>
+            {hs.subtitle}
+          </p>
+        </div>
+      </Reveal>
+
+      {/* ── CENTER: Tactical Pitch — full width, both mobile & desktop ── */}
+      <div style={{
+        flex: 1,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        padding: "16px clamp(12px, 4vw, 48px)",
+        position: "relative",
+        zIndex: 2,
+        minHeight: isMobile ? 340 : 420,
+      }}>
+        <TacticalPitchScene />
+      </div>
+
+      {/* ── BOTTOM: CTAs + stats ── */}
+      <Reveal delay={0.4} y={20} rotX={0} lite>
+        <div style={{
+          textAlign: "center",
+          padding: "0 clamp(16px, 5vw, 60px) 24px",
+          position: "relative",
+          zIndex: 2,
+        }}>
+          {/* CTA buttons */}
+          <div style={{ display: "flex", gap: 10, justifyContent: "center", flexWrap: "wrap", marginBottom: 28 }}>
+            <motion.a href="#anti-taktik" whileHover={{ scale: 1.04, y: -2 }} whileTap={{ scale: 0.96 }}
+              style={{
+                display: "inline-flex", alignItems: "center", gap: 7,
+                background: "#ffffff", borderRadius: 999, padding: "12px 28px",
+                color: "#000", fontSize: 12, fontWeight: 700,
+                textDecoration: "none", letterSpacing: "0.07em", textTransform: "uppercase",
+                boxShadow: "0 6px 24px rgba(255,255,255,0.14)",
+              }}>
+              ⚔️ {hs.cta1}
+            </motion.a>
+            <motion.a href="#premium" whileHover={{ scale: 1.04, y: -2 }} whileTap={{ scale: 0.96 }}
+              style={{
+                display: "inline-flex", alignItems: "center", gap: 7,
+                background: "transparent", border: "1px solid rgba(255,255,255,0.2)",
+                borderRadius: 999, padding: "12px 28px",
+                color: "rgba(255,255,255,0.7)", fontSize: 12, fontWeight: 600,
+                textDecoration: "none", letterSpacing: "0.07em", textTransform: "uppercase",
+              }}>
+              👑 {hs.cta2}
+            </motion.a>
+            <motion.a href="https://buymeacoffee.com/omerovvvvv" target="_blank" rel="noreferrer"
+              whileHover={{ scale: 1.04, y: -2 }} whileTap={{ scale: 0.96 }}
+              style={{
+                display: "inline-flex", alignItems: "center", gap: 7,
+                background: "rgba(255,221,0,0.1)", border: "1px solid rgba(255,221,0,0.3)",
+                borderRadius: 999, padding: "12px 22px",
+                color: "#FFD700", fontSize: 12, fontWeight: 700,
+                textDecoration: "none", letterSpacing: "0.07em", textTransform: "uppercase",
+              }}>
+              ☕ Support
+            </motion.a>
+          </div>
+
+          {/* Stats */}
+          <div style={{
+            display: "flex", gap: "clamp(20px, 5vw, 52px)", justifyContent: "center",
+            flexWrap: "wrap", paddingTop: 20, borderTop: "1px solid rgba(255,255,255,0.07)",
+          }}>
+            {[
+              { val: "16+", lbl: hs.years }, { val: "#1", lbl: hs.worldRank },
+              { val: "100+", lbl: hs.tested }, { val: "26/27", lbl: hs.season },
+            ].map((s) => (
+              <div key={s.lbl} style={{ textAlign: "center" }}>
+                <div style={{ fontSize: "clamp(1.2rem, 3.5vw, 1.8rem)", fontWeight: 900, color: "#fff", letterSpacing: "-0.03em", lineHeight: 1 }}>
+                  {s.val}
+                </div>
+                <div style={{ fontSize: 9, fontWeight: 600, color: "rgba(255,255,255,0.25)", textTransform: "uppercase", letterSpacing: "0.14em", marginTop: 5 }}>
+                  {s.lbl}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </Reveal>
 
       {/* ── Coach disclaimer ── */}
       <motion.div
