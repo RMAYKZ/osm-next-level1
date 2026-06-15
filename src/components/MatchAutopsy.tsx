@@ -627,7 +627,7 @@ export default function MatchAutopsy() {
                     />
                   </svg>
                   <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
-                    <span style={{ fontSize: 18, fontWeight: 900, color: scoreColor, lineHeight: 1, fontFamily: "'Barlow Condensed', sans-serif" }}>{result.score}</span>
+                    <span style={{ fontSize: 18, fontWeight: 900, color: scoreColor, lineHeight: 1, fontFamily: "'Bebas Neue', 'Barlow Condensed', sans-serif" }}>{result.score}</span>
                     <span style={{ fontSize: 8, fontWeight: 700, color: "rgba(148,163,184,0.5)", textTransform: "uppercase" }}>{L.scoreWord}</span>
                   </div>
                 </div>
@@ -678,7 +678,7 @@ export default function MatchAutopsy() {
                             <div key={row.label}>
                               <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 4 }}>
                                 <span style={{ fontSize: 10, fontWeight: 700, color: "rgba(148,163,184,0.5)", textTransform: "uppercase", letterSpacing: "0.1em" }}>{row.label}</span>
-                                <span style={{ fontSize: 14, fontWeight: 900, color: row.color, fontFamily: "'Barlow Condensed', sans-serif" }}>{row.val}</span>
+                                <span style={{ fontSize: 14, fontWeight: 900, color: row.color, fontFamily: "'Bebas Neue', 'Barlow Condensed', sans-serif" }}>{row.val}</span>
                               </div>
                               <div style={{ height: 5, borderRadius: 99, background: "rgba(255,255,255,0.06)", overflow: "hidden" }}>
                                 <motion.div initial={{ width: 0 }} animate={{ width: `${row.val}%` }}
@@ -735,7 +735,7 @@ export default function MatchAutopsy() {
                   {L.winRate(result.winRate)}
                 </div>
               </div>
-              <div style={{ fontSize: 16, fontWeight: 900, color: "#e2e8f0", fontFamily: "'Barlow Condensed', sans-serif", letterSpacing: "0.04em", marginBottom: 12 }}>
+              <div style={{ fontSize: 16, fontWeight: 900, color: "#e2e8f0", fontFamily: "'Bebas Neue', 'Barlow Condensed', sans-serif", letterSpacing: "0.04em", marginBottom: 12 }}>
                 {result.optFm}
               </div>
               {isPremium ? (
@@ -744,7 +744,7 @@ export default function MatchAutopsy() {
                     <div key={row.label}>
                       <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 4 }}>
                         <span style={{ fontSize: 10, fontWeight: 700, color: "rgba(148,163,184,0.5)", textTransform: "uppercase" }}>{row.label}</span>
-                        <span style={{ fontSize: 15, fontWeight: 900, color: row.color, fontFamily: "'Barlow Condensed', sans-serif" }}>{row.val}</span>
+                        <span style={{ fontSize: 15, fontWeight: 900, color: row.color, fontFamily: "'Bebas Neue', 'Barlow Condensed', sans-serif" }}>{row.val}</span>
                       </div>
                       <div style={{ height: 4, borderRadius: 99, background: "rgba(255,255,255,0.05)", overflow: "hidden" }}>
                         <motion.div initial={{ width: 0 }} animate={{ width: `${row.val}%` }}
@@ -768,7 +768,7 @@ export default function MatchAutopsy() {
                     <div key={row.label}>
                       <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 4 }}>
                         <span style={{ fontSize: 10, fontWeight: 700, color: "rgba(148,163,184,0.5)", textTransform: "uppercase" }}>{row.label}</span>
-                        <span style={{ fontSize: 15, fontWeight: 900, color: "rgba(148,163,184,0.2)", fontFamily: "'Barlow Condensed', sans-serif", filter: "blur(4px)" }}>??</span>
+                        <span style={{ fontSize: 15, fontWeight: 900, color: "rgba(148,163,184,0.2)", fontFamily: "'Bebas Neue', 'Barlow Condensed', sans-serif", filter: "blur(4px)" }}>??</span>
                       </div>
                       <div style={{ height: 4, borderRadius: 99, background: "rgba(255,255,255,0.05)", overflow: "hidden" }}>
                         <div style={{ width: "60%", height: "100%", borderRadius: 99, background: "rgba(255,255,255,0.08)", filter: "blur(2px)" }} />

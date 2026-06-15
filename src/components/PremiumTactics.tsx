@@ -76,7 +76,7 @@ function Slider({ label, value, color }: { label: string; value: number; color: 
         <span style={{ fontSize: 9, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.14em", color: "rgba(148,163,184,0.5)" }}>
           {label}
         </span>
-        <span style={{ fontSize: 24, fontWeight: 900, lineHeight: 1, color, letterSpacing: "-0.03em", fontFamily: "'Barlow Condensed', sans-serif" }}>
+        <span style={{ fontSize: 24, fontWeight: 900, lineHeight: 1, color, letterSpacing: "-0.03em", fontFamily: "'Bebas Neue', 'Barlow Condensed', sans-serif" }}>
           {value}
         </span>
       </div>
@@ -153,7 +153,7 @@ function TacticCard({ tactic, index }: { tactic: PremiumTactic; index: number })
                 </motion.div>
               )}
             </div>
-            <h3 style={{ margin: "0 0 3px", fontSize: "clamp(1.05rem,2.5vw,1.35rem)", fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 900, letterSpacing: "0.01em", color: "#f0f6ff", lineHeight: 1.1 }}>
+            <h3 style={{ margin: "0 0 3px", fontSize: "clamp(1.05rem,2.5vw,1.35rem)", fontFamily: "'Bebas Neue', 'Barlow Condensed', sans-serif", fontWeight: 900, letterSpacing: "0.01em", color: "#f0f6ff", lineHeight: 1.1 }}>
               {tactic.name}
             </h3>
             <div style={{ fontSize: 11, color: "rgba(148,163,184,0.6)", fontWeight: 600 }}>{tactic.scenario}</div>
@@ -161,7 +161,7 @@ function TacticCard({ tactic, index }: { tactic: PremiumTactic; index: number })
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 18 }}>
           <div style={{ display: "inline-flex", alignItems: "center", background: "rgba(0,0,0,0.38)", border: `1px solid ${loc.border}`, borderRadius: 8, padding: "5px 12px" }}>
-            <span style={{ fontSize: 13, fontWeight: 900, color: loc.primary, letterSpacing: "0.06em", fontFamily: "'Barlow Condensed', sans-serif" }}>{tactic.formation}</span>
+            <span style={{ fontSize: 13, fontWeight: 900, color: loc.primary, letterSpacing: "0.06em", fontFamily: "'Bebas Neue', 'Barlow Condensed', sans-serif" }}>{tactic.formation}</span>
           </div>
           <span style={{ fontSize: 11, fontWeight: 600, color: "rgba(148,163,184,0.45)", letterSpacing: "0.04em" }}>· {tactic.playStyle}</span>
         </div>
@@ -263,7 +263,7 @@ function TeaserCard({ tactic, index }: { tactic: PremiumTactic; index: number })
                 </div>
               )}
             </div>
-            <div style={{ fontSize: "clamp(1rem,2vw,1.2rem)", fontWeight: 900, color: "#f0f6ff", fontFamily: "'Barlow Condensed', sans-serif", letterSpacing: "0.02em", lineHeight: 1.1 }}>
+            <div style={{ fontSize: "clamp(1rem,2vw,1.2rem)", fontWeight: 900, color: "#f0f6ff", fontFamily: "'Bebas Neue', 'Barlow Condensed', sans-serif", letterSpacing: "0.02em", lineHeight: 1.1 }}>
               {tactic.formation}
             </div>
             <div style={{ fontSize: 10, color: "rgba(148,163,184,0.5)", fontWeight: 600, marginTop: 2 }}>{tactic.scenario}</div>
@@ -282,7 +282,7 @@ function TeaserCard({ tactic, index }: { tactic: PremiumTactic; index: number })
               <div key={s.label} style={{ marginBottom: 10 }}>
                 <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 5 }}>
                   <span style={{ fontSize: 9, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.14em", color: "rgba(148,163,184,0.5)" }}>{s.label}</span>
-                  <span style={{ fontSize: 22, fontWeight: 900, color: s.color, fontFamily: "'Barlow Condensed', sans-serif" }}>??</span>
+                  <span style={{ fontSize: 22, fontWeight: 900, color: s.color, fontFamily: "'Bebas Neue', 'Barlow Condensed', sans-serif" }}>??</span>
                 </div>
                 <div style={{ height: 4, borderRadius: 99, background: "rgba(255,255,255,0.05)", overflow: "hidden" }}>
                   <div style={{ width: s.w, height: "100%", borderRadius: 99, background: `linear-gradient(90deg,${s.color}88,${s.color})` }} />
@@ -621,7 +621,7 @@ export default function PremiumTactics() {
                             }}
                           >
                             <div style={{ fontSize: 9, fontWeight: 900, textTransform: "uppercase", letterSpacing: "0.16em", color: "rgba(245,158,11,0.55)", marginBottom: 4 }}>{s.label}</div>
-                            <div style={{ fontSize: 22, fontWeight: 900, color: "#fbbf24", fontFamily: "'Barlow Condensed', sans-serif", letterSpacing: "-0.01em", lineHeight: 1 }}>{s.value}</div>
+                            <div style={{ fontSize: 22, fontWeight: 900, color: "#fbbf24", fontFamily: "'Bebas Neue', 'Barlow Condensed', sans-serif", letterSpacing: "-0.01em", lineHeight: 1 }}>{s.value}</div>
                             <div style={{ fontSize: 10, color: "rgba(148,163,184,0.4)", fontWeight: 600, marginTop: 2 }}>{s.sub}</div>
                           </motion.div>
                         ))}

@@ -443,29 +443,33 @@ export default function Hero() {
           >
             <span style={{
               display: "block",
-              fontSize: "clamp(2.8rem, 7.5vw, 5.5rem)",
-              fontWeight: 900,
-              letterSpacing: "-0.03em",
+              fontFamily: "'Bebas Neue', 'Barlow Condensed', system-ui, sans-serif",
+              fontSize: "clamp(4rem, 10vw, 7.5rem)",
+              fontWeight: 400,
+              letterSpacing: "0.06em",
               color: "#ffffff",
+              lineHeight: 0.95,
             }}>
               OSM
             </span>
             <span style={{
               display: "block",
-              fontSize: "clamp(3.2rem, 10vw, 5.5rem)",
-              fontWeight: 900,
-              letterSpacing: "-0.04em",
-              lineHeight: 0.92,
+              fontFamily: "'Bebas Neue', 'Barlow Condensed', system-ui, sans-serif",
+              fontSize: "clamp(4.5rem, 14vw, 10rem)",
+              fontWeight: 400,
+              letterSpacing: "0.04em",
+              lineHeight: 0.88,
               color: "#ffffff",
             }}>
               NEXT LEVEL
             </span>
             <span style={{
               display: "block",
-              fontSize: "clamp(1.0rem, 2.5vw, 1.8rem)",
-              fontWeight: 700,
-              letterSpacing: "0.12em",
-              marginTop: 12,
+              fontFamily: "'DM Sans', system-ui, sans-serif",
+              fontSize: "clamp(0.75rem, 1.8vw, 1rem)",
+              fontWeight: 600,
+              letterSpacing: "0.28em",
+              marginTop: 16,
               color: "#c9a227",
               textTransform: "uppercase",
             }}>

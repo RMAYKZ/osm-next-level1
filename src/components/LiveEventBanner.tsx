@@ -164,7 +164,7 @@ export default function LiveEventBanner() {
         top: 0, left: 0,
         width: "100%",
         zIndex: 50,
-        fontFamily: "'Inter', 'Segoe UI', system-ui, sans-serif",
+        fontFamily: "'DM Sans', 'Segoe UI', system-ui, sans-serif",
         ...(isLive ? {
           background: "linear-gradient(135deg, rgba(30,4,6,0.97) 0%, rgba(10,18,42,0.97) 45%, rgba(20,4,28,0.97) 100%)",
           backgroundSize: isMobile ? "100% 100%" : "300% 300%",
