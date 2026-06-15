@@ -328,7 +328,7 @@ export default function Hero() {
           initial={{ opacity: 0, y: -12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, ease: EASE }}
-          style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "clamp(32px, 5vw, 56px)", flexWrap: "wrap", gap: 12 }}
+          style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "clamp(32px, 5vw, 56px)", flexWrap: "wrap", gap: 12, position: "relative", zIndex: 10 }}
         >
           {/* Live season badge */}
           <div style={{
@@ -343,8 +343,8 @@ export default function Hero() {
             </span>
           </div>
 
-          {/* Social links — premium SVG icons */}
-          <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+          {/* Social links */}
+          <div style={{ display: "flex", gap: 8, alignItems: "center", position: "relative", zIndex: 2 }}>
             {/* YouTube */}
             <motion.a
               href={siteMeta.social.youtube}
@@ -566,8 +566,8 @@ export default function Hero() {
 
         {/* ── Coach's disclaimer ── */}
         <motion.div
-          initial={{ opacity: 0, y: 12 }}
-          whileInView={{ opacity: 1, y: 0 }}
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
           viewport={{ once: true, margin: "-40px" }}
           transition={{ duration: 0.5, ease: EASE }}
           style={{
