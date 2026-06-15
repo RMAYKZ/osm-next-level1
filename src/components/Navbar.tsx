@@ -203,7 +203,7 @@ export default function Navbar() {
         }`}
       >
         {/* Razor-thin gradient bottom border */}
-        <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-amber-700/30 to-transparent" />
+        <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-px" style={{ background: "linear-gradient(90deg, transparent, oklch(0.87 0.27 152 / 0.3), transparent)" }} />
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-3 px-4 md:h-20 md:px-6">
           {/* Logo */}
           <a href="#anasayfa" className="flex items-center justify-start gap-3 shrink-0" onClick={(e) => { e.preventDefault(); setOpen(false); scrollToTop(); }}>
@@ -216,10 +216,10 @@ export default function Navbar() {
                 height: 44,
                 borderRadius: "50%",
                 overflow: "hidden",
-                border: "1.5px solid rgba(201,162,39,0.45)",
+                border: "1.5px solid oklch(0.87 0.27 152 / 0.45)",
                 flexShrink: 0,
                 transform: "translateZ(0)",
-                boxShadow: "0 0 12px rgba(201,162,39,0.15)",
+                boxShadow: "0 0 12px oklch(0.87 0.27 152 / 0.15)",
               }}
             >
               <img
@@ -241,9 +241,9 @@ export default function Navbar() {
           <ul className="hidden items-center gap-6 lg:flex">
             {links.map((l) => (
               <li key={l.href}>
-                <a href={l.href} className="group relative text-sm font-medium uppercase tracking-wide text-stone-400 transition-colors hover:text-[#c9a227] whitespace-nowrap">
+                <a href={l.href} className="group relative text-sm font-medium uppercase tracking-wide text-stone-400 transition-colors hover:text-[oklch(0.87_0.27_152)] whitespace-nowrap">
                   {l.label}
-                  <span className="absolute -bottom-1 left-0 h-0.5 w-0 bg-[#c9a227] transition-all duration-300 group-hover:w-full" />
+                  <span className="absolute -bottom-1 left-0 h-0.5 w-0 bg-[oklch(0.87_0.27_152)] transition-all duration-300 group-hover:w-full" />
                 </a>
               </li>
             ))}
@@ -260,14 +260,14 @@ export default function Navbar() {
                   style={{
                     display: 'inline-flex', alignItems: 'center', gap: 6,
                     padding: '7px 12px', borderRadius: 9, cursor: 'pointer',
-                    background: activeSheet === "garage" ? 'rgba(201,162,39,0.12)' : 'rgba(255,255,255,0.04)',
-                    border: activeSheet === "garage" ? '1px solid rgba(201,162,39,0.4)' : '1px solid rgba(255,255,255,0.09)',
-                    color: activeSheet === "garage" ? '#c9a227' : 'rgba(255,255,255,0.55)',
+                    background: activeSheet === "garage" ? 'oklch(0.87 0.27 152 / 0.12)' : 'rgba(255,255,255,0.04)',
+                    border: activeSheet === "garage" ? '1px solid oklch(0.87 0.27 152 / 0.4)' : '1px solid rgba(255,255,255,0.09)',
+                    color: activeSheet === "garage" ? 'oklch(0.87 0.27 152)' : 'rgba(255,255,255,0.55)',
                     fontSize: 11, fontWeight: 800, letterSpacing: '0.04em', transition: 'all 0.2s',
                   }}
                   aria-label="Taktik Garajım"
                 >
-                  🗄️ {t("garage.label")}{garageCount > 0 && <span style={{ background: 'rgba(201,162,39,0.15)', borderRadius: 999, padding: '1px 6px', fontSize: 10, color: '#c9a227' }}>{garageCount}</span>}
+                  🗄️ {t("garage.label")}{garageCount > 0 && <span style={{ background: 'oklch(0.87 0.27 152 / 0.15)', borderRadius: 999, padding: '1px 6px', fontSize: 10, color: 'oklch(0.87 0.27 152)' }}>{garageCount}</span>}
                 </motion.button>
               )}
               <ProfilePanel />
@@ -279,7 +279,7 @@ export default function Navbar() {
                 rel="noreferrer"
                 whileHover={{ scale: 1.06, transition: { duration: 0.15 } }}
                 whileTap={{ scale: 0.94 }}
-                className="inline-flex items-center gap-1.5 rounded-lg bg-[#FFDD00] px-3.5 py-2 text-xs font-black text-stone-900 shadow-lg shadow-amber-500/20"
+                className="inline-flex items-center gap-1.5 rounded-lg bg-[#FFDD00] px-3.5 py-2 text-xs font-black text-stone-900 shadow-lg"
               >
                 ☕ {t("nav.donate")}
               </motion.a>
@@ -290,7 +290,7 @@ export default function Navbar() {
               onClick={() => setOpen((v) => !v)}
               whileHover={{ scale: 1.08, transition: { duration: 0.15 } }}
               whileTap={{ scale: 0.92 }}
-              className="flex h-10 w-10 items-center justify-center rounded-xl border border-white/10 bg-white/[0.04] text-white transition-colors hover:border-amber-700/40 hover:bg-amber-900/10"
+              className="flex h-10 w-10 items-center justify-center rounded-xl border border-white/10 bg-white/[0.04] text-white transition-colors hover:border-[oklch(0.87_0.27_152/0.4)] hover:bg-[oklch(0.87_0.27_152/0.08)]"
               aria-label="Menu"
             >
               <motion.svg
@@ -331,9 +331,9 @@ export default function Navbar() {
             style={{
               position: "fixed", top: 0, [isRTL ? "left" : "right"]: 0,
               height: "100%", width: "80%", maxWidth: 400,
-              background: "#0a0a0a", display: "flex", flexDirection: "column",
+              background: "oklch(0.14 0.02 250)", display: "flex", flexDirection: "column",
               zIndex: 9999,
-              boxShadow: "-8px 0 40px rgba(0,0,0,0.9), inset 1px 0 0 rgba(201,162,39,0.08)",
+              boxShadow: "-8px 0 40px rgba(0,0,0,0.9), inset 1px 0 0 oklch(0.87 0.27 152 / 0.08)",
               transform: open ? "translateX(0)" : `translateX(${isRTL ? "-100%" : "100%"})`,
               transition: "transform 0.26s cubic-bezier(0.16,1,0.3,1), visibility 0s linear " + (open ? "0s" : "0.26s"),
               willChange: "transform",
@@ -346,7 +346,7 @@ export default function Navbar() {
               <span className="font-display text-base font-bold text-white">{t("nav.menu")}</span>
               <button
                 onClick={() => setOpen(false)}
-                className="flex h-9 w-9 items-center justify-center rounded-lg border border-white/10 bg-white/[0.04] text-white hover:bg-amber-900/10 active:scale-95"
+                className="flex h-9 w-9 items-center justify-center rounded-lg border border-white/10 bg-white/[0.04] text-white hover:bg-[oklch(0.87_0.27_152/0.08)] active:scale-95"
                 style={{ WebkitTapHighlightColor: "transparent", transition: "transform 0.1s" }}
                 aria-label={t("nav.close")}
               >
@@ -379,7 +379,7 @@ export default function Navbar() {
                   <a
                     href={l.href}
                     onClick={() => setOpen(false)}
-                    className="flex items-center justify-between rounded-xl px-4 py-3.5 text-[15px] font-semibold text-stone-300 transition-colors hover:bg-amber-900/10 hover:text-[#c9a227]"
+                    className="flex items-center justify-between rounded-xl px-4 py-3.5 text-[15px] font-semibold text-stone-300 transition-colors hover:bg-[oklch(0.87_0.27_152/0.08)] hover:text-[oklch(0.87_0.27_152)]"
                   >
                     <span>{l.label}</span>
                     <span className="text-stone-500">›</span>
@@ -401,7 +401,7 @@ export default function Navbar() {
                   <button
                     onClick={() => { setOpen(false); setActiveSheet(item.key); }}
                     className="flex w-full items-center justify-between rounded-xl px-4 py-3.5 text-[15px] font-semibold text-stone-200"
-                    style={{ background: "rgba(255,255,255,0.025)", border: "1px solid rgba(201,162,39,0.18)", WebkitTapHighlightColor: "transparent" }}
+                    style={{ background: "rgba(255,255,255,0.025)", border: "1px solid oklch(0.87 0.27 152 / 0.18)", WebkitTapHighlightColor: "transparent" }}
                   >
                     <span className="flex items-center gap-3">
                       <span>{item.icon}</span>
@@ -425,7 +425,7 @@ export default function Navbar() {
                 target="_blank"
                 rel="noreferrer"
                 onClick={() => setOpen(false)}
-                className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#FFDD00] px-4 py-3.5 text-sm font-black uppercase tracking-widest text-stone-900 shadow-lg shadow-amber-500/20"
+                className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#FFDD00] px-4 py-3.5 text-sm font-black uppercase tracking-widest text-stone-900 shadow-lg"
               >
                 ☕ {t("nav.donate")}
               </a>
@@ -464,12 +464,12 @@ export default function Navbar() {
                   position: "fixed",
                   bottom: 0, left: 0, right: 0,
                   height: "92dvh",
-                  background: "#0a0a0a",
+                  background: "oklch(0.14 0.02 250)",
                   borderRadius: "22px 22px 0 0",
                   overflow: "hidden",
                   display: "flex",
                   flexDirection: "column",
-                  boxShadow: "0 -20px 60px rgba(0,0,0,0.8), 0 -1px 0 rgba(201,162,39,0.12)",
+                  boxShadow: "0 -20px 60px rgba(0,0,0,0.8), 0 -1px 0 oklch(0.87 0.27 152 / 0.12)",
                 }}
               >
                 {/* Drag handle + header */}
@@ -529,8 +529,8 @@ export default function Navbar() {
             transition={{ type: "spring", stiffness: 380, damping: 26 }}
             whileHover={{ scale: 1.1, transition: { duration: 0.15 } }}
             whileTap={{ scale: 0.92 }}
-            className="fixed bottom-6 right-6 z-50 flex h-12 w-12 items-center justify-center rounded-full border border-amber-800/30 bg-black/90 text-white"
-            style={{ boxShadow: "0 0 16px rgba(201,162,39,0.08), 0 4px 24px rgba(0,0,0,0.5)" }}
+            className="fixed bottom-6 right-6 z-50 flex h-12 w-12 items-center justify-center rounded-full border border-[oklch(0.87_0.27_152/0.3)] bg-black/90 text-white"
+            style={{ boxShadow: "0 0 16px oklch(0.87 0.27 152 / 0.1), 0 4px 24px rgba(0,0,0,0.5)" }}
             aria-label="Back to top"
           >
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">

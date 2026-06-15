@@ -168,7 +168,7 @@ export default function OSMEventsSchedule() {
               </div>
               <h2
                 className="text-2xl font-black uppercase tracking-tight text-white md:text-3xl"
-                style={{ fontFamily: "'Bebas Neue', 'Barlow Condensed', system-ui, sans-serif" }}
+                style={{ fontFamily: "'Outfit', system-ui, sans-serif" }}
               >
                 {t(`months.${MONTH_KEYS[SCHEDULE_META.month]}`)} {SCHEDULE_META.year}
                 <span className="ml-2 text-cyan-400">{t("events.program_title")}</span>

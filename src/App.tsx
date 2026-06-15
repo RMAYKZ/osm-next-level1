@@ -38,7 +38,7 @@ export default function App() {
           {/* ── Mobile fallback background (hidden on md+) ── */}
           <div
             className="fixed inset-0 -z-10 md:hidden"
-            style={{ background: "#080808" }}
+            style={{ background: "oklch(0.13 0.02 250)" }}
           />
 
           {/* ── Subtle warm-dark ambient gradient — desktop only (md+) ── */}
@@ -46,14 +46,14 @@ export default function App() {
             <BackgroundGradientAnimation
               containerClassName="fixed inset-0 -z-10 pointer-events-none"
               interactive={false}
-              gradientBackgroundStart="rgb(6, 5, 3)"
-              gradientBackgroundEnd="rgb(3, 2, 1)"
-              firstColor="45, 32, 5"
-              secondColor="22, 15, 2"
-              thirdColor="38, 26, 4"
-              fourthColor="12, 8, 1"
-              fifthColor="30, 21, 3"
-              pointerColor="55, 40, 7"
+              gradientBackgroundStart="rgb(8, 12, 22)"
+              gradientBackgroundEnd="rgb(5, 8, 18)"
+              firstColor="10, 40, 20"
+              secondColor="5, 20, 35"
+              thirdColor="15, 35, 15"
+              fourthColor="8, 15, 30"
+              fifthColor="12, 30, 18"
+              pointerColor="20, 60, 30"
               blendingValue="hard-light"
               size="80%"
             />
@@ -73,7 +73,7 @@ export default function App() {
               left: 0,
               width: "100%",
               height: "100%",
-              backgroundColor: "rgba(0, 0, 0, 0.72)",
+              backgroundColor: "oklch(0.13 0.02 250 / 0.72)",
               overflowY: "auto",
               overflowX: "hidden",
             }}>

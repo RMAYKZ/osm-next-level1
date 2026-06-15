@@ -90,7 +90,7 @@ export default function PremiumUpdateBanner() {
               background: "linear-gradient(135deg, rgba(12,8,2,0.97) 0%, rgba(24,14,2,0.97) 50%, rgba(10,6,1,0.97) 100%)",
               borderBottom: "1px solid rgba(251,191,36,0.22)",
               overflow: "hidden",
-              fontFamily: "'DM Sans','Segoe UI',system-ui,sans-serif",
+              fontFamily: "'Outfit','Segoe UI',system-ui,sans-serif",
             }}
           >
             {/* Shimmer sweep */}

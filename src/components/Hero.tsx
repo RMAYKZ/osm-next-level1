@@ -6,8 +6,8 @@ import { siteMeta } from "../data/tactics";
 const EASE = [0.16, 1, 0.3, 1] as const;
 
 const GLASS: React.CSSProperties = {
-  background: "rgba(10,9,7,0.92)",
-  border: "1px solid rgba(201,162,39,0.12)",
+  background: "oklch(0.14 0.02 250 / 0.92)",
+  border: "1px solid oklch(0.87 0.27 152 / 0.12)",
   borderRadius: 20,
 };
 
@@ -101,11 +101,12 @@ const HERO_STRINGS = {
 } as const;
 
 // ── Static visual config for feature cards (labels injected at render time) ──
+const NG = "oklch(0.87 0.27 152)";
 const FEATURE_DEFS = [
-  { id: "anti-taktik", icon: "⚔️", accent: "#c9a227", bg: "rgba(201,162,39,0.07)", border: "rgba(201,162,39,0.2)",  glow: "rgba(201,162,39,0.18)", lk: "antiLabel",    dk: "antiDesc"    },
-  { id: "weekly-meta", icon: "📊", accent: "#d4c07a", bg: "rgba(212,192,122,0.06)", border: "rgba(212,192,122,0.18)", glow: "rgba(212,192,122,0.15)", lk: "metaLabel",    dk: "metaDesc"    },
+  { id: "anti-taktik", icon: "⚔️", accent: NG,        bg: "oklch(0.87 0.27 152 / 0.07)", border: "oklch(0.87 0.27 152 / 0.22)",  glow: "oklch(0.87 0.27 152 / 0.18)", lk: "antiLabel",    dk: "antiDesc"    },
+  { id: "weekly-meta", icon: "📊", accent: NG,        bg: "oklch(0.87 0.27 152 / 0.05)", border: "oklch(0.87 0.27 152 / 0.16)", glow: "oklch(0.87 0.27 152 / 0.13)", lk: "metaLabel",    dk: "metaDesc"    },
   { id: "premium",     icon: "👑", accent: "#cccccc", bg: "rgba(255,255,255,0.04)", border: "rgba(255,255,255,0.12)", glow: "rgba(255,255,255,0.08)", lk: "premiumLabel", dk: "premiumDesc" },
-  { id: "slider-calc", icon: "🎯", accent: "#b87333", bg: "rgba(184,115,51,0.07)", border: "rgba(184,115,51,0.2)",  glow: "rgba(184,115,51,0.15)", lk: "sliderLabel",  dk: "sliderDesc"  },
+  { id: "slider-calc", icon: "🎯", accent: NG,        bg: "oklch(0.87 0.27 152 / 0.06)", border: "oklch(0.87 0.27 152 / 0.18)",  glow: "oklch(0.87 0.27 152 / 0.14)", lk: "sliderLabel",  dk: "sliderDesc"  },
 ] as const;
 
 // Animated pitch lines background
@@ -118,26 +119,26 @@ function PitchGrid() {
       aria-hidden="true"
     >
       {/* Outer pitch */}
-      <rect x="80" y="40" width="1280" height="620" rx="4" fill="none" stroke="rgba(201,162,39,0.5)" strokeWidth="1.5" />
+      <rect x="80" y="40" width="1280" height="620" rx="4" fill="none" stroke="oklch(0.87 0.27 152 / 0.4)" strokeWidth="1.5" />
       {/* Center line */}
-      <line x1="720" y1="40" x2="720" y2="660" stroke="rgba(201,162,39,0.4)" strokeWidth="1" />
+      <line x1="720" y1="40" x2="720" y2="660" stroke="oklch(0.87 0.27 152 / 0.35)" strokeWidth="1" />
       {/* Center circle */}
-      <circle cx="720" cy="350" r="100" fill="none" stroke="rgba(201,162,39,0.4)" strokeWidth="1" />
-      <circle cx="720" cy="350" r="3" fill="rgba(201,162,39,0.6)" />
+      <circle cx="720" cy="350" r="100" fill="none" stroke="oklch(0.87 0.27 152 / 0.35)" strokeWidth="1" />
+      <circle cx="720" cy="350" r="3" fill="oklch(0.87 0.27 152 / 0.6)" />
       {/* Penalty areas */}
-      <rect x="80" y="195" width="200" height="310" fill="none" stroke="rgba(201,162,39,0.35)" strokeWidth="1" />
-      <rect x="1160" y="195" width="200" height="310" fill="none" stroke="rgba(201,162,39,0.35)" strokeWidth="1" />
+      <rect x="80" y="195" width="200" height="310" fill="none" stroke="oklch(0.87 0.27 152 / 0.28)" strokeWidth="1" />
+      <rect x="1160" y="195" width="200" height="310" fill="none" stroke="oklch(0.87 0.27 152 / 0.28)" strokeWidth="1" />
       {/* Goal areas */}
-      <rect x="80" y="280" width="80" height="140" fill="none" stroke="rgba(201,162,39,0.3)" strokeWidth="1" />
-      <rect x="1280" y="280" width="80" height="140" fill="none" stroke="rgba(201,162,39,0.3)" strokeWidth="1" />
+      <rect x="80" y="280" width="80" height="140" fill="none" stroke="oklch(0.87 0.27 152 / 0.22)" strokeWidth="1" />
+      <rect x="1280" y="280" width="80" height="140" fill="none" stroke="oklch(0.87 0.27 152 / 0.22)" strokeWidth="1" />
       {/* Penalty spots */}
-      <circle cx="220" cy="350" r="3" fill="rgba(201,162,39,0.5)" />
-      <circle cx="1220" cy="350" r="3" fill="rgba(201,162,39,0.5)" />
+      <circle cx="220" cy="350" r="3" fill="oklch(0.87 0.27 152 / 0.5)" />
+      <circle cx="1220" cy="350" r="3" fill="oklch(0.87 0.27 152 / 0.5)" />
       {/* Corner arcs */}
-      <path d="M80,40 Q96,40 96,56" fill="none" stroke="rgba(201,162,39,0.35)" strokeWidth="1" />
-      <path d="M1360,40 Q1360,40 1344,56" fill="none" stroke="rgba(201,162,39,0.35)" strokeWidth="1" />
-      <path d="M80,660 Q80,660 96,644" fill="none" stroke="rgba(201,162,39,0.35)" strokeWidth="1" />
-      <path d="M1360,660 Q1360,660 1344,644" fill="none" stroke="rgba(201,162,39,0.35)" strokeWidth="1" />
+      <path d="M80,40 Q96,40 96,56" fill="none" stroke="oklch(0.87 0.27 152 / 0.28)" strokeWidth="1" />
+      <path d="M1360,40 Q1360,40 1344,56" fill="none" stroke="oklch(0.87 0.27 152 / 0.28)" strokeWidth="1" />
+      <path d="M80,660 Q80,660 96,644" fill="none" stroke="oklch(0.87 0.27 152 / 0.28)" strokeWidth="1" />
+      <path d="M1360,660 Q1360,660 1344,644" fill="none" stroke="oklch(0.87 0.27 152 / 0.28)" strokeWidth="1" />
     </svg>
   );
 }
@@ -246,7 +247,7 @@ function RotatingTag() {
 
   return (
     <div style={{ height: 28, display: "flex", alignItems: "center", gap: 8 }}>
-      <span style={{ color: "rgba(201,162,39,0.5)", fontSize: 13, fontWeight: 600 }}>›</span>
+      <span style={{ color: "oklch(0.87 0.27 152 / 0.5)", fontSize: 13, fontWeight: 600 }}>›</span>
       <AnimatePresence mode="wait">
         {visible && (
           <motion.span
@@ -255,7 +256,7 @@ function RotatingTag() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -8 }}
             transition={{ duration: 0.28, ease: EASE }}
-            style={{ color: "#c9a227", fontSize: 13.5, fontWeight: 700, letterSpacing: "0.04em" }}
+            style={{ color: "oklch(0.87 0.27 152)", fontSize: 13.5, fontWeight: 700, letterSpacing: "0.04em" }}
           >
             {tags[idx]}
           </motion.span>
@@ -297,7 +298,7 @@ export default function Hero() {
           style={{
             position: "absolute", top: "0%", left: "10%",
             width: "50%", height: "55%", borderRadius: "50%",
-            background: "radial-gradient(ellipse, rgba(201,162,39,0.055) 0%, transparent 70%)",
+            background: "radial-gradient(ellipse, oklch(0.87 0.27 152 / 0.06) 0%, transparent 70%)",
             filter: "blur(60px)",
           }}
         />
@@ -305,14 +306,14 @@ export default function Hero() {
           style={{
             position: "absolute", bottom: "10%", right: "10%",
             width: "40%", height: "45%", borderRadius: "50%",
-            background: "radial-gradient(ellipse, rgba(201,162,39,0.035) 0%, transparent 70%)",
+            background: "radial-gradient(ellipse, oklch(0.87 0.27 152 / 0.04) 0%, transparent 70%)",
             filter: "blur(80px)",
           }}
         />
         {/* Top accent line */}
         <div style={{
           position: "absolute", top: 0, left: 0, right: 0, height: 1,
-          background: "linear-gradient(90deg, transparent, rgba(201,162,39,0.35), transparent)",
+          background: "linear-gradient(90deg, transparent, oklch(0.87 0.27 152 / 0.35), transparent)",
         }} />
         {/* Bottom fade */}
         <div style={{
@@ -333,12 +334,12 @@ export default function Hero() {
           {/* Live season badge */}
           <div style={{
             display: "inline-flex", alignItems: "center", gap: 8,
-            background: "rgba(201,162,39,0.06)",
-            border: "1px solid rgba(201,162,39,0.22)",
+            background: "oklch(0.87 0.27 152 / 0.07)",
+            border: "1px solid oklch(0.87 0.27 152 / 0.22)",
             borderRadius: 999, padding: "6px 14px",
           }}>
-            <span style={{ width: 6, height: 6, borderRadius: "50%", background: "#22c55e", display: "block", flexShrink: 0 }} />
-            <span style={{ fontSize: 11, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.18em", color: "#c9a227" }}>
+            <span style={{ width: 6, height: 6, borderRadius: "50%", background: "oklch(0.87 0.27 152)", display: "block", flexShrink: 0 }} />
+            <span style={{ fontSize: 11, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.16em", color: "oklch(0.87 0.27 152)" }}>
               {siteMeta.crew} · {hs.seasonBadge}
             </span>
           </div>
@@ -443,10 +444,10 @@ export default function Hero() {
           >
             <span style={{
               display: "block",
-              fontFamily: "'Bebas Neue', 'Barlow Condensed', system-ui, sans-serif",
+              fontFamily: "'Outfit', system-ui, sans-serif",
               fontSize: "clamp(4rem, 10vw, 7.5rem)",
-              fontWeight: 400,
-              letterSpacing: "0.06em",
+              fontWeight: 900,
+              letterSpacing: "0.04em",
               color: "#ffffff",
               lineHeight: 0.95,
             }}>
@@ -454,10 +455,10 @@ export default function Hero() {
             </span>
             <span style={{
               display: "block",
-              fontFamily: "'Bebas Neue', 'Barlow Condensed', system-ui, sans-serif",
+              fontFamily: "'Outfit', system-ui, sans-serif",
               fontSize: "clamp(4.5rem, 14vw, 10rem)",
-              fontWeight: 400,
-              letterSpacing: "0.04em",
+              fontWeight: 900,
+              letterSpacing: "0.02em",
               lineHeight: 0.88,
               color: "#ffffff",
             }}>
@@ -465,12 +466,12 @@ export default function Hero() {
             </span>
             <span style={{
               display: "block",
-              fontFamily: "'DM Sans', system-ui, sans-serif",
+              fontFamily: "'Outfit', system-ui, sans-serif",
               fontSize: "clamp(0.75rem, 1.8vw, 1rem)",
               fontWeight: 600,
-              letterSpacing: "0.28em",
+              letterSpacing: "0.24em",
               marginTop: 16,
-              color: "#c9a227",
+              color: "oklch(0.87 0.27 152)",
               textTransform: "uppercase",
             }}>
               {hs.titleSub}
@@ -506,11 +507,11 @@ export default function Hero() {
               whileTap={{ scale: 0.97 }}
               style={{
                 display: "inline-flex", alignItems: "center", gap: 8,
-                background: "#c9a227",
-                border: "1px solid #c9a227",
+                background: "oklch(0.87 0.27 152)",
+                border: "1px solid oklch(0.87 0.27 152)",
                 borderRadius: 8,
                 padding: "13px 28px",
-                color: "#080808",
+                color: "oklch(0.13 0.02 250)",
                 fontSize: 13,
                 fontWeight: 900,
                 textDecoration: "none",
@@ -559,9 +560,9 @@ export default function Hero() {
           style={{ display: "flex", gap: 10, flexWrap: "wrap" }}
         >
           {[
-            { value: "16+",   label: t("hero.years"),  color: "#c9a227" },
+            { value: "16+",   label: t("hero.years"),  color: "oklch(0.87 0.27 152)" },
             { value: "#1",    label: hs.worldRank,     color: "#ffffff" },
-            { value: "26/27", label: t("hero.season"), color: "#c9a227" },
+            { value: "26/27", label: t("hero.season"), color: "oklch(0.87 0.27 152)" },
             { value: "100+",  label: t("hero.tested"), color: "#888888" },
           ].map((s, i) => (
             <StatPill key={i} {...s} />
@@ -573,7 +574,7 @@ export default function Hero() {
           style={{
             marginTop: 28,
             ...GLASS,
-            border: "1px solid rgba(251,191,36,0.18)",
+            border: "1px solid oklch(0.87 0.27 152 / 0.18)",
             padding: "16px 20px",
             display: "flex",
             gap: 14,
@@ -586,21 +587,21 @@ export default function Hero() {
           {/* left accent bar */}
           <div style={{
             position: "absolute", left: 0, top: 0, bottom: 0, width: 3,
-            background: "linear-gradient(180deg, #f59e0b, rgba(251,191,36,0.1))",
+            background: "linear-gradient(180deg, oklch(0.87 0.27 152), oklch(0.87 0.27 152 / 0.1))",
             borderRadius: "20px 0 0 20px",
           }} />
           <div
             className="animate-pulse"
             style={{
               width: 36, height: 36, borderRadius: 10, flexShrink: 0,
-              background: "rgba(251,191,36,0.1)",
-              border: "1px solid rgba(251,191,36,0.25)",
+              background: "oklch(0.87 0.27 152 / 0.1)",
+              border: "1px solid oklch(0.87 0.27 152 / 0.25)",
               display: "flex", alignItems: "center", justifyContent: "center",
               fontSize: 17,
             }}
           >🛡️</div>
           <div style={{ flex: 1, minWidth: 0 }}>
-            <div style={{ fontSize: 9, fontWeight: 900, textTransform: "uppercase", letterSpacing: "0.22em", color: "rgba(251,191,36,0.6)", marginBottom: 4 }}>
+            <div style={{ fontSize: 9, fontWeight: 900, textTransform: "uppercase", letterSpacing: "0.22em", color: "oklch(0.87 0.27 152 / 0.7)", marginBottom: 4 }}>
               {hs.coachAlert}
             </div>
             <p style={{ margin: 0, fontSize: 13, lineHeight: 1.6, color: "rgba(203,213,225,0.85)" }}>
