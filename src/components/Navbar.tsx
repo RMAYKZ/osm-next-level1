@@ -308,142 +308,127 @@ export default function Navbar() {
         </div>
       </nav>
 
-      {/* Mobile Drawer — portalled to document.body to escape scroll-root containing block */}
+      {/* Mobile Drawer — always in DOM, CSS transform only (zero JS cost on open) */}
       {createPortal(
-        <AnimatePresence>
-          {open && (
-            <motion.div
-              key="drawer-root"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.2 }}
-              style={{ position: "fixed", inset: 0, zIndex: 9999, overflow: "hidden", pointerEvents: "auto" }}
-            >
-              {/* Backdrop — no blur on mobile (GPU-heavy, causes open delay) */}
-              <div
-                style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.75)" }}
+        <>
+          {/* Backdrop */}
+          <div
+            onClick={() => setOpen(false)}
+            style={{
+              position: "fixed", inset: 0, zIndex: 9998,
+              background: "rgba(0,0,0,0.75)",
+              opacity: open ? 1 : 0,
+              pointerEvents: open ? "auto" : "none",
+              transition: "opacity 0.22s ease",
+            }}
+          />
+
+          {/* Drawer Panel */}
+          <aside
+            style={{
+              position: "fixed", top: 0, [isRTL ? "left" : "right"]: 0,
+              height: "100%", width: "80%", maxWidth: 400,
+              background: "#0a0a0a", display: "flex", flexDirection: "column",
+              zIndex: 9999,
+              boxShadow: "-8px 0 40px rgba(0,0,0,0.9), inset 1px 0 0 rgba(201,162,39,0.08)",
+              transform: open ? "translateX(0)" : `translateX(${isRTL ? "-100%" : "100%"})`,
+              transition: "transform 0.26s cubic-bezier(0.16,1,0.3,1), visibility 0s linear " + (open ? "0s" : "0.26s"),
+              willChange: "transform",
+              visibility: open ? "visible" : "hidden",
+            }}
+            aria-hidden={!open}
+          >
+            {/* Header */}
+            <div className="shrink-0 flex items-center justify-between border-b border-white/10 px-5 py-4">
+              <span className="font-display text-base font-bold text-white">{t("nav.menu")}</span>
+              <button
                 onClick={() => setOpen(false)}
-              />
-
-              {/* Drawer Panel */}
-              <motion.aside
-                initial={{ x: isRTL ? "-100%" : "100%" }}
-                animate={{ x: 0 }}
-                exit={{ x: isRTL ? "-100%" : "100%" }}
-                transition={{ type: "spring", stiffness: 420, damping: 36 }}
-                style={{ position: "fixed", top: 0, [isRTL ? "left" : "right"]: 0, height: "100%", width: "80%", maxWidth: 400, background: "#0a0a0a", display: "flex", flexDirection: "column", zIndex: 10, boxShadow: "-8px 0 40px rgba(0,0,0,0.9), inset 1px 0 0 rgba(201,162,39,0.08)" }}
+                className="flex h-9 w-9 items-center justify-center rounded-lg border border-white/10 bg-white/[0.04] text-white hover:bg-amber-900/10 active:scale-95"
+                style={{ WebkitTapHighlightColor: "transparent", transition: "transform 0.1s" }}
+                aria-label={t("nav.close")}
               >
-                {/* Header */}
-                <div className="shrink-0 flex items-center justify-between border-b border-white/10 px-5 py-4">
-                  <span className="font-display text-base font-bold text-white">{t("nav.menu")}</span>
-                  <motion.button
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round">
+                  <path d="M18 6L6 18M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+
+            {/* Profile + Theme + Lang */}
+            <div className="shrink-0 space-y-3 border-b border-white/10 px-5 py-4">
+              <div className="flex items-center justify-between">
+                <span className="text-[10px] font-black uppercase tracking-widest text-stone-400">{t("nav.profile")}</span>
+                <ProfilePanel />
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-[10px] font-black uppercase tracking-widest text-stone-400">{t("nav.theme")}</span>
+                <ThemeSwitcher />
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-[10px] font-black uppercase tracking-widest text-stone-400">{t("nav.lang")}</span>
+                <LanguageSwitcher />
+              </div>
+            </div>
+
+            {/* Links + Tool Sheets */}
+            <ul className="flex-1 overflow-y-auto px-3 py-3">
+              {links.map((l) => (
+                <li key={l.href}>
+                  <a
+                    href={l.href}
                     onClick={() => setOpen(false)}
-                    whileHover={{ scale: 1.1 }}
-                    whileTap={{ scale: 0.9 }}
-                    className="flex h-9 w-9 items-center justify-center rounded-lg border border-white/10 bg-white/[0.04] text-white hover:bg-amber-900/10"
-                    aria-label={t("nav.close")}
+                    className="flex items-center justify-between rounded-xl px-4 py-3.5 text-[15px] font-semibold text-stone-300 transition-colors hover:bg-amber-900/10 hover:text-[#c9a227]"
                   >
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round">
-                      <path d="M18 6L6 18M6 6l12 12" />
-                    </svg>
-                  </motion.button>
+                    <span>{l.label}</span>
+                    <span className="text-stone-500">›</span>
+                  </a>
+                </li>
+              ))}
+
+              {/* Divider */}
+              <li aria-hidden="true" style={{ padding: "10px 8px 6px" }}>
+                <div style={{ borderTop: "1px solid rgba(255,255,255,0.06)", paddingTop: 10 }}>
+                  <span style={{ fontSize: 9, fontWeight: 900, letterSpacing: "0.12em", textTransform: "uppercase", color: "#475569" }}>
+                    Tools &amp; Resources
+                  </span>
                 </div>
+              </li>
 
-                {/* Profile + Theme + Lang */}
-                <div className="shrink-0 space-y-3 border-b border-white/10 px-5 py-4">
-                  <div className="flex items-center justify-between">
-                    <span className="text-[10px] font-black uppercase tracking-widest text-stone-400">{t("nav.profile")}</span>
-                    <ProfilePanel />
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-[10px] font-black uppercase tracking-widest text-stone-400">{t("nav.theme")}</span>
-                    <ThemeSwitcher />
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-[10px] font-black uppercase tracking-widest text-stone-400">{t("nav.lang")}</span>
-                    <LanguageSwitcher />
-                  </div>
-                </div>
-
-                {/* Links + Tool Sheets */}
-                <ul className="flex-1 overflow-y-auto px-3 py-3">
-                  {/* Page nav links */}
-                  {links.map((l) => (
-                    <li
-                      key={l.href}
-                    >
-                      <a
-                        href={l.href}
-                        onClick={() => setOpen(false)}
-                        className="flex items-center justify-between rounded-xl px-4 py-3.5 text-[15px] font-semibold text-stone-300 transition-colors hover:bg-amber-900/10 hover:text-[#c9a227]"
-                      >
-                        <span>{l.label}</span>
-                        <span className="text-stone-500">›</span>
-                      </a>
-                    </li>
-                  ))}
-
-                  {/* Divider */}
-                  <li aria-hidden="true" style={{ padding: "10px 8px 6px" }}>
-                    <div style={{ borderTop: "1px solid rgba(255,255,255,0.06)", paddingTop: 10 }}>
-                      <span style={{ fontSize: 9, fontWeight: 900, letterSpacing: "0.12em", textTransform: "uppercase", color: "#475569" }}>
-                        Tools &amp; Resources
-                      </span>
-                    </div>
-                  </li>
-
-                  {/* Bottom-sheet tool buttons */}
-                  {toolSheets.map((item) => (
-                    <li
-                      key={item.key}
-                      style={{ marginBottom: 4 }}
-                    >
-                      <button
-                        onClick={() => { setOpen(false); setActiveSheet(item.key); }}
-                        className="flex w-full items-center justify-between rounded-xl px-4 py-3.5 text-[15px] font-semibold text-stone-200 transition-colors"
-                        style={{
-                          background: "rgba(255,255,255,0.025)",
-                          border: "1px solid rgba(201,162,39,0.18)",
-                        }}
-                      >
-                        <span className="flex items-center gap-3">
-                          <span>{item.icon}</span>
-                          <span>{item.label}</span>
-                        </span>
-                        <span className="flex items-center gap-2">
-                          {item.live && (
-                            <motion.span
-                              animate={{ opacity: [1, 0.3, 1] }}
-                              transition={{ duration: 1.8, repeat: Infinity }}
-                              style={{ width: 7, height: 7, borderRadius: "50%", background: "#22c55e", display: "inline-block" }}
-                            />
-                          )}
-                          <span className="text-stone-500">›</span>
-                        </span>
-                      </button>
-                    </li>
-                  ))}
-                </ul>
-
-                {/* Bottom CTA */}
-                <div className="shrink-0 border-t border-white/10 px-4 pb-5 pt-3">
-                  <motion.a
-                    href="https://buymeacoffee.com/omerovvvvv"
-                    target="_blank"
-                    rel="noreferrer"
-                    onClick={() => setOpen(false)}
-                    whileHover={{ scale: 1.03 }}
-                    whileTap={{ scale: 0.97 }}
-                    className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#FFDD00] px-4 py-3.5 text-sm font-black uppercase tracking-widest text-stone-900 shadow-lg shadow-amber-500/20"
+              {toolSheets.map((item) => (
+                <li key={item.key} style={{ marginBottom: 4 }}>
+                  <button
+                    onClick={() => { setOpen(false); setActiveSheet(item.key); }}
+                    className="flex w-full items-center justify-between rounded-xl px-4 py-3.5 text-[15px] font-semibold text-stone-200"
+                    style={{ background: "rgba(255,255,255,0.025)", border: "1px solid rgba(201,162,39,0.18)", WebkitTapHighlightColor: "transparent" }}
                   >
-                    ☕ {t("nav.donate")}
-                  </motion.a>
-                </div>
-              </motion.aside>
-            </motion.div>
-          )}
-        </AnimatePresence>,
+                    <span className="flex items-center gap-3">
+                      <span>{item.icon}</span>
+                      <span>{item.label}</span>
+                    </span>
+                    <span className="flex items-center gap-2">
+                      {item.live && (
+                        <span className="animate-pulse" style={{ width: 7, height: 7, borderRadius: "50%", background: "#22c55e", display: "inline-block" }} />
+                      )}
+                      <span className="text-stone-500">›</span>
+                    </span>
+                  </button>
+                </li>
+              ))}
+            </ul>
+
+            {/* Bottom CTA */}
+            <div className="shrink-0 border-t border-white/10 px-4 pb-5 pt-3">
+              <a
+                href="https://buymeacoffee.com/omerovvvvv"
+                target="_blank"
+                rel="noreferrer"
+                onClick={() => setOpen(false)}
+                className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#FFDD00] px-4 py-3.5 text-sm font-black uppercase tracking-widest text-stone-900 shadow-lg shadow-amber-500/20"
+              >
+                ☕ {t("nav.donate")}
+              </a>
+            </div>
+          </aside>
+        </>,
         document.body
       )}
 
