@@ -320,9 +320,9 @@ export default function Navbar() {
               transition={{ duration: 0.2 }}
               style={{ position: "fixed", inset: 0, zIndex: 9999, overflow: "hidden", pointerEvents: "auto" }}
             >
-              {/* Backdrop */}
+              {/* Backdrop — no blur on mobile (GPU-heavy, causes open delay) */}
               <div
-                style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.70)", backdropFilter: "blur(4px)" }}
+                style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.75)" }}
                 onClick={() => setOpen(false)}
               />
 
@@ -331,7 +331,7 @@ export default function Navbar() {
                 initial={{ x: isRTL ? "-100%" : "100%" }}
                 animate={{ x: 0 }}
                 exit={{ x: isRTL ? "-100%" : "100%" }}
-                transition={{ type: "spring", stiffness: 320, damping: 32 }}
+                transition={{ type: "spring", stiffness: 420, damping: 36 }}
                 style={{ position: "fixed", top: 0, [isRTL ? "left" : "right"]: 0, height: "100%", width: "80%", maxWidth: 400, background: "#0a0a0a", display: "flex", flexDirection: "column", zIndex: 10, boxShadow: "-8px 0 40px rgba(0,0,0,0.9), inset 1px 0 0 rgba(201,162,39,0.08)" }}
               >
                 {/* Header */}
@@ -369,12 +369,9 @@ export default function Navbar() {
                 {/* Links + Tool Sheets */}
                 <ul className="flex-1 overflow-y-auto px-3 py-3">
                   {/* Page nav links */}
-                  {links.map((l, i) => (
-                    <motion.li
+                  {links.map((l) => (
+                    <li
                       key={l.href}
-                      initial={{ opacity: 0, x: isRTL ? -20 : 20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ duration: 0.3, delay: i * 0.04, ease }}
                     >
                       <a
                         href={l.href}
@@ -384,7 +381,7 @@ export default function Navbar() {
                         <span>{l.label}</span>
                         <span className="text-stone-500">›</span>
                       </a>
-                    </motion.li>
+                    </li>
                   ))}
 
                   {/* Divider */}
@@ -397,12 +394,9 @@ export default function Navbar() {
                   </li>
 
                   {/* Bottom-sheet tool buttons */}
-                  {toolSheets.map((item, i) => (
-                    <motion.li
+                  {toolSheets.map((item) => (
+                    <li
                       key={item.key}
-                      initial={{ opacity: 0, x: isRTL ? -20 : 20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ duration: 0.3, delay: (links.length + 1 + i) * 0.04, ease }}
                       style={{ marginBottom: 4 }}
                     >
                       <button
@@ -428,7 +422,7 @@ export default function Navbar() {
                           <span className="text-stone-500">›</span>
                         </span>
                       </button>
-                    </motion.li>
+                    </li>
                   ))}
                 </ul>
 
@@ -465,10 +459,10 @@ export default function Navbar() {
               transition={{ duration: 0.2 }}
               style={{ position: "fixed", inset: 0, zIndex: 10001, overflow: "hidden", pointerEvents: "auto" }}
             >
-              {/* Backdrop */}
+              {/* Backdrop — no blur on mobile */}
               <motion.div
                 initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-                style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.72)", backdropFilter: "blur(6px)" }}
+                style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.80)" }}
                 onClick={() => setActiveSheet(null)}
               />
 
