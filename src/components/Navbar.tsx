@@ -26,29 +26,32 @@ const MatchAutopsy       = lazy(() => import("./MatchAutopsy"));
 
 const ease = [0.16, 1, 0.3, 1] as const;
 
-// Saate + güne göre deterministik aktif kullanıcı sayısı (10-25 arası)
+// Gece (22:00-07:59) → 2-3, Gündüz (08:00-21:59) → 5-15
 function getLiveCount(): number {
-  const now = new Date();
-  const h = now.getHours();
-  const d = now.getDay();
-  const BASE = [10,10,10,10,10,10,11,12,13,14,14,15,15,16,15,14,15,17,19,21,22,20,17,13];
-  const base = BASE[h] * (d === 0 || d === 6 ? 1.12 : 1);
-  const seed = (((h + 1) * (d + 1) * 2654435761) >>> 0) % 7;
-  return Math.min(25, Math.max(10, Math.round(base + seed - 3)));
+  const h = new Date().getHours();
+  const d = new Date().getDay();
+  const isNight = h >= 22 || h < 8;
+  //                      0  1  2  3  4  5  6  7   8   9  10  11  12  13  14  15  16  17  18  19  20  21  22  23
+  const BASE = [2, 2, 2, 2, 2, 2, 2, 3,  5,  6,  7,  8,  9, 10, 10, 12, 13, 13, 12, 10,  8,  7,  3,  2];
+  const base = BASE[h] * (d === 0 || d === 6 ? 1.1 : 1);
+  const seed = (((h + 1) * (d + 1) * 2654435761) >>> 0) % (isNight ? 2 : 4);
+  if (isNight) return Math.min(3, Math.max(2, Math.round(base + seed)));
+  return Math.min(15, Math.max(5, Math.round(base + seed)));
 }
 
 function LiveUserBadge() {
   const [count, setCount] = useState(getLiveCount);
   useEffect(() => {
-    // Base: dakikada bir sıfırla
     const baseId = setInterval(() => setCount(getLiveCount()), 60_000);
-    // Fluctuation: 2-5 saniyede ±1, organik hareket
     let cancelled = false;
     const tick = () => {
       if (cancelled) return;
       setCount(prev => {
+        const h = new Date().getHours();
+        const isNight = h >= 22 || h < 8;
+        const [lo, hi] = isNight ? [2, 3] : [5, 15];
         const delta = Math.random() > 0.5 ? 1 : -1;
-        return Math.min(25, Math.max(10, prev + delta));
+        return Math.min(hi, Math.max(lo, prev + delta));
       });
       setTimeout(tick, 2500 + Math.floor(Math.random() * 2500));
     };
