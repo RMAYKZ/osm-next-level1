@@ -195,32 +195,28 @@ export default function Navbar() {
       <nav
         className={`sticky top-0 z-50 w-full transition-all duration-500 ${
           scrolled
-            ? "bg-slate-900/[0.97] md:bg-slate-900/90 md:backdrop-blur-xl shadow-2xl shadow-black/50"
-            : "bg-black/[0.97] md:bg-black/90 md:backdrop-blur-md border-b border-white/5"
+            ? "bg-black/[0.98] md:backdrop-blur-xl shadow-xl shadow-black/80"
+            : "bg-black/[0.96] md:backdrop-blur-md border-b border-white/[0.04]"
         }`}
       >
         {/* Razor-thin gradient bottom border */}
-        <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-cyan-500/40 to-transparent" />
+        <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-amber-700/30 to-transparent" />
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-3 px-4 md:h-20 md:px-6">
           {/* Logo */}
           <a href="#anasayfa" className="flex items-center justify-start gap-3 shrink-0" onClick={(e) => { e.preventDefault(); setOpen(false); scrollToTop(); }}>
             <motion.div
-              animate={isMobile ? {} : {
-                boxShadow: [
-                  "0 0 8px rgba(34,211,238,0.38), 0 0 0px rgba(34,211,238,0)",
-                  "0 0 18px rgba(34,211,238,0.80), 0 0 32px rgba(34,211,238,0.24)",
-                  "0 0 8px rgba(34,211,238,0.38), 0 0 0px rgba(34,211,238,0)",
-                ],
-              }}
-              transition={isMobile ? {} : { duration: 2.8, repeat: Infinity, ease: "easeInOut" }}
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
               style={{
-                width: 48,
-                height: 48,
+                width: 44,
+                height: 44,
                 borderRadius: "50%",
                 overflow: "hidden",
-                border: "1.5px solid rgba(34,211,238,0.65)",
+                border: "1.5px solid rgba(201,162,39,0.45)",
                 flexShrink: 0,
                 transform: "translateZ(0)",
+                boxShadow: "0 0 12px rgba(201,162,39,0.15)",
               }}
             >
               <img
@@ -232,7 +228,7 @@ export default function Navbar() {
             <div className="flex flex-col justify-center leading-none me-4">
               <span className="font-display text-sm font-bold tracking-widest text-white md:text-base">OSM NEXT LEVEL</span>
               <div className="flex items-center gap-2 mt-0.5">
-                <span className="text-[9px] uppercase tracking-widest text-sky-400/80 md:text-[10px]">by omerovvvvv · 26/27</span>
+                <span className="text-[9px] uppercase tracking-widest text-stone-500 md:text-[10px]">by omerovvvvv · 26/27</span>
                 <LiveUserBadge />
               </div>
             </div>
@@ -242,9 +238,9 @@ export default function Navbar() {
           <ul className="hidden items-center gap-6 lg:flex">
             {links.map((l) => (
               <li key={l.href}>
-                <a href={l.href} className="group relative text-sm font-medium uppercase tracking-wide text-gray-300/80 transition-colors hover:text-sky-300 whitespace-nowrap">
+                <a href={l.href} className="group relative text-sm font-medium uppercase tracking-wide text-stone-400 transition-colors hover:text-[#c9a227] whitespace-nowrap">
                   {l.label}
-                  <span className="absolute -bottom-1 left-0 h-0.5 w-0 bg-sky-500 transition-all duration-300 group-hover:w-full" />
+                  <span className="absolute -bottom-1 left-0 h-0.5 w-0 bg-[#c9a227] transition-all duration-300 group-hover:w-full" />
                 </a>
               </li>
             ))}
@@ -261,14 +257,14 @@ export default function Navbar() {
                   style={{
                     display: 'inline-flex', alignItems: 'center', gap: 6,
                     padding: '7px 12px', borderRadius: 9, cursor: 'pointer',
-                    background: activeSheet === "garage" ? 'rgba(0,229,255,0.12)' : 'rgba(255,255,255,0.04)',
-                    border: activeSheet === "garage" ? '1px solid rgba(0,229,255,0.35)' : '1px solid rgba(255,255,255,0.09)',
-                    color: activeSheet === "garage" ? '#00e5ff' : 'rgba(255,255,255,0.6)',
+                    background: activeSheet === "garage" ? 'rgba(201,162,39,0.12)' : 'rgba(255,255,255,0.04)',
+                    border: activeSheet === "garage" ? '1px solid rgba(201,162,39,0.4)' : '1px solid rgba(255,255,255,0.09)',
+                    color: activeSheet === "garage" ? '#c9a227' : 'rgba(255,255,255,0.55)',
                     fontSize: 11, fontWeight: 800, letterSpacing: '0.04em', transition: 'all 0.2s',
                   }}
                   aria-label="Taktik Garajım"
                 >
-                  🗄️ {t("garage.label")}{garageCount > 0 && <span style={{ background: 'rgba(0,229,255,0.18)', borderRadius: 999, padding: '1px 6px', fontSize: 10, color: '#00e5ff' }}>{garageCount}</span>}
+                  🗄️ {t("garage.label")}{garageCount > 0 && <span style={{ background: 'rgba(201,162,39,0.15)', borderRadius: 999, padding: '1px 6px', fontSize: 10, color: '#c9a227' }}>{garageCount}</span>}
                 </motion.button>
               )}
               <ProfilePanel />
@@ -291,7 +287,7 @@ export default function Navbar() {
               onClick={() => setOpen((v) => !v)}
               whileHover={{ scale: 1.08, transition: { duration: 0.15 } }}
               whileTap={{ scale: 0.92 }}
-              className="flex h-10 w-10 items-center justify-center rounded-xl border border-white/10 bg-white/[0.04] text-white transition-colors hover:border-sky-400/40 hover:bg-sky-500/10"
+              className="flex h-10 w-10 items-center justify-center rounded-xl border border-white/10 bg-white/[0.04] text-white transition-colors hover:border-amber-700/40 hover:bg-amber-900/10"
               aria-label="Menu"
             >
               <motion.svg
@@ -336,7 +332,7 @@ export default function Navbar() {
                 animate={{ x: 0 }}
                 exit={{ x: isRTL ? "-100%" : "100%" }}
                 transition={{ type: "spring", stiffness: 320, damping: 32 }}
-                style={{ position: "fixed", top: 0, [isRTL ? "left" : "right"]: 0, height: "100%", width: "80%", maxWidth: 400, background: "#0c1017", display: "flex", flexDirection: "column", zIndex: 10, boxShadow: "0 25px 50px -12px rgba(0,0,0,0.8)" }}
+                style={{ position: "fixed", top: 0, [isRTL ? "left" : "right"]: 0, height: "100%", width: "80%", maxWidth: 400, background: "#0a0a0a", display: "flex", flexDirection: "column", zIndex: 10, boxShadow: "-8px 0 40px rgba(0,0,0,0.9), inset 1px 0 0 rgba(201,162,39,0.08)" }}
               >
                 {/* Header */}
                 <div className="shrink-0 flex items-center justify-between border-b border-white/10 px-5 py-4">
@@ -345,7 +341,7 @@ export default function Navbar() {
                     onClick={() => setOpen(false)}
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 0.9 }}
-                    className="flex h-9 w-9 items-center justify-center rounded-lg border border-white/10 bg-white/[0.04] text-white hover:bg-sky-500/10"
+                    className="flex h-9 w-9 items-center justify-center rounded-lg border border-white/10 bg-white/[0.04] text-white hover:bg-amber-900/10"
                     aria-label={t("nav.close")}
                   >
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round">
@@ -383,7 +379,7 @@ export default function Navbar() {
                       <a
                         href={l.href}
                         onClick={() => setOpen(false)}
-                        className="flex items-center justify-between rounded-xl px-4 py-3.5 text-[15px] font-semibold text-stone-200 transition-colors hover:bg-sky-500/10 hover:text-sky-300"
+                        className="flex items-center justify-between rounded-xl px-4 py-3.5 text-[15px] font-semibold text-stone-300 transition-colors hover:bg-amber-900/10 hover:text-[#c9a227]"
                       >
                         <span>{l.label}</span>
                         <span className="text-stone-500">›</span>
@@ -413,8 +409,8 @@ export default function Navbar() {
                         onClick={() => { setOpen(false); setActiveSheet(item.key); }}
                         className="flex w-full items-center justify-between rounded-xl px-4 py-3.5 text-[15px] font-semibold text-stone-200 transition-colors"
                         style={{
-                          background: "linear-gradient(135deg, rgba(99,102,241,0.12), rgba(139,92,246,0.07))",
-                          border: "1px solid rgba(139,92,246,0.28)",
+                          background: "rgba(255,255,255,0.025)",
+                          border: "1px solid rgba(201,162,39,0.18)",
                         }}
                       >
                         <span className="flex items-center gap-3">
@@ -486,12 +482,12 @@ export default function Navbar() {
                   position: "fixed",
                   bottom: 0, left: 0, right: 0,
                   height: "92dvh",
-                  background: "#080b1a",
+                  background: "#0a0a0a",
                   borderRadius: "22px 22px 0 0",
                   overflow: "hidden",
                   display: "flex",
                   flexDirection: "column",
-                  boxShadow: "0 -20px 60px rgba(0,0,0,0.7), 0 -1px 0 rgba(139,92,246,0.25)",
+                  boxShadow: "0 -20px 60px rgba(0,0,0,0.8), 0 -1px 0 rgba(201,162,39,0.12)",
                 }}
               >
                 {/* Drag handle + header */}
@@ -551,8 +547,8 @@ export default function Navbar() {
             transition={{ type: "spring", stiffness: 380, damping: 26 }}
             whileHover={{ scale: 1.1, transition: { duration: 0.15 } }}
             whileTap={{ scale: 0.92 }}
-            className="fixed bottom-6 right-6 z-50 flex h-12 w-12 items-center justify-center rounded-full border border-cyan-500/30 bg-slate-900/70 text-white backdrop-blur-xl"
-            style={{ boxShadow: "0 0 20px rgba(34,211,238,0.15), 0 4px 24px rgba(0,0,0,0.4)" }}
+            className="fixed bottom-6 right-6 z-50 flex h-12 w-12 items-center justify-center rounded-full border border-amber-800/30 bg-black/90 text-white"
+            style={{ boxShadow: "0 0 16px rgba(201,162,39,0.08), 0 4px 24px rgba(0,0,0,0.5)" }}
             aria-label="Back to top"
           >
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">

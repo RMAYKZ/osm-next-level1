@@ -36,11 +36,11 @@ body {
 * { box-sizing: border-box; }
 
 ::-webkit-scrollbar { width: 10px; }
-::-webkit-scrollbar-track { background: #020617; }
-::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 999px; border: 2px solid #020617; }
-::-webkit-scrollbar-thumb:hover { background: #334155; }
+::-webkit-scrollbar-track { background: #080808; }
+::-webkit-scrollbar-thumb { background: #222222; border-radius: 999px; border: 2px solid #080808; }
+::-webkit-scrollbar-thumb:hover { background: #333333; }
 
-::selection { background: rgba(96, 165, 250, 0.35); color: #eff6ff; }
+::selection { background: rgba(201, 162, 39, 0.35); color: #fff8e7; }
 
 .opus-noise {
   position: relative;
@@ -88,7 +88,7 @@ body {
 }
 
 .opus-kicker {
-  color: #67e8f9;
+  color: #c9a227;
   font-family: "Inter", system-ui, sans-serif;
   font-size: 0.7rem;
   font-weight: 700;
@@ -100,9 +100,9 @@ body {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  border: 1px solid rgba(96, 165, 250, 0.22);
-  background: rgba(96, 165, 250, 0.07);
-  color: #bfdbfe;
+  border: 1px solid rgba(201, 162, 39, 0.28);
+  background: rgba(201, 162, 39, 0.07);
+  color: #e8c95a;
   border-radius: 999px;
   padding: 0.45rem 0.8rem;
   font-family: var(--font-display);
@@ -113,14 +113,16 @@ body {
 }
 
 .premium-button {
-  background: linear-gradient(135deg, #2563eb, #0891b2 50%, #06b6d4);
-  box-shadow: 0 20px 45px -24px rgba(6, 182, 212, 0.6);
+  background: linear-gradient(135deg, #1a1409, #2a1e05 50%, #1a1409);
+  border: 1px solid rgba(201, 162, 39, 0.45);
+  box-shadow: 0 0 28px -8px rgba(201, 162, 39, 0.3);
+  color: #c9a227;
 }
 
-.premium-button:hover { filter: brightness(1.08); }
+.premium-button:hover { filter: brightness(1.1); }
 
-.text-gold { color: #67e8f9; }
-.text-cream { color: #f0f9ff; }
+.text-gold { color: #c9a227; }
+.text-cream { color: #f5f0e8; }
 
 /* ── Hero brand title — Barlow Condensed, wins over RTL Cairo override ── */
 .hero-brand-title {

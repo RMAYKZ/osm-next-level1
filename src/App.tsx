@@ -38,22 +38,22 @@ export default function App() {
           {/* ── Mobile fallback background (hidden on md+) ── */}
           <div
             className="fixed inset-0 -z-10 md:hidden"
-            style={{ background: "radial-gradient(circle at 50% 50%, #1e293b 0%, #0f172a 50%, #020617 100%)" }}
+            style={{ background: "#080808" }}
           />
 
-          {/* ── Aceternity animated gradient — desktop only (md+) ── */}
+          {/* ── Subtle warm-dark ambient gradient — desktop only (md+) ── */}
           <div className="hidden md:block">
             <BackgroundGradientAnimation
               containerClassName="fixed inset-0 -z-10 pointer-events-none"
               interactive={false}
-              gradientBackgroundStart="rgb(1, 4, 16)"
-              gradientBackgroundEnd="rgb(2, 8, 24)"
-              firstColor="18, 113, 255"
-              secondColor="72, 20, 200"
-              thirdColor="0, 180, 220"
-              fourthColor="60, 10, 120"
-              fifthColor="20, 150, 80"
-              pointerColor="0, 163, 255"
+              gradientBackgroundStart="rgb(6, 5, 3)"
+              gradientBackgroundEnd="rgb(3, 2, 1)"
+              firstColor="45, 32, 5"
+              secondColor="22, 15, 2"
+              thirdColor="38, 26, 4"
+              fourthColor="12, 8, 1"
+              fifthColor="30, 21, 3"
+              pointerColor="55, 40, 7"
               blendingValue="hard-light"
               size="80%"
             />
@@ -73,7 +73,7 @@ export default function App() {
               left: 0,
               width: "100%",
               height: "100%",
-              backgroundColor: "rgba(0, 0, 0, 0.40)",
+              backgroundColor: "rgba(0, 0, 0, 0.72)",
               overflowY: "auto",
               overflowX: "hidden",
             }}>
