@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useCallback, type ReactNode } from "react";
+import { createContext, useContext, useState, useCallback, useEffect, type ReactNode } from "react";
 import { premiumCodes } from "../data/extras";
 import { validcodes } from "../data/validcodes";
 import { getDb } from "../lib/firebase";
@@ -7,9 +7,10 @@ import { getDb } from "../lib/firebase";
 const SHEETS_ID  = import.meta.env.VITE_SHEETS_ID  as string | undefined;
 const SHEETS_KEY = import.meta.env.VITE_SHEETS_KEY as string | undefined;
 
-const STORAGE_KEY = "osm-next-level-premium";
-const DEVICE_KEY  = "osm-device-id";
-const DEVICE_COOKIE = "osm-did";
+const STORAGE_KEY    = "osm-next-level-premium";
+const PREMIUM_CODE_KEY = "osm-premium-code";
+const DEVICE_KEY     = "osm-device-id";
+const DEVICE_COOKIE  = "osm-did";
 
 // ── Device ID — stored in both localStorage + cookie for resilience ───
 function getDeviceId(): string {
@@ -105,6 +106,22 @@ async function checkAndClaimCode(code: string, deviceId: string): Promise<ClaimR
   }
 }
 
+// ── Firestore: check if a claimed code has been revoked or expired ────────
+async function checkRevocation(code: string): Promise<boolean> {
+  try {
+    const db = await getDb();
+    const { doc, getDoc } = await import("firebase/firestore");
+    const snap = await getDoc(doc(db, "usedCodes", code));
+    if (!snap.exists()) return false;
+    const data = snap.data() as { revoked?: boolean; expiresAt?: { toDate: () => Date } };
+    if (data.revoked === true) return true;
+    if (data.expiresAt && data.expiresAt.toDate() < new Date()) return true;
+    return false;
+  } catch {
+    return false;
+  }
+}
+
 // ── Context types ─────────────────────────────────────────────────────
 export type UnlockResult = "ok" | "invalid" | "taken";
 
@@ -150,6 +167,7 @@ export function PremiumProvider({ children }: { children: ReactNode }) {
 
       // 4. Unlock!
       localStorage.setItem(STORAGE_KEY, "true");
+      localStorage.setItem(PREMIUM_CODE_KEY, normalized);
       setIsPremium(true);
       return "ok";
     } finally {
@@ -159,7 +177,21 @@ export function PremiumProvider({ children }: { children: ReactNode }) {
 
   const lock = useCallback(() => {
     localStorage.removeItem(STORAGE_KEY);
+    localStorage.removeItem(PREMIUM_CODE_KEY);
     setIsPremium(false);
+  }, []);
+
+  // On mount: check if the stored code has been revoked or expired in Firestore
+  useEffect(() => {
+    const storedCode = localStorage.getItem(PREMIUM_CODE_KEY);
+    if (!storedCode || localStorage.getItem(STORAGE_KEY) !== "true") return;
+    checkRevocation(storedCode).then(revoked => {
+      if (revoked) {
+        localStorage.removeItem(STORAGE_KEY);
+        localStorage.removeItem(PREMIUM_CODE_KEY);
+        setIsPremium(false);
+      }
+    });
   }, []);
 
   return (

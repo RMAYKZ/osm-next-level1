@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, useEffect, type ReactNode } from "react";
 import { translations, LANGS, type Lang } from "../data/translations";
+import { analytics } from "../lib/analytics";
 
 const extraTranslations: Record<Lang, Record<string, string>> = {
   tr: {
@@ -1477,7 +1478,10 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
     return extraTranslations[lang]?.[key] || translations[lang]?.[key] || extraTranslations.en[key] || translations.en[key] || key;
   };
 
-  const setLang = (l: Lang) => setLangState(l);
+  const setLang = (l: Lang) => {
+    setLangState(l);
+    analytics.languageChange(l);
+  };
 
   return (
     <LanguageContext.Provider value={{ lang, setLang, t, langs: LANGS }}>

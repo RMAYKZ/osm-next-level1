@@ -19,25 +19,25 @@ const tCat = (v: number): TempoCat =>
   v < 55 ? "slow" : v < 63 ? "controlled" : v < 72 ? "medium" : v < 80 ? "fast" : "sprint";
 
 const PRESSURE_GRAD: Record<PressureCat, string> = {
-  ultra_low: "linear-gradient(90deg,#3b82f6,#6366f1)",
-  low:        "linear-gradient(90deg,#6366f1,#8b5cf6)",
-  moderate:   "linear-gradient(90deg,#f59e0b,#f97316)",
-  high:       "linear-gradient(90deg,#f97316,#ef4444)",
-  very_high:  "linear-gradient(90deg,#ef4444,#dc2626)",
+  ultra_low: "#ffffff",
+  low:        "#ffffff",
+  moderate:   "#ffffff",
+  high:       "#ffffff",
+  very_high:  "#ffffff",
 };
 const STYLE_GRAD: Record<StyleCat, string> = {
-  ultra_def:   "linear-gradient(90deg,#3b82f6,#6366f1)",
-  defensive:   "linear-gradient(90deg,#6366f1,#8b5cf6)",
-  balanced:    "linear-gradient(90deg,#8b5cf6,#a78bfa)",
-  attacking:   "linear-gradient(90deg,#f59e0b,#f97316)",
-  full_attack: "linear-gradient(90deg,#f97316,#ef4444)",
+  ultra_def:   "#ffffff",
+  defensive:   "#ffffff",
+  balanced:    "#ffffff",
+  attacking:   "#ffffff",
+  full_attack: "#ffffff",
 };
 const TEMPO_GRAD: Record<TempoCat, string> = {
-  slow:       "linear-gradient(90deg,#14b8a6,#22d3ee)",
-  controlled: "linear-gradient(90deg,#22d3ee,#38bdf8)",
-  medium:     "linear-gradient(90deg,#f59e0b,#fbbf24)",
-  fast:       "linear-gradient(90deg,#f97316,#ef4444)",
-  sprint:     "linear-gradient(90deg,#ef4444,#dc2626)",
+  slow:       "#ffffff",
+  controlled: "#ffffff",
+  medium:     "#ffffff",
+  fast:       "#ffffff",
+  sprint:     "#ffffff",
 };
 
 // ─── i18n ─────────────────────────────────────────────────────────────────────
@@ -200,19 +200,19 @@ function WMSliderBar({ label, value, gradient, catLabel, delay = 0 }: {
     <div style={{ marginBottom: 20 }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 7 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          <span style={{ color: "#94a3b8", fontSize: 11.5, fontWeight: 600, letterSpacing: "0.06em", textTransform: "uppercase" }}>{label}</span>
+          <span style={{ color: "rgba(255,255,255,0.5)", fontSize: 11.5, fontWeight: 600, letterSpacing: "0.06em", textTransform: "uppercase" }}>{label}</span>
           <span style={{
             fontSize: 10, padding: "2px 7px", borderRadius: 99,
-            background: "rgba(251,191,36,0.1)", border: "1px solid rgba(251,191,36,0.25)",
-            color: "#fbbf24", fontWeight: 600, letterSpacing: "0.04em",
+            background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.15)",
+            color: "rgba(255,255,255,0.7)", fontWeight: 600, letterSpacing: "0.04em",
           }}>{catLabel}</span>
         </div>
         <motion.span
           initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: delay + 0.5 }}
-          style={{ color: "#e2e8f0", fontWeight: 800, fontSize: 24, letterSpacing: "-0.02em", lineHeight: 1 }}
+          style={{ color: "#fff", fontWeight: 800, fontSize: 24, letterSpacing: "-0.02em", lineHeight: 1 }}
         >{value}</motion.span>
       </div>
-      <div style={{ height: 10, borderRadius: 99, background: "rgba(255,255,255,0.07)", overflow: "hidden" }}>
+      <div style={{ height: 10, borderRadius: 99, background: "rgba(255,255,255,0.1)", overflow: "hidden" }}>
         <motion.div
           initial={{ width: 0 }} animate={{ width: `${value}%` }}
           transition={{ duration: 1.0, ease: [0.16, 1, 0.3, 1], delay }}
@@ -231,7 +231,7 @@ function WMSliderBar({ label, value, gradient, catLabel, delay = 0 }: {
       </div>
       <div style={{ display: "flex", justifyContent: "space-between", marginTop: 4 }}>
         {[0, 25, 50, 75, 99].map(tick => (
-          <span key={tick} style={{ fontSize: 9, color: "rgba(148,163,184,0.3)" }}>{tick}</span>
+          <span key={tick} style={{ fontSize: 9, color: "rgba(255,255,255,0.18)" }}>{tick}</span>
         ))}
       </div>
     </div>
@@ -241,20 +241,16 @@ function WMSliderBar({ label, value, gradient, catLabel, delay = 0 }: {
 function WMLineTacticRow({ label, value, display, isLast }: {
   label: string; value: string; display: string; isLast?: boolean;
 }) {
-  const isAttack  = value === "attack";
-  const isStay    = value === "stayBack";
-  const isDefHelp = value === "defHelp";
-  const color = isAttack ? "#22c55e" : isStay ? "#6366f1" : isDefHelp ? "#f59e0b" : "#94a3b8";
   return (
     <div style={{
       display: "flex", justifyContent: "space-between", alignItems: "center",
-      padding: "7px 0", borderBottom: isLast ? "none" : "1px solid rgba(255,255,255,0.04)",
+      padding: "7px 0", borderBottom: isLast ? "none" : "1px solid rgba(255,255,255,0.06)",
     }}>
-      <span style={{ color: "#64748b", fontSize: 11.5, fontWeight: 600, letterSpacing: "0.04em" }}>{label}</span>
+      <span style={{ color: "rgba(255,255,255,0.38)", fontSize: 11.5, fontWeight: 600, letterSpacing: "0.04em" }}>{label}</span>
       <span style={{
         fontSize: 11, fontWeight: 700, letterSpacing: "0.06em",
-        color, padding: "3px 10px", borderRadius: 99,
-        background: `${color}18`, border: `1px solid ${color}33`,
+        color: "rgba(255,255,255,0.85)", padding: "3px 10px", borderRadius: 99,
+        background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.12)",
       }}>{display}</span>
     </div>
   );
@@ -266,18 +262,18 @@ function WMExplainRow({ icon, title, value, text }: { icon: string; title: strin
       initial={{ opacity: 0, x: -8 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.22 }}
       style={{
         display: "flex", gap: 12, padding: "11px 14px", borderRadius: 12,
-        background: "rgba(255,255,255,0.025)", border: "1px solid rgba(255,255,255,0.05)", marginBottom: 8,
+        background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)", marginBottom: 8,
       }}
     >
       <span style={{ fontSize: 18, flexShrink: 0, lineHeight: 1.4 }}>{icon}</span>
       <div>
         <div style={{ display: "flex", alignItems: "center", gap: 7, marginBottom: 4 }}>
-          <span style={{ color: "#e2e8f0", fontWeight: 700, fontSize: 12.5 }}>{title}</span>
+          <span style={{ color: "#fff", fontWeight: 700, fontSize: 12.5 }}>{title}</span>
           {value && (
-            <span style={{ fontSize: 10, padding: "1px 6px", borderRadius: 99, background: "rgba(251,191,36,0.12)", color: "#fbbf24", fontWeight: 700 }}>{value}</span>
+            <span style={{ fontSize: 10, padding: "1px 6px", borderRadius: 99, background: "rgba(255,255,255,0.08)", color: "rgba(255,255,255,0.7)", fontWeight: 700 }}>{value}</span>
           )}
         </div>
-        <p style={{ color: "#64748b", fontSize: 12, lineHeight: 1.65, margin: 0 }}>{text}</p>
+        <p style={{ color: "rgba(255,255,255,0.38)", fontSize: 12, lineHeight: 1.65, margin: 0 }}>{text}</p>
       </div>
     </motion.div>
   );
@@ -286,10 +282,9 @@ function WMExplainRow({ icon, title, value, text }: { icon: string; title: strin
 // ─── Card style constant ──────────────────────────────────────────────────────
 const isMobileViewport = typeof window !== "undefined" && window.innerWidth < 768;
 const CARD: React.CSSProperties = {
-  background: isMobileViewport ? "rgba(9,11,33,0.97)" : "rgba(9,11,33,0.88)",
-  ...(isMobileViewport ? {} : { backdropFilter: "blur(20px)" }),
-  border: "1px solid rgba(251,191,36,0.15)", borderRadius: 20,
-  boxShadow: "0 20px 60px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.05)",
+  background: "rgba(255,255,255,0.03)",
+  border: "1px solid rgba(255,255,255,0.08)", borderRadius: 16,
+  boxShadow: "0 20px 60px rgba(0,0,0,0.5)",
 };
 
 // ─── Main component ───────────────────────────────────────────────────────────
@@ -365,16 +360,16 @@ export default function WeeklyMeta() {
       >
         <span style={{
           display: "inline-block", fontSize: 11, fontWeight: 700, letterSpacing: "0.14em",
-          textTransform: "uppercase", color: "#fbbf24",
+          textTransform: "uppercase", color: "rgba(255,255,255,0.4)",
           padding: "6px 14px", borderRadius: 99,
-          background: "rgba(251,191,36,0.1)", border: "1px solid rgba(251,191,36,0.28)",
+          background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.12)",
           marginBottom: 20,
-        }}>⭐ {t("meta.badge")}</span>
+        }}>{t("meta.badge")}</span>
 
-        <h2 style={{ fontSize: "clamp(28px,5vw,48px)", fontWeight: 900, lineHeight: 1.08, letterSpacing: "-0.02em", margin: "0 0 6px" }}>
-          <span style={{ color: "#e2e8f0" }}>{fmBase}</span>
+        <h2 style={{ fontSize: "clamp(28px,5vw,48px)", fontWeight: 900, lineHeight: 1.08, letterSpacing: "-0.025em", margin: "0 0 6px" }}>
+          <span style={{ color: "#fff" }}>{fmBase}</span>
           {fmStyle && (
-            <span style={{ color: "#f97316" }}>
+            <span style={{ color: "rgba(255,255,255,0.7)" }}>
               {" "}({t(STYLE_KEYS[fmStyle] ?? fmStyle)})
             </span>
           )}
@@ -382,31 +377,31 @@ export default function WeeklyMeta() {
 
         {/* Context chips */}
         <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", justifyContent: "center", gap: 8, margin: "16px 0 20px" }}>
-          <span style={{ borderRadius: 99, border: "1px solid rgba(255,255,255,0.1)", background: "rgba(255,255,255,0.04)", padding: "5px 13px", fontSize: 10.5, fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase", color: "#94a3b8" }}>
+          <span style={{ borderRadius: 99, border: "1px solid rgba(255,255,255,0.15)", background: "rgba(255,255,255,0.04)", padding: "5px 13px", fontSize: 10.5, fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase", color: "rgba(255,255,255,0.55)" }}>
             {t("anti.against")} {opponent?.formation ?? baseTactic.opponentId}
           </span>
-          <span style={{ borderRadius: 99, border: "1px solid rgba(251,191,36,0.28)", background: "rgba(251,191,36,0.08)", padding: "5px 13px", fontSize: 10.5, fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase", color: "#fbbf24" }}>
+          <span style={{ borderRadius: 99, border: "1px solid rgba(255,255,255,0.2)", background: "rgba(255,255,255,0.06)", padding: "5px 13px", fontSize: 10.5, fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase", color: "#fff" }}>
             {locationLabel}
           </span>
-          <span style={{ borderRadius: 99, border: "1px solid rgba(255,255,255,0.1)", background: "rgba(255,255,255,0.04)", padding: "5px 13px", fontSize: 10.5, fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase", color: "#94a3b8" }}>
+          <span style={{ borderRadius: 99, border: "1px solid rgba(255,255,255,0.15)", background: "rgba(255,255,255,0.04)", padding: "5px 13px", fontSize: 10.5, fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase", color: "rgba(255,255,255,0.55)" }}>
             {strengthLabel}
           </span>
-          <span style={{ borderRadius: 99, border: "1px solid rgba(34,197,94,0.22)", background: "rgba(34,197,94,0.07)", padding: "5px 13px", fontSize: 10.5, fontWeight: 700, letterSpacing: "0.06em", color: "#22c55e" }}>
+          <span style={{ borderRadius: 99, border: "1px solid rgba(255,255,255,0.15)", background: "rgba(255,255,255,0.04)", padding: "5px 13px", fontSize: 10.5, fontWeight: 700, letterSpacing: "0.06em", color: "rgba(255,255,255,0.7)" }}>
             {weekRange}
           </span>
         </div>
 
         {/* Live week badge */}
-        <div style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "6px 14px", borderRadius: 99, background: "rgba(251,191,36,0.07)", border: "1px solid rgba(251,191,36,0.18)" }}>
+        <div style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "6px 14px", borderRadius: 99, background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.12)" }}>
           <motion.span
             animate={{ opacity: [1, 0.3, 1] }} transition={{ duration: 2, repeat: Infinity }}
-            style={{ width: 6, height: 6, borderRadius: "50%", background: "#fbbf24", display: "inline-block" }}
+            style={{ width: 6, height: 6, borderRadius: "50%", background: "#fff", display: "inline-block" }}
           />
-          <span style={{ color: "#fbbf24", fontSize: 11, fontWeight: 700, letterSpacing: "0.06em" }}>
+          <span style={{ color: "#fff", fontSize: 11, fontWeight: 700, letterSpacing: "0.06em" }}>
             {w.weekLabel} · Week {ukWeek}
           </span>
-          <span style={{ color: "#334155", fontSize: 10 }}>·</span>
-          <span style={{ color: "#475569", fontSize: 10, letterSpacing: "0.03em" }}>{w.weeklyNote}</span>
+          <span style={{ color: "rgba(255,255,255,0.22)", fontSize: 10 }}>·</span>
+          <span style={{ color: "rgba(255,255,255,0.22)", fontSize: 10, letterSpacing: "0.03em" }}>{w.weeklyNote}</span>
         </div>
       </motion.div>
 
@@ -417,8 +412,8 @@ export default function WeeklyMeta() {
         style={{ ...CARD, padding: "26px 24px", marginBottom: 16 }}
       >
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 26, flexWrap: "wrap", gap: 8 }}>
-          <span style={{ color: "#e2e8f0", fontWeight: 800, fontSize: 14, letterSpacing: "0.04em" }}>{w.slidersTitle}</span>
-          <span style={{ fontSize: 10, color: "#334155", letterSpacing: "0.04em" }}>{w.weeklyNote}</span>
+          <span style={{ color: "#fff", fontWeight: 800, fontSize: 14, letterSpacing: "0.04em" }}>{w.slidersTitle}</span>
+          <span style={{ fontSize: 10, color: "rgba(255,255,255,0.22)", letterSpacing: "0.04em" }}>{w.weeklyNote}</span>
         </div>
         <WMSliderBar label={t("anti.pressure")} value={P} gradient={PRESSURE_GRAD[pCat(P)]} catLabel={w.pLabels[pCat(P)]} delay={0} />
         <WMSliderBar label={t("anti.style")}    value={S} gradient={STYLE_GRAD[sCat(S)]}    catLabel={w.sLabels[sCat(S)]} delay={0.12} />
@@ -434,36 +429,36 @@ export default function WeeklyMeta() {
           viewport={{ once: true }} transition={{ duration: 0.45, delay: 0.14 }}
           style={{ ...CARD, padding: "22px 20px" }}
         >
-          <span style={{ color: "#475569", fontSize: 10.5, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", display: "block", marginBottom: 16 }}>
+          <span style={{ color: "rgba(255,255,255,0.28)", fontSize: 10.5, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", display: "block", marginBottom: 16 }}>
             {w.formationLabel}
           </span>
           <div style={{ display: "flex", alignItems: "center", gap: 14, marginBottom: 18 }}>
             <div style={{
               width: 48, height: 48, borderRadius: 14,
-              background: "linear-gradient(135deg,#fbbf24,#f97316)",
+              background: "rgba(255,255,255,0.06)",
+              border: "1px solid rgba(255,255,255,0.12)",
               display: "flex", alignItems: "center", justifyContent: "center",
               fontSize: 24, flexShrink: 0,
-              boxShadow: "0 8px 24px rgba(251,191,36,0.3)",
             }}>
               {opponent?.emoji ?? "⚽"}
             </div>
             <div>
-              <div style={{ color: "#e2e8f0", fontWeight: 900, fontSize: 22, lineHeight: 1.1, letterSpacing: "-0.02em" }}>
+              <div style={{ color: "#fff", fontWeight: 900, fontSize: 22, lineHeight: 1.1, letterSpacing: "-0.02em" }}>
                 {fmBase}
               </div>
               {fmStyle && (
-                <div style={{ color: "#f97316", fontSize: 12, fontWeight: 700, marginTop: 3 }}>
+                <div style={{ color: "rgba(255,255,255,0.55)", fontSize: 12, fontWeight: 700, marginTop: 3 }}>
                   {t(STYLE_KEYS[fmStyle] ?? fmStyle)}
                 </div>
               )}
             </div>
           </div>
           {/* Coach note */}
-          <div style={{ padding: "13px 14px", borderRadius: 12, background: "rgba(251,191,36,0.06)", border: "1px solid rgba(251,191,36,0.14)" }}>
-            <span style={{ color: "#92400e", fontSize: 9.5, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", display: "block", marginBottom: 6 }}>
+          <div style={{ padding: "13px 14px", borderRadius: 12, background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)" }}>
+            <span style={{ color: "rgba(255,255,255,0.28)", fontSize: 9.5, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", display: "block", marginBottom: 6 }}>
               {t("anti.note")}
             </span>
-            <p style={{ color: "#94a3b8", fontSize: 12.5, lineHeight: 1.7, margin: 0, fontStyle: "italic" }}>"{noteText}"</p>
+            <p style={{ color: "rgba(255,255,255,0.5)", fontSize: 12.5, lineHeight: 1.7, margin: 0, fontStyle: "italic" }}>"{noteText}"</p>
           </div>
         </motion.div>
 
@@ -473,26 +468,25 @@ export default function WeeklyMeta() {
           viewport={{ once: true }} transition={{ duration: 0.45, delay: 0.2 }}
           style={{ ...CARD, padding: "22px 20px" }}
         >
-          <span style={{ color: "#475569", fontSize: 10.5, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", display: "block", marginBottom: 16 }}>
+          <span style={{ color: "rgba(255,255,255,0.28)", fontSize: 10.5, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", display: "block", marginBottom: 16 }}>
             {t("anti.lineTactics")}
           </span>
           <WMLineTacticRow label={t("lt.forwards")} value={lt.forwards} display={readLine(lt.forwards)} />
           <WMLineTacticRow label={t("lt.midfield")} value={lt.midfield} display={readLine(lt.midfield)} />
           <WMLineTacticRow label={t("lt.defence")}  value={lt.defence}  display={readLine(lt.defence)} />
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "7px 0 4px", borderBottom: "1px solid rgba(255,255,255,0.04)" }}>
-            <span style={{ color: "#64748b", fontSize: 11.5, fontWeight: 600, letterSpacing: "0.04em" }}>{t("lt.offsides")}</span>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "7px 0 4px", borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
+            <span style={{ color: "rgba(255,255,255,0.38)", fontSize: 11.5, fontWeight: 600, letterSpacing: "0.04em" }}>{t("lt.offsides")}</span>
             <span style={{
               fontSize: 10.5, fontWeight: 700, padding: "3px 10px", borderRadius: 99,
-              background: lt.offsides ? "rgba(239,68,68,0.1)" : "rgba(34,197,94,0.09)",
-              border: `1px solid ${lt.offsides ? "rgba(239,68,68,0.28)" : "rgba(34,197,94,0.24)"}`,
-              color: lt.offsides ? "#ef4444" : "#22c55e",
+              background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.12)",
+              color: "rgba(255,255,255,0.8)",
             }}>{lt.offsides ? t("lt.on") : t("lt.off")}</span>
           </div>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", paddingTop: 7 }}>
-            <span style={{ color: "#64748b", fontSize: 11.5, fontWeight: 600, letterSpacing: "0.04em" }}>{t("lt.marking")}</span>
+            <span style={{ color: "rgba(255,255,255,0.38)", fontSize: 11.5, fontWeight: 600, letterSpacing: "0.04em" }}>{t("lt.marking")}</span>
             <span style={{
               fontSize: 10.5, fontWeight: 700, padding: "3px 10px", borderRadius: 99,
-              background: "rgba(251,191,36,0.1)", border: "1px solid rgba(251,191,36,0.24)", color: "#fbbf24",
+              background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.12)", color: "rgba(255,255,255,0.8)",
             }}>{lt.marking === "area" ? t("lt.area") : t("lt.man")}</span>
           </div>
         </motion.div>
@@ -515,11 +509,11 @@ export default function WeeklyMeta() {
         >
           <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
             <span style={{ fontSize: 18 }}>🧠</span>
-            <span style={{ color: "#e2e8f0", fontWeight: 800, fontSize: 14.5, letterSpacing: "0.02em" }}>{w.why}</span>
+            <span style={{ color: "#fff", fontWeight: 800, fontSize: 14.5, letterSpacing: "0.02em" }}>{w.why}</span>
           </div>
           <motion.span
             animate={{ rotate: showWhy ? 180 : 0 }} transition={{ duration: 0.2 }}
-            style={{ color: "#64748b", fontSize: 16, display: "flex" }}
+            style={{ color: "rgba(255,255,255,0.4)", fontSize: 16, display: "flex" }}
           >▾</motion.span>
         </button>
 
@@ -534,11 +528,11 @@ export default function WeeklyMeta() {
                 {w.scenario[scenarioKey] && (
                   <div style={{
                     padding: "14px 16px", borderRadius: 14, marginBottom: 16,
-                    background: "linear-gradient(135deg,rgba(251,191,36,0.08),rgba(249,115,22,0.04))",
-                    border: "1px solid rgba(251,191,36,0.2)",
+                    background: "rgba(255,255,255,0.03)",
+                    border: "1px solid rgba(255,255,255,0.08)",
                   }}>
-                    <span style={{ color: "#78350f", fontSize: 10.5, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", display: "block", marginBottom: 7 }}>{w.scenarioLabel}</span>
-                    <p style={{ color: "#cbd5e1", fontSize: 13, lineHeight: 1.65, margin: 0, fontWeight: 500 }}>{w.scenario[scenarioKey]}</p>
+                    <span style={{ color: "rgba(255,255,255,0.28)", fontSize: 10.5, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", display: "block", marginBottom: 7 }}>{w.scenarioLabel}</span>
+                    <p style={{ color: "rgba(255,255,255,0.7)", fontSize: 13, lineHeight: 1.65, margin: 0, fontWeight: 500 }}>{w.scenario[scenarioKey]}</p>
                   </div>
                 )}
                 <WMExplainRow icon="⚡" title={`${t("anti.pressure")} · ${P}`} value={w.pLabels[pCat(P)]} text={w.pExplain[pCat(P)]} />
@@ -557,15 +551,14 @@ export default function WeeklyMeta() {
       >
         <motion.button
           onClick={handleOpenEngine}
-          whileHover={{ scale: 1.02, boxShadow: "0 0 40px -4px rgba(249,115,22,0.6)", transition: { duration: 0.15 } }}
+          whileHover={{ scale: 1.02, transition: { duration: 0.15 } }}
           whileTap={{ scale: 0.97 }}
           style={{
-            width: "100%", padding: "17px 24px", borderRadius: 16,
-            background: "linear-gradient(135deg,#f59e0b,#f97316,#ef4444)",
+            width: "100%", padding: "17px 24px", borderRadius: 999,
+            background: "#fff",
             border: "none", cursor: "pointer",
             color: "#000", fontWeight: 900, fontSize: 13,
             letterSpacing: "0.1em", textTransform: "uppercase",
-            boxShadow: "0 8px 32px rgba(249,115,22,0.3)",
             WebkitTapHighlightColor: "transparent",
           }}
         >

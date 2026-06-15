@@ -4,6 +4,7 @@ import type { Timestamp } from "firebase/firestore";
 import type { User } from "firebase/auth";
 import { getDb, getAuthInstance } from "../lib/firebase";
 import { useLang } from "../contexts/LanguageContext";
+import { analytics } from "../lib/analytics";
 
 interface SiteComment {
   id: string;
@@ -71,17 +72,17 @@ const SEED_COMMENTS: SiteComment[] = [
 ];
 
 const GLASS: React.CSSProperties = {
-  background: "rgba(9,11,33,0.88)",
+  background: "rgba(255,255,255,0.03)",
   backdropFilter: "blur(20px)",
   WebkitBackdropFilter: "blur(20px)",
-  border: "1px solid rgba(139,92,246,0.12)",
-  borderRadius: 24,
+  border: "1px solid rgba(255,255,255,0.08)",
+  borderRadius: 16,
 };
 
 const inputStyle: React.CSSProperties = {
   width: "100%", boxSizing: "border-box",
   background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.1)",
-  borderRadius: 12, padding: "12px 16px", color: "#e2e8f0", fontSize: 14, outline: "none",
+  borderRadius: 12, padding: "12px 16px", color: "#ffffff", fontSize: 14, outline: "none",
 };
 
 function formatDate(comment: SiteComment) {
@@ -222,6 +223,7 @@ export default function CommentSection() {
         approved: false,
         createdAt: serverTimestamp(),
       });
+      analytics.commentSubmit();
       setSubmitted(true);
       setName("");
       setCommentText("");
@@ -271,12 +273,12 @@ export default function CommentSection() {
       <div className="pointer-events-none absolute inset-0 -z-10" aria-hidden="true">
         <div style={{
           position: "absolute", top: 0, left: 0, right: 0, height: 1,
-          background: "linear-gradient(90deg, transparent, rgba(139,92,246,0.35), transparent)",
+          background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.06), transparent)",
         }} />
         <div style={{
           position: "absolute", bottom: "5%", left: "-5%",
           width: "35%", height: "50%", borderRadius: "50%",
-          background: "radial-gradient(ellipse, rgba(139,92,246,0.07) 0%, transparent 70%)",
+          background: "radial-gradient(ellipse, rgba(255,255,255,0.03) 0%, transparent 70%)",
           filter: "blur(80px)",
         }} />
       </div>
@@ -293,19 +295,19 @@ export default function CommentSection() {
         >
           <div style={{
             display: "inline-flex", alignItems: "center", gap: 7,
-            background: "rgba(139,92,246,0.08)", border: "1px solid rgba(139,92,246,0.25)",
+            background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.15)",
             borderRadius: 999, padding: "5px 14px", marginBottom: 14,
           }}>
             <span style={{ fontSize: 12 }}>💬</span>
-            <span style={{ fontSize: 10, fontWeight: 900, textTransform: "uppercase", letterSpacing: "0.18em", color: "#a78bfa" }}>
+            <span style={{ fontSize: 10, fontWeight: 900, textTransform: "uppercase", letterSpacing: "0.18em", color: "rgba(255,255,255,0.7)" }}>
               {t("comments.badge")}
             </span>
           </div>
           <h2 style={{ margin: "0 0 10px", fontSize: "clamp(1.8rem,4vw,3.2rem)", fontWeight: 900, lineHeight: 1.1, letterSpacing: "-0.02em" }}>
-            <span style={{ color: "#e2e8f0" }}>{t("comments.titleA")} </span>
-            <span style={{ color: "#a78bfa" }}>{t("comments.titleB")}</span>
+            <span style={{ color: "#ffffff" }}>{t("comments.titleA")} </span>
+            <span style={{ color: "rgba(255,255,255,0.6)" }}>{t("comments.titleB")}</span>
           </h2>
-          <p style={{ margin: 0, fontSize: 14, color: "rgba(148,163,184,0.65)", lineHeight: 1.6 }}>
+          <p style={{ margin: 0, fontSize: 14, color: "rgba(255,255,255,0.42)", lineHeight: 1.6 }}>
             {t("comments.desc")}
           </p>
         </motion.div>
@@ -321,13 +323,13 @@ export default function CommentSection() {
             transition={{ duration: 0.5, ease: EASE }}
             style={{ ...GLASS, padding: "clamp(20px,4vw,32px)" }}
           >
-            <h3 style={{ margin: "0 0 20px", fontSize: "clamp(1.1rem,2.5vw,1.5rem)", fontWeight: 900, color: "#e2e8f0" }}>
+            <h3 style={{ margin: "0 0 20px", fontSize: "clamp(1.1rem,2.5vw,1.5rem)", fontWeight: 900, color: "#ffffff" }}>
               {t("comments.write")}
             </h3>
 
             <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
               <label style={{ display: "block" }}>
-                <span style={{ display: "block", marginBottom: 7, fontSize: 10, fontWeight: 900, textTransform: "uppercase", letterSpacing: "0.18em", color: "rgba(148,163,184,0.5)" }}>
+                <span style={{ display: "block", marginBottom: 7, fontSize: 10, fontWeight: 900, textTransform: "uppercase", letterSpacing: "0.18em", color: "rgba(255,255,255,0.35)" }}>
                   {t("comments.manager")}
                 </span>
                 <input
@@ -339,7 +341,7 @@ export default function CommentSection() {
               </label>
 
               <label style={{ display: "block" }}>
-                <span style={{ display: "block", marginBottom: 7, fontSize: 10, fontWeight: 900, textTransform: "uppercase", letterSpacing: "0.18em", color: "rgba(148,163,184,0.5)" }}>
+                <span style={{ display: "block", marginBottom: 7, fontSize: 10, fontWeight: 900, textTransform: "uppercase", letterSpacing: "0.18em", color: "rgba(255,255,255,0.35)" }}>
                   {t("comments.rating")}
                 </span>
                 <select
@@ -356,7 +358,7 @@ export default function CommentSection() {
               </label>
 
               <label style={{ display: "block" }}>
-                <span style={{ display: "block", marginBottom: 7, fontSize: 10, fontWeight: 900, textTransform: "uppercase", letterSpacing: "0.18em", color: "rgba(148,163,184,0.5)" }}>
+                <span style={{ display: "block", marginBottom: 7, fontSize: 10, fontWeight: 900, textTransform: "uppercase", letterSpacing: "0.18em", color: "rgba(255,255,255,0.35)" }}>
                   {t("comments.message")}
                 </span>
                 <textarea
@@ -374,9 +376,9 @@ export default function CommentSection() {
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.97 }}
                 style={{
-                  background: "linear-gradient(135deg, #8b5cf6, #a78bfa)",
-                  borderRadius: 12, padding: "13px 0", width: "100%",
-                  color: "#fff", fontSize: 13, fontWeight: 900,
+                  background: "#ffffff",
+                  borderRadius: 999, padding: "13px 0", width: "100%",
+                  color: "#000000", fontSize: 13, fontWeight: 900,
                   textTransform: "uppercase", letterSpacing: "0.1em",
                   cursor: loading ? "not-allowed" : "pointer", border: "none",
                   opacity: loading ? 0.6 : 1,
@@ -392,9 +394,9 @@ export default function CommentSection() {
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0 }}
                     style={{
-                      background: "rgba(52,211,153,0.1)", border: "1px solid rgba(52,211,153,0.25)",
+                      background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.15)",
                       borderRadius: 12, padding: "12px 16px",
-                      textAlign: "center", fontSize: 13, fontWeight: 700, color: "#34d399",
+                      textAlign: "center", fontSize: 13, fontWeight: 700, color: "rgba(255,255,255,0.8)",
                     }}
                   >
                     {t("comments.sent")}
@@ -406,9 +408,9 @@ export default function CommentSection() {
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0 }}
                     style={{
-                      background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.25)",
+                      background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.1)",
                       borderRadius: 12, padding: "12px 16px",
-                      textAlign: "center", fontSize: 13, fontWeight: 700, color: "#fca5a5",
+                      textAlign: "center", fontSize: 13, fontWeight: 700, color: "rgba(255,255,255,0.55)",
                     }}
                   >
                     {error}
@@ -428,7 +430,7 @@ export default function CommentSection() {
                 style={{
                   ...GLASS,
                   padding: 32, textAlign: "center",
-                  fontSize: 13, color: "rgba(148,163,184,0.5)",
+                  fontSize: 13, color: "rgba(255,255,255,0.35)",
                 }}
               >
                 {t("comments.empty")}
@@ -438,7 +440,7 @@ export default function CommentSection() {
                 <CommentCard key={comment.id} comment={comment} index={i} />
               ))
             )}
-            <div style={{ textAlign: "center", fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.14em", color: "rgba(100,116,139,0.5)" }}>
+            <div style={{ textAlign: "center", fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.14em", color: "rgba(255,255,255,0.22)" }}>
               {totalText}
             </div>
           </div>
@@ -448,14 +450,14 @@ export default function CommentSection() {
         <div style={{
           marginTop: 24,
           background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.07)",
-          borderRadius: 20, padding: 18,
+          borderRadius: 16, padding: 18,
         }}>
           <button
             onClick={() => setAdminOpen((value) => !value)}
             style={{
               background: "none", border: "none", cursor: "pointer",
               fontSize: 11, fontWeight: 900, textTransform: "uppercase",
-              letterSpacing: "0.14em", color: "rgba(251,191,36,0.65)",
+              letterSpacing: "0.14em", color: "rgba(255,255,255,0.25)",
             }}
           >
             {adminOpen ? t("comments.adminClose") : t("comments.adminOpen")}
@@ -481,8 +483,8 @@ export default function CommentSection() {
                   />
                   <button
                     style={{
-                      background: "#f59e0b", borderRadius: 12, padding: "12px 20px",
-                      fontSize: 13, fontWeight: 900, color: "#1c1917", cursor: "pointer", border: "none",
+                      background: "#ffffff", borderRadius: 12, padding: "12px 20px",
+                      fontSize: 13, fontWeight: 900, color: "#000000", cursor: "pointer", border: "none",
                     }}
                   >
                     {t("matches.login")}
@@ -491,14 +493,14 @@ export default function CommentSection() {
               ) : (
                 <div>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 12, marginBottom: 16, flexWrap: "wrap" }}>
-                    <p style={{ margin: 0, fontSize: 13, color: "rgba(226,232,240,0.7)" }}>{t("matches.loggedIn")} {user.email}</p>
+                    <p style={{ margin: 0, fontSize: 13, color: "rgba(255,255,255,0.55)" }}>{t("matches.loggedIn")} {user.email}</p>
                     <button
                       onClick={handleSignOut}
                       style={{
                         background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.1)",
                         borderRadius: 999, padding: "6px 16px",
                         fontSize: 11, fontWeight: 900, textTransform: "uppercase", letterSpacing: "0.1em",
-                        color: "rgba(148,163,184,0.7)", cursor: "pointer",
+                        color: "rgba(255,255,255,0.45)", cursor: "pointer",
                       }}
                     >
                       {t("matches.logout")}
@@ -507,8 +509,8 @@ export default function CommentSection() {
 
                   {pendingComments.length === 0 ? (
                     <div style={{
-                      background: "rgba(0,0,0,0.2)", border: "1px solid rgba(255,255,255,0.07)",
-                      borderRadius: 12, padding: "14px 16px", fontSize: 13, color: "rgba(148,163,184,0.5)",
+                      background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.07)",
+                      borderRadius: 12, padding: "14px 16px", fontSize: 13, color: "rgba(255,255,255,0.35)",
                     }}>
                       {t("comments.pendingNone")}
                     </div>
@@ -518,8 +520,8 @@ export default function CommentSection() {
                         <div
                           key={comment.id}
                           style={{
-                            background: "rgba(0,0,0,0.2)", border: "1px solid rgba(255,255,255,0.07)",
-                            borderRadius: 14, padding: 14,
+                            background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.07)",
+                            borderRadius: 12, padding: 14,
                           }}
                         >
                           <CommentCard comment={comment} compact index={0} />
@@ -527,9 +529,9 @@ export default function CommentSection() {
                             <button
                               onClick={() => approveComment(comment.id)}
                               style={{
-                                background: "#34d399", borderRadius: 999, padding: "7px 16px",
+                                background: "#ffffff", borderRadius: 999, padding: "7px 16px",
                                 fontSize: 11, fontWeight: 900, textTransform: "uppercase", letterSpacing: "0.1em",
-                                color: "#1c1917", cursor: "pointer", border: "none",
+                                color: "#000000", cursor: "pointer", border: "none",
                               }}
                             >
                               {t("comments.approve")}
@@ -537,9 +539,10 @@ export default function CommentSection() {
                             <button
                               onClick={() => removeComment(comment.id)}
                               style={{
-                                background: "#ef4444", borderRadius: 999, padding: "7px 16px",
+                                background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.12)",
+                                borderRadius: 999, padding: "7px 16px",
                                 fontSize: 11, fontWeight: 900, textTransform: "uppercase", letterSpacing: "0.1em",
-                                color: "#fff", cursor: "pointer", border: "none",
+                                color: "rgba(255,255,255,0.6)", cursor: "pointer",
                               }}
                             >
                               {t("comments.delete")}
@@ -567,20 +570,20 @@ function CommentCard({ comment, compact = false, index }: { comment: SiteComment
           <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
             <div style={{
               width: 36, height: 36, borderRadius: "50%",
-              background: "rgba(251,191,36,0.08)", border: "1px solid rgba(251,191,36,0.2)",
+              background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.12)",
               display: "flex", alignItems: "center", justifyContent: "center",
-              fontSize: 14, fontWeight: 900, color: "#fde68a",
+              fontSize: 14, fontWeight: 900, color: "#ffffff",
             }}>
               {comment.author.charAt(0).toUpperCase()}
             </div>
             <div>
-              <div style={{ fontSize: 14, fontWeight: 800, color: "#e2e8f0" }}>{comment.author}</div>
-              <div style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: "rgba(100,116,139,0.6)" }}>{formatDate(comment)}</div>
+              <div style={{ fontSize: 14, fontWeight: 800, color: "#ffffff" }}>{comment.author}</div>
+              <div style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: "rgba(255,255,255,0.3)" }}>{formatDate(comment)}</div>
             </div>
           </div>
-          <div style={{ fontSize: 12, color: "#f59e0b", whiteSpace: "nowrap" }}>{"★".repeat(comment.rating || 5)}</div>
+          <div style={{ fontSize: 12, color: "rgba(255,255,255,0.6)", whiteSpace: "nowrap" }}>{"★".repeat(comment.rating || 5)}</div>
         </div>
-        <p style={{ margin: 0, fontSize: 13, lineHeight: 1.7, color: "rgba(148,163,184,0.75)" }}>"{comment.text}"</p>
+        <p style={{ margin: 0, fontSize: 13, lineHeight: 1.7, color: "rgba(255,255,255,0.42)" }}>"{comment.text}"</p>
       </article>
     );
   }
@@ -592,31 +595,31 @@ function CommentCard({ comment, compact = false, index }: { comment: SiteComment
       viewport={{ once: true }}
       transition={{ duration: 0.4, delay: Math.min(index, 5) * 0.07, ease: EASE }}
       style={{
-        background: "rgba(9,11,33,0.82)",
+        background: "rgba(255,255,255,0.03)",
         backdropFilter: "blur(16px)",
         WebkitBackdropFilter: "blur(16px)",
-        border: "1px solid rgba(139,92,246,0.1)",
-        borderRadius: 18, padding: 18,
+        border: "1px solid rgba(255,255,255,0.08)",
+        borderRadius: 16, padding: 18,
       }}
     >
       <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 12, marginBottom: 12 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
           <div style={{
             width: 38, height: 38, borderRadius: "50%", flexShrink: 0,
-            background: "rgba(251,191,36,0.08)", border: "1px solid rgba(251,191,36,0.22)",
+            background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.12)",
             display: "flex", alignItems: "center", justifyContent: "center",
-            fontSize: 15, fontWeight: 900, color: "#fde68a",
+            fontSize: 15, fontWeight: 900, color: "#ffffff",
           }}>
             {comment.author.charAt(0).toUpperCase()}
           </div>
           <div>
-            <div style={{ fontSize: 15, fontWeight: 800, color: "#e2e8f0" }}>{comment.author}</div>
-            <div style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: "rgba(100,116,139,0.55)" }}>{formatDate(comment)}</div>
+            <div style={{ fontSize: 15, fontWeight: 800, color: "#ffffff" }}>{comment.author}</div>
+            <div style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: "rgba(255,255,255,0.28)" }}>{formatDate(comment)}</div>
           </div>
         </div>
-        <div style={{ fontSize: 12, color: "#f59e0b", whiteSpace: "nowrap", flexShrink: 0 }}>{"★".repeat(comment.rating || 5)}</div>
+        <div style={{ fontSize: 12, color: "rgba(255,255,255,0.6)", whiteSpace: "nowrap", flexShrink: 0 }}>{"★".repeat(comment.rating || 5)}</div>
       </div>
-      <p style={{ margin: 0, fontSize: 13.5, lineHeight: 1.75, color: "rgba(148,163,184,0.78)" }}>"{comment.text}"</p>
+      <p style={{ margin: 0, fontSize: 13.5, lineHeight: 1.75, color: "rgba(255,255,255,0.42)" }}>"{comment.text}"</p>
     </motion.article>
   );
 }

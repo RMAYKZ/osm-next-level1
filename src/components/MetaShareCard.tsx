@@ -107,29 +107,11 @@ function useCountdown() {
   return val;
 }
 
-// ── Gradient helpers ──────────────────────────────────────────────────────────
+// ── Gradient helpers (monochrome) ──────────────────────────────────────────────
 
-function pGrad(v: number) {
-  return v < 16 ? 'linear-gradient(90deg,#3b82f6,#6366f1)'
-       : v < 30 ? 'linear-gradient(90deg,#6366f1,#8b5cf6)'
-       : v < 50 ? 'linear-gradient(90deg,#f59e0b,#f97316)'
-       : v < 65 ? 'linear-gradient(90deg,#f97316,#ef4444)'
-       :          'linear-gradient(90deg,#ef4444,#dc2626)';
-}
-function sGrad(v: number) {
-  return v < 12 ? 'linear-gradient(90deg,#3b82f6,#6366f1)'
-       : v < 25 ? 'linear-gradient(90deg,#6366f1,#8b5cf6)'
-       : v < 44 ? 'linear-gradient(90deg,#8b5cf6,#a78bfa)'
-       : v < 62 ? 'linear-gradient(90deg,#f59e0b,#f97316)'
-       :          'linear-gradient(90deg,#f97316,#ef4444)';
-}
-function tGrad(v: number) {
-  return v < 55 ? 'linear-gradient(90deg,#14b8a6,#22d3ee)'
-       : v < 63 ? 'linear-gradient(90deg,#22d3ee,#38bdf8)'
-       : v < 72 ? 'linear-gradient(90deg,#f59e0b,#fbbf24)'
-       : v < 80 ? 'linear-gradient(90deg,#f97316,#ef4444)'
-       :          'linear-gradient(90deg,#ef4444,#dc2626)';
-}
+function pGrad(_v: number) { return '#ffffff'; }
+function sGrad(_v: number) { return '#ffffff'; }
+function tGrad(_v: number) { return '#ffffff'; }
 
 // ── Canvas helpers ────────────────────────────────────────────────────────────
 
@@ -144,24 +126,6 @@ function rrect(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h
   ctx.closePath();
 }
 
-function canvasGrad(
-  ctx: CanvasRenderingContext2D,
-  x: number, fw: number,
-  type: 'p' | 's' | 't',
-  v: number,
-): CanvasGradient {
-  const g = ctx.createLinearGradient(x, 0, x + fw, 0);
-  const stops: [number, string, string] =
-    type === 'p'
-      ? v < 16 ? [0,'#3b82f6','#6366f1'] : v < 30 ? [0,'#6366f1','#8b5cf6'] : v < 50 ? [0,'#f59e0b','#f97316'] : v < 65 ? [0,'#f97316','#ef4444'] : [0,'#ef4444','#dc2626']
-      : type === 's'
-      ? v < 12 ? [0,'#3b82f6','#6366f1'] : v < 25 ? [0,'#6366f1','#8b5cf6'] : v < 44 ? [0,'#8b5cf6','#a78bfa'] : v < 62 ? [0,'#f59e0b','#f97316'] : [0,'#f97316','#ef4444']
-      : v < 55 ? [0,'#14b8a6','#22d3ee'] : v < 63 ? [0,'#22d3ee','#38bdf8'] : v < 72 ? [0,'#f59e0b','#fbbf24'] : v < 80 ? [0,'#f97316','#ef4444'] : [0,'#ef4444','#dc2626'];
-  g.addColorStop(stops[0], stops[1]);
-  g.addColorStop(1, stops[2]);
-  return g;
-}
-
 // ── PNG generator ─────────────────────────────────────────────────────────────
 
 interface ScSnap { scenario: string; formation: string; p: number; s: number; t: number; }
@@ -174,34 +138,28 @@ function generatePNG(scenarios: ScSnap[], weekNum: number): string {
   if (!ctx) return '';
 
   // Background
-  ctx.fillStyle = '#05070f';
-  ctx.fillRect(0, 0, W, H);
-  const bgGlow = ctx.createRadialGradient(W / 2, H / 2, 0, W / 2, H / 2, W * 0.65);
-  bgGlow.addColorStop(0, 'rgba(34,211,238,0.045)');
-  bgGlow.addColorStop(0.55, 'rgba(99,102,241,0.02)');
-  bgGlow.addColorStop(1, 'transparent');
-  ctx.fillStyle = bgGlow;
+  ctx.fillStyle = '#000000';
   ctx.fillRect(0, 0, W, H);
 
   // Header
   ctx.font = '900 20px Arial, sans-serif';
-  ctx.fillStyle = '#22d3ee';
+  ctx.fillStyle = '#ffffff';
   ctx.textAlign = 'left';
   ctx.fillText('OSM NEXT LEVEL', 54, 44);
 
   ctx.font = '700 12px Arial, sans-serif';
-  ctx.fillStyle = '#2d3f57';
+  ctx.fillStyle = 'rgba(255,255,255,0.3)';
   ctx.textAlign = 'right';
   ctx.fillText(`WEEK ${weekNum} · ${new Date().getUTCFullYear()}`, W - 54, 44);
 
   // Header divider
-  ctx.strokeStyle = 'rgba(34,211,238,0.14)';
+  ctx.strokeStyle = 'rgba(255,255,255,0.1)';
   ctx.lineWidth = 1;
   ctx.beginPath(); ctx.moveTo(54, 60); ctx.lineTo(W - 54, 60); ctx.stroke();
 
   // Subtitle
   ctx.font = '600 10px Arial, sans-serif';
-  ctx.fillStyle = '#1e2d3d';
+  ctx.fillStyle = 'rgba(255,255,255,0.22)';
   ctx.textAlign = 'center';
   ctx.fillText("THIS WEEK'S META BRIEF · OPTIMAL SLIDER VALUES · osnextlevel.com", W / 2, 80);
 
@@ -213,70 +171,70 @@ function generatePNG(scenarios: ScSnap[], weekNum: number): string {
     const cx = COL_X[i], cy = CY;
 
     // Card bg + border
-    ctx.fillStyle = 'rgba(9,11,33,0.96)';
+    ctx.fillStyle = 'rgba(255,255,255,0.03)';
     rrect(ctx, cx, cy, CW, CH, 12); ctx.fill();
-    ctx.strokeStyle = 'rgba(255,255,255,0.075)';
+    ctx.strokeStyle = 'rgba(255,255,255,0.08)';
     ctx.lineWidth = 1;
     rrect(ctx, cx, cy, CW, CH, 12); ctx.stroke();
 
     // Scenario label
     ctx.font = '700 9px Arial, sans-serif';
-    ctx.fillStyle = '#3d5068';
+    ctx.fillStyle = 'rgba(255,255,255,0.3)';
     ctx.textAlign = 'left';
     ctx.fillText(sc.scenario, cx + 20, cy + 26);
 
     // Formation name
     ctx.font = '900 44px "Arial Black", Arial, sans-serif';
-    ctx.fillStyle = '#e2e8f0';
+    ctx.fillStyle = '#ffffff';
     ctx.fillText(sc.formation, cx + 20, cy + 76);
 
     // Divider
-    ctx.strokeStyle = 'rgba(255,255,255,0.05)';
+    ctx.strokeStyle = 'rgba(255,255,255,0.06)';
     ctx.lineWidth = 1;
     ctx.beginPath(); ctx.moveTo(cx + 20, cy + 90); ctx.lineTo(cx + CW - 20, cy + 90); ctx.stroke();
 
     // "OPTIMAL SLIDERS" eyebrow
     ctx.font = '700 8px Arial, sans-serif';
-    ctx.fillStyle = '#1a2535';
+    ctx.fillStyle = 'rgba(255,255,255,0.22)';
     ctx.fillText('OPTIMAL SLIDERS', cx + 20, cy + 108);
 
     // Slider draw helper
     const bx = cx + 20, bw = CW - 40, bh = 8;
-    const drawBar = (label: string, val: number, type: 'p' | 's' | 't', iy: number) => {
+    const drawBar = (label: string, val: number, iy: number) => {
       ctx.font = '700 9px Arial, sans-serif';
-      ctx.fillStyle = '#475569';
+      ctx.fillStyle = 'rgba(255,255,255,0.42)';
       ctx.textAlign = 'left';
       ctx.fillText(label, bx, iy);
 
       ctx.font = '800 15px Arial, sans-serif';
-      ctx.fillStyle = '#e2e8f0';
+      ctx.fillStyle = '#ffffff';
       ctx.textAlign = 'right';
       ctx.fillText(String(val), cx + CW - 20, iy);
       ctx.textAlign = 'left';
 
       // Track
-      ctx.fillStyle = 'rgba(255,255,255,0.055)';
+      ctx.fillStyle = 'rgba(255,255,255,0.08)';
       rrect(ctx, bx, iy + 7, bw, bh, 4); ctx.fill();
 
       // Fill
       const fw = Math.max(4, bw * val / 100);
-      ctx.fillStyle = canvasGrad(ctx, bx, fw, type, val);
+      ctx.fillStyle = '#ffffff';
       rrect(ctx, bx, iy + 7, fw, bh, 4); ctx.fill();
     };
 
-    drawBar('PRESSURE', sc.p, 'p', cy + 134);
-    drawBar('STYLE',    sc.s, 's', cy + 176);
-    drawBar('TEMPO',    sc.t, 't', cy + 218);
+    drawBar('PRESSURE', sc.p, cy + 134);
+    drawBar('STYLE',    sc.s, cy + 176);
+    drawBar('TEMPO',    sc.t, cy + 218);
   });
 
   // Footer
   ctx.font = '700 12px Arial, sans-serif';
-  ctx.fillStyle = '#22d3ee';
+  ctx.fillStyle = '#ffffff';
   ctx.textAlign = 'center';
   ctx.fillText('osnextlevel.com', W / 2, H - 28);
 
   ctx.font = '500 9px Arial, sans-serif';
-  ctx.fillStyle = '#0d1825';
+  ctx.fillStyle = 'rgba(255,255,255,0.22)';
   ctx.fillText('16 YEARS OF TACTICAL EXPERTISE  ·  DETERMINISTIC ENGINE  ·  GLOBAL OSM COMMUNITY', W / 2, H - 12);
 
   return canvas.toDataURL('image/png');
@@ -290,13 +248,13 @@ function BriefSliderBar({ label, value, gradient, delay = 0 }: {
   return (
     <div style={{ marginBottom: 16 }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
-        <span style={{ color: '#64748b', fontSize: 10, fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase' }}>{label}</span>
+        <span style={{ color: 'rgba(255,255,255,0.42)', fontSize: 10, fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase' }}>{label}</span>
         <motion.span
           initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: delay + 0.45 }}
-          style={{ color: '#e2e8f0', fontWeight: 800, fontSize: 20, letterSpacing: '-0.02em', lineHeight: 1 }}
+          style={{ color: '#ffffff', fontWeight: 800, fontSize: 20, letterSpacing: '-0.02em', lineHeight: 1 }}
         >{value}</motion.span>
       </div>
-      <div style={{ height: 8, borderRadius: 99, background: 'rgba(255,255,255,0.06)', overflow: 'hidden' }}>
+      <div style={{ height: 8, borderRadius: 99, background: 'rgba(255,255,255,0.1)', overflow: 'hidden' }}>
         <motion.div
           initial={{ width: 0 }} animate={{ width: `${value}%` }}
           transition={{ duration: 1.0, ease: [0.16, 1, 0.3, 1], delay }}
@@ -323,8 +281,8 @@ function CountUnit({ value, label }: { value: number; label: string }) {
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6, minWidth: 52 }}>
       <div style={{
         position: 'relative',
-        background: 'rgba(9,11,33,0.88)',
-        border: '1px solid rgba(34,211,238,0.12)',
+        background: 'rgba(255,255,255,0.03)',
+        border: '1px solid rgba(255,255,255,0.08)',
         borderRadius: 10,
         padding: '10px 8px 8px',
         minWidth: 52,
@@ -343,19 +301,19 @@ function CountUnit({ value, label }: { value: number; label: string }) {
               fontFamily: "'Barlow Condensed', 'Arial Narrow', Arial, sans-serif",
               fontSize: 'clamp(26px, 3.8vw, 44px)',
               fontWeight: 900,
-              color: '#e2e8f0',
+              color: '#ffffff',
               lineHeight: 1,
               letterSpacing: '-0.02em',
             }}
           >{str}</motion.span>
         </AnimatePresence>
-        {/* inner glow */}
+        {/* subtle top tint */}
         <div style={{
           position: 'absolute', inset: 0, pointerEvents: 'none',
-          background: 'linear-gradient(180deg,rgba(34,211,238,0.04) 0%,transparent 60%)',
+          background: 'linear-gradient(180deg,rgba(255,255,255,0.03) 0%,transparent 60%)',
         }} />
       </div>
-      <span style={{ fontSize: 9, fontWeight: 800, letterSpacing: '0.1em', color: '#1e3048', textTransform: 'uppercase' }}>{label}</span>
+      <span style={{ fontSize: 9, fontWeight: 800, letterSpacing: '0.1em', color: 'rgba(255,255,255,0.22)', textTransform: 'uppercase' }}>{label}</span>
     </div>
   );
 }
@@ -364,9 +322,9 @@ function CountUnit({ value, label }: { value: number; label: string }) {
 
 const _isMobile = typeof window !== "undefined" && window.innerWidth < 768;
 const CARD: React.CSSProperties = {
-  background: _isMobile ? 'rgba(9,11,33,0.97)' : 'rgba(9,11,33,0.88)',
+  background: _isMobile ? 'rgba(255,255,255,0.04)' : 'rgba(255,255,255,0.03)',
   ...(_isMobile ? {} : { backdropFilter: 'blur(20px)' }),
-  border: '1px solid rgba(34,211,238,0.12)',
+  border: '1px solid rgba(255,255,255,0.08)',
   borderRadius: 16,
   boxShadow: '0 20px 60px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.05)',
 };
@@ -419,37 +377,37 @@ export default function MetaShareCard() {
       >
         <div style={{
           display: 'inline-flex', alignItems: 'center', gap: 8, padding: '6px 16px',
-          borderRadius: 99, background: 'rgba(34,211,238,0.08)', border: '1px solid rgba(34,211,238,0.22)',
+          borderRadius: 99, background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.15)',
           marginBottom: 20,
         }}>
           <motion.span
             animate={{ opacity: [1, 0.35, 1] }} transition={{ duration: 2, repeat: Infinity }}
-            style={{ width: 6, height: 6, borderRadius: '50%', background: '#22d3ee', display: 'inline-block' }}
+            style={{ width: 6, height: 6, borderRadius: '50%', background: '#ffffff', display: 'inline-block' }}
           />
-          <span style={{ color: '#22d3ee', fontSize: 11, fontWeight: 800, letterSpacing: '0.12em', textTransform: 'uppercase' }}>
+          <span style={{ color: 'rgba(255,255,255,0.7)', fontSize: 11, fontWeight: 800, letterSpacing: '0.12em', textTransform: 'uppercase' }}>
             {w.badge}
           </span>
         </div>
 
         <h2 style={{
           fontSize: 'clamp(28px,5vw,46px)', fontWeight: 900, lineHeight: 1.08,
-          letterSpacing: '-0.02em', margin: '0 0 14px', color: '#e2e8f0',
+          letterSpacing: '-0.02em', margin: '0 0 14px', color: '#ffffff',
         }}>{w.title}</h2>
 
         <p style={{
-          color: '#64748b', fontSize: 'clamp(13px,2vw,15px)', lineHeight: 1.7,
+          color: 'rgba(255,255,255,0.42)', fontSize: 'clamp(13px,2vw,15px)', lineHeight: 1.7,
           maxWidth: 620, margin: '0 auto 24px', textAlign: 'center',
         }}>{w.subtitle}</p>
 
         <div style={{
           display: 'inline-flex', alignItems: 'center', gap: 8, padding: '6px 14px',
-          borderRadius: 99, background: 'rgba(34,197,94,0.08)', border: '1px solid rgba(34,197,94,0.2)',
+          borderRadius: 99, background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.15)',
         }}>
           <motion.span
             animate={{ opacity: [1, 0.35, 1] }} transition={{ duration: 2, repeat: Infinity }}
-            style={{ width: 6, height: 6, borderRadius: '50%', background: '#22c55e', display: 'inline-block' }}
+            style={{ width: 6, height: 6, borderRadius: '50%', background: '#ffffff', display: 'inline-block' }}
           />
-          <span style={{ color: '#22c55e', fontSize: 11, fontWeight: 700, letterSpacing: '0.06em' }}>
+          <span style={{ color: 'rgba(255,255,255,0.65)', fontSize: 11, fontWeight: 700, letterSpacing: '0.06em' }}>
             {w.liveNote}
           </span>
         </div>
@@ -462,7 +420,7 @@ export default function MetaShareCard() {
         style={{ ...CARD, padding: '32px 28px', marginBottom: 14, textAlign: 'center' }}
       >
         <div style={{
-          fontSize: 10.5, fontWeight: 700, letterSpacing: '0.12em', color: '#334155',
+          fontSize: 10.5, fontWeight: 700, letterSpacing: '0.12em', color: 'rgba(255,255,255,0.3)',
           textTransform: 'uppercase', marginBottom: 26,
         }}>{w.nextUpdate}</div>
 
@@ -473,34 +431,34 @@ export default function MetaShareCard() {
           <CountUnit value={cd.days}  label={w.d} />
           <motion.span
             animate={{ opacity: [1, 0.2, 1] }} transition={{ duration: 1, repeat: Infinity }}
-            style={{ fontSize: 'clamp(22px,3.5vw,38px)', fontWeight: 900, color: 'rgba(34,211,238,0.25)', lineHeight: 1, paddingBottom: 24 }}
+            style={{ fontSize: 'clamp(22px,3.5vw,38px)', fontWeight: 900, color: 'rgba(255,255,255,0.2)', lineHeight: 1, paddingBottom: 24 }}
           >:</motion.span>
           <CountUnit value={cd.hours} label={w.h} />
           <motion.span
             animate={{ opacity: [1, 0.2, 1] }} transition={{ duration: 1, repeat: Infinity, delay: 0.5 }}
-            style={{ fontSize: 'clamp(22px,3.5vw,38px)', fontWeight: 900, color: 'rgba(34,211,238,0.25)', lineHeight: 1, paddingBottom: 24 }}
+            style={{ fontSize: 'clamp(22px,3.5vw,38px)', fontWeight: 900, color: 'rgba(255,255,255,0.2)', lineHeight: 1, paddingBottom: 24 }}
           >:</motion.span>
           <CountUnit value={cd.mins}  label={w.m} />
           <motion.span
             animate={{ opacity: [1, 0.2, 1] }} transition={{ duration: 1, repeat: Infinity }}
-            style={{ fontSize: 'clamp(22px,3.5vw,38px)', fontWeight: 900, color: 'rgba(34,211,238,0.25)', lineHeight: 1, paddingBottom: 24 }}
+            style={{ fontSize: 'clamp(22px,3.5vw,38px)', fontWeight: 900, color: 'rgba(255,255,255,0.2)', lineHeight: 1, paddingBottom: 24 }}
           >:</motion.span>
           <CountUnit value={cd.secs}  label={w.s} />
         </div>
 
         {/* Week progress bar */}
         <div style={{ marginTop: 28, maxWidth: 420, margin: '28px auto 0' }}>
-          <div style={{ height: 3, borderRadius: 99, background: 'rgba(255,255,255,0.04)' }}>
+          <div style={{ height: 3, borderRadius: 99, background: 'rgba(255,255,255,0.06)' }}>
             <motion.div
               initial={{ width: 0 }}
               animate={{ width: `${weekProgress}%` }}
               transition={{ duration: 1.4, ease: [0.16, 1, 0.3, 1] }}
-              style={{ height: '100%', borderRadius: 99, background: 'linear-gradient(90deg,#22d3ee,#6366f1)' }}
+              style={{ height: '100%', borderRadius: 99, background: '#ffffff' }}
             />
           </div>
           <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 5 }}>
-            <span style={{ fontSize: 9, color: '#1a2535', fontWeight: 700, letterSpacing: '0.08em' }}>MON</span>
-            <span style={{ fontSize: 9, color: '#1a2535', fontWeight: 700, letterSpacing: '0.08em' }}>SUN</span>
+            <span style={{ fontSize: 9, color: 'rgba(255,255,255,0.22)', fontWeight: 700, letterSpacing: '0.08em' }}>MON</span>
+            <span style={{ fontSize: 9, color: 'rgba(255,255,255,0.22)', fontWeight: 700, letterSpacing: '0.08em' }}>SUN</span>
           </div>
         </div>
       </motion.div>
@@ -516,17 +474,17 @@ export default function MetaShareCard() {
           >
             <div style={{ marginBottom: 14 }}>
               <div style={{
-                fontSize: 9, fontWeight: 800, letterSpacing: '0.12em', color: '#334155',
+                fontSize: 9, fontWeight: 800, letterSpacing: '0.12em', color: 'rgba(255,255,255,0.3)',
                 textTransform: 'uppercase', marginBottom: 8,
               }}>{sc.label}</div>
               <div style={{
-                fontSize: 'clamp(32px,5vw,44px)', fontWeight: 900, color: '#e2e8f0',
+                fontSize: 'clamp(32px,5vw,44px)', fontWeight: 900, color: '#ffffff',
                 letterSpacing: '-0.02em', lineHeight: 1,
                 fontFamily: "'Barlow Condensed', 'Arial Narrow', Arial, sans-serif",
               }}>{sc.formation}</div>
             </div>
 
-            <div style={{ height: 1, background: 'rgba(255,255,255,0.05)', marginBottom: 16 }} />
+            <div style={{ height: 1, background: 'rgba(255,255,255,0.06)', marginBottom: 16 }} />
 
             <BriefSliderBar label={t('anti.pressure')} value={sc.p} gradient={pGrad(sc.p)} delay={i * 0.07} />
             <BriefSliderBar label={t('anti.style')}    value={sc.s} gradient={sGrad(sc.s)} delay={i * 0.07 + 0.1} />
@@ -545,15 +503,15 @@ export default function MetaShareCard() {
           onClick={handleDownload}
           className="mscard-btn"
           style={{
-            background: downloaded ? 'rgba(34,197,94,0.12)' : 'rgba(34,211,238,0.09)',
-            border: `1px solid ${downloaded ? 'rgba(34,197,94,0.4)' : 'rgba(34,211,238,0.28)'}`,
-            color: downloaded ? '#22c55e' : '#22d3ee',
+            background: downloaded ? 'rgba(255,255,255,0.1)' : 'rgba(255,255,255,0.06)',
+            border: `1px solid ${downloaded ? 'rgba(255,255,255,0.35)' : 'rgba(255,255,255,0.18)'}`,
+            color: downloaded ? '#ffffff' : 'rgba(255,255,255,0.75)',
           }}
         >
           <span style={{ fontSize: 17 }}>{downloaded ? '✓' : '↓'}</span>
           {downloaded ? w.btnDone : w.btn}
         </button>
-        <p style={{ marginTop: 10, fontSize: 10.5, color: '#1e3048', letterSpacing: '0.05em' }}>
+        <p style={{ marginTop: 10, fontSize: 10.5, color: 'rgba(255,255,255,0.22)', letterSpacing: '0.05em' }}>
           PNG · 1080×540 · {w.shareNote}
         </p>
       </motion.div>

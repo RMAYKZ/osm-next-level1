@@ -40,12 +40,12 @@ export default function YouTubeVideos() {
       <div className="pointer-events-none absolute inset-0 -z-10" aria-hidden="true">
         <div style={{
           position: "absolute", top: 0, left: 0, right: 0, height: 1,
-          background: "linear-gradient(90deg, transparent, rgba(239,68,68,0.35), transparent)",
+          background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.06), transparent)",
         }} />
         <div style={{
           position: "absolute", top: "10%", left: "-5%",
           width: "35%", height: "50%", borderRadius: "50%",
-          background: "radial-gradient(ellipse, rgba(239,68,68,0.07) 0%, transparent 70%)",
+          background: "radial-gradient(ellipse, rgba(255,255,255,0.03) 0%, transparent 70%)",
           filter: "blur(80px)",
         }} />
       </div>
@@ -61,19 +61,19 @@ export default function YouTubeVideos() {
         >
           <div style={{
             display: "inline-flex", alignItems: "center", gap: 7,
-            background: "rgba(239,68,68,0.08)", border: "1px solid rgba(239,68,68,0.25)",
+            background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.15)",
             borderRadius: 999, padding: "5px 14px", marginBottom: 14,
           }}>
-            <span style={{ fontSize: 12, color: "#f87171" }}>▶</span>
-            <span style={{ fontSize: 10, fontWeight: 900, textTransform: "uppercase", letterSpacing: "0.18em", color: "#f87171" }}>
+            <span style={{ fontSize: 12, color: "rgba(255,255,255,0.6)" }}>▶</span>
+            <span style={{ fontSize: 10, fontWeight: 900, textTransform: "uppercase", letterSpacing: "0.18em", color: "rgba(255,255,255,0.7)" }}>
               {t("videos.badge") || "Video Rehberler"}
             </span>
           </div>
           <h2 style={{ margin: "0 0 10px", fontSize: "clamp(1.8rem,4vw,3.2rem)", fontWeight: 900, lineHeight: 1.1, letterSpacing: "-0.02em" }}>
-            <span style={{ color: "#e2e8f0" }}>{t("videos.title1") || "YouTube"} </span>
-            <span style={{ color: "#f87171" }}>{t("videos.title2") || "Kanalı"}</span>
+            <span style={{ color: "#ffffff" }}>{t("videos.title1") || "YouTube"} </span>
+            <span style={{ color: "rgba(255,255,255,0.6)" }}>{t("videos.title2") || "Kanalı"}</span>
           </h2>
-          <p style={{ margin: 0, fontSize: 14, color: "rgba(148,163,184,0.65)", lineHeight: 1.6 }}>
+          <p style={{ margin: 0, fontSize: 14, color: "rgba(255,255,255,0.42)", lineHeight: 1.6 }}>
             {t("videos.desc") || "Taktiklerin saha üstünde nasıl uygulandığını videolarla izle. Yeni içerikler için abone ol."}
           </p>
         </motion.div>
@@ -95,15 +95,14 @@ export default function YouTubeVideos() {
             href="https://www.youtube.com/@OSMNextLevel?sub_confirmation=1"
             target="_blank"
             rel="noreferrer"
-            whileHover={{ scale: 1.05, boxShadow: "0 8px 32px rgba(239,68,68,0.5)" }}
+            whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.97 }}
             style={{
               display: "inline-flex", alignItems: "center", gap: 8,
-              background: "#ef4444",
+              background: "#ffffff",
               borderRadius: 999, padding: "14px 28px",
-              color: "#fff", fontSize: 13, fontWeight: 900,
+              color: "#000000", fontSize: 13, fontWeight: 900,
               textDecoration: "none", textTransform: "uppercase", letterSpacing: "0.1em",
-              boxShadow: "0 4px 20px rgba(239,68,68,0.35)",
             }}
           >
             <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
@@ -136,11 +135,11 @@ function VideoCard({
       transition={{ duration: 0.45, delay, ease: EASE }}
       whileHover={{ y: -4, transition: { duration: 0.18 } }}
       style={{
-        background: "rgba(9,11,33,0.88)",
+        background: "rgba(255,255,255,0.03)",
         backdropFilter: "blur(20px)",
         WebkitBackdropFilter: "blur(20px)",
-        border: "1px solid rgba(239,68,68,0.12)",
-        borderRadius: 20, overflow: "hidden",
+        border: "1px solid rgba(255,255,255,0.08)",
+        borderRadius: 16, overflow: "hidden",
       }}
     >
       <div style={{ position: "relative", paddingBottom: "56.25%", background: "#000" }}>
@@ -167,16 +166,16 @@ function VideoCard({
               loading="lazy"
               style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }}
             />
-            <div style={{ position: "absolute", inset: 0, background: "rgba(0,0,0,0.42)", transition: "background 0.2s" }} />
+            <div style={{ position: "absolute", inset: 0, background: "rgba(0,0,0,0.5)", transition: "background 0.2s" }} />
             <motion.div
               whileHover={{ scale: 1.14 }}
               style={{
                 position: "absolute", top: "50%", left: "50%",
                 transform: "translate(-50%, -50%)",
                 width: 54, height: 38, borderRadius: 11,
-                background: "#ef4444",
+                background: "rgba(255,255,255,0.12)",
+                border: "1px solid rgba(255,255,255,0.3)",
                 display: "flex", alignItems: "center", justifyContent: "center",
-                boxShadow: "0 8px 24px rgba(239,68,68,0.65)",
               }}
             >
               <svg width="16" height="16" viewBox="0 0 24 24" fill="white">
@@ -187,8 +186,8 @@ function VideoCard({
         )}
       </div>
       <div style={{ padding: "14px 16px" }}>
-        <h3 style={{ margin: "0 0 6px", fontSize: 14, fontWeight: 800, color: "#e2e8f0", lineHeight: 1.3 }}>{video.title}</h3>
-        <p style={{ margin: 0, fontSize: 12, lineHeight: 1.6, color: "rgba(148,163,184,0.6)" }}>{video.description}</p>
+        <h3 style={{ margin: "0 0 6px", fontSize: 14, fontWeight: 800, color: "#ffffff", lineHeight: 1.3 }}>{video.title}</h3>
+        <p style={{ margin: 0, fontSize: 12, lineHeight: 1.6, color: "rgba(255,255,255,0.42)" }}>{video.description}</p>
       </div>
     </motion.div>
   );

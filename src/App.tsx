@@ -1,6 +1,5 @@
 import { LanguageProvider } from "./contexts/LanguageContext";
 import { ThemeProvider } from "./contexts/ThemeContext";
-import { BackgroundGradientAnimation } from "./components/ui/background-gradient-animation";
 import { AuthProvider } from "./contexts/AuthContext";
 import { PremiumProvider } from "./contexts/PremiumContext";
 import { FavoritesProvider } from "./contexts/FavoritesContext";
@@ -35,29 +34,8 @@ export default function App() {
         <FavoritesProvider>
         <SavedTacticsProvider>
 
-          {/* ── Mobile fallback background (hidden on md+) ── */}
-          <div
-            className="fixed inset-0 -z-10 md:hidden"
-            style={{ background: "oklch(0.13 0.02 250)" }}
-          />
-
-          {/* ── Subtle warm-dark ambient gradient — desktop only (md+) ── */}
-          <div className="hidden md:block">
-            <BackgroundGradientAnimation
-              containerClassName="fixed inset-0 -z-10 pointer-events-none"
-              interactive={false}
-              gradientBackgroundStart="rgb(8, 12, 22)"
-              gradientBackgroundEnd="rgb(5, 8, 18)"
-              firstColor="10, 40, 20"
-              secondColor="5, 20, 35"
-              thirdColor="15, 35, 15"
-              fourthColor="8, 15, 30"
-              fifthColor="12, 30, 18"
-              pointerColor="20, 60, 30"
-              blendingValue="hard-light"
-              size="80%"
-            />
-          </div>
+          {/* ── Global background — pure black ── */}
+          <div className="fixed inset-0 -z-10" style={{ background: "#000000" }} />
 
           {/* ── Scrollable content layer ── */}
           <div style={{

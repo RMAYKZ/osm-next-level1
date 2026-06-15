@@ -3,6 +3,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { useLang } from '../contexts/LanguageContext';
 import { useAuth } from '../contexts/AuthContext';
 import { useSavedTactics } from '../contexts/SavedTacticsContext';
+import { analytics } from '../lib/analytics';
 import './AntiTacticFinder.css';
 import HomeTacticHero from './HomeTacticHero';
 import { TacticEntry, OPP_LIST, TD } from '../data/tacticDatabase';
@@ -13,302 +14,302 @@ interface ArrowDef  { x1: number; y1: number; x2: number; y2: number; cx: number
 const FM: Record<string, PlayerDef[]> = {
   '4-3-3-A': [
     {r:'GK',  x:.50, y:.06, c:'#ffd700', s:'gk'},
-    {r:'LB',  x:.10, y:.22, c:'#00e5ff', s:'def'},
-    {r:'CB',  x:.34, y:.20, c:'#00e5ff', s:'def'},
-    {r:'CB',  x:.66, y:.20, c:'#00e5ff', s:'def'},
-    {r:'RB',  x:.90, y:.22, c:'#00e5ff', s:'def'},
-    {r:'CM',  x:.24, y:.50, c:'#00ff88', s:'mid'},
-    {r:'CAM', x:.50, y:.56, c:'#00ff88', s:'mid'},
-    {r:'CM',  x:.76, y:.50, c:'#00ff88', s:'mid'},
-    {r:'LW',  x:.10, y:.82, c:'#ff4757', s:'fwd'},
-    {r:'ST',  x:.50, y:.86, c:'#ff4757', s:'fwd'},
-    {r:'RW',  x:.90, y:.82, c:'#ff4757', s:'fwd'},
+    {r:'LB',  x:.10, y:.22, c:'rgba(255,255,255,0.45)', s:'def'},
+    {r:'CB',  x:.34, y:.20, c:'rgba(255,255,255,0.45)', s:'def'},
+    {r:'CB',  x:.66, y:.20, c:'rgba(255,255,255,0.45)', s:'def'},
+    {r:'RB',  x:.90, y:.22, c:'rgba(255,255,255,0.45)', s:'def'},
+    {r:'CM',  x:.24, y:.50, c:'rgba(255,255,255,0.55)', s:'mid'},
+    {r:'CAM', x:.50, y:.56, c:'rgba(255,255,255,0.55)', s:'mid'},
+    {r:'CM',  x:.76, y:.50, c:'rgba(255,255,255,0.55)', s:'mid'},
+    {r:'LW',  x:.10, y:.82, c:'rgba(255,255,255,0.9)', s:'fwd'},
+    {r:'ST',  x:.50, y:.86, c:'rgba(255,255,255,0.9)', s:'fwd'},
+    {r:'RW',  x:.90, y:.82, c:'rgba(255,255,255,0.9)', s:'fwd'},
   ],
   '4-3-3-B': [
     {r:'GK',  x:.50, y:.06, c:'#ffd700', s:'gk'},
-    {r:'LB',  x:.10, y:.22, c:'#00e5ff', s:'def'},
-    {r:'CB',  x:.34, y:.20, c:'#00e5ff', s:'def'},
-    {r:'CB',  x:.66, y:.20, c:'#00e5ff', s:'def'},
-    {r:'RB',  x:.90, y:.22, c:'#00e5ff', s:'def'},
-    {r:'CM',  x:.22, y:.52, c:'#00ff88', s:'mid'},
-    {r:'CDM', x:.50, y:.44, c:'#00ff88', s:'mid'},
-    {r:'CM',  x:.78, y:.52, c:'#00ff88', s:'mid'},
-    {r:'LW',  x:.10, y:.82, c:'#ff4757', s:'fwd'},
-    {r:'ST',  x:.50, y:.86, c:'#ff4757', s:'fwd'},
-    {r:'RW',  x:.90, y:.82, c:'#ff4757', s:'fwd'},
+    {r:'LB',  x:.10, y:.22, c:'rgba(255,255,255,0.45)', s:'def'},
+    {r:'CB',  x:.34, y:.20, c:'rgba(255,255,255,0.45)', s:'def'},
+    {r:'CB',  x:.66, y:.20, c:'rgba(255,255,255,0.45)', s:'def'},
+    {r:'RB',  x:.90, y:.22, c:'rgba(255,255,255,0.45)', s:'def'},
+    {r:'CM',  x:.22, y:.52, c:'rgba(255,255,255,0.55)', s:'mid'},
+    {r:'CDM', x:.50, y:.44, c:'rgba(255,255,255,0.55)', s:'mid'},
+    {r:'CM',  x:.78, y:.52, c:'rgba(255,255,255,0.55)', s:'mid'},
+    {r:'LW',  x:.10, y:.82, c:'rgba(255,255,255,0.9)', s:'fwd'},
+    {r:'ST',  x:.50, y:.86, c:'rgba(255,255,255,0.9)', s:'fwd'},
+    {r:'RW',  x:.90, y:.82, c:'rgba(255,255,255,0.9)', s:'fwd'},
   ],
   '4-5-1': [
     {r:'GK',  x:.50, y:.06, c:'#ffd700', s:'gk'},
-    {r:'LB',  x:.10, y:.22, c:'#00e5ff', s:'def'},
-    {r:'CB',  x:.34, y:.20, c:'#00e5ff', s:'def'},
-    {r:'CB',  x:.66, y:.20, c:'#00e5ff', s:'def'},
-    {r:'RB',  x:.90, y:.22, c:'#00e5ff', s:'def'},
-    {r:'LM',  x:.08, y:.50, c:'#00ff88', s:'mid'},
-    {r:'CM',  x:.30, y:.52, c:'#00ff88', s:'mid'},
-    {r:'CDM', x:.50, y:.46, c:'#00ff88', s:'mid'},
-    {r:'CM',  x:.70, y:.52, c:'#00ff88', s:'mid'},
-    {r:'RM',  x:.92, y:.50, c:'#00ff88', s:'mid'},
-    {r:'ST',  x:.50, y:.82, c:'#ff4757', s:'fwd'},
+    {r:'LB',  x:.10, y:.22, c:'rgba(255,255,255,0.45)', s:'def'},
+    {r:'CB',  x:.34, y:.20, c:'rgba(255,255,255,0.45)', s:'def'},
+    {r:'CB',  x:.66, y:.20, c:'rgba(255,255,255,0.45)', s:'def'},
+    {r:'RB',  x:.90, y:.22, c:'rgba(255,255,255,0.45)', s:'def'},
+    {r:'LM',  x:.08, y:.50, c:'rgba(255,255,255,0.55)', s:'mid'},
+    {r:'CM',  x:.30, y:.52, c:'rgba(255,255,255,0.55)', s:'mid'},
+    {r:'CDM', x:.50, y:.46, c:'rgba(255,255,255,0.55)', s:'mid'},
+    {r:'CM',  x:.70, y:.52, c:'rgba(255,255,255,0.55)', s:'mid'},
+    {r:'RM',  x:.92, y:.50, c:'rgba(255,255,255,0.55)', s:'mid'},
+    {r:'ST',  x:.50, y:.82, c:'rgba(255,255,255,0.9)', s:'fwd'},
   ],
   '4-2-3-1': [
     {r:'GK',  x:.50, y:.06, c:'#ffd700', s:'gk'},
-    {r:'LB',  x:.10, y:.22, c:'#00e5ff', s:'def'},
-    {r:'CB',  x:.34, y:.20, c:'#00e5ff', s:'def'},
-    {r:'CB',  x:.66, y:.20, c:'#00e5ff', s:'def'},
-    {r:'RB',  x:.90, y:.22, c:'#00e5ff', s:'def'},
-    {r:'CM',  x:.36, y:.40, c:'#00ff88', s:'mid'},
-    {r:'CM',  x:.64, y:.40, c:'#00ff88', s:'mid'},
-    {r:'LM',  x:.12, y:.64, c:'#00ff88', s:'mid'},
-    {r:'CAM', x:.50, y:.66, c:'#00ff88', s:'mid'},
-    {r:'RM',  x:.88, y:.64, c:'#00ff88', s:'mid'},
-    {r:'ST',  x:.50, y:.84, c:'#ff4757', s:'fwd'},
+    {r:'LB',  x:.10, y:.22, c:'rgba(255,255,255,0.45)', s:'def'},
+    {r:'CB',  x:.34, y:.20, c:'rgba(255,255,255,0.45)', s:'def'},
+    {r:'CB',  x:.66, y:.20, c:'rgba(255,255,255,0.45)', s:'def'},
+    {r:'RB',  x:.90, y:.22, c:'rgba(255,255,255,0.45)', s:'def'},
+    {r:'CM',  x:.36, y:.40, c:'rgba(255,255,255,0.55)', s:'mid'},
+    {r:'CM',  x:.64, y:.40, c:'rgba(255,255,255,0.55)', s:'mid'},
+    {r:'LM',  x:.12, y:.64, c:'rgba(255,255,255,0.55)', s:'mid'},
+    {r:'CAM', x:.50, y:.66, c:'rgba(255,255,255,0.55)', s:'mid'},
+    {r:'RM',  x:.88, y:.64, c:'rgba(255,255,255,0.55)', s:'mid'},
+    {r:'ST',  x:.50, y:.84, c:'rgba(255,255,255,0.9)', s:'fwd'},
   ],
   '4-4-2-A': [
     {r:'GK',  x:.50, y:.06, c:'#ffd700', s:'gk'},
-    {r:'LB',  x:.10, y:.22, c:'#00e5ff', s:'def'},
-    {r:'CB',  x:.34, y:.20, c:'#00e5ff', s:'def'},
-    {r:'CB',  x:.66, y:.20, c:'#00e5ff', s:'def'},
-    {r:'RB',  x:.90, y:.22, c:'#00e5ff', s:'def'},
-    {r:'LM',  x:.08, y:.50, c:'#00ff88', s:'mid'},
-    {r:'CM',  x:.34, y:.50, c:'#00ff88', s:'mid'},
-    {r:'CM',  x:.66, y:.50, c:'#00ff88', s:'mid'},
-    {r:'RM',  x:.92, y:.50, c:'#00ff88', s:'mid'},
-    {r:'ST',  x:.36, y:.82, c:'#ff4757', s:'fwd'},
-    {r:'ST',  x:.64, y:.82, c:'#ff4757', s:'fwd'},
+    {r:'LB',  x:.10, y:.22, c:'rgba(255,255,255,0.45)', s:'def'},
+    {r:'CB',  x:.34, y:.20, c:'rgba(255,255,255,0.45)', s:'def'},
+    {r:'CB',  x:.66, y:.20, c:'rgba(255,255,255,0.45)', s:'def'},
+    {r:'RB',  x:.90, y:.22, c:'rgba(255,255,255,0.45)', s:'def'},
+    {r:'LM',  x:.08, y:.50, c:'rgba(255,255,255,0.55)', s:'mid'},
+    {r:'CM',  x:.34, y:.50, c:'rgba(255,255,255,0.55)', s:'mid'},
+    {r:'CM',  x:.66, y:.50, c:'rgba(255,255,255,0.55)', s:'mid'},
+    {r:'RM',  x:.92, y:.50, c:'rgba(255,255,255,0.55)', s:'mid'},
+    {r:'ST',  x:.36, y:.82, c:'rgba(255,255,255,0.9)', s:'fwd'},
+    {r:'ST',  x:.64, y:.82, c:'rgba(255,255,255,0.9)', s:'fwd'},
   ],
   '4-4-2-B': [
     {r:'GK',  x:.50, y:.06, c:'#ffd700', s:'gk'},
-    {r:'LB',  x:.10, y:.22, c:'#00e5ff', s:'def'},
-    {r:'CB',  x:.34, y:.20, c:'#00e5ff', s:'def'},
-    {r:'CB',  x:.66, y:.20, c:'#00e5ff', s:'def'},
-    {r:'RB',  x:.90, y:.22, c:'#00e5ff', s:'def'},
-    {r:'CDM', x:.50, y:.38, c:'#00ff88', s:'mid'},
-    {r:'CM',  x:.24, y:.48, c:'#00ff88', s:'mid'},
-    {r:'CAM', x:.50, y:.56, c:'#00ff88', s:'mid'},
-    {r:'CM',  x:.76, y:.48, c:'#00ff88', s:'mid'},
-    {r:'ST',  x:.34, y:.82, c:'#ff4757', s:'fwd'},
-    {r:'ST',  x:.66, y:.82, c:'#ff4757', s:'fwd'},
+    {r:'LB',  x:.10, y:.22, c:'rgba(255,255,255,0.45)', s:'def'},
+    {r:'CB',  x:.34, y:.20, c:'rgba(255,255,255,0.45)', s:'def'},
+    {r:'CB',  x:.66, y:.20, c:'rgba(255,255,255,0.45)', s:'def'},
+    {r:'RB',  x:.90, y:.22, c:'rgba(255,255,255,0.45)', s:'def'},
+    {r:'CDM', x:.50, y:.38, c:'rgba(255,255,255,0.55)', s:'mid'},
+    {r:'CM',  x:.24, y:.48, c:'rgba(255,255,255,0.55)', s:'mid'},
+    {r:'CAM', x:.50, y:.56, c:'rgba(255,255,255,0.55)', s:'mid'},
+    {r:'CM',  x:.76, y:.48, c:'rgba(255,255,255,0.55)', s:'mid'},
+    {r:'ST',  x:.34, y:.82, c:'rgba(255,255,255,0.9)', s:'fwd'},
+    {r:'ST',  x:.66, y:.82, c:'rgba(255,255,255,0.9)', s:'fwd'},
   ],
   '5-2-3-A': [
     {r:'GK',  x:.50, y:.06, c:'#ffd700', s:'gk'},
-    {r:'LB',  x:.06, y:.24, c:'#00e5ff', s:'def'},
-    {r:'CB',  x:.26, y:.20, c:'#00e5ff', s:'def'},
-    {r:'CB',  x:.50, y:.18, c:'#00e5ff', s:'def'},
-    {r:'CB',  x:.74, y:.20, c:'#00e5ff', s:'def'},
-    {r:'RB',  x:.94, y:.24, c:'#00e5ff', s:'def'},
-    {r:'CM',  x:.34, y:.50, c:'#00ff88', s:'mid'},
-    {r:'CM',  x:.66, y:.50, c:'#00ff88', s:'mid'},
-    {r:'LW',  x:.10, y:.82, c:'#ff4757', s:'fwd'},
-    {r:'ST',  x:.50, y:.86, c:'#ff4757', s:'fwd'},
-    {r:'RW',  x:.90, y:.82, c:'#ff4757', s:'fwd'},
+    {r:'LB',  x:.06, y:.24, c:'rgba(255,255,255,0.45)', s:'def'},
+    {r:'CB',  x:.26, y:.20, c:'rgba(255,255,255,0.45)', s:'def'},
+    {r:'CB',  x:.50, y:.18, c:'rgba(255,255,255,0.45)', s:'def'},
+    {r:'CB',  x:.74, y:.20, c:'rgba(255,255,255,0.45)', s:'def'},
+    {r:'RB',  x:.94, y:.24, c:'rgba(255,255,255,0.45)', s:'def'},
+    {r:'CM',  x:.34, y:.50, c:'rgba(255,255,255,0.55)', s:'mid'},
+    {r:'CM',  x:.66, y:.50, c:'rgba(255,255,255,0.55)', s:'mid'},
+    {r:'LW',  x:.10, y:.82, c:'rgba(255,255,255,0.9)', s:'fwd'},
+    {r:'ST',  x:.50, y:.86, c:'rgba(255,255,255,0.9)', s:'fwd'},
+    {r:'RW',  x:.90, y:.82, c:'rgba(255,255,255,0.9)', s:'fwd'},
   ],
   '5-2-3-B': [
     {r:'GK',  x:.50, y:.06, c:'#ffd700', s:'gk'},
-    {r:'LB',  x:.06, y:.24, c:'#00e5ff', s:'def'},
-    {r:'CB',  x:.26, y:.20, c:'#00e5ff', s:'def'},
-    {r:'CB',  x:.50, y:.18, c:'#00e5ff', s:'def'},
-    {r:'CB',  x:.74, y:.20, c:'#00e5ff', s:'def'},
-    {r:'RB',  x:.94, y:.24, c:'#00e5ff', s:'def'},
-    {r:'CDM', x:.34, y:.48, c:'#00ff88', s:'mid'},
-    {r:'CDM', x:.66, y:.48, c:'#00ff88', s:'mid'},
-    {r:'LW',  x:.10, y:.82, c:'#ff4757', s:'fwd'},
-    {r:'ST',  x:.50, y:.86, c:'#ff4757', s:'fwd'},
-    {r:'RW',  x:.90, y:.82, c:'#ff4757', s:'fwd'},
+    {r:'LB',  x:.06, y:.24, c:'rgba(255,255,255,0.45)', s:'def'},
+    {r:'CB',  x:.26, y:.20, c:'rgba(255,255,255,0.45)', s:'def'},
+    {r:'CB',  x:.50, y:.18, c:'rgba(255,255,255,0.45)', s:'def'},
+    {r:'CB',  x:.74, y:.20, c:'rgba(255,255,255,0.45)', s:'def'},
+    {r:'RB',  x:.94, y:.24, c:'rgba(255,255,255,0.45)', s:'def'},
+    {r:'CDM', x:.34, y:.48, c:'rgba(255,255,255,0.55)', s:'mid'},
+    {r:'CDM', x:.66, y:.48, c:'rgba(255,255,255,0.55)', s:'mid'},
+    {r:'LW',  x:.10, y:.82, c:'rgba(255,255,255,0.9)', s:'fwd'},
+    {r:'ST',  x:.50, y:.86, c:'rgba(255,255,255,0.9)', s:'fwd'},
+    {r:'RW',  x:.90, y:.82, c:'rgba(255,255,255,0.9)', s:'fwd'},
   ],
   '5-3-2': [
     {r:'GK',  x:.50, y:.06, c:'#ffd700', s:'gk'},
-    {r:'LB',  x:.06, y:.24, c:'#00e5ff', s:'def'},
-    {r:'CB',  x:.26, y:.20, c:'#00e5ff', s:'def'},
-    {r:'CB',  x:.50, y:.18, c:'#00e5ff', s:'def'},
-    {r:'CB',  x:.74, y:.20, c:'#00e5ff', s:'def'},
-    {r:'RB',  x:.94, y:.24, c:'#00e5ff', s:'def'},
-    {r:'CM',  x:.22, y:.52, c:'#00ff88', s:'mid'},
-    {r:'CAM', x:.50, y:.58, c:'#00ff88', s:'mid'},
-    {r:'CM',  x:.78, y:.52, c:'#00ff88', s:'mid'},
-    {r:'ST',  x:.34, y:.82, c:'#ff4757', s:'fwd'},
-    {r:'ST',  x:.66, y:.82, c:'#ff4757', s:'fwd'},
+    {r:'LB',  x:.06, y:.24, c:'rgba(255,255,255,0.45)', s:'def'},
+    {r:'CB',  x:.26, y:.20, c:'rgba(255,255,255,0.45)', s:'def'},
+    {r:'CB',  x:.50, y:.18, c:'rgba(255,255,255,0.45)', s:'def'},
+    {r:'CB',  x:.74, y:.20, c:'rgba(255,255,255,0.45)', s:'def'},
+    {r:'RB',  x:.94, y:.24, c:'rgba(255,255,255,0.45)', s:'def'},
+    {r:'CM',  x:.22, y:.52, c:'rgba(255,255,255,0.55)', s:'mid'},
+    {r:'CAM', x:.50, y:.58, c:'rgba(255,255,255,0.55)', s:'mid'},
+    {r:'CM',  x:.78, y:.52, c:'rgba(255,255,255,0.55)', s:'mid'},
+    {r:'ST',  x:.34, y:.82, c:'rgba(255,255,255,0.9)', s:'fwd'},
+    {r:'ST',  x:.66, y:.82, c:'rgba(255,255,255,0.9)', s:'fwd'},
   ],
   '5-3-1-1': [
     {r:'GK',  x:.50, y:.06, c:'#ffd700', s:'gk'},
-    {r:'LB',  x:.06, y:.24, c:'#00e5ff', s:'def'},
-    {r:'CB',  x:.26, y:.20, c:'#00e5ff', s:'def'},
-    {r:'CB',  x:.50, y:.18, c:'#00e5ff', s:'def'},
-    {r:'CB',  x:.74, y:.20, c:'#00e5ff', s:'def'},
-    {r:'RB',  x:.94, y:.24, c:'#00e5ff', s:'def'},
-    {r:'CAM', x:.22, y:.52, c:'#00ff88', s:'mid'},
-    {r:'CM',  x:.50, y:.48, c:'#00ff88', s:'mid'},
-    {r:'CAM', x:.78, y:.52, c:'#00ff88', s:'mid'},
-    {r:'ST',  x:.50, y:.68, c:'#ff4757', s:'fwd'},
-    {r:'ST',  x:.50, y:.84, c:'#ff4757', s:'fwd'},
+    {r:'LB',  x:.06, y:.24, c:'rgba(255,255,255,0.45)', s:'def'},
+    {r:'CB',  x:.26, y:.20, c:'rgba(255,255,255,0.45)', s:'def'},
+    {r:'CB',  x:.50, y:.18, c:'rgba(255,255,255,0.45)', s:'def'},
+    {r:'CB',  x:.74, y:.20, c:'rgba(255,255,255,0.45)', s:'def'},
+    {r:'RB',  x:.94, y:.24, c:'rgba(255,255,255,0.45)', s:'def'},
+    {r:'CAM', x:.22, y:.52, c:'rgba(255,255,255,0.55)', s:'mid'},
+    {r:'CM',  x:.50, y:.48, c:'rgba(255,255,255,0.55)', s:'mid'},
+    {r:'CAM', x:.78, y:.52, c:'rgba(255,255,255,0.55)', s:'mid'},
+    {r:'ST',  x:.50, y:.68, c:'rgba(255,255,255,0.9)', s:'fwd'},
+    {r:'ST',  x:.50, y:.84, c:'rgba(255,255,255,0.9)', s:'fwd'},
   ],
   '5-4-1-A': [
     {r:'GK',  x:.50, y:.06, c:'#ffd700', s:'gk'},
-    {r:'LB',  x:.06, y:.24, c:'#00e5ff', s:'def'},
-    {r:'CB',  x:.26, y:.20, c:'#00e5ff', s:'def'},
-    {r:'CB',  x:.50, y:.18, c:'#00e5ff', s:'def'},
-    {r:'CB',  x:.74, y:.20, c:'#00e5ff', s:'def'},
-    {r:'RB',  x:.94, y:.24, c:'#00e5ff', s:'def'},
-    {r:'LM',  x:.10, y:.52, c:'#00ff88', s:'mid'},
-    {r:'CM',  x:.34, y:.50, c:'#00ff88', s:'mid'},
-    {r:'CM',  x:.66, y:.50, c:'#00ff88', s:'mid'},
-    {r:'RM',  x:.90, y:.52, c:'#00ff88', s:'mid'},
-    {r:'ST',  x:.50, y:.82, c:'#ff4757', s:'fwd'},
+    {r:'LB',  x:.06, y:.24, c:'rgba(255,255,255,0.45)', s:'def'},
+    {r:'CB',  x:.26, y:.20, c:'rgba(255,255,255,0.45)', s:'def'},
+    {r:'CB',  x:.50, y:.18, c:'rgba(255,255,255,0.45)', s:'def'},
+    {r:'CB',  x:.74, y:.20, c:'rgba(255,255,255,0.45)', s:'def'},
+    {r:'RB',  x:.94, y:.24, c:'rgba(255,255,255,0.45)', s:'def'},
+    {r:'LM',  x:.10, y:.52, c:'rgba(255,255,255,0.55)', s:'mid'},
+    {r:'CM',  x:.34, y:.50, c:'rgba(255,255,255,0.55)', s:'mid'},
+    {r:'CM',  x:.66, y:.50, c:'rgba(255,255,255,0.55)', s:'mid'},
+    {r:'RM',  x:.90, y:.52, c:'rgba(255,255,255,0.55)', s:'mid'},
+    {r:'ST',  x:.50, y:.82, c:'rgba(255,255,255,0.9)', s:'fwd'},
   ],
   '5-4-1-B': [
     {r:'GK',  x:.50, y:.06, c:'#ffd700', s:'gk'},
-    {r:'LB',  x:.06, y:.24, c:'#00e5ff', s:'def'},
-    {r:'CB',  x:.26, y:.20, c:'#00e5ff', s:'def'},
-    {r:'CB',  x:.50, y:.18, c:'#00e5ff', s:'def'},
-    {r:'CB',  x:.74, y:.20, c:'#00e5ff', s:'def'},
-    {r:'RB',  x:.94, y:.24, c:'#00e5ff', s:'def'},
-    {r:'CDM', x:.50, y:.38, c:'#00ff88', s:'mid'},
-    {r:'CM',  x:.22, y:.50, c:'#00ff88', s:'mid'},
-    {r:'CAM', x:.50, y:.58, c:'#00ff88', s:'mid'},
-    {r:'CM',  x:.78, y:.50, c:'#00ff88', s:'mid'},
-    {r:'ST',  x:.50, y:.82, c:'#ff4757', s:'fwd'},
+    {r:'LB',  x:.06, y:.24, c:'rgba(255,255,255,0.45)', s:'def'},
+    {r:'CB',  x:.26, y:.20, c:'rgba(255,255,255,0.45)', s:'def'},
+    {r:'CB',  x:.50, y:.18, c:'rgba(255,255,255,0.45)', s:'def'},
+    {r:'CB',  x:.74, y:.20, c:'rgba(255,255,255,0.45)', s:'def'},
+    {r:'RB',  x:.94, y:.24, c:'rgba(255,255,255,0.45)', s:'def'},
+    {r:'CDM', x:.50, y:.38, c:'rgba(255,255,255,0.55)', s:'mid'},
+    {r:'CM',  x:.22, y:.50, c:'rgba(255,255,255,0.55)', s:'mid'},
+    {r:'CAM', x:.50, y:.58, c:'rgba(255,255,255,0.55)', s:'mid'},
+    {r:'CM',  x:.78, y:.50, c:'rgba(255,255,255,0.55)', s:'mid'},
+    {r:'ST',  x:.50, y:.82, c:'rgba(255,255,255,0.9)', s:'fwd'},
   ],
   '6-3-1-A': [
     {r:'GK',  x:.50, y:.06, c:'#ffd700', s:'gk'},
-    {r:'LB',  x:.06, y:.22, c:'#00e5ff', s:'def'},
-    {r:'CB',  x:.24, y:.18, c:'#00e5ff', s:'def'},
-    {r:'CB',  x:.42, y:.18, c:'#00e5ff', s:'def'},
-    {r:'CB',  x:.58, y:.30, c:'#00e5ff', s:'def'},
-    {r:'CB',  x:.76, y:.18, c:'#00e5ff', s:'def'},
-    {r:'RB',  x:.94, y:.22, c:'#00e5ff', s:'def'},
-    {r:'CM',  x:.22, y:.52, c:'#00ff88', s:'mid'},
-    {r:'CAM', x:.50, y:.62, c:'#00ff88', s:'mid'},
-    {r:'CM',  x:.78, y:.52, c:'#00ff88', s:'mid'},
-    {r:'ST',  x:.50, y:.82, c:'#ff4757', s:'fwd'},
+    {r:'LB',  x:.06, y:.22, c:'rgba(255,255,255,0.45)', s:'def'},
+    {r:'CB',  x:.24, y:.18, c:'rgba(255,255,255,0.45)', s:'def'},
+    {r:'CB',  x:.42, y:.18, c:'rgba(255,255,255,0.45)', s:'def'},
+    {r:'CB',  x:.58, y:.30, c:'rgba(255,255,255,0.45)', s:'def'},
+    {r:'CB',  x:.76, y:.18, c:'rgba(255,255,255,0.45)', s:'def'},
+    {r:'RB',  x:.94, y:.22, c:'rgba(255,255,255,0.45)', s:'def'},
+    {r:'CM',  x:.22, y:.52, c:'rgba(255,255,255,0.55)', s:'mid'},
+    {r:'CAM', x:.50, y:.62, c:'rgba(255,255,255,0.55)', s:'mid'},
+    {r:'CM',  x:.78, y:.52, c:'rgba(255,255,255,0.55)', s:'mid'},
+    {r:'ST',  x:.50, y:.82, c:'rgba(255,255,255,0.9)', s:'fwd'},
   ],
   '6-3-1-B': [
     {r:'GK',  x:.50, y:.06, c:'#ffd700', s:'gk'},
-    {r:'LB',  x:.06, y:.22, c:'#00e5ff', s:'def'},
-    {r:'CB',  x:.22, y:.18, c:'#00e5ff', s:'def'},
-    {r:'CB',  x:.38, y:.16, c:'#00e5ff', s:'def'},
-    {r:'CB',  x:.62, y:.16, c:'#00e5ff', s:'def'},
-    {r:'CB',  x:.78, y:.18, c:'#00e5ff', s:'def'},
-    {r:'RB',  x:.94, y:.22, c:'#00e5ff', s:'def'},
-    {r:'CM',  x:.50, y:.42, c:'#00ff88', s:'mid'},
-    {r:'CAM', x:.24, y:.56, c:'#00ff88', s:'mid'},
-    {r:'CAM', x:.76, y:.56, c:'#00ff88', s:'mid'},
-    {r:'ST',  x:.50, y:.82, c:'#ff4757', s:'fwd'},
+    {r:'LB',  x:.06, y:.22, c:'rgba(255,255,255,0.45)', s:'def'},
+    {r:'CB',  x:.22, y:.18, c:'rgba(255,255,255,0.45)', s:'def'},
+    {r:'CB',  x:.38, y:.16, c:'rgba(255,255,255,0.45)', s:'def'},
+    {r:'CB',  x:.62, y:.16, c:'rgba(255,255,255,0.45)', s:'def'},
+    {r:'CB',  x:.78, y:.18, c:'rgba(255,255,255,0.45)', s:'def'},
+    {r:'RB',  x:.94, y:.22, c:'rgba(255,255,255,0.45)', s:'def'},
+    {r:'CM',  x:.50, y:.42, c:'rgba(255,255,255,0.55)', s:'mid'},
+    {r:'CAM', x:.24, y:.56, c:'rgba(255,255,255,0.55)', s:'mid'},
+    {r:'CAM', x:.76, y:.56, c:'rgba(255,255,255,0.55)', s:'mid'},
+    {r:'ST',  x:.50, y:.82, c:'rgba(255,255,255,0.9)', s:'fwd'},
   ],
 };
 
 const AR: Record<string, ArrowDef[]> = {
   '4-3-3-A': [
-    {x1:.10,y1:.82,x2:.04,y2:.94,cx:.03,cy:.88,c:'#ff4757',w:2.4},
-    {x1:.90,y1:.82,x2:.96,y2:.94,cx:.97,cy:.88,c:'#ff4757',w:2.4},
-    {x1:.50,y1:.86,x2:.50,y2:.95,cx:.50,cy:.91,c:'#ff4757',w:2.6},
-    {x1:.24,y1:.50,x2:.16,y2:.72,cx:.14,cy:.62,c:'#00ff88',w:1.6},
-    {x1:.76,y1:.50,x2:.84,y2:.72,cx:.86,cy:.62,c:'#00ff88',w:1.6},
-    {x1:.50,y1:.56,x2:.50,y2:.76,cx:.50,cy:.67,c:'#00ff88',w:1.4},
+    {x1:.10,y1:.82,x2:.04,y2:.94,cx:.03,cy:.88,c:'rgba(255,255,255,0.9)',w:2.4},
+    {x1:.90,y1:.82,x2:.96,y2:.94,cx:.97,cy:.88,c:'rgba(255,255,255,0.9)',w:2.4},
+    {x1:.50,y1:.86,x2:.50,y2:.95,cx:.50,cy:.91,c:'rgba(255,255,255,0.9)',w:2.6},
+    {x1:.24,y1:.50,x2:.16,y2:.72,cx:.14,cy:.62,c:'rgba(255,255,255,0.55)',w:1.6},
+    {x1:.76,y1:.50,x2:.84,y2:.72,cx:.86,cy:.62,c:'rgba(255,255,255,0.55)',w:1.6},
+    {x1:.50,y1:.56,x2:.50,y2:.76,cx:.50,cy:.67,c:'rgba(255,255,255,0.55)',w:1.4},
   ],
   '4-3-3-B': [
-    {x1:.10,y1:.82,x2:.04,y2:.94,cx:.03,cy:.88,c:'#ff4757',w:2.4},
-    {x1:.90,y1:.82,x2:.96,y2:.94,cx:.97,cy:.88,c:'#ff4757',w:2.4},
-    {x1:.50,y1:.86,x2:.50,y2:.95,cx:.50,cy:.91,c:'#ff4757',w:2.6},
-    {x1:.22,y1:.52,x2:.14,y2:.72,cx:.12,cy:.63,c:'#00ff88',w:1.6},
-    {x1:.78,y1:.52,x2:.86,y2:.72,cx:.88,cy:.63,c:'#00ff88',w:1.6},
-    {x1:.50,y1:.44,x2:.50,y2:.66,cx:.50,cy:.56,c:'#00ff88',w:1.3},
+    {x1:.10,y1:.82,x2:.04,y2:.94,cx:.03,cy:.88,c:'rgba(255,255,255,0.9)',w:2.4},
+    {x1:.90,y1:.82,x2:.96,y2:.94,cx:.97,cy:.88,c:'rgba(255,255,255,0.9)',w:2.4},
+    {x1:.50,y1:.86,x2:.50,y2:.95,cx:.50,cy:.91,c:'rgba(255,255,255,0.9)',w:2.6},
+    {x1:.22,y1:.52,x2:.14,y2:.72,cx:.12,cy:.63,c:'rgba(255,255,255,0.55)',w:1.6},
+    {x1:.78,y1:.52,x2:.86,y2:.72,cx:.88,cy:.63,c:'rgba(255,255,255,0.55)',w:1.6},
+    {x1:.50,y1:.44,x2:.50,y2:.66,cx:.50,cy:.56,c:'rgba(255,255,255,0.55)',w:1.3},
   ],
   '4-5-1': [
-    {x1:.50,y1:.82,x2:.50,y2:.93,cx:.50,cy:.88,c:'#ff4757',w:2.4},
-    {x1:.08,y1:.50,x2:.05,y2:.68,cx:.03,cy:.60,c:'#00ff88',w:1.6},
-    {x1:.92,y1:.50,x2:.95,y2:.68,cx:.97,cy:.60,c:'#00ff88',w:1.6},
-    {x1:.30,y1:.52,x2:.38,y2:.68,cx:.32,cy:.61,c:'#00ff88',w:1.3},
-    {x1:.70,y1:.52,x2:.62,y2:.68,cx:.68,cy:.61,c:'#00ff88',w:1.3},
-    {x1:.50,y1:.46,x2:.50,y2:.68,cx:.50,cy:.58,c:'#00ff88',w:1.3},
+    {x1:.50,y1:.82,x2:.50,y2:.93,cx:.50,cy:.88,c:'rgba(255,255,255,0.9)',w:2.4},
+    {x1:.08,y1:.50,x2:.05,y2:.68,cx:.03,cy:.60,c:'rgba(255,255,255,0.55)',w:1.6},
+    {x1:.92,y1:.50,x2:.95,y2:.68,cx:.97,cy:.60,c:'rgba(255,255,255,0.55)',w:1.6},
+    {x1:.30,y1:.52,x2:.38,y2:.68,cx:.32,cy:.61,c:'rgba(255,255,255,0.55)',w:1.3},
+    {x1:.70,y1:.52,x2:.62,y2:.68,cx:.68,cy:.61,c:'rgba(255,255,255,0.55)',w:1.3},
+    {x1:.50,y1:.46,x2:.50,y2:.68,cx:.50,cy:.58,c:'rgba(255,255,255,0.55)',w:1.3},
   ],
   '4-2-3-1': [
-    {x1:.50,y1:.84,x2:.50,y2:.94,cx:.50,cy:.90,c:'#ff4757',w:2.6},
-    {x1:.12,y1:.64,x2:.07,y2:.78,cx:.05,cy:.72,c:'#00ff88',w:1.7},
-    {x1:.88,y1:.64,x2:.93,y2:.78,cx:.95,cy:.72,c:'#00ff88',w:1.7},
-    {x1:.50,y1:.66,x2:.50,y2:.78,cx:.50,cy:.73,c:'#00ff88',w:1.4},
-    {x1:.36,y1:.40,x2:.12,y2:.60,cx:.20,cy:.52,c:'#00ff88',w:1.2},
-    {x1:.64,y1:.40,x2:.88,y2:.60,cx:.80,cy:.52,c:'#00ff88',w:1.2},
+    {x1:.50,y1:.84,x2:.50,y2:.94,cx:.50,cy:.90,c:'rgba(255,255,255,0.9)',w:2.6},
+    {x1:.12,y1:.64,x2:.07,y2:.78,cx:.05,cy:.72,c:'rgba(255,255,255,0.55)',w:1.7},
+    {x1:.88,y1:.64,x2:.93,y2:.78,cx:.95,cy:.72,c:'rgba(255,255,255,0.55)',w:1.7},
+    {x1:.50,y1:.66,x2:.50,y2:.78,cx:.50,cy:.73,c:'rgba(255,255,255,0.55)',w:1.4},
+    {x1:.36,y1:.40,x2:.12,y2:.60,cx:.20,cy:.52,c:'rgba(255,255,255,0.55)',w:1.2},
+    {x1:.64,y1:.40,x2:.88,y2:.60,cx:.80,cy:.52,c:'rgba(255,255,255,0.55)',w:1.2},
   ],
   '4-4-2-A': [
-    {x1:.36,y1:.82,x2:.28,y2:.93,cx:.29,cy:.88,c:'#ff4757',w:2.2},
-    {x1:.64,y1:.82,x2:.72,y2:.93,cx:.71,cy:.88,c:'#ff4757',w:2.2},
-    {x1:.08,y1:.50,x2:.06,y2:.70,cx:.04,cy:.61,c:'#00ff88',w:1.6},
-    {x1:.92,y1:.50,x2:.94,y2:.70,cx:.96,cy:.61,c:'#00ff88',w:1.6},
-    {x1:.34,y1:.50,x2:.34,y2:.68,cx:.34,cy:.60,c:'#00ff88',w:1.3},
-    {x1:.66,y1:.50,x2:.66,y2:.68,cx:.66,cy:.60,c:'#00ff88',w:1.3},
+    {x1:.36,y1:.82,x2:.28,y2:.93,cx:.29,cy:.88,c:'rgba(255,255,255,0.9)',w:2.2},
+    {x1:.64,y1:.82,x2:.72,y2:.93,cx:.71,cy:.88,c:'rgba(255,255,255,0.9)',w:2.2},
+    {x1:.08,y1:.50,x2:.06,y2:.70,cx:.04,cy:.61,c:'rgba(255,255,255,0.55)',w:1.6},
+    {x1:.92,y1:.50,x2:.94,y2:.70,cx:.96,cy:.61,c:'rgba(255,255,255,0.55)',w:1.6},
+    {x1:.34,y1:.50,x2:.34,y2:.68,cx:.34,cy:.60,c:'rgba(255,255,255,0.55)',w:1.3},
+    {x1:.66,y1:.50,x2:.66,y2:.68,cx:.66,cy:.60,c:'rgba(255,255,255,0.55)',w:1.3},
   ],
   '4-4-2-B': [
-    {x1:.34,y1:.82,x2:.26,y2:.93,cx:.27,cy:.88,c:'#ff4757',w:2.2},
-    {x1:.66,y1:.82,x2:.74,y2:.93,cx:.73,cy:.88,c:'#ff4757',w:2.2},
-    {x1:.24,y1:.48,x2:.16,y2:.68,cx:.14,cy:.59,c:'#00ff88',w:1.5},
-    {x1:.76,y1:.48,x2:.84,y2:.68,cx:.86,cy:.59,c:'#00ff88',w:1.5},
-    {x1:.50,y1:.56,x2:.50,y2:.74,cx:.50,cy:.66,c:'#00ff88',w:1.3},
-    {x1:.50,y1:.38,x2:.50,y2:.54,cx:.50,cy:.47,c:'#00ff88',w:1.2},
+    {x1:.34,y1:.82,x2:.26,y2:.93,cx:.27,cy:.88,c:'rgba(255,255,255,0.9)',w:2.2},
+    {x1:.66,y1:.82,x2:.74,y2:.93,cx:.73,cy:.88,c:'rgba(255,255,255,0.9)',w:2.2},
+    {x1:.24,y1:.48,x2:.16,y2:.68,cx:.14,cy:.59,c:'rgba(255,255,255,0.55)',w:1.5},
+    {x1:.76,y1:.48,x2:.84,y2:.68,cx:.86,cy:.59,c:'rgba(255,255,255,0.55)',w:1.5},
+    {x1:.50,y1:.56,x2:.50,y2:.74,cx:.50,cy:.66,c:'rgba(255,255,255,0.55)',w:1.3},
+    {x1:.50,y1:.38,x2:.50,y2:.54,cx:.50,cy:.47,c:'rgba(255,255,255,0.55)',w:1.2},
   ],
   '5-2-3-A': [
-    {x1:.10,y1:.82,x2:.04,y2:.94,cx:.03,cy:.88,c:'#ff4757',w:2.4},
-    {x1:.90,y1:.82,x2:.96,y2:.94,cx:.97,cy:.88,c:'#ff4757',w:2.4},
-    {x1:.50,y1:.86,x2:.50,y2:.95,cx:.50,cy:.91,c:'#ff4757',w:2.6},
-    {x1:.06,y1:.24,x2:.06,y2:.46,cx:.04,cy:.36,c:'#00e5ff',w:1.4},
-    {x1:.94,y1:.24,x2:.94,y2:.46,cx:.96,cy:.36,c:'#00e5ff',w:1.4},
-    {x1:.34,y1:.50,x2:.34,y2:.70,cx:.34,cy:.61,c:'#00ff88',w:1.4},
-    {x1:.66,y1:.50,x2:.66,y2:.70,cx:.66,cy:.61,c:'#00ff88',w:1.4},
+    {x1:.10,y1:.82,x2:.04,y2:.94,cx:.03,cy:.88,c:'rgba(255,255,255,0.9)',w:2.4},
+    {x1:.90,y1:.82,x2:.96,y2:.94,cx:.97,cy:.88,c:'rgba(255,255,255,0.9)',w:2.4},
+    {x1:.50,y1:.86,x2:.50,y2:.95,cx:.50,cy:.91,c:'rgba(255,255,255,0.9)',w:2.6},
+    {x1:.06,y1:.24,x2:.06,y2:.46,cx:.04,cy:.36,c:'rgba(255,255,255,0.45)',w:1.4},
+    {x1:.94,y1:.24,x2:.94,y2:.46,cx:.96,cy:.36,c:'rgba(255,255,255,0.45)',w:1.4},
+    {x1:.34,y1:.50,x2:.34,y2:.70,cx:.34,cy:.61,c:'rgba(255,255,255,0.55)',w:1.4},
+    {x1:.66,y1:.50,x2:.66,y2:.70,cx:.66,cy:.61,c:'rgba(255,255,255,0.55)',w:1.4},
   ],
   '5-2-3-B': [
-    {x1:.10,y1:.82,x2:.04,y2:.94,cx:.03,cy:.88,c:'#ff4757',w:2.4},
-    {x1:.90,y1:.82,x2:.96,y2:.94,cx:.97,cy:.88,c:'#ff4757',w:2.4},
-    {x1:.50,y1:.86,x2:.50,y2:.95,cx:.50,cy:.91,c:'#ff4757',w:2.6},
-    {x1:.06,y1:.24,x2:.06,y2:.46,cx:.04,cy:.36,c:'#00e5ff',w:1.4},
-    {x1:.94,y1:.24,x2:.94,y2:.46,cx:.96,cy:.36,c:'#00e5ff',w:1.4},
-    {x1:.34,y1:.48,x2:.34,y2:.68,cx:.34,cy:.59,c:'#00ff88',w:1.4},
-    {x1:.66,y1:.48,x2:.66,y2:.68,cx:.66,cy:.59,c:'#00ff88',w:1.4},
+    {x1:.10,y1:.82,x2:.04,y2:.94,cx:.03,cy:.88,c:'rgba(255,255,255,0.9)',w:2.4},
+    {x1:.90,y1:.82,x2:.96,y2:.94,cx:.97,cy:.88,c:'rgba(255,255,255,0.9)',w:2.4},
+    {x1:.50,y1:.86,x2:.50,y2:.95,cx:.50,cy:.91,c:'rgba(255,255,255,0.9)',w:2.6},
+    {x1:.06,y1:.24,x2:.06,y2:.46,cx:.04,cy:.36,c:'rgba(255,255,255,0.45)',w:1.4},
+    {x1:.94,y1:.24,x2:.94,y2:.46,cx:.96,cy:.36,c:'rgba(255,255,255,0.45)',w:1.4},
+    {x1:.34,y1:.48,x2:.34,y2:.68,cx:.34,cy:.59,c:'rgba(255,255,255,0.55)',w:1.4},
+    {x1:.66,y1:.48,x2:.66,y2:.68,cx:.66,cy:.59,c:'rgba(255,255,255,0.55)',w:1.4},
   ],
   '5-3-2': [
-    {x1:.34,y1:.82,x2:.26,y2:.93,cx:.27,cy:.88,c:'#ff4757',w:2.2},
-    {x1:.66,y1:.82,x2:.74,y2:.93,cx:.73,cy:.88,c:'#ff4757',w:2.2},
-    {x1:.06,y1:.24,x2:.06,y2:.46,cx:.04,cy:.36,c:'#00e5ff',w:1.4},
-    {x1:.94,y1:.24,x2:.94,y2:.46,cx:.96,cy:.36,c:'#00e5ff',w:1.4},
-    {x1:.22,y1:.52,x2:.30,y2:.70,cx:.24,cy:.62,c:'#00ff88',w:1.4},
-    {x1:.78,y1:.52,x2:.70,y2:.70,cx:.76,cy:.62,c:'#00ff88',w:1.4},
+    {x1:.34,y1:.82,x2:.26,y2:.93,cx:.27,cy:.88,c:'rgba(255,255,255,0.9)',w:2.2},
+    {x1:.66,y1:.82,x2:.74,y2:.93,cx:.73,cy:.88,c:'rgba(255,255,255,0.9)',w:2.2},
+    {x1:.06,y1:.24,x2:.06,y2:.46,cx:.04,cy:.36,c:'rgba(255,255,255,0.45)',w:1.4},
+    {x1:.94,y1:.24,x2:.94,y2:.46,cx:.96,cy:.36,c:'rgba(255,255,255,0.45)',w:1.4},
+    {x1:.22,y1:.52,x2:.30,y2:.70,cx:.24,cy:.62,c:'rgba(255,255,255,0.55)',w:1.4},
+    {x1:.78,y1:.52,x2:.70,y2:.70,cx:.76,cy:.62,c:'rgba(255,255,255,0.55)',w:1.4},
   ],
   '5-3-1-1': [
-    {x1:.50,y1:.84,x2:.50,y2:.94,cx:.50,cy:.90,c:'#ff4757',w:2.4},
-    {x1:.50,y1:.68,x2:.50,y2:.80,cx:.50,cy:.75,c:'#ff4757',w:2.0},
-    {x1:.06,y1:.24,x2:.06,y2:.46,cx:.04,cy:.36,c:'#00e5ff',w:1.4},
-    {x1:.94,y1:.24,x2:.94,y2:.46,cx:.96,cy:.36,c:'#00e5ff',w:1.4},
-    {x1:.22,y1:.52,x2:.30,y2:.62,cx:.24,cy:.58,c:'#00ff88',w:1.3},
-    {x1:.78,y1:.52,x2:.70,y2:.62,cx:.76,cy:.58,c:'#00ff88',w:1.3},
+    {x1:.50,y1:.84,x2:.50,y2:.94,cx:.50,cy:.90,c:'rgba(255,255,255,0.9)',w:2.4},
+    {x1:.50,y1:.68,x2:.50,y2:.80,cx:.50,cy:.75,c:'rgba(255,255,255,0.9)',w:2.0},
+    {x1:.06,y1:.24,x2:.06,y2:.46,cx:.04,cy:.36,c:'rgba(255,255,255,0.45)',w:1.4},
+    {x1:.94,y1:.24,x2:.94,y2:.46,cx:.96,cy:.36,c:'rgba(255,255,255,0.45)',w:1.4},
+    {x1:.22,y1:.52,x2:.30,y2:.62,cx:.24,cy:.58,c:'rgba(255,255,255,0.55)',w:1.3},
+    {x1:.78,y1:.52,x2:.70,y2:.62,cx:.76,cy:.58,c:'rgba(255,255,255,0.55)',w:1.3},
   ],
   '5-4-1-A': [
-    {x1:.50,y1:.82,x2:.50,y2:.93,cx:.50,cy:.88,c:'#ff4757',w:2.4},
-    {x1:.06,y1:.24,x2:.06,y2:.46,cx:.04,cy:.36,c:'#00e5ff',w:1.5},
-    {x1:.94,y1:.24,x2:.94,y2:.46,cx:.96,cy:.36,c:'#00e5ff',w:1.5},
-    {x1:.10,y1:.52,x2:.08,y2:.70,cx:.06,cy:.62,c:'#00ff88',w:1.4},
-    {x1:.90,y1:.52,x2:.92,y2:.70,cx:.94,cy:.62,c:'#00ff88',w:1.4},
-    {x1:.50,y1:.50,x2:.50,y2:.68,cx:.50,cy:.60,c:'#00ff88',w:1.3},
+    {x1:.50,y1:.82,x2:.50,y2:.93,cx:.50,cy:.88,c:'rgba(255,255,255,0.9)',w:2.4},
+    {x1:.06,y1:.24,x2:.06,y2:.46,cx:.04,cy:.36,c:'rgba(255,255,255,0.45)',w:1.5},
+    {x1:.94,y1:.24,x2:.94,y2:.46,cx:.96,cy:.36,c:'rgba(255,255,255,0.45)',w:1.5},
+    {x1:.10,y1:.52,x2:.08,y2:.70,cx:.06,cy:.62,c:'rgba(255,255,255,0.55)',w:1.4},
+    {x1:.90,y1:.52,x2:.92,y2:.70,cx:.94,cy:.62,c:'rgba(255,255,255,0.55)',w:1.4},
+    {x1:.50,y1:.50,x2:.50,y2:.68,cx:.50,cy:.60,c:'rgba(255,255,255,0.55)',w:1.3},
   ],
   '5-4-1-B': [
-    {x1:.50,y1:.82,x2:.50,y2:.93,cx:.50,cy:.88,c:'#ff4757',w:2.4},
-    {x1:.06,y1:.24,x2:.06,y2:.46,cx:.04,cy:.36,c:'#00e5ff',w:1.5},
-    {x1:.94,y1:.24,x2:.94,y2:.46,cx:.96,cy:.36,c:'#00e5ff',w:1.5},
-    {x1:.22,y1:.50,x2:.28,y2:.66,cx:.23,cy:.59,c:'#00ff88',w:1.4},
-    {x1:.78,y1:.50,x2:.72,y2:.66,cx:.77,cy:.59,c:'#00ff88',w:1.4},
-    {x1:.50,y1:.58,x2:.50,y2:.74,cx:.50,cy:.67,c:'#00ff88',w:1.3},
+    {x1:.50,y1:.82,x2:.50,y2:.93,cx:.50,cy:.88,c:'rgba(255,255,255,0.9)',w:2.4},
+    {x1:.06,y1:.24,x2:.06,y2:.46,cx:.04,cy:.36,c:'rgba(255,255,255,0.45)',w:1.5},
+    {x1:.94,y1:.24,x2:.94,y2:.46,cx:.96,cy:.36,c:'rgba(255,255,255,0.45)',w:1.5},
+    {x1:.22,y1:.50,x2:.28,y2:.66,cx:.23,cy:.59,c:'rgba(255,255,255,0.55)',w:1.4},
+    {x1:.78,y1:.50,x2:.72,y2:.66,cx:.77,cy:.59,c:'rgba(255,255,255,0.55)',w:1.4},
+    {x1:.50,y1:.58,x2:.50,y2:.74,cx:.50,cy:.67,c:'rgba(255,255,255,0.55)',w:1.3},
   ],
   '6-3-1-A': [
-    {x1:.50,y1:.82,x2:.50,y2:.93,cx:.50,cy:.88,c:'#ff4757',w:2.4},
-    {x1:.06,y1:.22,x2:.06,y2:.44,cx:.04,cy:.34,c:'#00e5ff',w:1.3},
-    {x1:.94,y1:.22,x2:.94,y2:.44,cx:.96,cy:.34,c:'#00e5ff',w:1.3},
-    {x1:.22,y1:.52,x2:.28,y2:.68,cx:.23,cy:.61,c:'#00ff88',w:1.3},
-    {x1:.78,y1:.52,x2:.72,y2:.68,cx:.77,cy:.61,c:'#00ff88',w:1.3},
-    {x1:.50,y1:.62,x2:.50,y2:.76,cx:.50,cy:.70,c:'#00ff88',w:1.3},
+    {x1:.50,y1:.82,x2:.50,y2:.93,cx:.50,cy:.88,c:'rgba(255,255,255,0.9)',w:2.4},
+    {x1:.06,y1:.22,x2:.06,y2:.44,cx:.04,cy:.34,c:'rgba(255,255,255,0.45)',w:1.3},
+    {x1:.94,y1:.22,x2:.94,y2:.44,cx:.96,cy:.34,c:'rgba(255,255,255,0.45)',w:1.3},
+    {x1:.22,y1:.52,x2:.28,y2:.68,cx:.23,cy:.61,c:'rgba(255,255,255,0.55)',w:1.3},
+    {x1:.78,y1:.52,x2:.72,y2:.68,cx:.77,cy:.61,c:'rgba(255,255,255,0.55)',w:1.3},
+    {x1:.50,y1:.62,x2:.50,y2:.76,cx:.50,cy:.70,c:'rgba(255,255,255,0.55)',w:1.3},
   ],
   '6-3-1-B': [
-    {x1:.50,y1:.82,x2:.50,y2:.93,cx:.50,cy:.88,c:'#ff4757',w:2.4},
-    {x1:.06,y1:.22,x2:.06,y2:.44,cx:.04,cy:.34,c:'#00e5ff',w:1.3},
-    {x1:.94,y1:.22,x2:.94,y2:.44,cx:.96,cy:.34,c:'#00e5ff',w:1.3},
-    {x1:.24,y1:.56,x2:.30,y2:.70,cx:.25,cy:.64,c:'#00ff88',w:1.3},
-    {x1:.76,y1:.56,x2:.70,y2:.70,cx:.75,cy:.64,c:'#00ff88',w:1.3},
-    {x1:.50,y1:.42,x2:.50,y2:.60,cx:.50,cy:.52,c:'#00ff88',w:1.2},
+    {x1:.50,y1:.82,x2:.50,y2:.93,cx:.50,cy:.88,c:'rgba(255,255,255,0.9)',w:2.4},
+    {x1:.06,y1:.22,x2:.06,y2:.44,cx:.04,cy:.34,c:'rgba(255,255,255,0.45)',w:1.3},
+    {x1:.94,y1:.22,x2:.94,y2:.44,cx:.96,cy:.34,c:'rgba(255,255,255,0.45)',w:1.3},
+    {x1:.24,y1:.56,x2:.30,y2:.70,cx:.25,cy:.64,c:'rgba(255,255,255,0.55)',w:1.3},
+    {x1:.76,y1:.56,x2:.70,y2:.70,cx:.75,cy:.64,c:'rgba(255,255,255,0.55)',w:1.3},
+    {x1:.50,y1:.42,x2:.50,y2:.60,cx:.50,cy:.52,c:'rgba(255,255,255,0.55)',w:1.2},
   ],
 };
 
@@ -323,7 +324,7 @@ function drawBg(ctx: CanvasRenderingContext2D, cw: number, ch: number, pad: numb
   const pl = pad, pr = cw - pad, pt = pad, pb = ch - pad, pw = pr - pl, ph = pb - pt;
   const ns = 8;
   for (let i = 0; i < ns; i++) {
-    ctx.fillStyle = i % 2 === 0 ? '#1b5e2c' : '#1f6a32';
+    ctx.fillStyle = i % 2 === 0 ? '#0d0d0d' : '#111111';
     ctx.fillRect(pl + i * (pw / ns), pt, pw / ns, ph);
   }
   ctx.strokeStyle = 'rgba(255,255,255,0.32)'; ctx.lineWidth = 1; ctx.strokeRect(pl, pt, pw, ph);
@@ -396,25 +397,31 @@ function drawDot(
 
 function drawPlayer(
   ctx: CanvasRenderingContext2D,
-  x: number, y: number, role: string, col: string, size: string,
+  x: number, y: number, role: string, _col: string, size: string,
   entranceProgress: number, pulsePhase: number
 ) {
+  // monochrome: GK = white, DEF = rgba(255,255,255,0.6), MID = rgba(255,255,255,0.5), FWD = #ffffff
+  const col =
+    size === 'gk'  ? '#ffffff' :
+    size === 'fwd' ? 'rgba(255,255,255,0.95)' :
+    size === 'mid' ? 'rgba(255,255,255,0.65)' :
+    'rgba(255,255,255,0.55)';
   const r = size === 'fwd' ? 9 : size === 'gk' ? 9 : 8;
   const lw = size === 'fwd' ? 2.3 : size === 'gk' ? 2 : 1.8;
   if (size === 'fwd' || size === 'gk') {
-    ctx.save(); ctx.globalAlpha = (1 - pulsePhase) * 0.45; ctx.strokeStyle = col; ctx.lineWidth = 0.9;
+    ctx.save(); ctx.globalAlpha = (1 - pulsePhase) * 0.35; ctx.strokeStyle = col; ctx.lineWidth = 0.9;
     ctx.shadowColor = col; ctx.shadowBlur = 8;
     ctx.beginPath(); ctx.arc(x, y, r + pulsePhase * 9, 0, Math.PI * 2); ctx.stroke(); ctx.restore();
   }
   ctx.save(); ctx.globalAlpha = entranceProgress;
   const sc2 = 0.1 + 0.9 * entranceProgress;
   ctx.translate(x, y); ctx.scale(sc2, sc2); ctx.translate(-x, -y);
-  ctx.shadowColor = col; ctx.shadowBlur = 12;
-  ctx.fillStyle = '#07091a'; ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI * 2); ctx.fill();
+  ctx.shadowColor = col; ctx.shadowBlur = 10;
+  ctx.fillStyle = '#0a0a0a'; ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI * 2); ctx.fill();
   ctx.strokeStyle = col; ctx.lineWidth = lw; ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI * 2); ctx.stroke();
   ctx.shadowBlur = 0;
   const fs = role.length > 3 ? 4.5 : role.length > 2 ? 5 : 6;
-  ctx.fillStyle = col; ctx.font = `700 ${fs}px Inter,sans-serif`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  ctx.fillStyle = '#ffffff'; ctx.font = `700 ${fs}px Inter,sans-serif`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
   ctx.fillText(role, x, y + 0.5);
   ctx.restore();
 }
@@ -493,26 +500,14 @@ const ATF_SAVE_AUTH: Record<string, string> = {
 };
 
 // ─── GRADIENT HELPERS ─────────────────────────────────────────────────
-function _pGrad(v: number): string {
-  if (v < 16) return 'linear-gradient(90deg,#3b82f6,#6366f1)';
-  if (v < 30) return 'linear-gradient(90deg,#6366f1,#8b5cf6)';
-  if (v < 50) return 'linear-gradient(90deg,#f59e0b,#f97316)';
-  if (v < 65) return 'linear-gradient(90deg,#f97316,#ef4444)';
-  return 'linear-gradient(90deg,#ef4444,#dc2626)';
+function _pGrad(_v: number): string {
+  return '#ffffff';
 }
-function _sGrad(v: number): string {
-  if (v < 12) return 'linear-gradient(90deg,#3b82f6,#6366f1)';
-  if (v < 25) return 'linear-gradient(90deg,#6366f1,#8b5cf6)';
-  if (v < 44) return 'linear-gradient(90deg,#8b5cf6,#a78bfa)';
-  if (v < 62) return 'linear-gradient(90deg,#f59e0b,#f97316)';
-  return 'linear-gradient(90deg,#f97316,#ef4444)';
+function _sGrad(_v: number): string {
+  return '#ffffff';
 }
-function _tGrad(v: number): string {
-  if (v < 55) return 'linear-gradient(90deg,#14b8a6,#22d3ee)';
-  if (v < 63) return 'linear-gradient(90deg,#22d3ee,#38bdf8)';
-  if (v < 72) return 'linear-gradient(90deg,#f59e0b,#fbbf24)';
-  if (v < 80) return 'linear-gradient(90deg,#f97316,#ef4444)';
-  return 'linear-gradient(90deg,#ef4444,#dc2626)';
+function _tGrad(_v: number): string {
+  return '#ffffff';
 }
 
 // ─── SUB-COMPONENTS ───────────────────────────────────────────────────
@@ -522,13 +517,13 @@ function ATFSliderBar({ label, value, gradient, delay = 0 }: {
   return (
     <div style={{ marginBottom: 18 }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 7 }}>
-        <span style={{ color: '#94a3b8', fontSize: 11, fontWeight: 600, letterSpacing: '0.06em', textTransform: 'uppercase' }}>{label}</span>
+        <span style={{ color: 'rgba(255,255,255,0.42)', fontSize: 11, fontWeight: 600, letterSpacing: '0.06em', textTransform: 'uppercase' }}>{label}</span>
         <motion.span
           initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: delay + 0.5 }}
-          style={{ color: '#e2e8f0', fontWeight: 800, fontSize: 22, letterSpacing: '-0.02em', lineHeight: 1 }}
+          style={{ color: '#ffffff', fontWeight: 800, fontSize: 22, letterSpacing: '-0.02em', lineHeight: 1 }}
         >{value}</motion.span>
       </div>
-      <div style={{ height: 10, borderRadius: 99, background: 'rgba(255,255,255,0.07)', overflow: 'hidden' }}>
+      <div style={{ height: 10, borderRadius: 99, background: 'rgba(255,255,255,0.1)', overflow: 'hidden' }}>
         <motion.div
           initial={{ width: 0 }} animate={{ width: `${value}%` }}
           transition={{ duration: 1.0, ease: [0.16, 1, 0.3, 1], delay }}
@@ -547,32 +542,26 @@ function ATFSliderBar({ label, value, gradient, delay = 0 }: {
       </div>
       <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 4 }}>
         {[0, 25, 50, 75, 99].map(tick => (
-          <span key={tick} style={{ fontSize: 9, color: 'rgba(148,163,184,0.3)' }}>{tick}</span>
+          <span key={tick} style={{ fontSize: 9, color: 'rgba(255,255,255,0.18)' }}>{tick}</span>
         ))}
       </div>
     </div>
   );
 }
 
-function ATFLineTacticRow({ label, rawVal, displayVal, isLast }: {
+function ATFLineTacticRow({ label, rawVal: _rawVal, displayVal, isLast }: {
   label: string; rawVal: string; displayVal: string; isLast?: boolean;
 }) {
-  const color =
-    rawVal === 'Attack only'         ? '#22c55e' :
-    rawVal === 'Stay in position'    ? '#6366f1' :
-    rawVal === 'Protect the defence' ? '#f59e0b' :
-    rawVal === 'Defend deep'         ? '#3b82f6' :
-    '#94a3b8';
   return (
     <div style={{
       display: 'flex', justifyContent: 'space-between', alignItems: 'center',
       padding: '7px 0', borderBottom: isLast ? 'none' : '1px solid rgba(255,255,255,0.04)',
     }}>
-      <span style={{ color: '#64748b', fontSize: 11.5, fontWeight: 600, letterSpacing: '0.04em' }}>{label}</span>
+      <span style={{ color: 'rgba(255,255,255,0.42)', fontSize: 11.5, fontWeight: 600, letterSpacing: '0.04em' }}>{label}</span>
       <span style={{
         fontSize: 11, fontWeight: 700, letterSpacing: '0.06em',
-        color, padding: '3px 10px', borderRadius: 99,
-        background: `${color}18`, border: `1px solid ${color}33`,
+        color: 'rgba(255,255,255,0.8)', padding: '3px 10px', borderRadius: 99,
+        background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.12)',
       }}>{displayVal}</span>
     </div>
   );
@@ -742,12 +731,12 @@ export default function AntiTacticFinder() {
         // FWD — blue upward arrow
         { const p1 = toL(.5, .78), p2 = toL(.5, .93), cp = toL(.5, .86);
           const pr = Math.min(el / 0.4, 1);
-          arrow(p1.x, p1.y, cp.x, cp.y, p2.x, p2.y, '#4fc3f7', 3.5, pr); }
+          arrow(p1.x, p1.y, cp.x, cp.y, p2.x, p2.y, 'rgba(255,255,255,0.85)', 3.5, pr); }
         if (fwdTxt === 'Hold up play' || fwdTxt === 'Hold Up Play') {
           const p1 = toL(.5, .76), p2 = toL(.5, .83), cp = toL(.5, .80);
           const pr = Math.min(el / 0.4, 1);
           ctx.save(); ctx.globalAlpha = 0.4;
-          arrow(p1.x, p1.y, cp.x, cp.y, p2.x, p2.y, '#4fc3f7', 2, pr);
+          arrow(p1.x, p1.y, cp.x, cp.y, p2.x, p2.y, 'rgba(255,255,255,0.85)', 2, pr);
           ctx.restore();
         }
 
@@ -757,43 +746,43 @@ export default function AntiTacticFinder() {
         if (midTxt === 'Stay in position') {
           [{ dx: .22, dy: 0 }, { dx: -.22, dy: 0 }, { dx: 0, dy: .10 }, { dx: 0, dy: -.10 }].forEach(({ dx, dy }) => {
             const e = toL(.5 + dx, .5 + dy);
-            arrow(cx.x, cx.y, (cx.x + e.x) / 2, (cx.y + e.y) / 2, e.x, e.y, '#ff9800', 2, mp);
+            arrow(cx.x, cx.y, (cx.x + e.x) / 2, (cx.y + e.y) / 2, e.x, e.y, 'rgba(255,255,255,0.55)', 2, mp);
           });
-          ctx.save(); ctx.globalAlpha = mp; ctx.fillStyle = '#ff9800'; ctx.shadowColor = '#ff9800'; ctx.shadowBlur = 6;
+          ctx.save(); ctx.globalAlpha = mp; ctx.fillStyle = 'rgba(255,255,255,0.55)'; ctx.shadowColor = 'rgba(255,255,255,0.55)'; ctx.shadowBlur = 6;
           ctx.beginPath(); ctx.arc(cx.x, cx.y, 3.5, 0, Math.PI * 2); ctx.fill(); ctx.restore();
         } else if (midTxt === 'Box to box' || midTxt === 'Box to Box') {
           const p1l = toL(.5, .56), cpl = toL(.28, .44), p2l = toL(.16, .50);
           const p1r = toL(.5, .56), cpr = toL(.72, .44), p2r = toL(.84, .50);
-          arrow(p1l.x, p1l.y, cpl.x, cpl.y, p2l.x, p2l.y, '#ff9800', 2, mp);
-          arrow(p1r.x, p1r.y, cpr.x, cpr.y, p2r.x, p2r.y, '#ff9800', 2, mp);
+          arrow(p1l.x, p1l.y, cpl.x, cpl.y, p2l.x, p2l.y, 'rgba(255,255,255,0.55)', 2, mp);
+          arrow(p1r.x, p1r.y, cpr.x, cpr.y, p2r.x, p2r.y, 'rgba(255,255,255,0.55)', 2, mp);
         } else if (midTxt === 'Get forward' || midTxt === 'Get Forward') {
           const pa = toL(.36, .50), pb2 = toL(.36, .70), pco = toL(.36, .61);
           const pa2 = toL(.64, .50), pb3 = toL(.64, .70), pco2 = toL(.64, .61);
-          arrow(pa.x, pa.y, pco.x, pco.y, pb2.x, pb2.y, '#ff9800', 2, mp);
-          arrow(pa2.x, pa2.y, pco2.x, pco2.y, pb3.x, pb3.y, '#ff9800', 2, mp);
+          arrow(pa.x, pa.y, pco.x, pco.y, pb2.x, pb2.y, 'rgba(255,255,255,0.55)', 2, mp);
+          arrow(pa2.x, pa2.y, pco2.x, pco2.y, pb3.x, pb3.y, 'rgba(255,255,255,0.55)', 2, mp);
         } else if (midTxt === 'Protect the defence' || midTxt === 'Protect Def.') {
           const p1l = toL(.38, .52), cpl = toL(.30, .38), p2l = toL(.26, .30);
           const p1r = toL(.62, .52), cpr = toL(.70, .38), p2r = toL(.74, .30);
-          arrow(p1l.x, p1l.y, cpl.x, cpl.y, p2l.x, p2l.y, '#ff9800', 2, mp);
-          arrow(p1r.x, p1r.y, cpr.x, cpr.y, p2r.x, p2r.y, '#ff9800', 2, mp);
+          arrow(p1l.x, p1l.y, cpl.x, cpl.y, p2l.x, p2l.y, 'rgba(255,255,255,0.55)', 2, mp);
+          arrow(p1r.x, p1r.y, cpr.x, cpr.y, p2r.x, p2r.y, 'rgba(255,255,255,0.55)', 2, mp);
         } else if (midTxt === 'Normal') {
           const p1 = toL(.5, .50), p2 = toL(.5, .68), cp = toL(.5, .60);
-          arrow(p1.x, p1.y, cp.x, cp.y, p2.x, p2.y, '#ff9800', 2, mp);
+          arrow(p1.x, p1.y, cp.x, cp.y, p2.x, p2.y, 'rgba(255,255,255,0.55)', 2, mp);
         } else {
           const p1 = toL(.5, .5), p2 = toL(.5, .70), cp = toL(.5, .61);
-          arrow(p1.x, p1.y, cp.x, cp.y, p2.x, p2.y, '#ff9800', 2, mp);
+          arrow(p1.x, p1.y, cp.x, cp.y, p2.x, p2.y, 'rgba(255,255,255,0.55)', 2, mp);
         }
 
         // DEF — orange downward arrow
         { const p1 = toL(.5, .28), p2 = toL(.5, .14), cp = toL(.5, .21);
           const pr = Math.min(Math.max((el - .35) / .4, 0), 1);
-          arrow(p1.x, p1.y, cp.x, cp.y, p2.x, p2.y, '#ff9800', 3, pr);
-          ctx.save(); ctx.globalAlpha = Math.min(el / .55, .85); ctx.fillStyle = '#ff9800'; ctx.shadowColor = '#ff9800'; ctx.shadowBlur = 5;
+          arrow(p1.x, p1.y, cp.x, cp.y, p2.x, p2.y, 'rgba(255,255,255,0.55)', 3, pr);
+          ctx.save(); ctx.globalAlpha = Math.min(el / .55, .85); ctx.fillStyle = 'rgba(255,255,255,0.55)'; ctx.shadowColor = 'rgba(255,255,255,0.55)'; ctx.shadowBlur = 5;
           ctx.beginPath(); ctx.arc(p1.x, p1.y, 3, 0, Math.PI * 2); ctx.fill(); ctx.restore(); }
 
         if (el > 1.2) {
           const fp1 = toL(.5, .78), fp2 = toL(.5, .93), fcp = toL(.5, .86);
-          drawDot(ctx, fp1.x, fp1.y, fcp.x, fcp.y, fp2.x, fp2.y, '#4fc3f7', ((el - 1.2) * .5) % 1);
+          drawDot(ctx, fp1.x, fp1.y, fcp.x, fcp.y, fp2.x, fp2.y, 'rgba(255,255,255,0.85)', ((el - 1.2) * .5) % 1);
         }
         // Stop after animations complete to prevent infinite CPU drain on mobile
         if (el < 3.0) {
@@ -815,6 +804,15 @@ export default function AntiTacticFinder() {
     };
   }, [locActive, strActive, selectedOppKey]);
 
+  useEffect(() => {
+    if (!hasSelected) return;
+    analytics.antiTacticSearch(
+      selectedOppKey,
+      locActive === 'HOME MATCH' ? 'home' : 'away',
+      strActive.toLowerCase(),
+    );
+  }, [locActive, strActive, selectedOppKey, hasSelected]);
+
   function doReset() {
     setLocActive('HOME MATCH');
     setStrActive('EQUAL');
@@ -830,9 +828,9 @@ export default function AntiTacticFinder() {
         aria-hidden="true"
         animate={isMobile ? { opacity: 0.22 } : { opacity: [0.14, 0.38, 0.14] }}
         transition={isMobile ? {} : { duration: 7, repeat: Infinity }}
-        style={{ position:'absolute', top:'4%', right:'-10%', width:'48%', height:'58%', borderRadius:'50%', background:'radial-gradient(ellipse, rgba(34,211,238,0.1) 0%, transparent 70%)', filter:'blur(90px)', pointerEvents:'none', zIndex:0 }}
+        style={{ position:'absolute', top:'4%', right:'-10%', width:'48%', height:'58%', borderRadius:'50%', background:'radial-gradient(ellipse, rgba(255,255,255,0.04) 0%, transparent 70%)', filter:'blur(90px)', pointerEvents:'none', zIndex:0 }}
       />
-      <div aria-hidden="true" style={{ position:'absolute', bottom:'8%', left:'-8%', width:'40%', height:'50%', borderRadius:'50%', background:'radial-gradient(ellipse, rgba(139,92,246,0.07) 0%, transparent 70%)', filter:'blur(80px)', pointerEvents:'none', zIndex:0 }} />
+      <div aria-hidden="true" style={{ position:'absolute', bottom:'8%', left:'-8%', width:'40%', height:'50%', borderRadius:'50%', background:'radial-gradient(ellipse, rgba(255,255,255,0.03) 0%, transparent 70%)', filter:'blur(80px)', pointerEvents:'none', zIndex:0 }} />
 
       {/* ── Section heading (outside card) ── */}
       <motion.div
@@ -847,15 +845,15 @@ export default function AntiTacticFinder() {
           {t("anti.badge")}
         </div>
         <h2 className="atf-head-title">{t("anti.title")} <span>{t("anti.title2")}</span></h2>
-        <p style={{ color: '#64748b', fontSize: 'clamp(13px,2vw,15px)', lineHeight: 1.7, maxWidth: 640, margin: '14px auto 20px', textAlign: 'center' }}>
+        <p style={{ color: 'rgba(255,255,255,0.42)', fontSize: 'clamp(13px,2vw,15px)', lineHeight: 1.7, maxWidth: 640, margin: '14px auto 20px', textAlign: 'center' }}>
           {ATF_DESC[lang] ?? ATF_DESC.en}
         </p>
-        <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '6px 14px', borderRadius: 99, background: 'rgba(34,197,94,0.08)', border: '1px solid rgba(34,197,94,0.2)' }}>
+        <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '6px 14px', borderRadius: 99, background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.15)' }}>
           <motion.span
             animate={{ opacity: [1, 0.35, 1] }} transition={{ duration: 2, repeat: Infinity }}
-            style={{ width: 6, height: 6, borderRadius: '50%', background: '#22c55e', display: 'inline-block' }}
+            style={{ width: 6, height: 6, borderRadius: '50%', background: '#ffffff', display: 'inline-block' }}
           />
-          <span style={{ color: '#22c55e', fontSize: 11, fontWeight: 700, letterSpacing: '0.06em' }}>
+          <span style={{ color: 'rgba(255,255,255,0.7)', fontSize: 11, fontWeight: 700, letterSpacing: '0.06em' }}>
             {ATF_LIVE[lang] ?? ATF_LIVE.en}
           </span>
         </div>
@@ -914,8 +912,8 @@ export default function AntiTacticFinder() {
                             transition={{ duration: 0.22 }}
                             style={{
                               position: 'absolute', inset: 0, borderRadius: 12,
-                              border: '1.5px solid rgba(0,229,255,0.6)',
-                              boxShadow: '0 0 14px rgba(0,229,255,0.18), inset 0 0 10px rgba(0,229,255,0.04)',
+                              border: '1.5px solid rgba(255,255,255,0.35)',
+                              boxShadow: '0 0 14px rgba(255,255,255,0.08), inset 0 0 10px rgba(255,255,255,0.03)',
                               pointerEvents: 'none',
                             }}
                           />
@@ -970,9 +968,9 @@ export default function AntiTacticFinder() {
                       transition={{ duration: 1.4, repeat: Infinity, ease: 'linear' }}
                       style={{
                         position: 'absolute', inset: 0, borderRadius: '50%',
-                        border: '2.5px solid rgba(0,229,255,.1)',
-                        borderTopColor: 'rgba(0,229,255,.92)',
-                        filter: 'drop-shadow(0 0 7px rgba(0,229,255,.8)) drop-shadow(0 0 18px rgba(0,229,255,.35))',
+                        border: '2.5px solid rgba(255,255,255,.1)',
+                        borderTopColor: 'rgba(255,255,255,.85)',
+                        filter: 'drop-shadow(0 0 7px rgba(255,255,255,.4)) drop-shadow(0 0 18px rgba(255,255,255,.15))',
                       }}
                     />
                     <motion.div
@@ -980,8 +978,8 @@ export default function AntiTacticFinder() {
                       transition={{ duration: 2.2, repeat: Infinity, ease: 'easeInOut' }}
                       style={{
                         width: 10, height: 10, borderRadius: '50%',
-                        background: 'rgba(0,229,255,.75)',
-                        boxShadow: '0 0 14px rgba(0,229,255,.95), 0 0 30px rgba(0,229,255,.5)',
+                        background: 'rgba(255,255,255,.6)',
+                        boxShadow: '0 0 14px rgba(255,255,255,.7), 0 0 30px rgba(255,255,255,.3)',
                       }}
                     />
                   </div>
@@ -1006,7 +1004,7 @@ export default function AntiTacticFinder() {
                 transition={{ repeat: Infinity, repeatDelay: 4.5, duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
                 style={{
                   position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: 1,
-                  background: 'linear-gradient(105deg, transparent 30%, rgba(0,229,255,0.09) 50%, transparent 70%)',
+                  background: 'linear-gradient(105deg, transparent 30%, rgba(255,255,255,0.05) 50%, transparent 70%)',
                   transform: 'skewX(-12deg)',
                 }}
               />
@@ -1053,14 +1051,14 @@ export default function AntiTacticFinder() {
                     style={{
                       width: 28, height: 28, borderRadius: 8, flexShrink: 0,
                       border: saveError
-                        ? '1px solid rgba(239,68,68,0.5)'
-                        : tacticSaved ? '1px solid rgba(0,229,255,0.45)' : '1px solid rgba(255,255,255,0.12)',
+                        ? '1px solid rgba(255,255,255,0.3)'
+                        : tacticSaved ? '1px solid rgba(255,255,255,0.35)' : '1px solid rgba(255,255,255,0.12)',
                       background: saveError
-                        ? 'rgba(239,68,68,0.1)'
-                        : tacticSaved ? 'rgba(0,229,255,0.12)' : 'rgba(255,255,255,0.04)',
+                        ? 'rgba(255,255,255,0.08)'
+                        : tacticSaved ? 'rgba(255,255,255,0.1)' : 'rgba(255,255,255,0.04)',
                       color: saveError
-                        ? '#ef4444'
-                        : tacticSaved ? '#00e5ff' : 'rgba(255,255,255,0.38)',
+                        ? '#ffffff'
+                        : tacticSaved ? '#ffffff' : 'rgba(255,255,255,0.38)',
                       fontSize: 15, cursor: saving ? 'default' : 'pointer', display: 'flex', alignItems: 'center',
                       justifyContent: 'center', transition: 'all 0.2s ease',
                       opacity: saving ? 0.5 : 1,
@@ -1093,17 +1091,17 @@ export default function AntiTacticFinder() {
                 <div className="tc-meta">
                   <span style={{
                     fontSize: '8px', fontWeight: 900, letterSpacing: '0.08em', textTransform: 'uppercase',
-                    background: 'rgba(255,215,0,0.1)', border: '1px solid rgba(255,215,0,0.38)',
-                    color: '#ffd700', borderRadius: '6px', padding: '3px 10px',
+                    background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.18)',
+                    color: 'rgba(255,255,255,0.75)', borderRadius: '6px', padding: '3px 10px',
                     display: 'inline-flex', alignItems: 'center', gap: '3px',
                   }}>
                     {locActive === 'HOME MATCH' ? '🏠' : '✈️'}&nbsp;{locActive === 'HOME MATCH' ? t("anti.masterHome") : t("anti.masterAway")}
                   </span>
                   <span style={{
                     fontSize: '8px', fontWeight: 900, letterSpacing: '0.08em', textTransform: 'uppercase',
-                    background: d.badge === 'STRONG' ? 'rgba(0,229,255,0.1)' : d.badge === 'SOLID' ? 'rgba(255,152,0,0.1)' : 'rgba(255,71,87,0.08)',
-                    border: d.badge === 'STRONG' ? '1px solid rgba(0,229,255,0.38)' : d.badge === 'SOLID' ? '1px solid rgba(255,152,0,0.38)' : '1px solid rgba(255,71,87,0.28)',
-                    color: d.badge === 'STRONG' ? '#00e5ff' : d.badge === 'SOLID' ? '#ff9800' : '#ff4757',
+                    background: 'rgba(255,255,255,0.06)',
+                    border: '1px solid rgba(255,255,255,0.18)',
+                    color: 'rgba(255,255,255,0.8)',
                     borderRadius: '6px', padding: '3px 10px', display: 'inline-flex', alignItems: 'center',
                   }}>
                     {d.badge === 'STRONG' ? t("anti.badgeElite") : d.badge === 'SOLID' ? t("anti.badgeSolid") : t("anti.badgeSit")}
@@ -1157,8 +1155,8 @@ export default function AntiTacticFinder() {
                   exit={{ opacity: 0, y: -8, scale: 0.97 }}
                   transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
                   style={{
-                    background: 'rgba(9,11,33,0.95)', backdropFilter: 'blur(16px)',
-                    border: '1px solid rgba(34,211,238,0.22)', borderRadius: 12,
+                    background: 'rgba(0,0,0,0.95)', backdropFilter: 'blur(16px)',
+                    border: '1px solid rgba(255,255,255,0.08)', borderRadius: 12,
                     padding: '14px 18px', display: 'flex', flexDirection: 'column',
                     gap: 12, alignItems: 'center',
                   }}
@@ -1209,9 +1207,9 @@ export default function AntiTacticFinder() {
                       flex:1,padding:'5px 0',borderRadius:'6px',border:'none',
                       cursor:'pointer',fontSize:'11px',fontWeight:700,
                       letterSpacing:'0.05em',transition:'all 0.2s',
-                      background: activeOption === 'A' ? 'rgba(255,215,0,0.18)' : 'transparent',
-                      color: activeOption === 'A' ? '#ffd700' : 'rgba(255,255,255,0.4)',
-                      boxShadow: activeOption === 'A' ? '0 0 8px rgba(255,215,0,0.2)' : 'none',
+                      background: activeOption === 'A' ? '#ffffff' : 'transparent',
+                      color: activeOption === 'A' ? '#000000' : 'rgba(255,255,255,0.4)',
+                      boxShadow: 'none',
                     }}>
                       {t("anti.optA")} <span style={{opacity:0.7,fontSize:'9px'}}>({t("anti.optADefault")})</span>
                     </button>
@@ -1219,9 +1217,9 @@ export default function AntiTacticFinder() {
                       flex:1,padding:'5px 0',borderRadius:'6px',border:'none',
                       cursor:'pointer',fontSize:'11px',fontWeight:700,
                       letterSpacing:'0.05em',transition:'all 0.2s',
-                      background: activeOption === 'B' ? 'rgba(0,229,255,0.18)' : 'transparent',
-                      color: activeOption === 'B' ? '#00e5ff' : 'rgba(255,255,255,0.4)',
-                      boxShadow: activeOption === 'B' ? '0 0 8px rgba(0,229,255,0.2)' : 'none',
+                      background: activeOption === 'B' ? '#ffffff' : 'transparent',
+                      color: activeOption === 'B' ? '#000000' : 'rgba(255,255,255,0.4)',
+                      boxShadow: 'none',
                     }}>
                       {t("anti.optB")} <span style={{opacity:0.7,fontSize:'9px'}}>({t("anti.optBAlt")})</span>
                     </button>
@@ -1239,15 +1237,15 @@ export default function AntiTacticFinder() {
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
                         style={{
-                          background: 'rgba(9,11,33,0.88)', backdropFilter: 'blur(20px)',
-                          border: '1px solid rgba(34,211,238,0.18)', borderRadius: 16,
+                          background: 'rgba(255,255,255,0.03)', backdropFilter: 'blur(20px)',
+                          border: '1px solid rgba(255,255,255,0.08)', borderRadius: 16,
                           padding: '20px 18px',
                           boxShadow: '0 20px 60px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.05)',
                         }}
                       >
                         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20, flexWrap: 'wrap', gap: 8 }}>
-                          <span style={{ color: '#e2e8f0', fontWeight: 800, fontSize: 13, letterSpacing: '0.04em' }}>{ATF_SLIDERS[lang] ?? ATF_SLIDERS.en}</span>
-                          <span style={{ fontSize: 10, color: '#334155', letterSpacing: '0.04em' }}>{ATF_LIVE[lang] ?? ATF_LIVE.en}</span>
+                          <span style={{ color: '#ffffff', fontWeight: 800, fontSize: 13, letterSpacing: '0.04em' }}>{ATF_SLIDERS[lang] ?? ATF_SLIDERS.en}</span>
+                          <span style={{ fontSize: 10, color: 'rgba(255,255,255,0.22)', letterSpacing: '0.04em' }}>{ATF_LIVE[lang] ?? ATF_LIVE.en}</span>
                         </div>
                         <ATFSliderBar label={t("anti.pressure")} value={dispP} gradient={_pGrad(dispP)} delay={0} />
                         <ATFSliderBar label={t("anti.style")}    value={dispS} gradient={_sGrad(dispS)} delay={0.12} />
@@ -1280,19 +1278,19 @@ export default function AntiTacticFinder() {
                       <ATFLineTacticRow label={t("lt.midfield")} rawVal={d.m} displayVal={pitchVal(d.m, t)} />
                       <ATFLineTacticRow label={t("lt.defence")}  rawVal={d.d} displayVal={pitchVal(d.d, t)} />
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '7px 0 4px', borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
-                        <span style={{ color: '#64748b', fontSize: 11.5, fontWeight: 600, letterSpacing: '0.04em' }}>{t("lt.offsides")}</span>
+                        <span style={{ color: 'rgba(255,255,255,0.42)', fontSize: 11.5, fontWeight: 600, letterSpacing: '0.04em' }}>{t("lt.offsides")}</span>
                         <span style={{
                           fontSize: 10.5, fontWeight: 700, padding: '3px 10px', borderRadius: 99,
-                          background: d.offOn ? 'rgba(239,68,68,0.12)' : 'rgba(34,197,94,0.1)',
-                          border: `1px solid ${d.offOn ? 'rgba(239,68,68,0.3)' : 'rgba(34,197,94,0.25)'}`,
-                          color: d.offOn ? '#ef4444' : '#22c55e',
+                          background: 'rgba(255,255,255,0.06)',
+                          border: '1px solid rgba(255,255,255,0.12)',
+                          color: 'rgba(255,255,255,0.8)',
                         }}>{d.offOn ? t("pitch.offsideYes") : t("pitch.offsideNo")}</span>
                       </div>
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: 7 }}>
-                        <span style={{ color: '#64748b', fontSize: 11.5, fontWeight: 600, letterSpacing: '0.04em' }}>{t("lt.marking")}</span>
+                        <span style={{ color: 'rgba(255,255,255,0.42)', fontSize: 11.5, fontWeight: 600, letterSpacing: '0.04em' }}>{t("lt.marking")}</span>
                         <span style={{
                           fontSize: 10.5, fontWeight: 700, padding: '3px 10px', borderRadius: 99,
-                          background: 'rgba(251,191,36,0.1)', border: '1px solid rgba(251,191,36,0.24)', color: '#fbbf24',
+                          background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.12)', color: 'rgba(255,255,255,0.8)',
                         }}>{pitchVal(d.mrk, t)}</span>
                       </div>
                     </div>

@@ -2,7 +2,6 @@ import { useEffect, useState, lazy, Suspense } from "react";
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import LanguageSwitcher from "./LanguageSwitcher";
-import ThemeSwitcher from "./ThemeSwitcher";
 import ProfilePanel from "./ProfilePanel";
 import { useLang } from "../contexts/LanguageContext";
 import { useAuth } from "../contexts/AuthContext";
@@ -271,7 +270,6 @@ export default function Navbar() {
                 </motion.button>
               )}
               <ProfilePanel />
-              <ThemeSwitcher />
               <LanguageSwitcher />
               <motion.a
                 href="https://buymeacoffee.com/omerovvvvv"
@@ -361,10 +359,6 @@ export default function Navbar() {
               <div className="flex items-center justify-between">
                 <span className="text-[10px] font-black uppercase tracking-widest text-stone-400">{t("nav.profile")}</span>
                 <ProfilePanel />
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-[10px] font-black uppercase tracking-widest text-stone-400">{t("nav.theme")}</span>
-                <ThemeSwitcher />
               </div>
               <div className="flex items-center justify-between">
                 <span className="text-[10px] font-black uppercase tracking-widest text-stone-400">{t("nav.lang")}</span>
