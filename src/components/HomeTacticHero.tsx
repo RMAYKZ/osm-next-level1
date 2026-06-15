@@ -32,15 +32,15 @@ export default function HomeTacticHero() {
         <div className="grid grid-cols-3 gap-2">
           <div className="hth-stat-card flex flex-col items-center rounded-lg py-2 px-1">
             <div className="hth-stat-lbl">{t('anti.pressure')}</div>
-            <div className="hth-stat-val" style={{ color: '#ff4757' }}>9</div>
+            <div className="hth-stat-val">9</div>
           </div>
           <div className="hth-stat-card flex flex-col items-center rounded-lg py-2 px-1">
             <div className="hth-stat-lbl">{t('anti.style')}</div>
-            <div className="hth-stat-val" style={{ color: '#ffd700' }}>33</div>
+            <div className="hth-stat-val">33</div>
           </div>
           <div className="hth-stat-card flex flex-col items-center rounded-lg py-2 px-1">
             <div className="hth-stat-lbl">{t('anti.tempo')}</div>
-            <div className="hth-stat-val" style={{ color: '#00e5ff' }}>44</div>
+            <div className="hth-stat-val">44</div>
           </div>
         </div>
 
@@ -50,23 +50,23 @@ export default function HomeTacticHero() {
           <div className="grid grid-cols-2 gap-3">
             <div className="hth-tac-row flex justify-between items-center rounded px-3 py-3">
               <span className="hth-tac-lbl">{t('lt.forwards')}</span>
-              <span className="hth-tac-val" style={{ color: '#4fc3f7' }}>{t('pitch.attackOnly')}</span>
+              <span className="hth-tac-val">{t('pitch.attackOnly')}</span>
             </div>
             <div className="hth-tac-row flex justify-between items-center rounded px-3 py-3">
               <span className="hth-tac-lbl">{t('lt.midfield')}</span>
-              <span className="hth-tac-val" style={{ color: '#ff9800' }}>{t('pitch.protectDefense')}</span>
+              <span className="hth-tac-val">{t('pitch.protectDefense')}</span>
             </div>
             <div className="hth-tac-row flex justify-between items-center rounded px-3 py-3">
               <span className="hth-tac-lbl">{t('lt.defence')}</span>
-              <span className="hth-tac-val" style={{ color: '#ff9800' }}>{t('pitch.stayBack')}</span>
+              <span className="hth-tac-val">{t('pitch.stayBack')}</span>
             </div>
             <div className="hth-tac-row flex justify-between items-center rounded px-3 py-3">
               <span className="hth-tac-lbl">{t('lt.offsides')}</span>
-              <span className="hth-tac-val" style={{ color: '#ff4757' }}>{t('lt.off')}</span>
+              <span className="hth-tac-val" style={{ color: 'rgba(255,80,80,0.85)' }}>{t('lt.off')}</span>
             </div>
             <div className="hth-tac-row flex justify-between items-center rounded px-3 py-3 col-span-2">
               <span className="hth-tac-lbl">{t('lt.marking')}</span>
-              <span className="hth-tac-val" style={{ color: '#00e5ff' }}>{t('pitch.zoneMarking')}</span>
+              <span className="hth-tac-val">{t('pitch.zoneMarking')}</span>
             </div>
           </div>
         </div>
