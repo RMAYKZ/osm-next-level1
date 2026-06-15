@@ -148,7 +148,7 @@ export default function Navbar() {
     { key: "matchcoach"   as ActiveSheet, icon: "🧠", label: "Coach Card" },
     { key: "highrisk"     as ActiveSheet, icon: "⚠️", label: "High-Risk Engine" },
     { key: "slider"       as ActiveSheet, icon: "🎛️", label: "Slider Calculator" },
-    { key: "autopsy"      as ActiveSheet, icon: "🔬", label: "Taktik Otopsi" },
+    { key: "autopsy"      as ActiveSheet, icon: "🔬", label: "Match Autopsy" },
     ...(user ? [{ key: "garage" as ActiveSheet, icon: "🗄️", label: `${t("garage.label")}${garageCount > 0 ? ` (${garageCount})` : ''}` }] : []),
   ];
 
@@ -165,10 +165,10 @@ export default function Navbar() {
         leaderboard: { icon: "🏆", title: t("leader.title1") + " " + t("leader.title2"), sub: t("leader.desc") },
         formations:  { icon: "📋", title: `${t("form.title1")} ${t("form.title2")}`, sub: t("form.desc") },
         faq:         { icon: "❓", title: t("faq.title"), sub: t("faq.badge") },
-        matchcoach:  { icon: "🧠", title: "Pre-Match Coach Card", sub: "Maç öncesi analiz & güven" },
+        matchcoach:  { icon: "🧠", title: "Pre-Match Coach Card", sub: "Pre-match analysis & confidence" },
         highrisk:    { icon: "⚠️", title: "High-Risk Engine", sub: "Strategy Against Stronger Opponents" },
         slider:      { icon: "🎛️", title: "Slider Calculator", sub: "Advanced Settings" },
-        autopsy:     { icon: "🔬", title: "Taktik Otopsi", sub: "Neden Kaybettin? — Profesyonel Teşhis" },
+        autopsy:     { icon: "🔬", title: "Match Autopsy", sub: "Why Did You Lose? — Professional Diagnosis" },
       } as const)[activeSheet]
     : null;
 
