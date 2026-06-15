@@ -219,7 +219,10 @@ export const syncMatches = onCall({ region: "europe-west1" }, async (request) =>
       await ref.set({
         teamA: m.homeTeam?.shortName ?? m.homeTeam?.name ?? "Bilinmiyor",
         teamB: m.awayTeam?.shortName ?? m.awayTeam?.name ?? "Bilinmiyor",
+        teamACrest: m.homeTeam?.crest ?? "",
+        teamBCrest: m.awayTeam?.crest ?? "",
         competition: m.competition?.name ?? "Bilinmiyor",
+        competitionCode: m.competition?.code ?? "",
         matchDate: toIstanbulDate(m.utcDate),
         matchTime: toIstanbulTime(m.utcDate),
         status: "open",

@@ -13,7 +13,10 @@ interface DailyMatch {
   id: string;
   teamA: string;
   teamB: string;
+  teamACrest?: string;
+  teamBCrest?: string;
   competition: string;
+  competitionCode?: string;
   matchDate: string;
   matchTime: string;
   status: MatchStatus;
@@ -497,36 +500,70 @@ function MatchCard({ match }: { match: DailyMatch }) {
     }
   };
 
+  const isClosed = match.status !== "open";
+
   return (
-    <article className="opus-glass rounded-[2rem] p-5 md:p-6">
-      <div className="mb-5 flex items-start justify-between gap-4">
-        <div>
-          <div className="opus-kicker">{match.competition}</div>
-          <h3 className="mt-2 font-display text-2xl font-black text-white">{match.teamA} vs {match.teamB}</h3>
-          <p className="mt-1 text-xs font-semibold uppercase tracking-widest text-stone-500">
-            {match.matchTime} · {match.status === "open" ? t("matches.openStatus") : t("matches.closedStatus")}
-          </p>
+    <article className="opus-glass rounded-[2rem] overflow-hidden">
+      {/* ── Header band ── */}
+      <div className="flex items-center justify-between gap-2 border-b border-white/[0.07] px-5 py-3">
+        <div className="flex items-center gap-2 min-w-0">
+          <span className="shrink-0 h-1.5 w-1.5 rounded-full bg-amber-300" />
+          <span className="truncate text-[11px] font-black uppercase tracking-widest text-stone-400">
+            {match.competition}
+          </span>
         </div>
-        <div className="rounded-2xl border border-white/10 bg-black/20 px-4 py-3 text-center">
-          <div className="font-display text-2xl font-black text-white">{total}</div>
-          <div className="text-[10px] font-black uppercase tracking-widest text-stone-500">{t("matches.votes")}</div>
+        <div className="flex shrink-0 items-center gap-3">
+          <span className="text-[11px] font-semibold text-stone-500">{match.matchTime}</span>
+          <span className={`rounded-full px-2.5 py-0.5 text-[10px] font-black uppercase tracking-widest ${
+            isClosed
+              ? "bg-stone-700/60 text-stone-400"
+              : "bg-emerald-500/15 text-emerald-300"
+          }`}>
+            {isClosed ? t("matches.closedStatus") : t("matches.openStatus")}
+          </span>
         </div>
       </div>
 
-      {match.omerPick && (
-        <div className="mb-4 rounded-2xl border border-amber-300/18 bg-amber-300/[0.06] p-4 text-sm text-amber-100">
-          <span className="font-black">{t("matches.omerPick")}</span> {match.omerPick}
+      <div className="p-5 md:p-6">
+        {/* ── Teams vs ── */}
+        <div className="mb-5 flex items-center gap-3">
+          {/* Home */}
+          <div className="flex flex-1 flex-col items-center gap-2 text-center">
+            <TeamCrest src={match.teamACrest} name={match.teamA} size="lg" />
+            <span className="font-display text-base font-black leading-tight text-white">{match.teamA}</span>
+          </div>
+
+          {/* VS + votes */}
+          <div className="flex flex-col items-center gap-1 px-2">
+            <span className="font-display text-xs font-black tracking-widest text-stone-600">VS</span>
+            <div className="rounded-xl border border-white/10 bg-black/20 px-3 py-2 text-center">
+              <div className="font-display text-xl font-black text-white leading-none">{total}</div>
+              <div className="text-[9px] font-black uppercase tracking-widest text-stone-600">{t("matches.votes")}</div>
+            </div>
+          </div>
+
+          {/* Away */}
+          <div className="flex flex-1 flex-col items-center gap-2 text-center">
+            <TeamCrest src={match.teamBCrest} name={match.teamB} size="lg" />
+            <span className="font-display text-base font-black leading-tight text-white">{match.teamB}</span>
+          </div>
         </div>
-      )}
 
-      <div className="grid gap-3 sm:grid-cols-3">
-        <VoteButton label={match.teamA}        count={counts.teamA} total={total} ticker="1" active={myVote === "teamA"} disabled={!!myVote || match.status !== "open"} onClick={() => vote("teamA")} />
-        <VoteButton label={t("matches.draw")}  count={counts.draw}  total={total} ticker="X" active={myVote === "draw"}  disabled={!!myVote || match.status !== "open"} onClick={() => vote("draw")}  />
-        <VoteButton label={match.teamB}        count={counts.teamB} total={total} ticker="2" active={myVote === "teamB"} disabled={!!myVote || match.status !== "open"} onClick={() => vote("teamB")} />
+        {match.omerPick && (
+          <div className="mb-4 rounded-2xl border border-amber-300/18 bg-amber-300/[0.06] p-4 text-sm text-amber-100">
+            <span className="font-black">{t("matches.omerPick")}</span> {match.omerPick}
+          </div>
+        )}
+
+        <div className="grid gap-3 sm:grid-cols-3">
+          <VoteButton label={match.teamA} crest={match.teamACrest} count={counts.teamA} total={total} ticker="1" active={myVote === "teamA"} disabled={!!myVote || isClosed} onClick={() => vote("teamA")} />
+          <VoteButton label={t("matches.draw")}               count={counts.draw}  total={total} ticker="X" active={myVote === "draw"}  disabled={!!myVote || isClosed} onClick={() => vote("draw")}  />
+          <VoteButton label={match.teamB} crest={match.teamBCrest} count={counts.teamB} total={total} ticker="2" active={myVote === "teamB"} disabled={!!myVote || isClosed} onClick={() => vote("teamB")} />
+        </div>
+
+        {myVote && <p className="mt-4 text-center text-xs font-bold uppercase tracking-widest text-emerald-300">{t("matches.saved")}</p>}
+        {error  && <p className="mt-4 text-center text-sm text-red-300">{error}</p>}
       </div>
-
-      {myVote && <p className="mt-4 text-center text-xs font-bold uppercase tracking-widest text-emerald-300">{t("matches.saved")}</p>}
-      {error  && <p className="mt-4 text-center text-sm text-red-300">{error}</p>}
     </article>
   );
 }
@@ -535,14 +572,43 @@ function MatchCard({ match }: { match: DailyMatch }) {
 // Shows a classic 1 / X / 2 ticker badge and a live percentage bar.
 // When disabled (already voted), the bar animates to show current percentages.
 
+// ── TeamCrest ─────────────────────────────────────────────────────────────────
+
+function TeamCrest({ src, name, size = "md" }: { src?: string; name: string; size?: "md" | "lg" }) {
+  const dim = size === "lg" ? "h-14 w-14" : "h-7 w-7";
+  const fallbackDim = size === "lg" ? "h-14 w-14 text-2xl" : "h-7 w-7 text-sm";
+
+  if (!src) {
+    return (
+      <div className={`${fallbackDim} flex items-center justify-center rounded-full bg-white/10 font-black text-stone-500`}>
+        {name.charAt(0)}
+      </div>
+    );
+  }
+
+  return (
+    <img
+      src={src}
+      alt={name}
+      className={`${dim} object-contain drop-shadow-[0_2px_8px_rgba(0,0,0,0.6)]`}
+      onError={(e) => {
+        e.currentTarget.style.display = "none";
+      }}
+    />
+  );
+}
+
+// ── VoteButton ────────────────────────────────────────────────────────────────
+
 function VoteButton({
-  label, count, total, ticker, active, disabled, onClick,
+  label, crest, count, total, ticker, active, disabled, onClick,
 }: {
-  label: string; count: number; total: number; ticker: string;
+  label: string; crest?: string; count: number; total: number; ticker: string;
   active: boolean; disabled: boolean; onClick: () => void;
 }) {
   const { t } = useLang();
   const percent = total === 0 ? 0 : Math.round((count / total) * 100);
+  const isDraw = ticker === "X";
 
   return (
     <button
@@ -555,12 +621,15 @@ function VoteButton({
       }`}
     >
       <div className="flex items-center justify-between gap-2">
-        <div className="font-display text-lg font-black text-white leading-tight">{label}</div>
+        <div className="flex items-center gap-2 min-w-0">
+          {!isDraw && crest && <TeamCrest src={crest} name={label} size="md" />}
+          <div className="font-display text-base font-black text-white leading-tight truncate">{label}</div>
+        </div>
         <span className={`shrink-0 rounded-lg px-2 py-0.5 text-xs font-black ${active ? "bg-amber-300 text-stone-950" : "bg-white/10 text-stone-400"}`}>
           {ticker}
         </span>
       </div>
-      <div className="mt-3 h-2 overflow-hidden rounded-full bg-white/10">
+      <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-white/10">
         <div
           className="h-full rounded-full bg-amber-300 transition-all duration-500"
           style={{ width: `${percent}%` }}
