@@ -3,7 +3,7 @@ import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { useLang } from "../contexts/LanguageContext";
 import { siteMeta } from "../data/tactics";
 import AnoAI from "./ui/animated-shader-background";
-import { SplineScene } from "./ui/spline-scene";
+import { TacticalPitchScene } from "./ui/tactical-pitch";
 import { Spotlight } from "./ui/spotlight";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
@@ -577,10 +577,7 @@ export default function Hero() {
               className="absolute -top-40 left-0 md:left-20 md:-top-10"
               fill="white"
             />
-            <SplineScene
-              scene="https://prod.spline.design/kZDDjO5HuC9GJUM2/scene.splinecode"
-              className="w-full h-full"
-            />
+            <TacticalPitchScene />
             {/* left fade to blend with text panel */}
             <div
               aria-hidden
