@@ -434,7 +434,7 @@ export default function PremiumTactics() {
                   style={{ position: "absolute", inset: 0, pointerEvents: "none", background: "linear-gradient(105deg, transparent 35%, rgba(251,191,36,0.05) 50%, transparent 65%)", transform: "skewX(-15deg)" }}
                 />
 
-                <div style={{ padding: "clamp(24px,4vw,40px)", display: "grid", gridTemplateColumns: "1fr auto", gap: 32, alignItems: "start" }}>
+                <div style={{ padding: "clamp(24px,4vw,40px)", display: "grid", gridTemplateColumns: isMobileDevice ? "1fr" : "1fr auto", gap: isMobileDevice ? 20 : 32, alignItems: "start" }}>
 
                   {/* Left: pitch */}
                   <div>
@@ -548,7 +548,7 @@ export default function PremiumTactics() {
                   </div>
 
                   {/* Right: code input (collapsible) */}
-                  <div style={{ minWidth: 240, maxWidth: 280 }}>
+                  <div style={isMobileDevice ? {} : { minWidth: 240, maxWidth: 280 }}>
                     <AnimatePresence>
                       {showCode && (
                         <motion.div
