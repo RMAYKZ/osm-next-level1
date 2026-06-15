@@ -1,8 +1,7 @@
 import { useEffect, useRef, useState } from "react";
-import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { useLang } from "../contexts/LanguageContext";
 import { siteMeta } from "../data/tactics";
-import AnoAI from "./ui/animated-shader-background";
 import { TacticalPitchScene } from "./ui/tactical-pitch";
 import { Spotlight } from "./ui/spotlight";
 
@@ -228,7 +227,6 @@ export default function Hero() {
   const { t, lang } = useLang();
   const hs = HERO_STRINGS[lang];
   const isMobile = useIsMobile();
-  const shouldReduceMotion = useReducedMotion();
   const sectionRef = useRef<HTMLElement>(null);
 
   return (
@@ -244,25 +242,6 @@ export default function Hero() {
         overflow: "hidden",
       }}
     >
-      {/* ── Shader aurora background (desktop only) ── */}
-      {!isMobile && !shouldReduceMotion && (
-        <div
-          aria-hidden="true"
-          style={{ position: "absolute", inset: 0, overflow: "hidden", pointerEvents: "none", zIndex: 0, opacity: 0.65 }}
-        >
-          <AnoAI />
-        </div>
-      )}
-      {/* Text legibility overlay */}
-      {!isMobile && !shouldReduceMotion && (
-        <div
-          aria-hidden="true"
-          style={{
-            position: "absolute", inset: 0, zIndex: 1, pointerEvents: "none",
-            background: "linear-gradient(180deg, rgba(0,0,0,0.52) 0%, rgba(0,0,0,0.22) 40%, rgba(0,0,0,0.58) 100%)",
-          }}
-        />
-      )}
 
       {/* ── Thin top rule ── */}
       <div style={{ height: 1, background: "rgba(255,255,255,0.08)", flexShrink: 0 }} />
