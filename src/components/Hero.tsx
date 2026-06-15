@@ -328,7 +328,7 @@ export default function Hero() {
           initial={{ opacity: 0, y: -12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, ease: EASE }}
-          style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "clamp(32px, 5vw, 56px)", flexWrap: "wrap", gap: 12, position: "relative", zIndex: 10 }}
+          style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "clamp(32px, 5vw, 56px)", flexWrap: "wrap", gap: 12, position: "relative", zIndex: 20 }}
         >
           {/* Live season badge */}
           <div style={{
@@ -564,12 +564,8 @@ export default function Hero() {
           ))}
         </motion.div>
 
-        {/* ── Coach's disclaimer ── */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true, margin: "-40px" }}
-          transition={{ duration: 0.5, ease: EASE }}
+        {/* ── Coach's disclaimer — plain div, no Framer Motion (stacking context fix) ── */}
+        <div
           style={{
             marginTop: 28,
             ...GLASS,
@@ -579,6 +575,7 @@ export default function Hero() {
             gap: 14,
             alignItems: "flex-start",
             position: "relative",
+            zIndex: 0,
             overflow: "hidden",
           }}
         >
@@ -588,9 +585,8 @@ export default function Hero() {
             background: "linear-gradient(180deg, #f59e0b, rgba(251,191,36,0.1))",
             borderRadius: "20px 0 0 20px",
           }} />
-          <motion.div
-            animate={{ opacity: [1, 0.3, 1] }}
-            transition={{ duration: 2.5, repeat: Infinity }}
+          <div
+            className="animate-pulse"
             style={{
               width: 36, height: 36, borderRadius: 10, flexShrink: 0,
               background: "rgba(251,191,36,0.1)",
@@ -598,7 +594,7 @@ export default function Hero() {
               display: "flex", alignItems: "center", justifyContent: "center",
               fontSize: 17,
             }}
-          >🛡️</motion.div>
+          >🛡️</div>
           <div style={{ flex: 1, minWidth: 0 }}>
             <div style={{ fontSize: 9, fontWeight: 900, textTransform: "uppercase", letterSpacing: "0.22em", color: "rgba(251,191,36,0.6)", marginBottom: 4 }}>
               {hs.coachAlert}
@@ -607,7 +603,7 @@ export default function Hero() {
               {t("disclaimer.text")}
             </p>
           </div>
-        </motion.div>
+        </div>
 
       </div>
     </section>
