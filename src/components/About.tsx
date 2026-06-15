@@ -44,12 +44,8 @@ export default function About() {
         }}>
 
           {/* Left — identity */}
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, ease: EASE }}
-            style={{ position: "sticky", top: 120 }}
+          <div
+            style={{ position: "relative", zIndex: 1 }}
           >
             <div style={{
               display: "inline-flex", alignItems: "center", gap: 7,
@@ -109,7 +105,7 @@ export default function About() {
                 </motion.a>
               ))}
             </div>
-          </motion.div>
+          </div>
 
           {/* Right — content cards */}
           <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
