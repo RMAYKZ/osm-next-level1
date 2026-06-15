@@ -1,272 +1,103 @@
-import { useRef, useEffect, useState } from "react";
-import { motion, useInView, AnimatePresence } from "framer-motion";
+import { useEffect, useRef, useState } from "react";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { useLang } from "../contexts/LanguageContext";
 import { siteMeta } from "../data/tactics";
+import AnoAI from "./ui/animated-shader-background";
+import { SplineScene } from "./ui/spline-scene";
+import { Spotlight } from "./ui/spotlight";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 
-const GLASS: React.CSSProperties = {
-  background: "oklch(0.14 0.02 250 / 0.92)",
-  border: "1px solid oklch(0.87 0.27 152 / 0.12)",
-  borderRadius: 20,
-};
-
-// ── Multilingual strings for Hero copy not yet in translations.ts ─────────────
+// ── Multilingual strings ───────────────────────────────────────────────────────
 const HERO_STRINGS = {
   tr: {
-    antiLabel:    "Anti-Taktik",
-    antiDesc:     "Rakip formasyona karşı anında karşı-taktik bul",
-    metaLabel:    "Haftalık Meta",
-    metaDesc:     "Bu haftanın en güçlü meta taktikleri",
-    premiumLabel: "Premium Taktikler",
-    premiumDesc:  "16 yıllık deneyim ile test edilmiş premium taktikler",
-    sliderLabel:  "Slider Hesap",
-    sliderDesc:   "Baskı, Stil ve Tempo değerlerini hassas hesapla",
-    ctaAnti:      "Anti-Taktik Bul",
-    ctaSupport:   "Destek Ol",
+    badge:        "16 Yıllık OSM Deneyimi",
+    title1:       "OSM",
+    title2:       "NEXT LEVEL",
+    sub:          "TAKTİK ANALİZ MERKEZİ",
+    subtitle:     "Her formasyona karşı en iyi taktiği anında bul. Anti-taktik motoru, haftalık meta ve premium taktikler.",
+    cta1:         "Anti-Taktik Bul",
+    cta2:         "Premium Taktikler",
+    scrollLabel:  "aşağı kaydır",
+    scrollTarget: "taktikleri gör",
     worldRank:    "DÜNYA LİDERİ",
-    coachAlert:   "ANTRENÖR UYARISI",
-    titleSub:     "TAKTİK ANALİZ MERKEZİ",
-    seasonBadge:  "Sezon 26/27",
+    season:       "Sezon 26/27",
+    tested:       "Test Edilmiş",
+    years:        "Yıl Deneyim",
+    alert:        "ANTRENÖR UYARISI",
     rotating: ["Anti-Taktik Matrisi", "Haftalık Meta Taktikler", "Slider Hesaplama", "Premium Formasyon Analizi", "16 Yıllık OSM Deneyimi"],
   },
   en: {
-    antiLabel:    "Anti-Tactic",
-    antiDesc:     "Instantly counter any opponent formation",
-    metaLabel:    "Weekly Meta",
-    metaDesc:     "This week's most dominant meta tactics",
-    premiumLabel: "Premium Tactics",
-    premiumDesc:  "Elite tactics built on 16+ years of field data",
-    sliderLabel:  "Slider Calc",
-    sliderDesc:   "Calculate Pressure, Style & Tempo values",
-    ctaAnti:      "Find Anti-Tactic",
-    ctaSupport:   "Support",
+    badge:        "16 Years of OSM Experience",
+    title1:       "OSM",
+    title2:       "NEXT LEVEL",
+    sub:          "TACTICAL ANALYSIS CENTER",
+    subtitle:     "Instantly find the best tactic against any formation. Anti-tactic engine, weekly meta, and premium tactics.",
+    cta1:         "Find Anti-Tactic",
+    cta2:         "Premium Tactics",
+    scrollLabel:  "scroll down",
+    scrollTarget: "to see tactics",
     worldRank:    "WORLD RANK #1",
-    coachAlert:   "COACH ALERT",
-    titleSub:     "TACTICAL ANALYSIS CENTER",
-    seasonBadge:  "Season 26/27",
+    season:       "Season 26/27",
+    tested:       "Tactics Tested",
+    years:        "Years of Data",
+    alert:        "COACH ALERT",
     rotating: ["Anti-Tactic Matrix", "Weekly Meta Tactics", "Slider Calculator", "Premium Formation Analysis", "16 Years of OSM Experience"],
   },
   hu: {
-    antiLabel:    "Anti-Taktika",
-    antiDesc:     "Azonnal leállít bármilyen ellenfél formációt",
-    metaLabel:    "Heti Meta",
-    metaDesc:     "A hét legerősebb meta taktikái",
-    premiumLabel: "Prémium Taktikák",
-    premiumDesc:  "Elite taktikák 16+ éves tapasztalattal",
-    sliderLabel:  "Csúszka Kalkulátor",
-    sliderDesc:   "Nyomás, Stílus és Tempó értékek kiszámítása",
-    ctaAnti:      "Anti-Taktika Keresés",
-    ctaSupport:   "Támogatás",
+    badge:        "16 Év OSM Tapasztalat",
+    title1:       "OSM",
+    title2:       "NEXT LEVEL",
+    sub:          "TAKTIKAI ELEMZÉSI KÖZPONT",
+    subtitle:     "Azonnal találd meg a legjobb taktikát bármely formáció ellen. Anti-taktika motor, heti meta és prémium taktikák.",
+    cta1:         "Anti-Taktika Keresés",
+    cta2:         "Prémium Taktikák",
+    scrollLabel:  "görgess le",
+    scrollTarget: "a taktikákhoz",
     worldRank:    "VILÁG #1",
-    coachAlert:   "EDZŐI FIGYELMEZTETÉS",
-    titleSub:     "TAKTIKAI ELEMZÉSI KÖZPONT",
-    seasonBadge:  "Szezon 26/27",
+    season:       "Szezon 26/27",
+    tested:       "Tesztelt Taktika",
+    years:        "Év Tapasztalat",
+    alert:        "EDZŐI FIGYELMEZTETÉS",
     rotating: ["Anti-Taktika Mátrix", "Heti Meta Taktikák", "Csúszka Számológép", "Prémium Formáció Analízis", "16 Év OSM Tapasztalat"],
   },
   ar: {
-    antiLabel:    "مكافح التكتيك",
-    antiDesc:     "تصدي فوري لأي تشكيلة للمنافس",
-    metaLabel:    "ميتا أسبوعية",
-    metaDesc:     "أقوى تكتيكات الميتا هذا الأسبوع",
-    premiumLabel: "تكتيكات بريميوم",
-    premiumDesc:  "تكتيكات نخبة مبنية على خبرة 16+ عاماً",
-    sliderLabel:  "حساب المتزلجة",
-    sliderDesc:   "احسب قيم الضغط والأسلوب والإيقاع",
-    ctaAnti:      "ابحث عن مكافح التكتيك",
-    ctaSupport:   "دعم",
+    badge:        "16 عاماً من خبرة OSM",
+    title1:       "OSM",
+    title2:       "NEXT LEVEL",
+    sub:          "مركز التحليل التكتيكي",
+    subtitle:     "ابحث فوراً عن أفضل تكتيك ضد أي تشكيلة. محرك مكافحة التكتيك، الميتا الأسبوعية والتكتيكات المميزة.",
+    cta1:         "ابحث عن مكافح التكتيك",
+    cta2:         "تكتيكات بريميوم",
+    scrollLabel:  "مرر للأسفل",
+    scrollTarget: "لرؤية التكتيكات",
     worldRank:    "المرتبة #1 عالمياً",
-    coachAlert:   "تحذير المدرب",
-    titleSub:     "مركز التحليل التكتيكي",
-    seasonBadge:  "موسم 26/27",
+    season:       "موسم 26/27",
+    tested:       "تكتيك مُختبَر",
+    years:        "عام من البيانات",
+    alert:        "تحذير المدرب",
     rotating: ["مصفوفة مكافحة التكتيك", "تكتيكات الميتا الأسبوعية", "آلة حساب المتزلجة", "تحليل التشكيلة بريميوم", "16 عاماً من خبرة OSM"],
   },
   pt: {
-    antiLabel:    "Anti-Tática",
-    antiDesc:     "Contrarie instantaneamente qualquer formação adversária",
-    metaLabel:    "Meta Semanal",
-    metaDesc:     "As táticas meta mais dominantes desta semana",
-    premiumLabel: "Táticas Premium",
-    premiumDesc:  "Táticas de elite com 16+ anos de dados reais",
-    sliderLabel:  "Calc. Deslizante",
-    sliderDesc:   "Calcule valores de Pressão, Estilo e Ritmo",
-    ctaAnti:      "Encontrar Anti-Tática",
-    ctaSupport:   "Apoiar",
+    badge:        "16 Anos de Experiência OSM",
+    title1:       "OSM",
+    title2:       "NEXT LEVEL",
+    sub:          "CENTRO DE ANÁLISE TÁTICA",
+    subtitle:     "Encontre instantaneamente a melhor tática contra qualquer formação. Motor anti-tática, meta semanal e táticas premium.",
+    cta1:         "Encontrar Anti-Tática",
+    cta2:         "Táticas Premium",
+    scrollLabel:  "rolar para baixo",
+    scrollTarget: "ver táticas",
     worldRank:    "RANK MUNDIAL #1",
-    coachAlert:   "ALERTA DO TREINADOR",
-    titleSub:     "CENTRO DE ANÁLISE TÁTICA",
-    seasonBadge:  "Temporada 26/27",
+    season:       "Temporada 26/27",
+    tested:       "Táticas Testadas",
+    years:        "Anos de Dados",
+    alert:        "ALERTA DO TREINADOR",
     rotating: ["Matriz Anti-Tática", "Táticas Meta Semanais", "Calculadora Deslizante", "Análise de Formação Premium", "16 Anos de Experiência OSM"],
   },
 } as const;
 
-// ── Static visual config for feature cards (labels injected at render time) ──
-const NG = "oklch(0.87 0.27 152)";
-const FEATURE_DEFS = [
-  { id: "anti-taktik", icon: "⚔️", accent: NG,        bg: "oklch(0.87 0.27 152 / 0.07)", border: "oklch(0.87 0.27 152 / 0.22)",  glow: "oklch(0.87 0.27 152 / 0.18)", lk: "antiLabel",    dk: "antiDesc"    },
-  { id: "weekly-meta", icon: "📊", accent: NG,        bg: "oklch(0.87 0.27 152 / 0.05)", border: "oklch(0.87 0.27 152 / 0.16)", glow: "oklch(0.87 0.27 152 / 0.13)", lk: "metaLabel",    dk: "metaDesc"    },
-  { id: "premium",     icon: "👑", accent: "#cccccc", bg: "rgba(255,255,255,0.04)", border: "rgba(255,255,255,0.12)", glow: "rgba(255,255,255,0.08)", lk: "premiumLabel", dk: "premiumDesc" },
-  { id: "slider-calc", icon: "🎯", accent: NG,        bg: "oklch(0.87 0.27 152 / 0.06)", border: "oklch(0.87 0.27 152 / 0.18)",  glow: "oklch(0.87 0.27 152 / 0.14)", lk: "sliderLabel",  dk: "sliderDesc"  },
-] as const;
-
-// Animated pitch lines background
-function PitchGrid() {
-  return (
-    <svg
-      className="pointer-events-none absolute inset-0 w-full h-full opacity-[0.035]"
-      viewBox="0 0 1440 700"
-      preserveAspectRatio="xMidYMid slice"
-      aria-hidden="true"
-    >
-      {/* Outer pitch */}
-      <rect x="80" y="40" width="1280" height="620" rx="4" fill="none" stroke="oklch(0.87 0.27 152 / 0.4)" strokeWidth="1.5" />
-      {/* Center line */}
-      <line x1="720" y1="40" x2="720" y2="660" stroke="oklch(0.87 0.27 152 / 0.35)" strokeWidth="1" />
-      {/* Center circle */}
-      <circle cx="720" cy="350" r="100" fill="none" stroke="oklch(0.87 0.27 152 / 0.35)" strokeWidth="1" />
-      <circle cx="720" cy="350" r="3" fill="oklch(0.87 0.27 152 / 0.6)" />
-      {/* Penalty areas */}
-      <rect x="80" y="195" width="200" height="310" fill="none" stroke="oklch(0.87 0.27 152 / 0.28)" strokeWidth="1" />
-      <rect x="1160" y="195" width="200" height="310" fill="none" stroke="oklch(0.87 0.27 152 / 0.28)" strokeWidth="1" />
-      {/* Goal areas */}
-      <rect x="80" y="280" width="80" height="140" fill="none" stroke="oklch(0.87 0.27 152 / 0.22)" strokeWidth="1" />
-      <rect x="1280" y="280" width="80" height="140" fill="none" stroke="oklch(0.87 0.27 152 / 0.22)" strokeWidth="1" />
-      {/* Penalty spots */}
-      <circle cx="220" cy="350" r="3" fill="oklch(0.87 0.27 152 / 0.5)" />
-      <circle cx="1220" cy="350" r="3" fill="oklch(0.87 0.27 152 / 0.5)" />
-      {/* Corner arcs */}
-      <path d="M80,40 Q96,40 96,56" fill="none" stroke="oklch(0.87 0.27 152 / 0.28)" strokeWidth="1" />
-      <path d="M1360,40 Q1360,40 1344,56" fill="none" stroke="oklch(0.87 0.27 152 / 0.28)" strokeWidth="1" />
-      <path d="M80,660 Q80,660 96,644" fill="none" stroke="oklch(0.87 0.27 152 / 0.28)" strokeWidth="1" />
-      <path d="M1360,660 Q1360,660 1344,644" fill="none" stroke="oklch(0.87 0.27 152 / 0.28)" strokeWidth="1" />
-    </svg>
-  );
-}
-
-// Animated score-ticker-style stat
-function StatPill({ value, label, color }: { value: string; label: string; color: string }) {
-  const ref = useRef<HTMLDivElement>(null);
-  const inView = useInView(ref, { once: true });
-  return (
-    <motion.div
-      ref={ref}
-      initial={{ opacity: 0, y: 16 }}
-      animate={inView ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.5, ease: EASE }}
-      style={{
-        ...GLASS,
-        border: `1px solid ${color}28`,
-        padding: "14px 20px",
-        textAlign: "center",
-        minWidth: 110,
-        flex: 1,
-      }}
-    >
-      <div style={{ fontSize: "clamp(1.4rem, 3vw, 2rem)", fontWeight: 900, color, lineHeight: 1, letterSpacing: "-0.02em" }}>
-        {value}
-      </div>
-      <div style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.16em", color: "rgba(148,163,184,0.7)", marginTop: 5 }}>
-        {label}
-      </div>
-    </motion.div>
-  );
-}
-
-// Feature quick-access card
-type FeatureDef = typeof FEATURE_DEFS[number];
-function FeatureCard({ feat, label, desc, index, isMobile }: { feat: FeatureDef; label: string; desc: string; index: number; isMobile: boolean }) {
-  return (
-    <motion.a
-      href={`#${feat.id}`}
-      initial={{ opacity: 0, y: 24 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5, delay: 0.55 + index * 0.08, ease: EASE }}
-      whileHover={{ y: -4, transition: { duration: 0.18 } }}
-      style={{
-        display: "block",
-        background: feat.bg,
-        border: `1px solid ${feat.border}`,
-        borderRadius: 16,
-        padding: "18px 16px",
-        cursor: "pointer",
-        textDecoration: "none",
-        position: "relative",
-        overflow: "hidden",
-        ...(isMobile ? {} : { backdropFilter: "blur(16px)", WebkitBackdropFilter: "blur(16px)" }),
-      }}
-    >
-      {/* hover glow */}
-      <motion.div
-        whileHover={{ opacity: 1 }}
-        initial={{ opacity: 0 }}
-        style={{
-          position: "absolute", inset: 0, borderRadius: 16,
-          background: `radial-gradient(ellipse at 50% 0%, ${feat.glow} 0%, transparent 65%)`,
-          transition: "opacity 0.25s",
-        }}
-      />
-      <div style={{ position: "relative" }}>
-        <div style={{ fontSize: 26, marginBottom: 8 }}>{feat.icon}</div>
-        <div style={{ color: feat.accent, fontSize: 12, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.12em", marginBottom: 4 }}>
-          {label}
-        </div>
-        <div style={{ color: "rgba(148,163,184,0.75)", fontSize: 12, lineHeight: 1.5 }}>
-          {desc}
-        </div>
-      </div>
-      <div style={{
-        position: "absolute", bottom: 14, right: 14,
-        color: feat.accent, fontSize: 14, opacity: 0.6,
-      }}>›</div>
-    </motion.a>
-  );
-}
-
-// ── Typewriter cycling subtitle ───────────────────────────────────────────────
-function RotatingTag() {
-  const { lang } = useLang();
-  const tags = HERO_STRINGS[lang].rotating;
-  const [idx, setIdx] = useState(0);
-  const [visible, setVisible] = useState(true);
-
-  useEffect(() => {
-    setIdx(0);
-    setVisible(true);
-  }, [lang]);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setVisible(false);
-      setTimeout(() => {
-        setIdx(i => (i + 1) % tags.length);
-        setVisible(true);
-      }, 350);
-    }, 2800);
-    return () => clearInterval(interval);
-  }, [tags.length]);
-
-  return (
-    <div style={{ height: 28, display: "flex", alignItems: "center", gap: 8 }}>
-      <span style={{ color: "oklch(0.87 0.27 152 / 0.5)", fontSize: 13, fontWeight: 600 }}>›</span>
-      <AnimatePresence mode="wait">
-        {visible && (
-          <motion.span
-            key={`${lang}-${idx}`}
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -8 }}
-            transition={{ duration: 0.28, ease: EASE }}
-            style={{ color: "oklch(0.87 0.27 152)", fontSize: 13.5, fontWeight: 700, letterSpacing: "0.04em" }}
-          >
-            {tags[idx]}
-          </motion.span>
-        )}
-      </AnimatePresence>
-    </div>
-  );
-}
-
-// ── Main Hero ─────────────────────────────────────────────────────────────────
+// ── Mobile detection ───────────────────────────────────────────────────────────
 function useIsMobile() {
   const [mobile, setMobile] = useState(() => typeof window !== "undefined" && window.innerWidth < 768);
   useEffect(() => {
@@ -279,338 +110,582 @@ function useIsMobile() {
   return mobile;
 }
 
+// ── Animated smoke background ─────────────────────────────────────────────────
+function SmokeBackground() {
+  const wisps = [
+    { left: "18%",  top: "-5%",  w: "38vw", h: "90vh", rotate: "-14deg", dx: [0, 30, -20, 15, 0], dy: [0, -30, 20, -15, 0], dur: 26, delay: 0,  opacity: 0.13 },
+    { left: "52%",  top: "5%",   w: "30vw", h: "80vh", rotate: "9deg",   dx: [0, -25, 18, -10, 0], dy: [0, -20, 30, -10, 0], dur: 32, delay: 4,  opacity: 0.10 },
+    { left: "70%",  top: "15%",  w: "34vw", h: "75vh", rotate: "-6deg",  dx: [0, 20, -30, 10, 0],  dy: [0, -25, 15, -20, 0], dur: 24, delay: 8,  opacity: 0.09 },
+    { left: "8%",   top: "35%",  w: "42vw", h: "55vh", rotate: "18deg",  dx: [0, -15, 25, -8, 0],  dy: [0, -10, 20, -15, 0], dur: 28, delay: 12, opacity: 0.08 },
+    { left: "35%",  top: "50%",  w: "28vw", h: "65vh", rotate: "-20deg", dx: [0, 22, -14, 18, 0],  dy: [0, -18, 28, -8, 0],  dur: 35, delay: 6,  opacity: 0.07 },
+    { left: "80%",  top: "45%",  w: "25vw", h: "60vh", rotate: "5deg",   dx: [0, -18, 12, -22, 0], dy: [0, -12, 22, -16, 0], dur: 22, delay: 16, opacity: 0.065 },
+  ];
+
+  return (
+    <div style={{ position: "absolute", inset: 0, overflow: "hidden", pointerEvents: "none" }} aria-hidden="true">
+      {wisps.map((w, i) => (
+        <motion.div
+          key={i}
+          style={{
+            position: "absolute",
+            left: w.left,
+            top: w.top,
+            width: w.w,
+            height: w.h,
+            rotate: w.rotate,
+            background: `radial-gradient(ellipse 45% 60% at 50% 45%, rgba(255,255,255,${w.opacity}) 0%, rgba(255,255,255,${w.opacity * 0.35}) 40%, transparent 72%)`,
+            filter: "blur(72px)",
+            willChange: "transform",
+          }}
+          animate={{ x: w.dx, y: w.dy, scale: [1, 1.08, 0.94, 1.05, 1] }}
+          transition={{ duration: w.dur, delay: w.delay, repeat: Infinity, ease: "easeInOut" }}
+        />
+      ))}
+      {/* Center glow */}
+      <div style={{
+        position: "absolute",
+        left: "50%", top: "42%",
+        width: "70vw", height: "55vh",
+        transform: "translate(-50%, -50%)",
+        background: "radial-gradient(ellipse, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.02) 45%, transparent 70%)",
+        filter: "blur(80px)",
+      }} />
+    </div>
+  );
+}
+
+// ── Rotating subtitle tag ──────────────────────────────────────────────────────
+function RotatingTag() {
+  const { lang } = useLang();
+  const tags = HERO_STRINGS[lang].rotating;
+  const [idx, setIdx] = useState(0);
+  const [visible, setVisible] = useState(true);
+
+  useEffect(() => { setIdx(0); setVisible(true); }, [lang]);
+
+  useEffect(() => {
+    const t = setInterval(() => {
+      setVisible(false);
+      setTimeout(() => { setIdx(i => (i + 1) % tags.length); setVisible(true); }, 320);
+    }, 2800);
+    return () => clearInterval(t);
+  }, [tags.length]);
+
+  return (
+    <div style={{ height: 24, display: "flex", alignItems: "center", justifyContent: "center", gap: 8, marginBottom: 20 }}>
+      <span style={{ color: "rgba(255,255,255,0.25)", fontSize: 12, fontWeight: 500 }}>›</span>
+      <AnimatePresence mode="wait">
+        {visible && (
+          <motion.span
+            key={`${lang}-${idx}`}
+            initial={{ opacity: 0, y: 6 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -6 }}
+            transition={{ duration: 0.25, ease: EASE }}
+            style={{ color: "rgba(255,255,255,0.4)", fontSize: 12, fontWeight: 500, letterSpacing: "0.06em" }}
+          >
+            {tags[idx]}
+          </motion.span>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
+
+// ── 3D entrance wrapper ────────────────────────────────────────────────────────
+function Reveal({ children, delay = 0, y = 50, rotX = -18, lite = false }: {
+  children: React.ReactNode;
+  delay?: number;
+  y?: number;
+  rotX?: number;
+  lite?: boolean;
+}) {
+  if (lite) {
+    return (
+      <motion.div
+        initial={{ opacity: 0, y: 14 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.38, delay: delay * 0.5, ease: EASE }}
+      >
+        {children}
+      </motion.div>
+    );
+  }
+  return (
+    <motion.div
+      initial={{ opacity: 0, y, rotateX: rotX, filter: "blur(10px)" }}
+      animate={{ opacity: 1, y: 0, rotateX: 0, filter: "blur(0px)" }}
+      transition={{ duration: 1.0, delay, ease: EASE }}
+      style={{ transformStyle: "preserve-3d" }}
+    >
+      {children}
+    </motion.div>
+  );
+}
+
+// ── Main Hero ─────────────────────────────────────────────────────────────────
 export default function Hero() {
   const { t, lang } = useLang();
   const hs = HERO_STRINGS[lang];
   const isMobile = useIsMobile();
+  const shouldReduceMotion = useReducedMotion();
+  const sectionRef = useRef<HTMLElement>(null);
 
   return (
     <section
+      ref={sectionRef}
       id="anasayfa"
-      style={{ position: "relative", overflow: "hidden", paddingTop: "clamp(48px, 8vw, 96px)", paddingBottom: "clamp(48px, 8vw, 80px)" }}
+      style={{
+        position: "relative",
+        minHeight: "100vh",
+        background: "#000000",
+        display: "flex",
+        flexDirection: "column",
+        overflow: "hidden",
+      }}
     >
-      {/* ── Background layers ── */}
-      <div className="pointer-events-none absolute inset-0 -z-10" aria-hidden="true">
-        {/* Pitch grid SVG */}
-        <PitchGrid />
-        {/* Subtle warm ambient — static on mobile, barely animated on desktop */}
+      {/* ── Shader aurora background (desktop only) ── */}
+      {!isMobile && !shouldReduceMotion && (
         <div
-          style={{
-            position: "absolute", top: "0%", left: "10%",
-            width: "50%", height: "55%", borderRadius: "50%",
-            background: "radial-gradient(ellipse, oklch(0.87 0.27 152 / 0.06) 0%, transparent 70%)",
-            filter: "blur(60px)",
-          }}
-        />
-        <div
-          style={{
-            position: "absolute", bottom: "10%", right: "10%",
-            width: "40%", height: "45%", borderRadius: "50%",
-            background: "radial-gradient(ellipse, oklch(0.87 0.27 152 / 0.04) 0%, transparent 70%)",
-            filter: "blur(80px)",
-          }}
-        />
-        {/* Top accent line */}
-        <div style={{
-          position: "absolute", top: 0, left: 0, right: 0, height: 1,
-          background: "linear-gradient(90deg, transparent, oklch(0.87 0.27 152 / 0.35), transparent)",
-        }} />
-        {/* Bottom fade */}
-        <div style={{
-          position: "absolute", bottom: 0, left: 0, right: 0, height: "35%",
-          background: "linear-gradient(0deg, rgba(5,7,20,0.6), transparent)",
-        }} />
-      </div>
-
-      <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 clamp(16px, 4vw, 40px)" }}>
-
-        {/* ── Brand header row ── */}
-        <motion.div
-          initial={{ opacity: 0, y: -12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, ease: EASE }}
-          style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "clamp(32px, 5vw, 56px)", flexWrap: "wrap", gap: 12, position: "relative", zIndex: 20 }}
+          aria-hidden="true"
+          style={{ position: "absolute", inset: 0, overflow: "hidden", pointerEvents: "none", zIndex: 0, opacity: 0.65 }}
         >
-          {/* Live season badge */}
-          <div style={{
-            display: "inline-flex", alignItems: "center", gap: 8,
-            background: "oklch(0.87 0.27 152 / 0.07)",
-            border: "1px solid oklch(0.87 0.27 152 / 0.22)",
-            borderRadius: 999, padding: "6px 14px",
-          }}>
-            <span style={{ width: 6, height: 6, borderRadius: "50%", background: "oklch(0.87 0.27 152)", display: "block", flexShrink: 0 }} />
-            <span style={{ fontSize: 11, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.16em", color: "oklch(0.87 0.27 152)" }}>
-              {siteMeta.crew} · {hs.seasonBadge}
-            </span>
-          </div>
+          <AnoAI />
+        </div>
+      )}
+      {/* Text legibility overlay */}
+      {!isMobile && !shouldReduceMotion && (
+        <div
+          aria-hidden="true"
+          style={{
+            position: "absolute", inset: 0, zIndex: 1, pointerEvents: "none",
+            background: "linear-gradient(180deg, rgba(0,0,0,0.52) 0%, rgba(0,0,0,0.22) 40%, rgba(0,0,0,0.58) 100%)",
+          }}
+        />
+      )}
 
-          {/* Social links */}
-          <div style={{ display: "flex", gap: 8, alignItems: "center", position: "relative", zIndex: 2 }}>
-            {/* YouTube */}
-            <motion.a
-              href={siteMeta.social.youtube}
-              target="_blank" rel="noreferrer" aria-label="YouTube"
-              whileHover={{ scale: 1.1, y: -3, transition: { duration: 0.16 } }}
-              whileTap={{ scale: 0.93 }}
-              style={{
-                display: "inline-flex", alignItems: "center", justifyContent: "center",
-                width: 38, height: 38, borderRadius: 11, flexShrink: 0,
-                background: "rgba(255,255,255,0.06)",
-                border: "1px solid rgba(255,255,255,0.1)",
-                backdropFilter: "blur(12px)",
-                textDecoration: "none",
-                boxShadow: "0 2px 12px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.06)",
-              }}
-            >
-              <svg width="22" height="16" viewBox="0 0 30 21" fill="none" aria-hidden="true">
-                <rect width="30" height="21" rx="5" fill="#FF0000"/>
+      {/* ── Thin top rule ── */}
+      <div style={{ height: 1, background: "rgba(255,255,255,0.08)", flexShrink: 0 }} />
+
+      {/* ── Social links top-right ── */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.6, delay: 0.8 }}
+        style={{
+          position: "absolute",
+          top: 20,
+          right: "clamp(16px, 4vw, 40px)",
+          display: "flex",
+          gap: 8,
+          zIndex: 10,
+        }}
+      >
+        {[
+          {
+            href: siteMeta.social.youtube,
+            label: "YouTube",
+            bg: "rgba(255,0,0,0.14)",
+            border: "rgba(255,0,0,0.35)",
+            icon: (
+              <svg width="22" height="15" viewBox="0 0 30 21" fill="none">
+                <rect width="30" height="21" rx="4" fill="#FF0000"/>
                 <path d="M12.5 6.5L20.5 10.5L12.5 14.5V6.5Z" fill="white"/>
               </svg>
-            </motion.a>
-
-            {/* Instagram */}
-            <motion.a
-              href={siteMeta.social.instagram}
-              target="_blank" rel="noreferrer" aria-label="Instagram"
-              whileHover={{ scale: 1.1, y: -3, transition: { duration: 0.16 } }}
-              whileTap={{ scale: 0.93 }}
-              style={{
-                display: "inline-flex", alignItems: "center", justifyContent: "center",
-                width: 38, height: 38, borderRadius: 11, flexShrink: 0,
-                background: "rgba(255,255,255,0.06)",
-                border: "1px solid rgba(255,255,255,0.1)",
-                backdropFilter: "blur(12px)",
-                textDecoration: "none",
-                boxShadow: "0 2px 12px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.06)",
-              }}
-            >
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                <defs>
-                  <linearGradient id="ig-grad" x1="0" y1="1" x2="1" y2="0">
-                    <stop offset="0%" stopColor="#FCAF45"/>
-                    <stop offset="50%" stopColor="#E1306C"/>
-                    <stop offset="100%" stopColor="#833AB4"/>
-                  </linearGradient>
-                </defs>
-                <rect x="1" y="1" width="22" height="22" rx="6" fill="url(#ig-grad)"/>
-                <rect x="4" y="4" width="16" height="16" rx="4" stroke="white" strokeWidth="1.6" fill="none"/>
-                <circle cx="12" cy="12" r="4" stroke="white" strokeWidth="1.6"/>
-                <circle cx="17" cy="7" r="1.4" fill="white"/>
+            ),
+          },
+          {
+            href: siteMeta.social.instagram,
+            label: "Instagram",
+            bg: "rgba(225,48,108,0.14)",
+            border: "rgba(225,48,108,0.35)",
+            icon: (
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                <rect x="2" y="2" width="20" height="20" rx="5" stroke="#E1306C" strokeWidth="1.8"/>
+                <circle cx="12" cy="12" r="4" stroke="#E1306C" strokeWidth="1.8"/>
+                <circle cx="17" cy="7" r="1.3" fill="#E1306C"/>
               </svg>
-            </motion.a>
-
-            {/* Facebook */}
-            <motion.a
-              href={siteMeta.social.facebook}
-              target="_blank" rel="noreferrer" aria-label="Facebook"
-              whileHover={{ scale: 1.1, y: -3, transition: { duration: 0.16 } }}
-              whileTap={{ scale: 0.93 }}
-              style={{
-                display: "inline-flex", alignItems: "center", justifyContent: "center",
-                width: 38, height: 38, borderRadius: 11, flexShrink: 0,
-                background: "rgba(255,255,255,0.06)",
-                border: "1px solid rgba(255,255,255,0.1)",
-                backdropFilter: "blur(12px)",
-                textDecoration: "none",
-                boxShadow: "0 2px 12px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.06)",
-              }}
-            >
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                <rect width="24" height="24" rx="5.5" fill="#1877F2"/>
-                <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" fill="white"/>
+            ),
+          },
+          {
+            href: siteMeta.social.facebook,
+            label: "Facebook",
+            bg: "rgba(24,119,242,0.14)",
+            border: "rgba(24,119,242,0.35)",
+            icon: (
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="#1877F2">
+                <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
               </svg>
-            </motion.a>
-          </div>
-        </motion.div>
-
-        {/* ── Main title block ── */}
-        <div style={{ maxWidth: 820, marginBottom: "clamp(32px, 5vw, 56px)" }}>
-          {/* Rotating tag above title */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.5, delay: 0.15 }}
-            style={{ marginBottom: 16 }}
-          >
-            <RotatingTag />
-          </motion.div>
-
-          {/* Title */}
-          <motion.h1
-            initial={{ opacity: 0, y: 32, filter: "blur(12px)" }}
-            animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-            transition={{ duration: 0.75, delay: 0.2, ease: EASE }}
-            style={{ margin: 0, lineHeight: 1.0 }}
-          >
-            <span style={{
-              display: "block",
-              fontFamily: "'Outfit', system-ui, sans-serif",
-              fontSize: "clamp(4rem, 10vw, 7.5rem)",
-              fontWeight: 900,
-              letterSpacing: "0.04em",
-              color: "#ffffff",
-              lineHeight: 0.95,
-            }}>
-              OSM
-            </span>
-            <span style={{
-              display: "block",
-              fontFamily: "'Outfit', system-ui, sans-serif",
-              fontSize: "clamp(4.5rem, 14vw, 10rem)",
-              fontWeight: 900,
-              letterSpacing: "0.02em",
-              lineHeight: 0.88,
-              color: "#ffffff",
-            }}>
-              NEXT LEVEL
-            </span>
-            <span style={{
-              display: "block",
-              fontFamily: "'Outfit', system-ui, sans-serif",
-              fontSize: "clamp(0.75rem, 1.8vw, 1rem)",
-              fontWeight: 600,
-              letterSpacing: "0.24em",
-              marginTop: 16,
-              color: "oklch(0.87 0.27 152)",
-              textTransform: "uppercase",
-            }}>
-              {hs.titleSub}
-            </span>
-          </motion.h1>
-
-          {/* Subtitle */}
-          <motion.p
-            initial={{ opacity: 0, y: 14 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.55, delay: 0.38, ease: EASE }}
+            ),
+          },
+        ].map((s) => (
+          <motion.a
+            key={s.label}
+            href={s.href}
+            target="_blank"
+            rel="noreferrer"
+            aria-label={s.label}
+            whileHover={isMobile ? undefined : { scale: 1.12, y: -2 }}
+            whileTap={{ scale: 0.94 }}
             style={{
-              marginTop: 20, marginBottom: 0,
-              fontSize: "clamp(14px, 2vw, 17px)",
-              color: "rgba(148,163,184,0.85)",
-              lineHeight: 1.65,
-              maxWidth: 560,
+              width: 42, height: 42,
+              border: `1px solid ${s.border}`,
+              borderRadius: 11,
+              background: s.bg,
+              display: "flex", alignItems: "center", justifyContent: "center",
+              textDecoration: "none",
+              backdropFilter: isMobile ? undefined : "blur(8px)",
+              transition: "background 0.2s, border-color 0.2s",
             }}
           >
-            {t("hero.subtitle")}
-          </motion.p>
+            {s.icon}
+          </motion.a>
+        ))}
+      </motion.div>
 
-          {/* CTA buttons */}
-          <motion.div
-            initial={{ opacity: 0, y: 14 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.5, ease: EASE }}
-            style={{ display: "flex", gap: 12, marginTop: 28, flexWrap: "wrap" }}
-          >
-            <motion.a
-              href="#anti-taktik"
-              whileHover={{ scale: 1.03 }}
-              whileTap={{ scale: 0.97 }}
-              style={{
-                display: "inline-flex", alignItems: "center", gap: 8,
-                background: "oklch(0.87 0.27 152)",
-                border: "1px solid oklch(0.87 0.27 152)",
-                borderRadius: 8,
-                padding: "13px 28px",
-                color: "oklch(0.13 0.02 250)",
-                fontSize: 13,
-                fontWeight: 900,
-                textDecoration: "none",
-                textTransform: "uppercase",
-                letterSpacing: "0.1em",
-              }}
-            >
-              ⚔️ {hs.ctaAnti}
-            </motion.a>
-            <motion.a
-              href="https://buymeacoffee.com/omerovvvvv"
-              target="_blank" rel="noreferrer"
-              whileHover={{ scale: 1.04 }}
-              whileTap={{ scale: 0.96 }}
-              style={{
-                display: "inline-flex", alignItems: "center", gap: 6,
-                background: "#FFDD00",
-                borderRadius: 12, padding: "13px 22px",
-                color: "#1c1917", fontSize: 13, fontWeight: 900,
-                textDecoration: "none", textTransform: "uppercase", letterSpacing: "0.06em",
-                boxShadow: "0 4px 20px rgba(255,221,0,0.25)",
-              }}
-            >
-              ☕ {hs.ctaSupport}
-            </motion.a>
-          </motion.div>
-        </div>
-
-        {/* ── Feature quick-access grid ── */}
-        <div style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
-          gap: 12,
-          marginBottom: "clamp(32px, 5vw, 48px)",
-        }}>
-          {FEATURE_DEFS.map((feat, i) => (
-            <FeatureCard key={i} feat={feat} label={hs[feat.lk]} desc={hs[feat.dk]} index={i} isMobile={isMobile} />
-          ))}
-        </div>
-
-        {/* ── Stats row ── */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.6, delay: 0.9 }}
-          style={{ display: "flex", gap: 10, flexWrap: "wrap" }}
-        >
-          {[
-            { value: "16+",   label: t("hero.years"),  color: "oklch(0.87 0.27 152)" },
-            { value: "#1",    label: hs.worldRank,     color: "#ffffff" },
-            { value: "26/27", label: t("hero.season"), color: "oklch(0.87 0.27 152)" },
-            { value: "100+",  label: t("hero.tested"), color: "#888888" },
-          ].map((s, i) => (
-            <StatPill key={i} {...s} />
-          ))}
-        </motion.div>
-
-        {/* ── Coach's disclaimer — plain div, no Framer Motion (stacking context fix) ── */}
+      {/* ── Main content — split layout desktop / stacked mobile ── */}
+      <div
+        style={{
+          flex: 1,
+          display: "flex",
+          flexDirection: isMobile ? "column" : "row",
+          alignItems: "stretch",
+          position: "relative",
+          zIndex: 2,
+        }}
+      >
+        {/* ── LEFT: text panel ── */}
         <div
           style={{
-            marginTop: 28,
-            ...GLASS,
-            border: "1px solid oklch(0.87 0.27 152 / 0.18)",
-            padding: "16px 20px",
+            flex: isMobile ? "none" : "0 0 52%",
             display: "flex",
-            gap: 14,
-            alignItems: "flex-start",
-            position: "relative",
-            zIndex: 0,
-            overflow: "hidden",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            padding: isMobile
+              ? "clamp(100px, 14vw, 160px) clamp(20px, 6vw, 80px) clamp(40px, 6vw, 60px)"
+              : "clamp(80px, 10vw, 130px) clamp(32px, 5vw, 72px) clamp(40px, 6vw, 80px)",
+            textAlign: "center",
           }}
         >
-          {/* left accent bar */}
-          <div style={{
-            position: "absolute", left: 0, top: 0, bottom: 0, width: 3,
-            background: "linear-gradient(180deg, oklch(0.87 0.27 152), oklch(0.87 0.27 152 / 0.1))",
-            borderRadius: "20px 0 0 20px",
-          }} />
-          <div
-            className="animate-pulse"
-            style={{
-              width: 36, height: 36, borderRadius: 10, flexShrink: 0,
-              background: "oklch(0.87 0.27 152 / 0.1)",
-              border: "1px solid oklch(0.87 0.27 152 / 0.25)",
-              display: "flex", alignItems: "center", justifyContent: "center",
-              fontSize: 17,
-            }}
-          >🛡️</div>
-          <div style={{ flex: 1, minWidth: 0 }}>
-            <div style={{ fontSize: 9, fontWeight: 900, textTransform: "uppercase", letterSpacing: "0.22em", color: "oklch(0.87 0.27 152 / 0.7)", marginBottom: 4 }}>
-              {hs.coachAlert}
-            </div>
-            <p style={{ margin: 0, fontSize: 13, lineHeight: 1.6, color: "rgba(203,213,225,0.85)" }}>
-              {t("disclaimer.text")}
-            </p>
-          </div>
-        </div>
+        {/* 3D perspective context — desktop only */}
+        <div style={isMobile ? { width: "100%" } : { perspective: "1400px", perspectiveOrigin: "50% 20%", width: "100%" }}>
 
-      </div>
+          {/* Rotating sub-tag */}
+          <Reveal delay={0.05} y={20} rotX={-10} lite={isMobile}>
+            <RotatingTag />
+          </Reveal>
+
+          {/* ── Badge pill ── */}
+          <Reveal delay={0.15} y={30} rotX={-20} lite={isMobile}>
+            <div style={{ marginBottom: 36, display: "flex", justifyContent: "center" }}>
+              <div style={{
+                display: "inline-flex", alignItems: "center", gap: 10,
+                border: "1px solid rgba(255,255,255,0.18)",
+                borderRadius: 999,
+                padding: "9px 20px",
+                background: "rgba(255,255,255,0.04)",
+              }}>
+                <motion.span
+                  animate={isMobile ? undefined : { opacity: [1, 0.3, 1] }}
+                  transition={{ duration: 2.2, repeat: Infinity }}
+                  style={{ width: 6, height: 6, borderRadius: "50%", background: "#fff", display: "block", flexShrink: 0 }}
+                />
+                <span style={{ fontSize: 11.5, fontWeight: 600, color: "rgba(255,255,255,0.7)", letterSpacing: "0.1em", textTransform: "uppercase" }}>
+                  {hs.badge}
+                </span>
+              </div>
+            </div>
+          </Reveal>
+
+          {/* ── Main heading ── */}
+          <Reveal delay={0.28} y={70} rotX={-25} lite={isMobile}>
+            <h1
+              style={{
+                margin: "0 0 24px",
+                fontFamily: "'Outfit', system-ui, sans-serif",
+                fontWeight: 900,
+                lineHeight: 0.88,
+                letterSpacing: "-0.025em",
+                color: "#ffffff",
+              }}
+            >
+              <span style={{ display: "block", fontSize: "clamp(3.8rem, 13vw, 9.5rem)", color: "#ffffff" }}>
+                {hs.title1}
+              </span>
+              <span style={{
+                display: "block",
+                fontSize: "clamp(3.2rem, 11vw, 8rem)",
+                color: "#ffffff",
+                lineHeight: 0.90,
+              }}>
+                {hs.title2}
+              </span>
+              <span style={{
+                display: "block",
+                fontSize: "clamp(0.65rem, 1.6vw, 0.9rem)",
+                fontWeight: 500,
+                letterSpacing: "0.28em",
+                color: "rgba(255,255,255,0.3)",
+                marginTop: 18,
+                lineHeight: 1,
+                textTransform: "uppercase",
+              }}>
+                {hs.sub}
+              </span>
+            </h1>
+          </Reveal>
+
+          {/* ── Subtitle ── */}
+          <Reveal delay={0.45} y={35} rotX={-12} lite={isMobile}>
+            <p style={{
+              margin: "0 auto 44px",
+              fontSize: "clamp(14px, 1.9vw, 17px)",
+              color: "rgba(255,255,255,0.42)",
+              lineHeight: 1.75,
+              maxWidth: 480,
+              fontWeight: 400,
+            }}>
+              {hs.subtitle}
+            </p>
+          </Reveal>
+
+          {/* ── CTA Buttons ── */}
+          <Reveal delay={0.58} y={28} rotX={-8} lite={isMobile}>
+            <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap", marginBottom: 52 }}>
+              <motion.a
+                href="#anti-taktik"
+                whileHover={{ scale: 1.04, y: -2 }}
+                whileTap={{ scale: 0.96 }}
+                style={{
+                  display: "inline-flex", alignItems: "center", gap: 8,
+                  background: "#ffffff",
+                  borderRadius: 999,
+                  padding: "15px 36px",
+                  color: "#000000",
+                  fontSize: 13.5,
+                  fontWeight: 700,
+                  textDecoration: "none",
+                  letterSpacing: "0.06em",
+                  textTransform: "uppercase",
+                  boxShadow: "0 8px 32px rgba(255,255,255,0.15)",
+                }}
+              >
+                ⚔️ {hs.cta1}
+              </motion.a>
+              <motion.a
+                href="#premium"
+                whileHover={{ scale: 1.04, y: -2, borderColor: "rgba(255,255,255,0.45)" }}
+                whileTap={{ scale: 0.96 }}
+                style={{
+                  display: "inline-flex", alignItems: "center", gap: 8,
+                  background: "transparent",
+                  border: "1px solid rgba(255,255,255,0.22)",
+                  borderRadius: 999,
+                  padding: "15px 36px",
+                  color: "rgba(255,255,255,0.72)",
+                  fontSize: 13.5,
+                  fontWeight: 600,
+                  textDecoration: "none",
+                  letterSpacing: "0.06em",
+                  textTransform: "uppercase",
+                  backdropFilter: isMobile ? undefined : "blur(8px)",
+                }}
+              >
+                👑 {hs.cta2}
+              </motion.a>
+              <motion.a
+                href="https://buymeacoffee.com/omerovvvvv"
+                target="_blank"
+                rel="noreferrer"
+                whileHover={{ scale: 1.04, y: -2 }}
+                whileTap={{ scale: 0.96 }}
+                style={{
+                  display: "inline-flex", alignItems: "center", gap: 8,
+                  background: "rgba(255,221,0,0.12)",
+                  border: "1px solid rgba(255,221,0,0.35)",
+                  borderRadius: 999,
+                  padding: "15px 28px",
+                  color: "#FFD700",
+                  fontSize: 13.5,
+                  fontWeight: 700,
+                  textDecoration: "none",
+                  letterSpacing: "0.06em",
+                  textTransform: "uppercase",
+                  backdropFilter: isMobile ? undefined : "blur(8px)",
+                }}
+              >
+                ☕ Support
+              </motion.a>
+            </div>
+          </Reveal>
+
+          {/* ── Stats row ── */}
+          <Reveal delay={0.72} y={20} rotX={-6} lite={isMobile}>
+            <div style={{
+              display: "flex",
+              gap: "clamp(24px, 5vw, 60px)",
+              justifyContent: "center",
+              flexWrap: "wrap",
+              paddingTop: 32,
+              borderTop: "1px solid rgba(255,255,255,0.07)",
+            }}>
+              {[
+                { val: "16+",   lbl: hs.years },
+                { val: "#1",    lbl: hs.worldRank },
+                { val: "100+",  lbl: hs.tested },
+                { val: "26/27", lbl: hs.season },
+              ].map((s) => (
+                <div key={s.lbl} style={{ textAlign: "center" }}>
+                  <div style={{
+                    fontSize: "clamp(1.4rem, 4vw, 2.2rem)",
+                    fontWeight: 900,
+                    color: "#ffffff",
+                    letterSpacing: "-0.03em",
+                    lineHeight: 1,
+                  }}>
+                    {s.val}
+                  </div>
+                  <div style={{
+                    fontSize: 10,
+                    fontWeight: 600,
+                    color: "rgba(255,255,255,0.28)",
+                    textTransform: "uppercase",
+                    letterSpacing: "0.14em",
+                    marginTop: 6,
+                  }}>
+                    {s.lbl}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </Reveal>
+
+        </div>
+        </div>{/* end left panel */}
+
+        {/* ── RIGHT: Spline 3D scene (desktop only) ── */}
+        {!isMobile && (
+          <div
+            style={{
+              flex: "0 0 48%",
+              position: "relative",
+              overflow: "hidden",
+            }}
+          >
+            <Spotlight
+              className="absolute -top-40 left-0 md:left-20 md:-top-10"
+              fill="white"
+            />
+            <SplineScene
+              scene="https://prod.spline.design/kZDDjO5HuC9GJUM2/scene.splinecode"
+              className="w-full h-full"
+            />
+            {/* left fade to blend with text panel */}
+            <div
+              aria-hidden
+              style={{
+                position: "absolute",
+                inset: 0,
+                left: 0,
+                top: 0,
+                width: "28%",
+                background: "linear-gradient(90deg, #000000 0%, transparent 100%)",
+                pointerEvents: "none",
+              }}
+            />
+          </div>
+        )}
+
+      </div>{/* end split wrapper */}
+
+      {/* ── Coach disclaimer ── */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.7, delay: 1.0 }}
+        style={{
+          position: "relative",
+          zIndex: 2,
+          margin: "0 clamp(16px, 4vw, 40px)",
+          marginBottom: "clamp(16px, 3vw, 28px)",
+          padding: "14px 18px",
+          border: "1px solid rgba(255,255,255,0.08)",
+          borderRadius: 14,
+          background: "rgba(255,255,255,0.03)",
+          display: "flex",
+          gap: 12,
+          alignItems: "flex-start",
+          backdropFilter: isMobile ? undefined : "blur(8px)",
+        }}
+      >
+        <div style={{
+          width: 32, height: 32, borderRadius: 8, flexShrink: 0,
+          border: "1px solid rgba(255,255,255,0.1)",
+          display: "flex", alignItems: "center", justifyContent: "center",
+          fontSize: 15,
+        }}>🛡️</div>
+        <div>
+          <div style={{ fontSize: 9, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.22em", color: "rgba(255,255,255,0.25)", marginBottom: 4 }}>
+            {hs.alert}
+          </div>
+          <p style={{ margin: 0, fontSize: 12.5, lineHeight: 1.6, color: "rgba(255,255,255,0.38)" }}>
+            {t("disclaimer.text")}
+          </p>
+        </div>
+      </motion.div>
+
+      {/* ── Scroll indicator ── */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.7, delay: 1.1 }}
+        style={{
+          position: "relative",
+          zIndex: 2,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          gap: "clamp(12px, 3vw, 28px)",
+          paddingBottom: "clamp(20px, 4vw, 36px)",
+          color: "rgba(255,255,255,0.2)",
+          fontSize: 10.5,
+          fontWeight: 500,
+          letterSpacing: "0.14em",
+          textTransform: "uppercase",
+        }}
+      >
+        <span>{hs.scrollLabel}</span>
+        <div style={{ flex: "0 0 clamp(40px, 8vw, 110px)", height: 1, background: "rgba(255,255,255,0.1)" }} />
+        {/* Mouse icon */}
+        <div style={{
+          width: 20, height: 30,
+          border: "1px solid rgba(255,255,255,0.18)",
+          borderRadius: 10,
+          display: "flex",
+          justifyContent: "center",
+          paddingTop: 5,
+          flexShrink: 0,
+        }}>
+          <motion.div
+            style={{ width: 2, height: 6, background: "rgba(255,255,255,0.4)", borderRadius: 2 }}
+            animate={{ y: [0, 8, 0], opacity: [0.8, 0.2, 0.8] }}
+            transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}
+          />
+        </div>
+        <div style={{ flex: "0 0 clamp(40px, 8vw, 110px)", height: 1, background: "rgba(255,255,255,0.1)" }} />
+        <span>{hs.scrollTarget}</span>
+      </motion.div>
+
+      {/* ── Bottom fade into next section ── */}
+      <div style={{
+        position: "absolute",
+        bottom: 0, left: 0, right: 0,
+        height: "20%",
+        background: "linear-gradient(0deg, rgba(0,0,0,0.7), transparent)",
+        pointerEvents: "none",
+        zIndex: 1,
+      }} />
     </section>
   );
 }

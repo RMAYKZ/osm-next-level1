@@ -390,12 +390,12 @@ export default defineConfig(({ mode }) => {
       devChatPlugin(env.GEMINI_API_KEY ?? ""),
       VitePWA({
         registerType: "autoUpdate",
-        includeAssets: ["favicon.png", "apple-touch-icon.svg", "robots.txt", "pwa-icon.svg", "osm-logo.png"],
+        includeAssets: ["favicon.ico", "favicon.png", "apple-touch-icon-180x180.png", "pwa-icon.svg", "robots.txt", "osm-logo.png"],
         manifest: {
           name: "OSM Next Level",
           short_name: "OSM NL",
           description: "OSM 2026 en iyi karşı taktikler, anti-taktik motoru ve formasyon rehberi",
-          theme_color: "#ef4444",
+          theme_color: "#0a0e1a",
           background_color: "#090b21",
           display: "standalone",
           orientation: "any",
@@ -404,27 +404,34 @@ export default defineConfig(({ mode }) => {
           categories: ["games", "sports", "utilities"],
           icons: [
             {
+              src: "pwa-192x192.png",
+              sizes: "192x192",
+              type: "image/png",
+              purpose: "any",
+            },
+            {
+              src: "pwa-512x512.png",
+              sizes: "512x512",
+              type: "image/png",
+              purpose: "any",
+            },
+            {
+              src: "maskable-icon-512x512.png",
+              sizes: "512x512",
+              type: "image/png",
+              purpose: "maskable",
+            },
+            {
               src: "pwa-icon.svg",
               sizes: "any",
               type: "image/svg+xml",
               purpose: "any",
             },
-            {
-              src: "pwa-icon.svg",
-              sizes: "any",
-              type: "image/svg+xml",
-              purpose: "maskable",
-            },
-            {
-              src: "favicon.png",
-              sizes: "64x64",
-              type: "image/png",
-            },
           ],
         },
         workbox: {
           globPatterns: ["**/*.{js,css,html,ico,png,svg,woff,woff2}"],
-          globIgnores: ["**/og-image.png", "**/hero-bg.jpg"],
+          globIgnores: ["**/og-image.png", "**/hero-bg.jpg", "**/osm-manager.png"],
           maximumFileSizeToCacheInBytes: 3 * 1024 * 1024,
           runtimeCaching: [
             {
@@ -462,6 +469,7 @@ export default defineConfig(({ mode }) => {
       alias: {
         "@": path.resolve(__dirname, "src"),
       },
+      dedupe: ["three"],
     },
     server: {
       watch: {
