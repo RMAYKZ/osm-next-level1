@@ -82,14 +82,18 @@ type ClaimResult = "ok" | "taken" | "skip";
 async function checkAndClaimCode(code: string, deviceId: string): Promise<ClaimResult> {
   try {
     const db = await getDb();
-    const { doc, getDoc, setDoc, serverTimestamp } = await import("firebase/firestore");
+    const { doc, getDoc, setDoc, updateDoc, serverTimestamp } = await import("firebase/firestore");
 
     const ref  = doc(db, "usedCodes", code);
     const snap = await getDoc(ref);
 
     if (snap.exists()) {
       const data = snap.data() as { deviceId: string };
-      return data.deviceId === deviceId ? "ok" : "taken";
+      if (data.deviceId === deviceId) return "ok";
+      // Different device ID (e.g. browser data cleared) — re-claim for this device.
+      // Last writer wins: legitimate owner can always reclaim their purchased code.
+      await updateDoc(ref, { deviceId, reClaimedAt: serverTimestamp() });
+      return "ok";
     }
 
     // Unclaimed — write this device as the owner

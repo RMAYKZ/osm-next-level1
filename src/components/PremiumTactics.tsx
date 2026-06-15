@@ -1,5 +1,5 @@
-import { useState, useRef, useEffect } from "react";
-import { motion, AnimatePresence, useInView } from "framer-motion";
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { getLocalizedPremiumTactics, siteConfig, type PremiumTactic } from "../data/extras";
 import { usePremium } from "../contexts/PremiumContext";
 import { useLang } from "../contexts/LanguageContext";
@@ -68,27 +68,7 @@ function FormationDots({ formation, color, size = 8 }: { formation: string; colo
   );
 }
 
-// ── Animated counter ─────────────────────────────────────────────────
-function AnimNum({ to }: { to: number }) {
-  const ref = useRef<HTMLSpanElement>(null);
-  const inView = useInView(ref, { once: true });
-  const [val, setVal] = useState(0);
-  useEffect(() => {
-    if (!inView) return;
-    const start = performance.now();
-    let raf: number;
-    const tick = (now: number) => {
-      const p = Math.min((now - start) / 950, 1);
-      setVal(Math.round((1 - Math.pow(1 - p, 3)) * to));
-      if (p < 1) raf = requestAnimationFrame(tick);
-    };
-    raf = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(raf);
-  }, [inView, to]);
-  return <span ref={ref}>{val}</span>;
-}
-
-// ── Slider stat row ──────────────────────────────────────────────────
+// ── Slider stat row — static values, no animation (premium numbers are exact & immutable) ──
 function Slider({ label, value, color }: { label: string; value: number; color: string }) {
   return (
     <div>
@@ -97,14 +77,12 @@ function Slider({ label, value, color }: { label: string; value: number; color: 
           {label}
         </span>
         <span style={{ fontSize: 24, fontWeight: 900, lineHeight: 1, color, letterSpacing: "-0.03em", fontFamily: "'Barlow Condensed', sans-serif" }}>
-          <AnimNum to={value} />
+          {value}
         </span>
       </div>
       <div style={{ height: 4, borderRadius: 99, background: "rgba(255,255,255,0.05)", overflow: "hidden" }}>
-        <motion.div
-          initial={{ width: 0 }} whileInView={{ width: `${value}%` }} viewport={{ once: true }}
-          transition={{ duration: 1.2, ease: EASE, delay: 0.15 }}
-          style={{ height: "100%", borderRadius: 99, background: `linear-gradient(90deg,${color}aa,${color})`, boxShadow: `0 0 10px ${color}55` }}
+        <div
+          style={{ width: `${value}%`, height: "100%", borderRadius: 99, background: `linear-gradient(90deg,${color}aa,${color})`, boxShadow: `0 0 10px ${color}55` }}
         />
       </div>
     </div>
