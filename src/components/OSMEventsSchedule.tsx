@@ -117,6 +117,8 @@ const ease = [0.16, 1, 0.3, 1] as const;
 // COMPONENT
 // ═══════════════════════════════════════════════════════════════════════════════
 
+const IS_MOBILE_OES = typeof window !== "undefined" && window.innerWidth < 768;
+
 export default function OSMEventsSchedule() {
   const { t } = useLang();
   const [statuses, setStatuses] = useState<EventStatus[]>(computeStatuses);
@@ -250,7 +252,7 @@ function EventCard({ index, event, status }: { index: number; event: ScheduleEve
     ...(isLive ? {
       background: "linear-gradient(145deg, rgba(0,30,50,0.85) 0%, rgba(0,15,32,0.9) 100%)",
       border: "1px solid rgba(0,212,255,0.35)",
-      animation: "ev-live-pulse 2.2s ease-in-out infinite",
+      animation: IS_MOBILE_OES ? "none" : "ev-live-pulse 2.2s ease-in-out infinite",
     } : isUpcoming ? {
       background: "linear-gradient(145deg, rgba(20,18,6,0.7) 0%, rgba(10,10,5,0.75) 100%)",
       border: "1px solid rgba(255,228,77,0.22)",

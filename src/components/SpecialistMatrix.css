@@ -414,3 +414,7 @@
   .sm-badge-dot { animation: none; }
   .sm-result-shimmer { animation: none; }
 }
+
+@media (max-width: 768px) {
+  .sm-glow { filter: none !important; display: none; }
+}

@@ -430,3 +430,15 @@
   .garage-empty-icon { animation: none; }
   .garage-minibar-fill { transition: none; }
 }
+
+@media (max-width: 768px) {
+  /* Remove backdrop-filter — very expensive on mobile GPU */
+  .garage-card {
+    backdrop-filter: none !important;
+    background: rgba(9, 11, 33, 0.97) !important;
+  }
+  /* Remove blur from shimmer element */
+  .garage-minibar-shimmer {
+    filter: none !important;
+  }
+}

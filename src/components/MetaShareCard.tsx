@@ -362,9 +362,10 @@ function CountUnit({ value, label }: { value: number; label: string }) {
 
 // ── Main component ────────────────────────────────────────────────────────────
 
+const _isMobile = typeof window !== "undefined" && window.innerWidth < 768;
 const CARD: React.CSSProperties = {
-  background: 'rgba(9,11,33,0.88)',
-  backdropFilter: 'blur(20px)',
+  background: _isMobile ? 'rgba(9,11,33,0.97)' : 'rgba(9,11,33,0.88)',
+  ...(_isMobile ? {} : { backdropFilter: 'blur(20px)' }),
   border: '1px solid rgba(34,211,238,0.12)',
   borderRadius: 16,
   boxShadow: '0 20px 60px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.05)',

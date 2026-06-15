@@ -41,6 +41,18 @@
 .hth-tac-lbl     { font-size:12px; font-weight:900; letter-spacing:0.08em; text-transform:uppercase; color:rgba(255,255,255,.32); }
 .hth-tac-val     { font-size:14px; font-weight:700; }
 
+/* ── Mobile Performance: stop infinite box-shadow + shine animations ── */
+@media (max-width: 768px) {
+  .hth-card {
+    animation: none !important;
+    box-shadow: 0 0 0 1px rgba(255,215,0,.42), 0 0 18px rgba(255,215,0,.08);
+  }
+  .hth-shine {
+    animation: none !important;
+    display: none;
+  }
+}
+
 /* ── Coach Note ── */
 .hth-note {
   background: rgba(255,215,0,.055);

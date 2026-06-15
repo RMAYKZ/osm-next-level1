@@ -231,27 +231,42 @@ body {
 
 /* 📱 MOBİL OPTİMİZASYON — Ağır efektleri telefonlarda hafiflet */
 @media (max-width: 768px) {
-  /* Backdrop blur mobilde çok pahalı, kaldırıyoruz */
-  .opus-glass,
-  .opus-noise::before {
+
+  /* ── NÜKLEER: Tüm backdrop-filter'ları kaldır (en büyük GPU tasarrufu) ── */
+  *, *::before, *::after {
     backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
   }
-  .opus-glass {
-    background: linear-gradient(180deg, rgba(24, 22, 20, 0.96), rgba(12, 10, 9, 0.96));
-  }
-  /* Büyük blur'lu dekoratif daireleri mobilde gizle (en çok yoran kısım) */
-  .mobile-hide-glow {
-    display: none !important;
-  }
-  /* Yüzen animasyonu mobilde durdur */
-  .animate-float {
-    animation: none;
-  }
-  /* Grid noise desenini hafiflet */
-  .opus-noise::before {
-    opacity: 0.18;
-    background-size: 80px 80px;
-  }
+
+  /* ── Tüm dekoratif sonsuz CSS animasyonlarını durdur ── */
+  .animate-first, .animate-second, .animate-third,
+  .animate-fourth, .animate-fifth { animation: none !important; }
+
+  .animate-float           { animation: none !important; }
+  .hero-title-shine        { animation: none !important; background-position: 50% 50% !important; }
+  .pulse-glow-title        { animation: none !important; text-shadow: 0 0 10px #22d3ee, 0 0 20px rgba(34,211,238,0.4); }
+  .text-shimmer-title      { animation: none !important; filter: drop-shadow(0 0 10px rgba(6,182,212,0.5)); }
+  .htitle-shimmer-top,
+  .htitle-shimmer-lvl      { animation: none !important; background-position: 50% 0 !important; }
+
+  /* ── Sayfadaki tüm box-shadow animasyonları GPU kompozit geçişi yaratır ── */
+  /* CSS'te tanımlı infinite animasyonlu sınıflar */
+  .sm-badge-dot            { animation: none !important; opacity: 0.9; }
+  .ns-badge-dot            { animation: none !important; opacity: 0.9; }
+  .garage-minibar-shimmer  { animation: none !important; opacity: 0; }
+  .garage-skeleton         { animation: none !important; }
+  .hth-shine, .hero-card-shine { animation: none !important; display: none; }
+  .hth-card, .hero-card    { animation: none !important; }
+
+  /* ── Opus glass ── */
+  .opus-glass,
+  .opus-noise::before { backdrop-filter: none !important; }
+  .opus-glass { background: linear-gradient(180deg, rgba(24,22,20,0.96), rgba(12,10,9,0.96)); }
+  .mobile-hide-glow { display: none !important; }
+  .opus-noise::before { opacity: 0.18; background-size: 80px 80px; }
+
+  /* ── Tüm CSS filter/blur tabanlı dekoratif elementleri kaldır ── */
+  .sm-glow, .ns-glow, .mc-glow { filter: none !important; display: none !important; }
 }
 
 /* Cihaz "hareketi azalt" diyorsa tüm animasyonları kapat */

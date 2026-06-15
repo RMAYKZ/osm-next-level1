@@ -71,6 +71,8 @@ function classifyFormation(formation: string, style: number): FormationClass {
   return "balanced";
 }
 
+const IS_MOBILE_PITCH = typeof window !== "undefined" && window.innerWidth < 768;
+
 export default function Pitch({ lineup, lineTactics, formation, pressure = 50, style = 50, tempo = 50 }: PitchProps) {
   const players = buildPlayers(lineup);
   const formClass = classifyFormation(formation ?? "", style);
@@ -198,9 +200,8 @@ export default function Pitch({ lineup, lineTactics, formation, pressure = 50, s
                 className="flex h-8 w-8 items-center justify-center rounded-xl border text-[0.5rem] font-black text-white"
                 style={{
                   borderColor: ns.border,
-                  boxShadow: ns.glow,
+                  boxShadow: IS_MOBILE_PITCH ? "none" : ns.glow,
                   background: "rgba(4,6,18,0.88)",
-                  backdropFilter: "blur(6px)",
                   letterSpacing: "0.03em",
                 }}
               >
@@ -211,12 +212,14 @@ export default function Pitch({ lineup, lineTactics, formation, pressure = 50, s
         })}
       </div>
 
-      {/* Formation animation overlay */}
-      <AnimatePresence mode="wait">
-        {formClass === "attacking" && <NeonFlowOverlay key="atk" />}
-        {formClass === "balanced"  && <PulseOverlay    key="bal" />}
-        {formClass === "defensive" && <ShieldOverlay   key="def" />}
-      </AnimatePresence>
+      {/* Formation animation overlay — desktop only (too GPU-heavy on mobile) */}
+      {!IS_MOBILE_PITCH && (
+        <AnimatePresence mode="wait">
+          {formClass === "attacking" && <NeonFlowOverlay key="atk" />}
+          {formClass === "balanced"  && <PulseOverlay    key="bal" />}
+          {formClass === "defensive" && <ShieldOverlay   key="def" />}
+        </AnimatePresence>
+      )}
 
       {/* Stats row — top left */}
       <div className="absolute left-2 top-2 flex gap-1 text-[8px] font-black">

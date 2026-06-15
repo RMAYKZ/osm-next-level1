@@ -579,7 +579,19 @@ function ATFLineTacticRow({ label, rawVal, displayVal, isLast }: {
 }
 
 // ─── COMPONENT ────────────────────────────────────────────────────────
+function useIsMobile() {
+  const [mobile, setMobile] = useState(() => typeof window !== 'undefined' && window.innerWidth < 768);
+  useEffect(() => {
+    const mq = window.matchMedia('(max-width: 767px)');
+    const handler = (e: MediaQueryListEvent) => setMobile(e.matches);
+    mq.addEventListener('change', handler);
+    return () => mq.removeEventListener('change', handler);
+  }, []);
+  return mobile;
+}
+
 export default function AntiTacticFinder() {
+  const isMobile = useIsMobile();
   const mainCanvasRef = useRef<HTMLCanvasElement>(null);
   const ltCanvasRef   = useRef<HTMLCanvasElement>(null);
   const mainRAFRef    = useRef<number | null>(null);
@@ -672,6 +684,8 @@ export default function AntiTacticFinder() {
       const ARROW_START = 0.55, ARROW_STAGGER = 0.1, ARROW_DUR = 0.5;
       const PLAYER_STAGGER = 0.07;
 
+      // Stop the loop after all animations complete (~3s) to prevent infinite CPU drain on mobile
+      const MAIN_MAX = 3.2;
       function frame(ts: number) {
         if (!mainStartRef.current) mainStartRef.current = ts;
         const el = (ts - mainStartRef.current) / 1000;
@@ -697,7 +711,11 @@ export default function AntiTacticFinder() {
           const pulse = (el * 0.55 + i * 0.22) % 1;
           drawPlayer(ctx, x, y, p.r, p.c, p.s, prog, pulse);
         });
-        mainRAFRef.current = requestAnimationFrame(frame);
+        if (el < MAIN_MAX) {
+          mainRAFRef.current = requestAnimationFrame(frame);
+        } else {
+          mainRAFRef.current = null;
+        }
       }
       mainRAFRef.current = requestAnimationFrame(frame);
     }
@@ -777,7 +795,12 @@ export default function AntiTacticFinder() {
           const fp1 = toL(.5, .78), fp2 = toL(.5, .93), fcp = toL(.5, .86);
           drawDot(ctx, fp1.x, fp1.y, fcp.x, fcp.y, fp2.x, fp2.y, '#4fc3f7', ((el - 1.2) * .5) % 1);
         }
-        ltRAFRef.current = requestAnimationFrame(frame);
+        // Stop after animations complete to prevent infinite CPU drain on mobile
+        if (el < 3.0) {
+          ltRAFRef.current = requestAnimationFrame(frame);
+        } else {
+          ltRAFRef.current = null;
+        }
       }
       ltRAFRef.current = requestAnimationFrame(frame);
     }
@@ -802,11 +825,11 @@ export default function AntiTacticFinder() {
 
   return (
     <section id="anti-taktik" className="atf-wrap">
-      {/* ambient glows */}
+      {/* ambient glows — static on mobile to prevent GPU drain */}
       <motion.div
         aria-hidden="true"
-        animate={{ opacity: [0.14, 0.38, 0.14] }}
-        transition={{ duration: 7, repeat: Infinity }}
+        animate={isMobile ? { opacity: 0.22 } : { opacity: [0.14, 0.38, 0.14] }}
+        transition={isMobile ? {} : { duration: 7, repeat: Infinity }}
         style={{ position:'absolute', top:'4%', right:'-10%', width:'48%', height:'58%', borderRadius:'50%', background:'radial-gradient(ellipse, rgba(34,211,238,0.1) 0%, transparent 70%)', filter:'blur(90px)', pointerEvents:'none', zIndex:0 }}
       />
       <div aria-hidden="true" style={{ position:'absolute', bottom:'8%', left:'-8%', width:'40%', height:'50%', borderRadius:'50%', background:'radial-gradient(ellipse, rgba(139,92,246,0.07) 0%, transparent 70%)', filter:'blur(80px)', pointerEvents:'none', zIndex:0 }} />

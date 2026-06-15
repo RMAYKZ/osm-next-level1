@@ -6,6 +6,8 @@ import { useLang } from "../contexts/LanguageContext";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 
+const isMobileDevice = typeof window !== "undefined" && window.innerWidth < 768;
+
 // Starts at 12 on 2026-06-14, grows 1–2 per day deterministically.
 function getWeeklyJoinCount(): number {
   const START = new Date("2026-06-14").getTime();
@@ -74,12 +76,14 @@ function AnimNum({ to }: { to: number }) {
   useEffect(() => {
     if (!inView) return;
     const start = performance.now();
+    let raf: number;
     const tick = (now: number) => {
       const p = Math.min((now - start) / 950, 1);
       setVal(Math.round((1 - Math.pow(1 - p, 3)) * to));
-      if (p < 1) requestAnimationFrame(tick);
+      if (p < 1) raf = requestAnimationFrame(tick);
     };
-    requestAnimationFrame(tick);
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
   }, [inView, to]);
   return <span ref={ref}>{val}</span>;
 }
@@ -131,19 +135,21 @@ function TacticCard({ tactic, index }: { tactic: PremiumTactic; index: number })
       whileHover={{ y: -5, transition: { duration: 0.2 } }}
       style={{
         position: "relative", overflow: "hidden",
-        background: `linear-gradient(145deg, rgba(6,8,24,0.95) 0%, ${loc.dim} 100%)`,
+        background: `linear-gradient(145deg, rgba(6,8,24,0.97) 0%, ${loc.dim} 100%)`,
         border: `1px solid ${loc.border}`, borderRadius: 18,
-        backdropFilter: "blur(24px)", WebkitBackdropFilter: "blur(24px)",
+        ...(isMobileDevice ? {} : { backdropFilter: "blur(24px)", WebkitBackdropFilter: "blur(24px)" }),
       }}
     >
       {/* Corner glow */}
       <div style={{ position: "absolute", top: -40, right: -40, width: 140, height: 140, borderRadius: "50%", background: `radial-gradient(circle, ${loc.glow} 0%, transparent 70%)`, pointerEvents: "none" }} />
-      {/* Shimmer */}
-      <motion.div
-        animate={{ x: ["-110%", "210%"] }}
-        transition={{ repeat: Infinity, repeatDelay: 6 + index * 1.5, duration: 1, ease: "easeInOut" }}
-        style={{ position: "absolute", inset: 0, pointerEvents: "none", background: `linear-gradient(110deg, transparent 30%, ${loc.glow} 50%, transparent 70%)`, transform: "skewX(-12deg)" }}
-      />
+      {/* Shimmer — disabled on mobile to prevent infinite RAF overhead */}
+      {!isMobileDevice && (
+        <motion.div
+          animate={{ x: ["-110%", "210%"] }}
+          transition={{ repeat: Infinity, repeatDelay: 6 + index * 1.5, duration: 1, ease: "easeInOut" }}
+          style={{ position: "absolute", inset: 0, pointerEvents: "none", background: `linear-gradient(110deg, transparent 30%, ${loc.glow} 50%, transparent 70%)`, transform: "skewX(-12deg)" }}
+        />
+      )}
       {/* SOLID badge */}
       {tactic.solid && (
         <div style={{ position: "absolute", top: 14, right: 14, zIndex: 2, background: "rgba(56,189,248,0.15)", border: "1px solid rgba(56,189,248,0.4)", borderRadius: 6, padding: "4px 10px", fontSize: 9, fontWeight: 900, letterSpacing: "0.2em", textTransform: "uppercase", color: "#38bdf8" }}>

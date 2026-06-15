@@ -84,6 +84,13 @@ export default function Navbar() {
   const [open, setOpen] = useState(false);
   const [activeSheet, setActiveSheet] = useState<ActiveSheet>(null);
   const [showScrollBtn, setShowScrollBtn] = useState(false);
+  const [isMobile, setIsMobile] = useState(() => typeof window !== "undefined" && window.innerWidth < 768);
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 767px)");
+    const h = (e: MediaQueryListEvent) => setIsMobile(e.matches);
+    mq.addEventListener("change", h);
+    return () => mq.removeEventListener("change", h);
+  }, []);
 
   const scrollToTop = () => {
     document.getElementById("scroll-root")?.scrollTo({ top: 0, behavior: "smooth" });
@@ -198,14 +205,14 @@ export default function Navbar() {
           {/* Logo */}
           <a href="#anasayfa" className="flex items-center justify-start gap-3 shrink-0" onClick={(e) => { e.preventDefault(); setOpen(false); scrollToTop(); }}>
             <motion.div
-              animate={{
+              animate={isMobile ? {} : {
                 boxShadow: [
                   "0 0 8px rgba(34,211,238,0.38), 0 0 0px rgba(34,211,238,0)",
                   "0 0 18px rgba(34,211,238,0.80), 0 0 32px rgba(34,211,238,0.24)",
                   "0 0 8px rgba(34,211,238,0.38), 0 0 0px rgba(34,211,238,0)",
                 ],
               }}
-              transition={{ duration: 2.8, repeat: Infinity, ease: "easeInOut" }}
+              transition={isMobile ? {} : { duration: 2.8, repeat: Infinity, ease: "easeInOut" }}
               style={{
                 width: 48,
                 height: 48,

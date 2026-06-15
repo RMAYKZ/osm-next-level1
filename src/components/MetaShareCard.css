@@ -27,3 +27,9 @@
   transform: scale(0.97);
   box-shadow: none;
 }
+
+@media (max-width: 768px) {
+  .mscard-btn {
+    backdrop-filter: none;
+  }
+}

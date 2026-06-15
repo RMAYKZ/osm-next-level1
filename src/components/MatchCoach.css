@@ -572,3 +572,8 @@
   .mc-bar-fill,
   .mc-prob-fill { transition: none; }
 }
+
+@media (max-width: 768px) {
+  /* Remove large blur filters — very expensive on mobile GPU */
+  .mc-glow { filter: none !important; display: none; }
+}

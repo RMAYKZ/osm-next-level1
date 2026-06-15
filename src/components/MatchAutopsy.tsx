@@ -3,14 +3,380 @@ import { motion, AnimatePresence } from "framer-motion";
 import { TD, OPP_LIST } from "../data/tacticDatabase";
 import { usePremium } from "../contexts/PremiumContext";
 import { siteConfig } from "../data/extras";
+import { useLang } from "../contexts/LanguageContext";
+import type { Lang } from "../data/translations";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 type Loc = "home" | "away";
 type Str = "stronger" | "equal" | "weaker";
+type SliderKey = "pressure" | "style" | "tempo";
 
+// ── Per-language strings ───────────────────────────────────────────────────────
+interface AutopsyStrings {
+  badge: string;
+  title: string;
+  subtitle: string;
+  locLabel: string;
+  home: string;
+  away: string;
+  strLabel: string;
+  stronger: string;
+  equal: string;
+  weaker: string;
+  oppLabel: string;
+  slidersLabel: string;
+  pressureLabel: string;
+  styleLabel: string;
+  tempoLabel: string;
+  analyzeBtn: string;
+  scoreWord: string;
+  scoreGood: string;
+  scoreWarn: string;
+  scoreBad: string;
+  critLabel: string;
+  warnLabel: string;
+  okLabel: string;
+  yours: string;
+  optimal: string;
+  verdictTitle: string;
+  correctTitle: string;
+  winRate: (n: number) => string;
+  vipDetails: string;
+  vipSee: string;
+  vipBadge: string;
+  vipCta: string;
+  newAnalysis: string;
+  // buildError messages: [critDirHigh, critDirLow, warnDirHigh, warnDirLow, okMsg]
+  pressureMsgs: [string, string, string, string, string];
+  styleMsgs:    [string, string, string, string, string];
+  tempoMsgs:    [string, string, string, string, string];
+  // buildVerdict
+  verdict2crits: (sliders: string[]) => string;
+  verdict1crit:  (slider: string, dir: "high" | "low", msg: string) => string;
+  verdict2warns: string;
+  verdict1warn:  (slider: string) => string;
+  verdictOptimal: string;
+  verdictDefault: string;
+}
+
+const S: Record<Lang, AutopsyStrings> = {
+  tr: {
+    badge: "TAKTİK OTOPSİ",
+    title: "Neden Kaybettin?",
+    subtitle: "Maç bilgilerini ve kullandığın slider değerlerini gir, sistem tam teşhisi çıkarsın.",
+    locLabel: "Maç Yeri",
+    home: "Ev",
+    away: "Deplasman",
+    strLabel: "Güç Durumu",
+    stronger: "Güçlüydüm",
+    equal: "Eşittik",
+    weaker: "Zayıftım",
+    oppLabel: "Rakip Formasyon",
+    slidersLabel: "Kullandığın Slider Değerleri",
+    pressureLabel: "⚡ Baskı",
+    styleLabel: "🎨 Stil",
+    tempoLabel: "⏱️ Tempo",
+    analyzeBtn: "🔬 Analiz Et",
+    scoreWord: "Skor",
+    scoreGood: "Neredeyse Optimal Taktik",
+    scoreWarn: "Önemli Hatalar Tespit Edildi",
+    scoreBad: "Kritik Taktik Uyumsuzluğu",
+    critLabel: "KRİTİK HATA",
+    warnLabel: "HATA",
+    okLabel: "DOĞRU",
+    yours: "Senin",
+    optimal: "Optimal",
+    verdictTitle: "🧠 KAYBININ SEBEBİ",
+    correctTitle: "✅ DOĞRU TAKTİK",
+    winRate: (n) => `%${n} Kazanma`,
+    vipDetails: "Detaylar VIP üyelere açıktır",
+    vipSee: "🔒 VIP ile görüntüle",
+    vipBadge: "🔒 VIP",
+    vipCta: "👑 VIP Al — Tam Analizi Gör",
+    newAnalysis: "↩ Yeni Analiz",
+    pressureMsgs: [
+      "Aşırı baskı savunma dengesini bozdu — rakip kontraya dönünce boşluk oluştu",
+      "Düşük baskı rakibe topla çıkış serbestisi tanıdı",
+      "Baskı biraz fazlaydı, kontra riski arttı",
+      "Baskı biraz düşüktü, rakip rahat pozisyon kurdu",
+      "Baskı değeri iyiydi",
+    ],
+    styleMsgs: [
+      "Stil çok yüksek — rakibin kontra atağına açık kapı bıraktın",
+      "Stil çok düşük, hücum gücünü kaybettin ve baskı kuramadın",
+      "Stil fazlaydı, savunma arkası riske girdi",
+      "Stil düşüktü, önde yeterli etki yaratamadın",
+      "Stil değeri iyiydi",
+    ],
+    tempoMsgs: [
+      "Tempo çok yüksek, oyuncular erken yoruldu ve ikinci yarıda ritim bozuldu",
+      "Tempo çok düşük, rakibe oyun kurma ve pozisyon üstünlüğü sağladın",
+      "Tempo biraz fazla, ikinci yarıda enerji düştü",
+      "Tempo biraz düşük, baskı hissi kayboldu",
+      "Tempo değeri iyiydi",
+    ],
+    verdict2crits: (sl) => `${sl.join(" ve ")} değerlerindeki kritik hatalar maçı kaybettirdi. Optimal taktikten çok uzak bir kurulum oynamışsın.`,
+    verdict1crit:  (sl, dir, msg) => `${sl} ${dir === "high" ? "yüksek" : "düşük"} olması sonucu doğrudan etkiledi. ${msg}.`,
+    verdict2warns: "Birden fazla slider optimal değerden sapıyordu. Küçük görünen hatalar birleşince büyük etki yarattı.",
+    verdict1warn:  (sl) => `${sl} değerindeki sapma belirleyici oldu. Geri kalan ayarlar iyiydi.`,
+    verdictOptimal: "Slider değerlerin neredeyse optimaldi. Kayıp taktik dışı bir faktörden (şans, özel yetenek vb.) kaynaklanmış olabilir.",
+    verdictDefault: "Taktik kurulumun mantıklıydı. Kayıp güç dengesindeki farklılık veya anlık şanssızlıktan kaynaklanmış olabilir.",
+  },
+  en: {
+    badge: "MATCH AUTOPSY",
+    title: "Why Did You Lose?",
+    subtitle: "Enter your match info and the slider values you used — the system will produce a full diagnosis.",
+    locLabel: "Match Location",
+    home: "Home",
+    away: "Away",
+    strLabel: "Strength Status",
+    stronger: "I Was Stronger",
+    equal: "We Were Equal",
+    weaker: "I Was Weaker",
+    oppLabel: "Opponent Formation",
+    slidersLabel: "Your Slider Values",
+    pressureLabel: "⚡ Pressure",
+    styleLabel: "🎨 Style",
+    tempoLabel: "⏱️ Tempo",
+    analyzeBtn: "🔬 Analyze",
+    scoreWord: "Score",
+    scoreGood: "Nearly Optimal Tactic",
+    scoreWarn: "Significant Errors Detected",
+    scoreBad: "Critical Tactic Mismatch",
+    critLabel: "CRITICAL ERROR",
+    warnLabel: "ERROR",
+    okLabel: "CORRECT",
+    yours: "Yours",
+    optimal: "Optimal",
+    verdictTitle: "🧠 WHY YOU LOST",
+    correctTitle: "✅ CORRECT TACTIC",
+    winRate: (n) => `${n}% Win Rate`,
+    vipDetails: "Details are available to VIP members",
+    vipSee: "🔒 View with VIP",
+    vipBadge: "🔒 VIP",
+    vipCta: "👑 Get VIP — See Full Analysis",
+    newAnalysis: "↩ New Analysis",
+    pressureMsgs: [
+      "Excessive pressure disrupted defensive balance — gaps formed when the opponent counter-attacked",
+      "Low pressure allowed the opponent to build up play freely",
+      "Pressure was slightly too high, increasing counter-attack risk",
+      "Pressure was slightly too low, the opponent built comfortable positions",
+      "Pressure value was good",
+    ],
+    styleMsgs: [
+      "Style too high — left the door wide open for the opponent's counter-attack",
+      "Style too low — you lost attacking power and couldn't apply pressure",
+      "Style was a bit high, defence was exposed behind",
+      "Style was a bit low, couldn't create enough impact up front",
+      "Style value was good",
+    ],
+    tempoMsgs: [
+      "Tempo too high — players tired early and rhythm broke down in the second half",
+      "Tempo too low — gave the opponent control and positional advantage",
+      "Tempo slightly too high, energy dropped in the second half",
+      "Tempo slightly too low, the pressure feel was lost",
+      "Tempo value was good",
+    ],
+    verdict2crits: (sl) => `Critical errors in ${sl.join(" and ")} directly cost you the match. Your setup was far from the optimal tactic.`,
+    verdict1crit:  (sl, dir, msg) => `${sl} being too ${dir === "high" ? "high" : "low"} directly impacted the result. ${msg}.`,
+    verdict2warns: "Multiple sliders deviated from their optimal values. Small-looking mistakes compounded into a big effect.",
+    verdict1warn:  (sl) => `The deviation in ${sl} was the decisive factor. The remaining settings were fine.`,
+    verdictOptimal: "Your slider values were nearly optimal. The loss may have come from a non-tactical factor (luck, special ability, etc.).",
+    verdictDefault: "Your tactical setup was logical. The loss may be down to a difference in squad strength or a moment of bad luck.",
+  },
+  hu: {
+    badge: "MECCS BONCOLÁS",
+    title: "Miért Veszítettél?",
+    subtitle: "Add meg a meccs adatait és a használt csúszkaértékeket — a rendszer teljes diagnózist készít.",
+    locLabel: "Mérkőzés Helyszíne",
+    home: "Hazai",
+    away: "Vendég",
+    strLabel: "Erő Állapot",
+    stronger: "Erősebb Voltam",
+    equal: "Egyenlők Voltunk",
+    weaker: "Gyengébb Voltam",
+    oppLabel: "Ellenfél Formáció",
+    slidersLabel: "Használt Csúszkaértékeid",
+    pressureLabel: "⚡ Nyomás",
+    styleLabel: "🎨 Stílus",
+    tempoLabel: "⏱️ Tempó",
+    analyzeBtn: "🔬 Elemzés",
+    scoreWord: "Pont",
+    scoreGood: "Szinte Optimális Taktika",
+    scoreWarn: "Jelentős Hibák Észlelve",
+    scoreBad: "Kritikus Taktikai Eltérés",
+    critLabel: "KRITIKUS HIBA",
+    warnLabel: "HIBA",
+    okLabel: "HELYES",
+    yours: "Tiéd",
+    optimal: "Optimális",
+    verdictTitle: "🧠 MIÉRT VESZÍTETTÉL",
+    correctTitle: "✅ HELYES TAKTIKA",
+    winRate: (n) => `${n}% Győzelem`,
+    vipDetails: "A részletek VIP tagoknak érhetők el",
+    vipSee: "🔒 Megtekintés VIP-pel",
+    vipBadge: "🔒 VIP",
+    vipCta: "👑 VIP Kérés — Teljes Elemzés",
+    newAnalysis: "↩ Új Elemzés",
+    pressureMsgs: [
+      "A túlzott nyomás felborította a védelmi egyensúlyt — rések keletkeztek a kontra során",
+      "Az alacsony nyomás szabad labdajárást biztosított az ellenfelnek",
+      "A nyomás kissé magas volt, nőtt a kontra kockázata",
+      "A nyomás kissé alacsony volt, az ellenfél kényelmes pozíciókat épített",
+      "A nyomásérték megfelelő volt",
+    ],
+    styleMsgs: [
+      "Stílus túl magas — szélesre nyitotta az ellenfél kontrájának kapuját",
+      "Stílus túl alacsony — elvesztetted a támadóerőt",
+      "A stílus kissé magas volt, a védelem hátul ki volt téve",
+      "A stílus kissé alacsony volt, nem tudtál elöl elég hatást teremteni",
+      "A stílusérték megfelelő volt",
+    ],
+    tempoMsgs: [
+      "Tempó túl magas — a játékosok korán elfáradtak, a második félidőben megtört a ritmus",
+      "Tempó túl alacsony — az ellenfélnek adtad a játék irányítását",
+      "A tempó kissé magas volt, a második félidőben csökkent az energia",
+      "A tempó kissé alacsony volt, elveszett a nyomás érzése",
+      "A tempóérték megfelelő volt",
+    ],
+    verdict2crits: (sl) => `A ${sl.join(" és ")} kritikus hibái elvesztették a meccset. A felállásod messze volt az optimálistól.`,
+    verdict1crit:  (sl, dir, msg) => `${sl} ${dir === "high" ? "magas" : "alacsony"} értéke közvetlen hatással volt az eredményre. ${msg}.`,
+    verdict2warns: "Több csúszka is eltért az optimális értéktől. A kis hibák összeadódtak és nagy hatást gyakoroltak.",
+    verdict1warn:  (sl) => `A ${sl} értékének eltérése volt a döntő tényező. A többi beállítás megfelelő volt.`,
+    verdictOptimal: "A csúszkaértékeid szinte optimálisak voltak. A vereség nem taktikai okból fakadhatott.",
+    verdictDefault: "A taktikai felállásod logikus volt. A vereség az erőviszonyok különbségéből vagy pillanatnyi pechből adódhatott.",
+  },
+  ar: {
+    badge: "تشريح المباراة",
+    title: "لماذا خسرت؟",
+    subtitle: "أدخل معلومات المباراة وقيم المتزلجات التي استخدمتها — سيقدم النظام تشخيصاً كاملاً.",
+    locLabel: "موقع المباراة",
+    home: "الملعب",
+    away: "خارج الديار",
+    strLabel: "حالة القوة",
+    stronger: "كنت أقوى",
+    equal: "كنا متساوين",
+    weaker: "كنت أضعف",
+    oppLabel: "تشكيل الخصم",
+    slidersLabel: "قيم المتزلجات المستخدمة",
+    pressureLabel: "⚡ الضغط",
+    styleLabel: "🎨 الأسلوب",
+    tempoLabel: "⏱️ الإيقاع",
+    analyzeBtn: "🔬 تحليل",
+    scoreWord: "النتيجة",
+    scoreGood: "تكتيك شبه مثالي",
+    scoreWarn: "أخطاء مهمة مكتشفة",
+    scoreBad: "عدم توافق تكتيكي حرج",
+    critLabel: "خطأ فادح",
+    warnLabel: "خطأ",
+    okLabel: "صحيح",
+    yours: "أنت",
+    optimal: "الأمثل",
+    verdictTitle: "🧠 سبب خسارتك",
+    correctTitle: "✅ التكتيك الصحيح",
+    winRate: (n) => `نسبة فوز ${n}%`,
+    vipDetails: "التفاصيل متاحة لأعضاء VIP",
+    vipSee: "🔒 عرض مع VIP",
+    vipBadge: "🔒 VIP",
+    vipCta: "👑 احصل على VIP — شاهد التحليل الكامل",
+    newAnalysis: "↩ تحليل جديد",
+    pressureMsgs: [
+      "الضغط المفرط أخل بالتوازن الدفاعي — ظهرت فراغات عند هجمة المرتدة",
+      "الضغط المنخفض منح الخصم حرية البناء",
+      "الضغط كان مرتفعاً قليلاً مما زاد خطر المرتدة",
+      "الضغط كان منخفضاً قليلاً فبنى الخصم مراكز مريحة",
+      "قيمة الضغط كانت جيدة",
+    ],
+    styleMsgs: [
+      "الأسلوب مرتفع جداً — تركت الباب مفتوحاً لهجمة مرتدة",
+      "الأسلوب منخفض جداً — فقدت القوة الهجومية",
+      "الأسلوب كان مرتفعاً قليلاً مما عرّض الدفاع للخطر",
+      "الأسلوب كان منخفضاً قليلاً فلم تؤثر بشكل كافٍ",
+      "قيمة الأسلوب كانت جيدة",
+    ],
+    tempoMsgs: [
+      "الإيقاع مرتفع جداً — تعب اللاعبون مبكراً وانهار الإيقاع في الشوط الثاني",
+      "الإيقاع منخفض جداً — منحت الخصم السيطرة على اللعب",
+      "الإيقاع كان مرتفعاً قليلاً فانخفضت الطاقة في الشوط الثاني",
+      "الإيقاع كان منخفضاً قليلاً فضاع الإحساس بالضغط",
+      "قيمة الإيقاع كانت جيدة",
+    ],
+    verdict2crits: (sl) => `الأخطاء الحرجة في ${sl.join(" و")} أضاعت المباراة. كان إعدادك بعيداً جداً عن التكتيك الأمثل.`,
+    verdict1crit:  (sl, dir, msg) => `كون ${sl} ${dir === "high" ? "مرتفعاً" : "منخفضاً"} جداً أثّر مباشرة على النتيجة. ${msg}.`,
+    verdict2warns: "انحرفت عدة متزلجات عن قيمها المثلى. الأخطاء الصغيرة تضافرت لتحدث تأثيراً كبيراً.",
+    verdict1warn:  (sl) => `كان الانحراف في ${sl} هو العامل الحاسم. بقية الإعدادات كانت جيدة.`,
+    verdictOptimal: "كانت قيم المتزلجات لديك شبه مثالية. قد تكون الخسارة من عامل غير تكتيكي.",
+    verdictDefault: "كان إعدادك التكتيكي منطقياً. قد تكون الخسارة بسبب فارق القوة أو سوء الحظ.",
+  },
+  pt: {
+    badge: "AUTÓPSIA DO JOGO",
+    title: "Por Que Perdeu?",
+    subtitle: "Insira as informações da partida e os valores dos controles que usou — o sistema produzirá um diagnóstico completo.",
+    locLabel: "Local do Jogo",
+    home: "Em Casa",
+    away: "Fora",
+    strLabel: "Status de Força",
+    stronger: "Eu Era Mais Forte",
+    equal: "Éramos Iguais",
+    weaker: "Eu Era Mais Fraco",
+    oppLabel: "Formação do Adversário",
+    slidersLabel: "Seus Valores de Controle",
+    pressureLabel: "⚡ Pressão",
+    styleLabel: "🎨 Estilo",
+    tempoLabel: "⏱️ Ritmo",
+    analyzeBtn: "🔬 Analisar",
+    scoreWord: "Pontuação",
+    scoreGood: "Tática Quase Ideal",
+    scoreWarn: "Erros Significativos Detectados",
+    scoreBad: "Desajuste Tático Crítico",
+    critLabel: "ERRO CRÍTICO",
+    warnLabel: "ERRO",
+    okLabel: "CORRETO",
+    yours: "Seu",
+    optimal: "Ideal",
+    verdictTitle: "🧠 POR QUE PERDEU",
+    correctTitle: "✅ TÁTICA CORRETA",
+    winRate: (n) => `${n}% de Vitória`,
+    vipDetails: "Detalhes disponíveis para membros VIP",
+    vipSee: "🔒 Ver com VIP",
+    vipBadge: "🔒 VIP",
+    vipCta: "👑 Obter VIP — Ver Análise Completa",
+    newAnalysis: "↩ Nova Análise",
+    pressureMsgs: [
+      "A pressão excessiva desequilibrou a defesa — brechas surgiram no contra-ataque",
+      "A pressão baixa deu liberdade ao adversário para construir o jogo",
+      "A pressão estava um pouco alta, aumentando o risco de contra-ataque",
+      "A pressão estava um pouco baixa, o adversário construiu posições confortáveis",
+      "O valor de pressão estava bom",
+    ],
+    styleMsgs: [
+      "Estilo alto demais — deixou a porta aberta para o contra-ataque adversário",
+      "Estilo baixo demais — perdeu poder ofensivo e não conseguiu pressionar",
+      "O estilo estava um pouco alto, expondo a defesa",
+      "O estilo estava um pouco baixo, não criou impacto suficiente no ataque",
+      "O valor de estilo estava bom",
+    ],
+    tempoMsgs: [
+      "Ritmo alto demais — os jogadores cansaram cedo e o ritmo caiu no 2º tempo",
+      "Ritmo baixo demais — deu ao adversário controle e vantagem posicional",
+      "O ritmo estava um pouco alto, a energia caiu no 2º tempo",
+      "O ritmo estava um pouco baixo, a sensação de pressão se perdeu",
+      "O valor de ritmo estava bom",
+    ],
+    verdict2crits: (sl) => `Erros críticos em ${sl.join(" e ")} custaram a partida. Seu setup estava longe da tática ideal.`,
+    verdict1crit:  (sl, dir, msg) => `${sl} estar ${dir === "high" ? "alto" : "baixo"} demais impactou diretamente o resultado. ${msg}.`,
+    verdict2warns: "Vários controles desviaram dos valores ótimos. Pequenos erros somados tiveram um grande impacto.",
+    verdict1warn:  (sl) => `O desvio em ${sl} foi o fator decisivo. As demais configurações estavam boas.`,
+    verdictOptimal: "Seus valores estavam quase ideais. A derrota pode ter vindo de um fator não tático (sorte, habilidade especial, etc.).",
+    verdictDefault: "Seu setup tático foi lógico. A derrota pode ser por diferença de força ou um momento de azar.",
+  },
+};
+
+// ── Types ─────────────────────────────────────────────────────────────────────
 interface ErrorItem {
   level: "critical" | "warning" | "ok";
-  slider: string;
+  sliderKey: SliderKey;
+  sliderLabel: string;
   userVal: number;
   optVal: number;
   diff: number;
@@ -27,59 +393,41 @@ interface DiagResult {
   winRate: number;
 }
 
-function buildError(label: string, userVal: number, optVal: number): ErrorItem {
+// ── Builders ──────────────────────────────────────────────────────────────────
+function buildError(key: SliderKey, label: string, userVal: number, optVal: number, lang: Lang): ErrorItem {
   const diff = userVal - optVal;
-  const abs = Math.abs(diff);
-  const dir = diff > 0 ? "yüksek" : "düşük";
-  const msgs: Record<string, [string, string]> = {
-    "Baskı": [
-      diff > 0
-        ? "Aşırı baskı savunma dengesini bozdu — rakip kontraya dönünce boşluk oluştu"
-        : "Düşük baskı rakibe topla çıkış serbestisi tanıdı",
-      diff > 0
-        ? "Baskı biraz fazlaydı, kontra riski arttı"
-        : "Baskı biraz düşüktü, rakip rahat pozisyon kurdu",
-    ],
-    "Stil": [
-      diff > 0
-        ? "Stil çok yüksek — rakibin kontra atağına açık kapı bıraktın"
-        : "Stil çok düşük, hücum gücünü kaybettin ve baskı kuramadın",
-      diff > 0
-        ? "Stil fazlaydı, savunma arkası riske girdi"
-        : "Stil düşüktü, önde yeterli etki yaratamadın",
-    ],
-    "Tempo": [
-      diff > 0
-        ? "Tempo çok yüksek, oyuncular erken yoruldu ve ikinci yarıda ritim bozuldu"
-        : "Tempo çok düşük, rakibe oyun kurma ve pozisyon üstünlüğü sağladın",
-      diff > 0
-        ? "Tempo biraz fazla, ikinci yarıda enerji düştü"
-        : "Tempo biraz düşük, baskı hissi kayboldu",
-    ],
-  };
-  const [critMsg, warnMsg] = msgs[label] ?? ["Değer yanlış ayarlandı", `${label} ${dir} kaldı`];
-  if (abs >= 16) return { level: "critical", slider: label, userVal, optVal, diff, msg: critMsg };
-  if (abs >= 8)  return { level: "warning",  slider: label, userVal, optVal, diff, msg: warnMsg };
-  return { level: "ok", slider: label, userVal, optVal, diff, msg: `${label} değeri iyiydi` };
+  const abs  = Math.abs(diff);
+  const msgs = S[lang][`${key}Msgs` as "pressureMsgs" | "styleMsgs" | "tempoMsgs"];
+  // [critHigh, critLow, warnHigh, warnLow, ok]
+  let msg: string;
+  if (abs >= 16) msg = diff > 0 ? msgs[0] : msgs[1];
+  else if (abs >= 8) msg = diff > 0 ? msgs[2] : msgs[3];
+  else msg = msgs[4];
+  const level = abs >= 16 ? "critical" : abs >= 8 ? "warning" : "ok";
+  return { level, sliderKey: key, sliderLabel: label, userVal, optVal, diff, msg };
 }
 
-function buildVerdict(errors: ErrorItem[], str: Str, loc: Loc): string {
+function buildVerdict(errors: ErrorItem[], str: Str, loc: Loc, lang: Lang): string {
+  const L = S[lang];
   const crits = errors.filter(e => e.level === "critical");
   const warns = errors.filter(e => e.level === "warning");
-  if (crits.length >= 2) return `${crits.map(e => e.slider).join(" ve ")} değerlerindeki kritik hatalar maçı kaybettirdi. Optimal taktikten çok uzak bir kurulum oynamışsın.`;
+  if (crits.length >= 2) return L.verdict2crits(crits.map(e => e.sliderLabel));
   if (crits.length === 1) {
     const c = crits[0];
-    const dir = c.diff > 0 ? "yüksek" : "düşük";
-    return `${c.slider} ${dir} olması sonucu doğrudan etkiledi. ${c.msg}.`;
+    return L.verdict1crit(c.sliderLabel, c.diff > 0 ? "high" : "low", c.msg);
   }
-  if (warns.length >= 2) return "Birden fazla slider optimal değerden sapıyordu. Küçük görünen hatalar birleşince büyük etki yarattı.";
-  if (warns.length === 1) return `${warns[0].slider} değerindeki sapma belirleyici oldu. Geri kalan ayarlar iyiydi.`;
-  if (str === "stronger" && loc === "home") return "Slider değerlerin neredeyse optimaldi. Kayıp taktik dışı bir faktörden (şans, özel yetenek vb.) kaynaklanmış olabilir.";
-  return "Taktik kurulumun mantıklıydı. Kayıp güç dengesindeki farklılık veya anlık şanssızlıktan kaynaklanmış olabilir.";
+  if (warns.length >= 2) return L.verdict2warns;
+  if (warns.length === 1) return L.verdict1warn(warns[0].sliderLabel);
+  if (str === "stronger" && loc === "home") return L.verdictOptimal;
+  return L.verdictDefault;
 }
 
+// ── Component ─────────────────────────────────────────────────────────────────
 export default function MatchAutopsy() {
   const { isPremium } = usePremium();
+  const { lang } = useLang();
+  const L = S[lang as Lang] ?? S.en;
+
   const [loc, setLoc]       = useState<Loc>("home");
   const [str, setStr]       = useState<Str>("stronger");
   const [oppKey, setOppKey] = useState("");
@@ -92,16 +440,16 @@ export default function MatchAutopsy() {
     const opt = TD.find(e => e.location === loc && e.strength === str && e.oppKey === oppKey);
     if (!opt) return;
     const errors = [
-      buildError("Baskı", userP, opt.p),
-      buildError("Stil",  userS, opt.s),
-      buildError("Tempo", userT, opt.t),
+      buildError("pressure", L.pressureLabel.replace(/^⚡\s*/, ""), userP, opt.p, lang as Lang),
+      buildError("style",    L.styleLabel.replace(/^🎨\s*/, ""),    userS, opt.s, lang as Lang),
+      buildError("tempo",    L.tempoLabel.replace(/^⏱️\s*/, ""),    userT, opt.t, lang as Lang),
     ];
     const totalDiff = errors.reduce((acc, e) => acc + Math.abs(e.diff), 0);
     const score = Math.max(5, Math.min(96, 100 - Math.round(totalDiff / 2.2)));
     setResult({
       score,
       errors,
-      verdict: buildVerdict(errors, str, loc),
+      verdict: buildVerdict(errors, str, loc, lang as Lang),
       optFm: opt.fm,
       optP: opt.p, optS: opt.s, optT: opt.t,
       optF: opt.f, optM: opt.m, optD: opt.d,
@@ -111,26 +459,36 @@ export default function MatchAutopsy() {
 
   const reset = () => { setResult(null); setOppKey(""); setUserP(50); setUserS(50); setUserT(60); };
 
-  const LOC_OPTS: { val: Loc; icon: string; label: string }[] = [
-    { val: "home",  icon: "🏠", label: "Ev" },
-    { val: "away",  icon: "✈️", label: "Deplasman" },
+  const LOC_OPTS = [
+    { val: "home" as Loc,  icon: "🏠", label: L.home },
+    { val: "away" as Loc,  icon: "✈️", label: L.away },
   ];
-  const STR_OPTS: { val: Str; icon: string; label: string; color: string }[] = [
-    { val: "stronger", icon: "💪", label: "Güçlüydüm",   color: "#22c55e" },
-    { val: "equal",    icon: "⚖️",  label: "Eşittik",     color: "#f59e0b" },
-    { val: "weaker",   icon: "😓", label: "Zayıftım",    color: "#ef4444" },
+  const STR_OPTS = [
+    { val: "stronger" as Str, icon: "💪", label: L.stronger, color: "#22c55e" },
+    { val: "equal"    as Str, icon: "⚖️",  label: L.equal,    color: "#f59e0b" },
+    { val: "weaker"   as Str, icon: "😓", label: L.weaker,   color: "#ef4444" },
   ];
+  const SLIDER_ROWS = [
+    { label: L.pressureLabel, val: userP, set: setUserP },
+    { label: L.styleLabel,    val: userS, set: setUserS },
+    { label: L.tempoLabel,    val: userT, set: setUserT },
+  ];
+  const RESULT_SLIDERS = result ? [
+    { label: L.pressureLabel.replace(/^⚡\s*/, ""), val: result.optP, color: "#6366f1" },
+    { label: L.styleLabel.replace(/^🎨\s*/, ""),    val: result.optS, color: "#a78bfa" },
+    { label: L.tempoLabel.replace(/^⏱️\s*/, ""),    val: result.optT, color: "#22d3ee" },
+  ] : [];
+
   const LEVEL_META = {
-    critical: { color: "#ef4444", bg: "rgba(239,68,68,0.08)", border: "rgba(239,68,68,0.25)", label: "KRİTİK HATA" },
-    warning:  { color: "#f59e0b", bg: "rgba(245,158,11,0.08)", border: "rgba(245,158,11,0.25)", label: "HATA" },
-    ok:       { color: "#22c55e", bg: "rgba(34,197,94,0.08)",  border: "rgba(34,197,94,0.2)",  label: "DOĞRU" },
+    critical: { color: "#ef4444", bg: "rgba(239,68,68,0.08)",  border: "rgba(239,68,68,0.25)",  label: L.critLabel },
+    warning:  { color: "#f59e0b", bg: "rgba(245,158,11,0.08)", border: "rgba(245,158,11,0.25)", label: L.warnLabel },
+    ok:       { color: "#22c55e", bg: "rgba(34,197,94,0.08)",  border: "rgba(34,197,94,0.2)",   label: L.okLabel   },
   };
 
   const scoreColor = result
-    ? result.score >= 75 ? "#f59e0b" : result.score >= 50 ? "#ef4444" : "#ef4444"
+    ? result.score >= 75 ? "#f59e0b" : "#ef4444"
     : "#6366f1";
 
-  // ── NumInput helper ──────────────────────────────────────────────
   const NumInput = ({ val, set }: { val: number; set: (v: number) => void }) => (
     <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
       <button onClick={() => set(Math.max(0, val - 1))}
@@ -156,17 +514,17 @@ export default function MatchAutopsy() {
             <div style={{ textAlign: "center", marginBottom: 24 }}>
               <div style={{ display: "inline-flex", alignItems: "center", gap: 7, background: "rgba(239,68,68,0.08)", border: "1px solid rgba(239,68,68,0.22)", borderRadius: 999, padding: "5px 14px", marginBottom: 12 }}>
                 <span style={{ fontSize: 12 }}>🔬</span>
-                <span style={{ fontSize: 10, fontWeight: 900, textTransform: "uppercase", letterSpacing: "0.18em", color: "#f87171" }}>TAKTİK OTOPSİ</span>
+                <span style={{ fontSize: 10, fontWeight: 900, textTransform: "uppercase", letterSpacing: "0.18em", color: "#f87171" }}>{L.badge}</span>
               </div>
-              <h2 style={{ margin: "0 0 6px", fontSize: "clamp(1.4rem,3vw,2rem)", fontWeight: 900, color: "#e2e8f0", lineHeight: 1.1 }}>Neden Kaybettin?</h2>
-              <p style={{ margin: 0, fontSize: 13, color: "rgba(148,163,184,0.6)", lineHeight: 1.6 }}>Maç bilgilerini ve kullandığın slider değerlerini gir,<br/>sistem tam teşhisi çıkarsın.</p>
+              <h2 style={{ margin: "0 0 6px", fontSize: "clamp(1.4rem,3vw,2rem)", fontWeight: 900, color: "#e2e8f0", lineHeight: 1.1 }}>{L.title}</h2>
+              <p style={{ margin: 0, fontSize: 13, color: "rgba(148,163,184,0.6)", lineHeight: 1.6 }}>{L.subtitle}</p>
             </div>
 
             <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
 
               {/* Location */}
               <div>
-                <div style={{ fontSize: 10, fontWeight: 900, textTransform: "uppercase", letterSpacing: "0.15em", color: "rgba(148,163,184,0.45)", marginBottom: 8 }}>Maç Yeri</div>
+                <div style={{ fontSize: 10, fontWeight: 900, textTransform: "uppercase", letterSpacing: "0.15em", color: "rgba(148,163,184,0.45)", marginBottom: 8 }}>{L.locLabel}</div>
                 <div style={{ display: "flex", gap: 8 }}>
                   {LOC_OPTS.map(o => (
                     <button key={o.val} onClick={() => setLoc(o.val)}
@@ -182,7 +540,7 @@ export default function MatchAutopsy() {
 
               {/* Strength */}
               <div>
-                <div style={{ fontSize: 10, fontWeight: 900, textTransform: "uppercase", letterSpacing: "0.15em", color: "rgba(148,163,184,0.45)", marginBottom: 8 }}>Güç Durumu</div>
+                <div style={{ fontSize: 10, fontWeight: 900, textTransform: "uppercase", letterSpacing: "0.15em", color: "rgba(148,163,184,0.45)", marginBottom: 8 }}>{L.strLabel}</div>
                 <div style={{ display: "flex", gap: 8 }}>
                   {STR_OPTS.map(o => (
                     <button key={o.val} onClick={() => setStr(o.val)}
@@ -198,7 +556,7 @@ export default function MatchAutopsy() {
 
               {/* Opponent formation */}
               <div>
-                <div style={{ fontSize: 10, fontWeight: 900, textTransform: "uppercase", letterSpacing: "0.15em", color: "rgba(148,163,184,0.45)", marginBottom: 8 }}>Rakip Formasyon</div>
+                <div style={{ fontSize: 10, fontWeight: 900, textTransform: "uppercase", letterSpacing: "0.15em", color: "rgba(148,163,184,0.45)", marginBottom: 8 }}>{L.oppLabel}</div>
                 <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(140px, 1fr))", gap: 7 }}>
                   {OPP_LIST.map(o => (
                     <button key={o.key} onClick={() => setOppKey(o.key)}
@@ -214,13 +572,9 @@ export default function MatchAutopsy() {
 
               {/* Sliders */}
               <div style={{ background: "rgba(0,0,0,0.25)", border: "1px solid rgba(255,255,255,0.07)", borderRadius: 16, padding: 18 }}>
-                <div style={{ fontSize: 10, fontWeight: 900, textTransform: "uppercase", letterSpacing: "0.15em", color: "rgba(148,163,184,0.45)", marginBottom: 14 }}>Kullandığın Slider Değerleri</div>
+                <div style={{ fontSize: 10, fontWeight: 900, textTransform: "uppercase", letterSpacing: "0.15em", color: "rgba(148,163,184,0.45)", marginBottom: 14 }}>{L.slidersLabel}</div>
                 <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-                  {[
-                    { label: "⚡ Baskı",  val: userP, set: setUserP },
-                    { label: "🎨 Stil",   val: userS, set: setUserS },
-                    { label: "⏱️ Tempo", val: userT, set: setUserT },
-                  ].map(row => (
+                  {SLIDER_ROWS.map(row => (
                     <div key={row.label} style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
                       <span style={{ fontSize: 13, fontWeight: 700, color: "rgba(226,232,240,0.7)", minWidth: 80 }}>{row.label}</span>
                       <NumInput val={row.val} set={row.set} />
@@ -244,7 +598,7 @@ export default function MatchAutopsy() {
                   transition: "all 0.2s",
                 }}
               >
-                🔬 Analiz Et
+                {L.analyzeBtn}
               </motion.button>
             </div>
           </motion.div>
@@ -274,13 +628,13 @@ export default function MatchAutopsy() {
                   </svg>
                   <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
                     <span style={{ fontSize: 18, fontWeight: 900, color: scoreColor, lineHeight: 1, fontFamily: "'Barlow Condensed', sans-serif" }}>{result.score}</span>
-                    <span style={{ fontSize: 8, fontWeight: 700, color: "rgba(148,163,184,0.5)", textTransform: "uppercase" }}>Skor</span>
+                    <span style={{ fontSize: 8, fontWeight: 700, color: "rgba(148,163,184,0.5)", textTransform: "uppercase" }}>{L.scoreWord}</span>
                   </div>
                 </div>
                 <div>
-                  <div style={{ fontSize: 10, fontWeight: 900, textTransform: "uppercase", letterSpacing: "0.16em", color: "rgba(239,68,68,0.7)", marginBottom: 4 }}>🔬 TAKTİK OTOPSİ</div>
+                  <div style={{ fontSize: 10, fontWeight: 900, textTransform: "uppercase", letterSpacing: "0.16em", color: "rgba(239,68,68,0.7)", marginBottom: 4 }}>🔬 {L.badge}</div>
                   <div style={{ fontSize: 15, fontWeight: 800, color: "#e2e8f0", lineHeight: 1.3 }}>
-                    {result.score >= 80 ? "Neredeyse Optimal Taktik" : result.score >= 55 ? "Önemli Hatalar Tespit Edildi" : "Kritik Taktik Uyumsuzluğu"}
+                    {result.score >= 80 ? L.scoreGood : result.score >= 55 ? L.scoreWarn : L.scoreBad}
                   </div>
                   <div style={{ fontSize: 11, color: "rgba(148,163,184,0.5)", marginTop: 4 }}>
                     {LOC_OPTS.find(l => l.val === loc)?.icon} {LOC_OPTS.find(l => l.val === loc)?.label} &nbsp;·&nbsp;
@@ -296,7 +650,7 @@ export default function MatchAutopsy() {
               {result.errors.map((err, i) => {
                 const meta = LEVEL_META[err.level];
                 return (
-                  <motion.div key={err.slider}
+                  <motion.div key={err.sliderKey}
                     initial={{ opacity: 0, x: -16 }} animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: 0.15 + i * 0.1, duration: 0.38, ease: EASE }}
                     style={{ background: meta.bg, border: `1px solid ${meta.border}`, borderRadius: 14, padding: "14px 16px" }}
@@ -307,20 +661,19 @@ export default function MatchAutopsy() {
                           background: meta.bg, border: `1px solid ${meta.border}`, color: meta.color, borderRadius: 6, padding: "2px 8px" }}>
                           {meta.label}
                         </span>
-                        <span style={{ fontSize: 13, fontWeight: 800, color: "#e2e8f0" }}>{err.slider}</span>
+                        <span style={{ fontSize: 13, fontWeight: 800, color: "#e2e8f0" }}>{err.sliderLabel}</span>
                       </div>
                       {!isPremium && (
-                        <span style={{ fontSize: 10, color: "rgba(148,163,184,0.35)", fontWeight: 700 }}>🔒 VIP</span>
+                        <span style={{ fontSize: 10, color: "rgba(148,163,184,0.35)", fontWeight: 700 }}>{L.vipBadge}</span>
                       )}
                     </div>
 
                     {isPremium ? (
                       <>
-                        {/* Bar comparison */}
                         <div style={{ display: "flex", flexDirection: "column", gap: 7 }}>
                           {[
-                            { label: "Senin", val: err.userVal, color: err.level === "ok" ? "#22c55e" : "#ef4444" },
-                            { label: "Optimal", val: err.optVal, color: "#22c55e" },
+                            { label: L.yours,   val: err.userVal, color: err.level === "ok" ? "#22c55e" : "#ef4444" },
+                            { label: L.optimal, val: err.optVal,  color: "#22c55e" },
                           ].map(row => (
                             <div key={row.label}>
                               <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 4 }}>
@@ -343,7 +696,7 @@ export default function MatchAutopsy() {
                       </>
                     ) : (
                       <div style={{ marginTop: 8, height: 42, borderRadius: 8, background: "rgba(0,0,0,0.3)", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                        <span style={{ fontSize: 11, color: "rgba(148,163,184,0.3)", fontWeight: 700 }}>Detaylar VIP üyelere açıktır</span>
+                        <span style={{ fontSize: 11, color: "rgba(148,163,184,0.3)", fontWeight: 700 }}>{L.vipDetails}</span>
                       </div>
                     )}
                   </motion.div>
@@ -357,14 +710,14 @@ export default function MatchAutopsy() {
               transition={{ delay: 0.5, duration: 0.38, ease: EASE }}
               style={{ background: "rgba(99,102,241,0.07)", border: "1px solid rgba(99,102,241,0.2)", borderRadius: 14, padding: "14px 16px", marginBottom: 14, position: "relative", overflow: "hidden" }}
             >
-              <div style={{ fontSize: 9, fontWeight: 900, textTransform: "uppercase", letterSpacing: "0.16em", color: "#a5b4fc", marginBottom: 8 }}>🧠 KAYBININ SEBEBİ</div>
+              <div style={{ fontSize: 9, fontWeight: 900, textTransform: "uppercase", letterSpacing: "0.16em", color: "#a5b4fc", marginBottom: 8 }}>{L.verdictTitle}</div>
               {isPremium ? (
                 <p style={{ margin: 0, fontSize: 13, lineHeight: 1.7, color: "rgba(226,232,240,0.8)" }}>{result.verdict}</p>
               ) : (
                 <div style={{ position: "relative" }}>
                   <p style={{ margin: 0, fontSize: 13, lineHeight: 1.7, color: "rgba(226,232,240,0.8)", filter: "blur(5px)", userSelect: "none" }}>{result.verdict}</p>
                   <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center" }}>
-                    <span style={{ fontSize: 11, fontWeight: 800, color: "rgba(165,180,252,0.8)", background: "rgba(9,11,33,0.85)", borderRadius: 8, padding: "4px 12px", border: "1px solid rgba(99,102,241,0.3)" }}>🔒 VIP ile görüntüle</span>
+                    <span style={{ fontSize: 11, fontWeight: 800, color: "rgba(165,180,252,0.8)", background: "rgba(9,11,33,0.85)", borderRadius: 8, padding: "4px 12px", border: "1px solid rgba(99,102,241,0.3)" }}>{L.vipSee}</span>
                   </div>
                 </div>
               )}
@@ -377,9 +730,9 @@ export default function MatchAutopsy() {
               style={{ background: "rgba(34,197,94,0.06)", border: "1px solid rgba(34,197,94,0.2)", borderRadius: 14, padding: "14px 16px", marginBottom: 18 }}
             >
               <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
-                <div style={{ fontSize: 9, fontWeight: 900, textTransform: "uppercase", letterSpacing: "0.16em", color: "#4ade80" }}>✅ DOĞRU TAKTİK</div>
+                <div style={{ fontSize: 9, fontWeight: 900, textTransform: "uppercase", letterSpacing: "0.16em", color: "#4ade80" }}>{L.correctTitle}</div>
                 <div style={{ fontSize: 11, fontWeight: 800, color: "#4ade80", background: "rgba(34,197,94,0.1)", border: "1px solid rgba(34,197,94,0.25)", borderRadius: 999, padding: "2px 10px" }}>
-                  %{result.winRate} Kazanma
+                  {L.winRate(result.winRate)}
                 </div>
               </div>
               <div style={{ fontSize: 16, fontWeight: 900, color: "#e2e8f0", fontFamily: "'Barlow Condensed', sans-serif", letterSpacing: "0.04em", marginBottom: 12 }}>
@@ -387,11 +740,7 @@ export default function MatchAutopsy() {
               </div>
               {isPremium ? (
                 <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-                  {[
-                    { label: "Baskı", val: result.optP, color: "#6366f1" },
-                    { label: "Stil",  val: result.optS, color: "#a78bfa" },
-                    { label: "Tempo", val: result.optT, color: "#22d3ee" },
-                  ].map((row, i) => (
+                  {RESULT_SLIDERS.map((row, i) => (
                     <div key={row.label}>
                       <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 4 }}>
                         <span style={{ fontSize: 10, fontWeight: 700, color: "rgba(148,163,184,0.5)", textTransform: "uppercase" }}>{row.label}</span>
@@ -415,10 +764,10 @@ export default function MatchAutopsy() {
                 </div>
               ) : (
                 <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-                  {["Baskı","Stil","Tempo"].map(label => (
-                    <div key={label}>
+                  {RESULT_SLIDERS.map(row => (
+                    <div key={row.label}>
                       <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 4 }}>
-                        <span style={{ fontSize: 10, fontWeight: 700, color: "rgba(148,163,184,0.5)", textTransform: "uppercase" }}>{label}</span>
+                        <span style={{ fontSize: 10, fontWeight: 700, color: "rgba(148,163,184,0.5)", textTransform: "uppercase" }}>{row.label}</span>
                         <span style={{ fontSize: 15, fontWeight: 900, color: "rgba(148,163,184,0.2)", fontFamily: "'Barlow Condensed', sans-serif", filter: "blur(4px)" }}>??</span>
                       </div>
                       <div style={{ height: 4, borderRadius: 99, background: "rgba(255,255,255,0.05)", overflow: "hidden" }}>
@@ -437,7 +786,7 @@ export default function MatchAutopsy() {
                 style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 8, width: "100%", padding: "14px 0", borderRadius: 14, textDecoration: "none",
                   background: "linear-gradient(135deg,#f59e0b,#ef4444)", color: "#fff", fontSize: 13, fontWeight: 900, textTransform: "uppercase", letterSpacing: "0.1em",
                   boxShadow: "0 8px 24px rgba(245,158,11,0.3)" }}>
-                👑 VIP Al — Tam Analizi Gör
+                {L.vipCta}
               </motion.a>
             ) : (
               <motion.button onClick={reset}
@@ -445,7 +794,7 @@ export default function MatchAutopsy() {
                 whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.97 }}
                 style={{ width: "100%", padding: "13px 0", borderRadius: 14, border: "1px solid rgba(255,255,255,0.1)", background: "rgba(255,255,255,0.04)",
                   color: "rgba(148,163,184,0.7)", fontSize: 13, fontWeight: 800, cursor: "pointer", textTransform: "uppercase", letterSpacing: "0.1em" }}>
-                ↩ Yeni Analiz
+                {L.newAnalysis}
               </motion.button>
             )}
           </motion.div>

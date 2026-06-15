@@ -1,4 +1,4 @@
-import { useRef, type MouseEvent } from "react";
+import { useEffect, useRef, useState, type MouseEvent } from "react";
 import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 import { useLang } from "../contexts/LanguageContext";
 
@@ -26,8 +26,20 @@ const wrapperVariants = {
  * Manages its own perspective context, mouse tracking, and entrance animation —
  * no props needed, no surrounding layout affected.
  */
+function useIsMobile() {
+  const [mobile, setMobile] = useState(() => typeof window !== "undefined" && window.innerWidth < 768);
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 767px)");
+    const handler = (e: MediaQueryListEvent) => setMobile(e.matches);
+    mq.addEventListener("change", handler);
+    return () => mq.removeEventListener("change", handler);
+  }, []);
+  return mobile;
+}
+
 export default function HeroTitle() {
   const { t } = useLang();
+  const isMobile = useIsMobile();
   const containerRef = useRef<HTMLDivElement>(null);
 
   // ── Mouse tracking ─────────────────────────────────────────────────────────
@@ -97,8 +109,8 @@ export default function HeroTitle() {
               "radial-gradient(ellipse at 50% 50%, rgba(34,211,238,0.13) 0%, transparent 68%)",
             filter: "blur(24px)",
           }}
-          animate={{ opacity: [0.45, 1, 0.45], scale: [0.94, 1.06, 0.94] }}
-          transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
+          animate={isMobile ? { opacity: 0.6 } : { opacity: [0.45, 1, 0.45], scale: [0.94, 1.06, 0.94] }}
+          transition={isMobile ? {} : { duration: 5, repeat: Infinity, ease: "easeInOut" }}
         />
       </motion.div>
 

@@ -284,8 +284,10 @@ function WMExplainRow({ icon, title, value, text }: { icon: string; title: strin
 }
 
 // ─── Card style constant ──────────────────────────────────────────────────────
+const isMobileViewport = typeof window !== "undefined" && window.innerWidth < 768;
 const CARD: React.CSSProperties = {
-  background: "rgba(9,11,33,0.88)", backdropFilter: "blur(20px)",
+  background: isMobileViewport ? "rgba(9,11,33,0.97)" : "rgba(9,11,33,0.88)",
+  ...(isMobileViewport ? {} : { backdropFilter: "blur(20px)" }),
   border: "1px solid rgba(251,191,36,0.15)", borderRadius: 20,
   boxShadow: "0 20px 60px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.05)",
 };

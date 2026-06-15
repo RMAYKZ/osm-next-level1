@@ -525,6 +525,56 @@
 .ti { animation: fadeUp .28s ease both; }
 
 /* ═══════════════════════════════════════════════
+   MOBILE PERFORMANCE — stop GPU-intensive animations
+═══════════════════════════════════════════════ */
+@media (max-width: 768px) {
+  /* Remove continuous box-shadow animations — biggest GPU drain */
+  .hth-card,
+  .hero-card {
+    animation: none !important;
+    box-shadow: 0 0 0 1px rgba(255,215,0,.42), 0 0 18px rgba(255,215,0,.10);
+  }
+
+  /* Stop shine sweep translateX loops */
+  .hth-shine,
+  .hero-card-shine {
+    animation: none !important;
+    display: none;
+  }
+
+  /* Remove backdrop-filter blur — very expensive on mobile GPU */
+  .root {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    background: rgba(9,11,33,0.98) !important;
+  }
+
+  /* Simplify pulsing dots — keep opacity change but remove box-shadow animation */
+  .cbdot {
+    animation: none !important;
+    box-shadow: 0 0 6px rgba(167,139,250,0.8);
+  }
+
+  /* Stop spinner box-shadow pulse — only keep rotation */
+  .atf-spinner {
+    animation: atfSpin 1.5s linear infinite !important;
+  }
+
+  /* Stop all remaining blinking/pulsing dots */
+  .atf-head-live-dot,
+  .tc-dot,
+  .atf-spinner-dot {
+    animation: none !important;
+  }
+
+  /* Remove filter from spinner dot — drop-shadow is GPU expensive */
+  .atf-spinner {
+    filter: none !important;
+    box-shadow: none !important;
+  }
+}
+
+/* ═══════════════════════════════════════════════
    RESPONSIVE
 ═══════════════════════════════════════════════ */
 @media (max-width: 1023px) {

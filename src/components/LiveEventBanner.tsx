@@ -126,11 +126,19 @@ function buildStartLabel(event: OsmEvent, ukDay: number): string {
 
 export default function LiveEventBanner() {
   const [state, setState] = useState<BannerState>(resolveBannerState);
+  const [isMobile, setIsMobile] = useState(() => typeof window !== "undefined" && window.innerWidth < 768);
 
   // Re-evaluate every 30 s so the banner flips at exactly 07:00 / 23:00 UK
   useEffect(() => {
     const id = setInterval(() => setState(resolveBannerState()), 30_000);
     return () => clearInterval(id);
+  }, []);
+
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 767px)");
+    const h = (e: MediaQueryListEvent) => setIsMobile(e.matches);
+    mq.addEventListener("change", h);
+    return () => mq.removeEventListener("change", h);
   }, []);
 
   if (state.mode === "off") return null;
@@ -159,8 +167,8 @@ export default function LiveEventBanner() {
         fontFamily: "'Inter', 'Segoe UI', system-ui, sans-serif",
         ...(isLive ? {
           background: "linear-gradient(135deg, rgba(30,4,6,0.97) 0%, rgba(10,18,42,0.97) 45%, rgba(20,4,28,0.97) 100%)",
-          backgroundSize: "300% 300%",
-          animation: "live-sweep 5s ease infinite",
+          backgroundSize: isMobile ? "100% 100%" : "300% 300%",
+          animation: isMobile ? "none" : "live-sweep 5s ease infinite",
           boxShadow: "0 2px 32px rgba(239,68,68,0.22), 0 0 0 1px rgba(239,68,68,0.1)",
         } : {
           background: "rgba(10, 25, 47, 0.90)",
@@ -188,8 +196,8 @@ export default function LiveEventBanner() {
           overflow: "hidden", gap: 10,
         }}>
           {state.mode === "live"
-            ? <LiveContent event={state.event} />
-            : <UpcomingContent events={state.events} startsToday={state.startsToday} />}
+            ? <LiveContent event={state.event} isMobile={isMobile} />
+            : <UpcomingContent events={state.events} startsToday={state.startsToday} isMobile={isMobile} />}
         </div>
       </div>
     </>
@@ -200,7 +208,7 @@ export default function LiveEventBanner() {
 // LIVE CONTENT
 // ─────────────────────────────────────────────────────────────────────────────
 
-function LiveContent({ event }: { event: OsmEvent }) {
+function LiveContent({ event, isMobile }: { event: OsmEvent; isMobile: boolean }) {
   const marqueeText =
     `🔥 SPECIAL EVENT IS NOW LIVE — EXCLUSIVE CONFIGURATIONS UNLOCKED!   ✦   ${event.name}  ·  ${event.details}   ✦   `;
 
@@ -208,8 +216,8 @@ function LiveContent({ event }: { event: OsmEvent }) {
     <>
       {/* Pulsing red dot */}
       <motion.div
-        animate={{ opacity: [0.45, 1, 0.45], scale: [0.8, 1.25, 0.8] }}
-        transition={{ duration: 1.1, repeat: Infinity, ease: "easeInOut" }}
+        animate={isMobile ? { opacity: 0.8 } : { opacity: [0.45, 1, 0.45], scale: [0.8, 1.25, 0.8] }}
+        transition={isMobile ? {} : { duration: 1.1, repeat: Infinity, ease: "easeInOut" }}
         style={{
           width: 8, height: 8, borderRadius: "50%",
           background: "#ef4444",
@@ -220,12 +228,12 @@ function LiveContent({ event }: { event: OsmEvent }) {
 
       {/* Badge */}
       <motion.span
-        animate={{ boxShadow: [
+        animate={isMobile ? {} : { boxShadow: [
           "0 0 6px rgba(239,68,68,0.2)",
           "0 0 14px rgba(239,68,68,0.6), 0 0 28px rgba(0,229,255,0.25)",
           "0 0 6px rgba(239,68,68,0.2)",
         ] }}
-        transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+        transition={isMobile ? {} : { duration: 2, repeat: Infinity, ease: "easeInOut" }}
         style={{
           fontSize: 10, fontWeight: 900, letterSpacing: "0.1em",
           color: "#ef4444",
@@ -271,7 +279,7 @@ function LiveContent({ event }: { event: OsmEvent }) {
 // UPCOMING CONTENT
 // ─────────────────────────────────────────────────────────────────────────────
 
-function UpcomingContent({ events, startsToday }: { events: OsmEvent[]; startsToday: boolean }) {
+function UpcomingContent({ events, startsToday, isMobile }: { events: OsmEvent[]; startsToday: boolean; isMobile: boolean }) {
   const uk  = getUKParts();
 
   const tickerText =
@@ -287,8 +295,8 @@ function UpcomingContent({ events, startsToday }: { events: OsmEvent[]; startsTo
     <>
       {/* Badge */}
       <motion.span
-        animate={{ opacity: [0.72, 1, 0.72] }}
-        transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+        animate={isMobile ? { opacity: 0.85 } : { opacity: [0.72, 1, 0.72] }}
+        transition={isMobile ? {} : { duration: 3, repeat: Infinity, ease: "easeInOut" }}
         style={{
           fontSize: 10, fontWeight: 900, letterSpacing: "0.1em",
           color: accentColor,

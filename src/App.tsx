@@ -5,6 +5,10 @@ import { AuthProvider } from "./contexts/AuthContext";
 import { PremiumProvider } from "./contexts/PremiumContext";
 import { FavoritesProvider } from "./contexts/FavoritesContext";
 import { SavedTacticsProvider } from "./contexts/SavedTacticsContext";
+import { MotionConfig } from "framer-motion";
+
+// Detect mobile once at load time — never changes mid-session
+const IS_MOBILE = typeof window !== "undefined" && window.innerWidth < 768;
 import Navbar from "./components/Navbar";
 import Hero from "./components/Hero";
 import WeeklyMeta from "./components/WeeklyMeta";
@@ -23,6 +27,7 @@ import { PwaInstallBanner } from "./components/PwaInstallBanner";
 
 export default function App() {
   return (
+    <MotionConfig reducedMotion={IS_MOBILE ? "always" : "user"}>
     <LanguageProvider>
       <ThemeProvider>
       <AuthProvider>
@@ -100,5 +105,6 @@ export default function App() {
       </AuthProvider>
       </ThemeProvider>
     </LanguageProvider>
+    </MotionConfig>
   );
 }
