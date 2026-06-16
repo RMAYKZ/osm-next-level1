@@ -61,6 +61,14 @@ function isDismissed(): boolean {
 export default function PremiumUpdateBanner() {
   const { lang, t } = useLang();
   const [hidden, setHidden] = useState(() => isDismissed());
+  // Once the entry animation finishes, the wrapper's fixed pixel height
+  // (measured at mount) is released back to natural "auto" + visible
+  // overflow. Without this, a later font swap (Outfit loads via
+  // display=swap, after the fallback system font already painted) can
+  // reflow the subtitle onto a second line, which the still-clipped,
+  // animation-locked height then cuts off entirely — the banner text
+  // silently disappears on first mobile load.
+  const [entered, setEntered] = useState(false);
 
   const isRTL = lang === "ar";
   const now = new Date();
@@ -70,6 +78,7 @@ export default function PremiumUpdateBanner() {
 
   function dismiss() {
     try { localStorage.setItem(DISMISS_KEY, String(Date.now())); } catch { /* */ }
+    setEntered(false);
     setHidden(true);
   }
 
@@ -81,7 +90,8 @@ export default function PremiumUpdateBanner() {
           animate={{ height: "auto", opacity: 1 }}
           exit={{ height: 0, opacity: 0 }}
           transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-          style={{ overflow: "hidden" }}
+          onAnimationComplete={() => setEntered(true)}
+          style={{ overflow: entered ? "visible" : "hidden" }}
         >
           <div
             dir={isRTL ? "rtl" : "ltr"}
