@@ -1,4 +1,60 @@
+# OSM Next Level — https://osmnextlevel.com
+# Global default: everything allowed.
 User-agent: *
+Allow: /
+Disallow: /api/
+
+# ── Search engines ──
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+# ── AI assistants / answer engines (GEO) ──
+# Explicitly allowed so OSM Next Level can be cited by AI Overviews and
+# chat assistants. See /llms.txt and /ai-overview.md for citation-ready
+# summaries of this site's tactics, formations and tools.
+User-agent: GPTBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Claude-User
+Allow: /
+
+User-agent: anthropic-ai
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Perplexity-User
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: GoogleOther
+Allow: /
+
+User-agent: CCBot
+Allow: /
+
+User-agent: Bytespider
+Allow: /
+
+User-agent: Applebot
+Allow: /
+
+User-agent: Applebot-Extended
 Allow: /
 
 Sitemap: https://osmnextlevel.com/sitemap.xml

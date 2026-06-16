@@ -127,7 +127,11 @@ export default function FormationsOverview() {
                     onMouseLeave={e => (e.currentTarget.style.background = "transparent")}
                   >
                     <td style={{ padding: "13px 18px" }}>
-                      <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                      <a
+                        href={`/formations/${r.tactic.id.toLowerCase()}/`}
+                        style={{ display: "flex", alignItems: "center", gap: 10, textDecoration: "none" }}
+                        title={`OSM ${r.tactic.formation} counter tactic guide`}
+                      >
                         <div style={{
                           width: 32, height: 32, borderRadius: 9, flexShrink: 0,
                           background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.07)",
@@ -136,7 +140,7 @@ export default function FormationsOverview() {
                           {r.tactic.emoji}
                         </div>
                         <span style={{ fontSize: 14, fontWeight: 700, color: "#e2e8f0" }}>{r.tactic.name}</span>
-                      </div>
+                      </a>
                     </td>
                     <td style={{ padding: "13px 18px" }}>
                       <span style={{ fontSize: 13, fontFamily: "monospace", color: "#22d3ee", fontWeight: 700, letterSpacing: "0.04em" }}>
@@ -186,6 +190,12 @@ export default function FormationsOverview() {
             <strong style={{ color: "rgba(148,163,184,0.5)", margin: "0 4px" }}>{totalAnti}</strong> {t("form.antiCount")}
           </div>
         </motion.div>
+
+        <div style={{ textAlign: "center", marginTop: 18 }}>
+          <a href="/formations/" style={{ fontSize: 12, fontWeight: 700, color: "#34d399", letterSpacing: "0.04em" }}>
+            {t("form.viewAllGuides")} →
+          </a>
+        </div>
       </div>
     </section>
   );

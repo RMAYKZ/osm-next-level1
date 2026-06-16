@@ -66,15 +66,18 @@ export default function Blog() {
 
 function PostCard({ post, onOpen, index, t }: { post: BlogPost; onOpen: () => void; index: number; t: TFn }) {
   return (
-    <motion.button
-      onClick={onOpen}
+    <motion.a
+      // Real href so crawlers/no-JS visitors land on the indexable static
+      // page (/blog/<slug>/); JS users get the faster in-app modal instead.
+      href={`/blog/${post.slug}/`}
+      onClick={(e) => { e.preventDefault(); onOpen(); }}
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-40px" }}
       transition={{ duration: 0.42, delay: index * 0.07, ease }}
       whileHover={{ y: -4, scale: 1.012, transition: { duration: 0.2 } }}
       whileTap={{ scale: 0.98 }}
-      className="opus-card group rounded-3xl p-6 text-start"
+      className="opus-card group block rounded-3xl p-6 text-start"
       style={{ transition: "border-color 0.25s" }}
     >
       <div className="mb-3 flex items-center gap-3">
@@ -91,7 +94,7 @@ function PostCard({ post, onOpen, index, t }: { post: BlogPost; onOpen: () => vo
       </h3>
       <p className="mt-3 line-clamp-2 text-sm leading-6 text-stone-400">{post.metaDesc}</p>
       <div className="mt-4 text-xs font-black uppercase tracking-widest text-amber-300">{t("blog.readMore")}</div>
-    </motion.button>
+    </motion.a>
   );
 }
 

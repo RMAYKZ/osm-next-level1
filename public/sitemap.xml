@@ -2,18 +2,17 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
         xmlns:xhtml="http://www.w3.org/1999/xhtml">
 
-  <!-- Ana sayfa — tüm diller için hreflang -->
+  <!-- Ana sayfa — server-rendered HTML is Turkish; see index.html for hreflang rationale -->
   <url>
     <loc>https://osmnextlevel.com/</loc>
-    <lastmod>2026-06-15</lastmod>
+    <lastmod>2026-06-16</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://osmnextlevel.com/"/>
     <xhtml:link rel="alternate" hreflang="tr"        href="https://osmnextlevel.com/"/>
-    <xhtml:link rel="alternate" hreflang="en"        href="https://osmnextlevel.com/"/>
-    <xhtml:link rel="alternate" hreflang="hu"        href="https://osmnextlevel.com/"/>
-    <xhtml:link rel="alternate" hreflang="ar"        href="https://osmnextlevel.com/"/>
-    <xhtml:link rel="alternate" hreflang="pt"        href="https://osmnextlevel.com/"/>
   </url>
 
+  <!-- NOTE: this file is a dev-time fallback. The production sitemap is
+       regenerated at build time by scripts/generateStaticPages.ts and
+       overwrites dist/sitemap.xml with every formation + blog URL. -->
 </urlset>
