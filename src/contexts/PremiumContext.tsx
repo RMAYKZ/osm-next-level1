@@ -2,11 +2,16 @@ import { createContext, useContext, useState, useCallback, useEffect, type React
 import { premiumCodes } from "../data/extras";
 import { validcodes } from "../data/validcodes";
 import { getDb } from "../lib/firebase";
+import { useAuth } from "./AuthContext";
 
 const STORAGE_KEY    = "osm-next-level-premium";
 const PREMIUM_CODE_KEY = "osm-premium-code";
 const DEVICE_KEY     = "osm-device-id";
 const DEVICE_COOKIE  = "osm-did";
+
+// Site owner's account always has premium access, on any device, with no
+// code needed — signing in with this email is itself the "permanent grant".
+const OWNER_EMAIL = "omer@osmnextlevel.com";
 
 // ── Device ID — stored in both localStorage + cookie for resilience ───
 function getDeviceId(): string {
@@ -96,10 +101,13 @@ const PremiumContext = createContext<PremiumContextType | null>(null);
 
 // ── Provider ──────────────────────────────────────────────────────────
 export function PremiumProvider({ children }: { children: ReactNode }) {
-  const [isPremium, setIsPremium] = useState<boolean>(() => {
+  const { user } = useAuth();
+  const isOwner = user?.email?.toLowerCase() === OWNER_EMAIL;
+  const [unlockedByCode, setIsPremium] = useState<boolean>(() => {
     if (typeof window === "undefined") return false;
     return localStorage.getItem(STORAGE_KEY) === "true";
   });
+  const isPremium = isOwner || unlockedByCode;
   const [unlocking, setUnlocking] = useState(false);
 
   const unlock = useCallback(async (code: string): Promise<UnlockResult> => {
