@@ -59,7 +59,7 @@ function isDismissed(): boolean {
 }
 
 export default function PremiumUpdateBanner() {
-  const { lang } = useLang();
+  const { lang, t } = useLang();
   const [hidden, setHidden] = useState(() => isDismissed());
 
   const isRTL = lang === "ar";
@@ -80,123 +80,119 @@ export default function PremiumUpdateBanner() {
           initial={{ height: 0, opacity: 0 }}
           animate={{ height: "auto", opacity: 1 }}
           exit={{ height: 0, opacity: 0 }}
-          transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+          transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
           style={{ overflow: "hidden" }}
         >
           <div
             dir={isRTL ? "rtl" : "ltr"}
             style={{
               position: "relative",
-              background: "linear-gradient(135deg, rgba(12,8,2,0.97) 0%, rgba(24,14,2,0.97) 50%, rgba(10,6,1,0.97) 100%)",
-              borderBottom: "1px solid rgba(251,191,36,0.22)",
+              background: "#0c0904",
+              borderBottom: "1px solid rgba(245,166,35,0.18)",
               overflow: "hidden",
-              fontFamily: "'Outfit','Segoe UI',system-ui,sans-serif",
+              fontFamily: "var(--font-display, 'Outfit'), 'Segoe UI', system-ui, sans-serif",
             }}
           >
-            {/* Shimmer sweep */}
+            {/* Ambient gold glow, fixed in one corner — depth without a busy gradient */}
+            <div aria-hidden style={{
+              position: "absolute", top: "-60%", insetInlineStart: "8%",
+              width: 320, height: 320, borderRadius: "50%",
+              background: "radial-gradient(circle, rgba(245,166,35,0.16) 0%, transparent 70%)",
+              pointerEvents: "none",
+            }} />
+
+            {/* One-time shimmer sweep on mount — not a perpetual loop */}
             <motion.div
-              animate={{ x: ["-100%", "200%"] }}
-              transition={{ repeat: Infinity, repeatDelay: 4, duration: 1.1, ease: "easeInOut" }}
+              initial={{ x: "-120%" }}
+              animate={{ x: "220%" }}
+              transition={{ duration: 1.3, ease: [0.16, 1, 0.3, 1], delay: 0.3 }}
               style={{
                 position: "absolute", inset: 0, pointerEvents: "none",
-                background: "linear-gradient(105deg, transparent 30%, rgba(251,191,36,0.08) 50%, transparent 70%)",
+                background: "linear-gradient(105deg, transparent 35%, rgba(245,166,35,0.10) 50%, transparent 65%)",
                 transform: "skewX(-15deg)",
               }}
             />
 
-            {/* Subtle top line glow */}
+            {/* Top hairline */}
             <div style={{
               position: "absolute", top: 0, left: 0, right: 0, height: 1,
-              background: "linear-gradient(90deg, transparent, rgba(251,191,36,0.5), rgba(239,68,68,0.3), transparent)",
+              background: "linear-gradient(90deg, transparent, var(--c-gold), var(--c-rose), transparent)",
+              opacity: 0.55,
             }} />
 
             {/* Content */}
             <div style={{
+              position: "relative",
               maxWidth: 1200,
               margin: "0 auto",
-              padding: "14px clamp(16px,4vw,40px)",
+              padding: "16px clamp(16px,4vw,40px)",
               display: "flex",
               alignItems: "center",
-              gap: 14,
+              gap: 18,
               flexWrap: "wrap" as const,
             }}>
-              {/* Crown icon */}
-              <motion.span
-                animate={{ rotate: [-8, 8, -8], scale: [1, 1.12, 1] }}
-                transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-                style={{ fontSize: 20, flexShrink: 0, lineHeight: 1 }}
-              >
+              {/* Icon chip — replaces the loose floating emoji with one designed unit */}
+              <div style={{
+                width: 38, height: 38, borderRadius: 11, flexShrink: 0,
+                background: "linear-gradient(135deg, rgba(245,166,35,0.18), rgba(255,200,82,0.07))",
+                border: "1px solid rgba(245,166,35,0.32)",
+                display: "flex", alignItems: "center", justifyContent: "center",
+                fontSize: 17,
+              }}>
                 👑
-              </motion.span>
-
-              {/* Badge */}
-              <motion.span
-                animate={{ opacity: [0.7, 1, 0.7] }}
-                transition={{ duration: 2.2, repeat: Infinity, ease: "easeInOut" }}
-                style={{
-                  display: "inline-flex", alignItems: "center", gap: 5,
-                  fontSize: 9, fontWeight: 900, letterSpacing: "0.14em",
-                  textTransform: "uppercase" as const,
-                  color: "#f59e0b",
-                  background: "rgba(251,191,36,0.12)",
-                  border: "1px solid rgba(251,191,36,0.3)",
-                  borderRadius: 999,
-                  padding: "3px 10px",
-                  flexShrink: 0,
-                  whiteSpace: "nowrap" as const,
-                }}
-              >
-                <span style={{
-                  width: 5, height: 5, borderRadius: "50%",
-                  background: "#f59e0b",
-                  boxShadow: "0 0 6px rgba(251,191,36,0.8)",
-                  display: "inline-block", flexShrink: 0,
-                }} />
-                {copy.badge}
-              </motion.span>
+              </div>
 
               {/* Text group */}
-              <div style={{ flex: 1, minWidth: 180 }}>
+              <div style={{ flex: 1, minWidth: 220 }}>
+                <span className="g-badge g-badge-gold" style={{ marginBottom: 5, transform: "translateY(-1px)" }}>
+                  <span style={{ width: 5, height: 5, borderRadius: "50%", background: "var(--c-gold-l)", display: "inline-block", flexShrink: 0 }} />
+                  {copy.badge}
+                </span>
                 <div style={{
-                  fontSize: "clamp(12px, 2.2vw, 14px)",
+                  fontSize: "clamp(15px, 2.4vw, 18px)",
                   fontWeight: 800,
-                  color: "#f0e6c8",
-                  lineHeight: 1.2,
-                  letterSpacing: "0.01em",
-                  marginBottom: 2,
+                  color: "#fbf3e3",
+                  lineHeight: 1.25,
+                  letterSpacing: "-0.01em",
+                  marginTop: 4,
                 }}>
                   {copy.title(month, year)}
                 </div>
                 <div style={{
-                  fontSize: "clamp(10px, 1.6vw, 12px)",
-                  color: "rgba(251,191,36,0.52)",
+                  fontSize: "clamp(11px, 1.6vw, 13px)",
+                  color: "rgba(255,200,82,0.8)",
                   fontWeight: 500,
-                  lineHeight: 1.4,
+                  lineHeight: 1.45,
+                  marginTop: 2,
                 }}>
                   {copy.sub}
                 </div>
               </div>
+
+              {/* Divider — separates the message from the action */}
+              <div aria-hidden style={{ width: 1, height: 34, background: "rgba(245,166,35,0.16)", flexShrink: 0 }} className="hidden sm:block" />
 
               {/* CTA Button */}
               <motion.a
                 href={siteConfig.premiumUrl}
                 target="_blank"
                 rel="noreferrer"
-                whileHover={{ scale: 1.04, boxShadow: "0 0 24px rgba(251,191,36,0.4)" }}
-                whileTap={{ scale: 0.96 }}
+                whileHover={{ y: -1, boxShadow: "0 10px 28px -6px rgba(245,166,35,0.45)" }}
+                whileTap={{ scale: 0.97 }}
+                transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
                 style={{
                   display: "inline-flex", alignItems: "center",
                   flexShrink: 0,
-                  background: "linear-gradient(135deg, #f59e0b, #ef4444)",
+                  background: "linear-gradient(135deg, var(--c-gold), var(--c-rose))",
                   borderRadius: 10,
-                  padding: "8px 18px",
-                  color: "#fff",
-                  fontSize: "clamp(10px, 1.8vw, 12px)",
-                  fontWeight: 900,
+                  padding: "11px 22px",
+                  color: "#1a0f02",
+                  fontSize: "clamp(11px, 1.8vw, 12px)",
+                  fontWeight: 800,
                   textDecoration: "none",
                   textTransform: "uppercase" as const,
-                  letterSpacing: "0.08em",
-                  boxShadow: "0 4px 18px rgba(245,158,11,0.28)",
+                  letterSpacing: "0.06em",
+                  boxShadow: "0 6px 20px -6px rgba(245,166,35,0.5)",
                   whiteSpace: "nowrap" as const,
                 }}
               >
@@ -204,27 +200,26 @@ export default function PremiumUpdateBanner() {
               </motion.a>
 
               {/* Dismiss button */}
-              <motion.button
+              <button
                 onClick={dismiss}
-                whileHover={{ scale: 1.12, opacity: 1 }}
-                whileTap={{ scale: 0.9 }}
-                aria-label="Kapat"
+                aria-label={t("nav.close")}
                 style={{
                   flexShrink: 0,
                   background: "transparent",
-                  border: "1px solid rgba(255,255,255,0.1)",
+                  border: "none",
                   borderRadius: "50%",
-                  width: 26, height: 26,
+                  width: 28, height: 28,
                   display: "flex", alignItems: "center", justifyContent: "center",
-                  color: "rgba(255,255,255,0.3)",
+                  color: "rgba(255,255,255,0.35)",
                   cursor: "pointer",
-                  fontSize: 12,
-                  opacity: 0.6,
-                  transition: "opacity 0.15s",
+                  fontSize: 13,
+                  transition: "color 0.15s, background 0.15s",
                 }}
+                onMouseEnter={(e) => { e.currentTarget.style.color = "rgba(255,255,255,0.8)"; e.currentTarget.style.background = "rgba(255,255,255,0.06)"; }}
+                onMouseLeave={(e) => { e.currentTarget.style.color = "rgba(255,255,255,0.35)"; e.currentTarget.style.background = "transparent"; }}
               >
                 ✕
-              </motion.button>
+              </button>
             </div>
           </div>
         </motion.div>
