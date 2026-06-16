@@ -79,12 +79,20 @@ schedule these):
 - 50-article Turkish backlog from the original brief is not fully built —
   23 of 50 Turkish pages exist, covering the highest-volume clusters, not
   the long tail.
-- Performance score (41) needs a product decision, not an engineering
-  fix from this session — see 30-day plan.
-- Pre-existing, unrelated to this work: a Google Sheets API call (the
-  "Premium remote codes" feature) returns 403 in console — likely an API
-  key/sheet-permission issue on the owner's Google Cloud project, flagged
-  by Lighthouse's Best Practices audit but outside SEO/GEO scope.
+- Performance: 41 → 57/100 on real production after 5 stacked fixes
+  (mobile shader, three.js skip, deferred auth init, split firebase
+  chunks, fixed render-blocking font @import). Remaining gap is ~8s of
+  main-thread JS execution under Lighthouse's throttled-CPU simulation
+  — going further means deferring more above-the-fold components (CLS
+  risk, evaluated and deliberately not done — see PremiumTactics/
+  WeeklyMeta/AntiTacticFinder all have inbound hash-link dependencies,
+  e.g. the `/?lang=xx#anti-taktik` hand-off) or the SSR decision already
+  deferred this round.
+- ~~Google Sheets 403 console error~~ — **Done 2026-06-16.** Owner
+  confirmed the "remote premium codes" Sheets fallback is unused (codes
+  are managed locally + emailed manually); removed entirely from
+  `PremiumContext.tsx`. Verified zero network calls to
+  sheets.googleapis.com and zero console errors on a fresh load.
 
 ## 30-Day Plan
 
@@ -158,9 +166,12 @@ thin content, cannibalization) before writing more pages.
 - True interactive English app mode (only a static `/en/` landing page exists).
 - Full 50-article Turkish backlog (23 of 50 shipped, highest-value ones first).
 - Video upload dates in `VideoObject` schema (need real data from the channel owner).
-- Fixing the 41/100 Performance score — root cause identified (the animated
-  shader background), but the actual fix is a product/design trade-off the
-  owner needs to make, not something to decide unilaterally.
-- The pre-existing Google Sheets 403 console error (Premium remote codes
-  feature) — unrelated to this SEO/GEO work, needs the owner to check their
-  Google Cloud API key/sheet permissions.
+- Pushing Performance past 57/100 — would require deferring more
+  above-the-fold components (PremiumTactics/AntiTacticFinder/WeeklyMeta
+  all have inbound hash-link dependencies, so this carries real CLS
+  risk) or the SSR migration already deferred as a bigger decision.
+- Cleanup only, zero functional risk either way: `public/hero-bg.jpg`
+  and `public/assets/osm-manager.png` are dead assets (not referenced
+  anywhere in `src/`), and `.env.local` may still have unused
+  `VITE_SHEETS_ID`/`VITE_SHEETS_KEY` entries now that the code doesn't
+  read them.
