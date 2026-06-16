@@ -43,21 +43,26 @@ generic template.*
   `aria-modal` + Escape-to-close to all three modal/sheet overlays
   (mobile menu, tool bottom sheet, sign-in panel), and made the decorative
   WebGL shader background respect `prefers-reduced-motion`.
-- **Performance: 41/100 → 49/100, mobile shader disabled (2026-06-16).**
-  Root cause confirmed: ~27.7s of simulated main-thread work, almost
-  entirely the continuously-rendering animated WebGL shader background
-  (35-iteration fbm noise loop per pixel at 60fps) — exactly the kind of
-  thing that makes a phone GPU heat up and the UI feel janky. Owner
-  explicitly prioritized mobile feel over visual fidelity, so
-  `animated-shader-background.tsx` now skips WebGL entirely on mobile
-  (`IS_MOBILE`, same `<768px` check already used for other quality
-  tiers) and shows a static CSS gradient instead — desktop keeps the full
-  animated effect. Measured result: main-thread work 27.7s → 9.9s (−64%),
-  Total Blocking Time 710ms → 340ms (−52%). Remaining slowness (FCP/LCP
-  still ~4.7s/10s) is a different, unrelated bottleneck — live Firebase
-  Auth/Firestore/Analytics network calls on every load, measured against
-  a local emulator with no CDN, under Lighthouse's deliberately
-  pessimistic slow-4G throttling. Not touched this round — see 30-day plan.
+- **Performance: 41 → 56/100, measured on the real production site
+  (www.osmnextlevel.com, not the local emulator) on 2026-06-16.** Four
+  fixes stacked: (1) mobile shader disabled — root cause was ~27.7s of
+  simulated main-thread work from a continuously-rendering WebGL shader
+  (35-iteration fbm noise loop per pixel, 60fps), exactly what makes a
+  phone GPU heat up and the UI feel janky; (2) `three.js` no longer even
+  downloaded on mobile (`App.tsx` never mounts the shader component
+  there); (3) Firebase Auth init deferred to `requestIdleCallback`;
+  (4) the `vendor-firebase` bundle — previously one combined chunk with
+  64% unused code on a typical load (90KB of 140KB gzipped, Lighthouse
+  `unused-javascript` audit) — is now split by sub-package
+  (`vite.config.ts` `manualChunks`) so Auth, Firestore and Functions
+  load independently, matching the per-feature dynamic imports
+  `src/lib/firebase.ts` already had. On the real production CDN:
+  Accessibility 100, SEO 100, Best Practices 100, CLS 0.006, TBT 10ms —
+  all excellent. FCP/LCP (~9s) remain the dominant cost, now confirmed
+  as genuine main-thread JS parse/execute time under Lighthouse's
+  throttled-CPU simulation, not a network or caching problem (server
+  response time was 10ms). Going further here means deeper bundle-size
+  work or SSR — the architecture decision already deferred this round.
 - Caught and fixed a `.gitignore` rule that excluded the entire `scripts/`
   folder — would have silently broken `npm run build` for anyone else
   cloning the repo, since `generateStaticPages.ts` is required at build time.
@@ -94,7 +99,9 @@ schedule these):
 | ~~Performance score decision~~ | **HIGH** | ~~Done 2026-06-16~~ — owner chose mobile feel over fidelity; shader now desktop-only, 41→49, main-thread work −64% |
 | ~~Stop downloading three.js on mobile at all~~ | **HIGH** | ~~Done 2026-06-16~~ — `App.tsx` never mounts `<AnimatedShaderBackground />` on mobile now, so its lazy chunk is never requested. Total byte weight 1021KB → 896KB |
 | ~~Defer Firebase Auth init off the critical path~~ | MEDIUM | ~~Done 2026-06-16~~ — `AuthContext.tsx` now starts via `requestIdleCallback` (2s timeout fallback) instead of immediately on mount. FCP 4.7s → 3.8s in local testing |
-| **Re-measure Performance on the real deployed site**, not the local emulator — current lab score (41→46-49, noisy run-to-run) is measured against live Firebase/Firestore/Analytics network calls under Lighthouse's pessimistic slow-4G throttle with no CDN. Production Firebase Hosting's global CDN will very likely score meaningfully better than anything measurable locally. This is the single most informative next step before deciding whether more performance work is even needed. | **HIGH** | Low (just requires a deploy + one Lighthouse run against the live URL) |
+| ~~Re-measure Performance on the real deployed site~~ | **HIGH** | ~~Done 2026-06-16~~ — 56/100 on www.osmnextlevel.com (real CDN, Vercel), CLS/TBT/Best Practices all excellent there; confirmed FCP/LCP slowness is genuine CPU-bound JS execution, not network/caching |
+| ~~Split the firebase vendor chunk by sub-package~~ | MEDIUM | ~~Done 2026-06-16~~ — Auth/Firestore/Functions no longer force-bundled together; was 64% unused on a typical load |
+| Discovered: production deploys automatically via Vercel's GitHub integration on every push to `main` — no manual deploy step needed (a `firebase deploy` earlier in this project went to an inactive Firebase Hosting target the custom domain doesn't use; harmless but unnecessary going forward) | — | Note for next time |
 
 **Expected outcome by day 30:** new URLs fully indexed; no organic traffic
 spike yet (indexing + initial ranking takes time), but AI crawlers should

@@ -480,8 +480,18 @@ export default defineConfig(({ mode }) => {
       rollupOptions: {
         output: {
           manualChunks(id: string) {
-            // Firebase is huge (~400KB raw). Split so it caches independently.
-            if (id.includes("node_modules/firebase")) return "vendor-firebase";
+            // Split firebase by sub-package instead of one combined blob.
+            // src/lib/firebase.ts already dynamically imports "firebase/auth",
+            // "firebase/firestore" and "firebase/functions" separately on
+            // demand — lumping them all into one "vendor-firebase" chunk (the
+            // previous rule) defeated that: every page paid for Firestore +
+            // Functions code even when only Auth was needed. Measured impact:
+            // the old combined chunk had 90KB of 140KB (64%) unused on a
+            // typical page load (Lighthouse "unused-javascript" audit).
+            if (id.includes("node_modules/firebase/firestore")) return "vendor-firebase-firestore";
+            if (id.includes("node_modules/firebase/auth")) return "vendor-firebase-auth";
+            if (id.includes("node_modules/firebase/functions")) return "vendor-firebase-functions";
+            if (id.includes("node_modules/firebase")) return "vendor-firebase-core";
             // React & React-DOM rarely change — long-lived cache.
             if (id.includes("node_modules/react-dom")) return "vendor-react-dom";
             if (id.includes("node_modules/react/") || id.includes("node_modules/react-is")) return "vendor-react";
