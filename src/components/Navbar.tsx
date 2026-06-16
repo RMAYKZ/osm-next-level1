@@ -6,6 +6,7 @@ import ProfilePanel from "./ProfilePanel";
 import { useLang } from "../contexts/LanguageContext";
 import { useAuth } from "../contexts/AuthContext";
 import { useSavedTactics } from "../contexts/SavedTacticsContext";
+import { OsmLogo } from "./ui/OsmLogo";
 
 const OSMEventsSchedule  = lazy(() => import("./OSMEventsSchedule"));
 const QuickSaleTechnique = lazy(() => import("./QuickSaleTechnique"));
@@ -221,11 +222,7 @@ export default function Navbar() {
                 boxShadow: "0 0 12px oklch(0.87 0.27 152 / 0.15)",
               }}
             >
-              <img
-                src="/osm-logo.png"
-                alt="OSM Next Level"
-                style={{ width: "100%", height: "100%", objectFit: "cover", display: "block", filter: "grayscale(1) brightness(1.8) contrast(0.9)" }}
-              />
+              <OsmLogo />
             </motion.div>
             <div className="flex flex-col justify-center leading-none me-4">
               <span className="font-display text-sm font-bold tracking-widest text-white md:text-base">OSM NEXT LEVEL</span>

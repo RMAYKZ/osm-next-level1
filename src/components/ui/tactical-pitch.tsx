@@ -151,7 +151,7 @@ const GOAL_INDICES = new Set([3, 11]);
 // ── Ball ──────────────────────────────────────────────────────────────────────
 function Ball({ onGoal }: { onGoal: () => void }) {
   const [bi, setBi] = useState(0);
-  const timerRef  = useRef<ReturnType<typeof setInterval>>();
+  const timerRef  = useRef<ReturnType<typeof setInterval> | undefined>(undefined);
   const onGoalRef = useRef(onGoal);
   onGoalRef.current = onGoal;
 
@@ -211,7 +211,7 @@ function RunningPlayer({ x, y, dx, dy, dur, phase, isGK, celebrating }:
 // ── Main export ───────────────────────────────────────────────────────────────
 export function TacticalPitchScene() {
   const [celebrating, setCelebrating] = useState(false);
-  const celebTimerRef = useRef<ReturnType<typeof setTimeout>>();
+  const celebTimerRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
   const handleGoal = useCallback(() => {
     setCelebrating(true);

@@ -2,6 +2,7 @@ import { useState } from "react";
 import { motion, AnimatePresence, useMotionValue, useTransform } from "framer-motion";
 import { Mail, Lock, Eye, EyeOff, ArrowRight, X } from "lucide-react";
 import { cn } from "../../lib/utils";
+import { OsmLogo } from "./OsmLogo";
 
 function Input({ className, type, ...props }: React.ComponentProps<"input">) {
   return (
@@ -192,7 +193,7 @@ export function SignInCard2({ onSignIn, onSignUp, onGoogle, onClose, t }: SignIn
                   flexShrink: 0,
                 }}
               >
-                <img src="/osm-logo.png" alt="OSM Next Level" style={{ width: "100%", height: "100%", objectFit: "cover", filter: "grayscale(1) brightness(1.8) contrast(0.9)" }} />
+                <OsmLogo />
               </motion.div>
 
               <div className="text-center">
