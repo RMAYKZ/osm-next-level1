@@ -43,12 +43,21 @@ generic template.*
   `aria-modal` + Escape-to-close to all three modal/sheet overlays
   (mobile menu, tool bottom sheet, sign-in panel), and made the decorative
   WebGL shader background respect `prefers-reduced-motion`.
-- **Performance: real Lighthouse score is 41/100** — measured, not assumed.
-  Root cause: ~27s of simulated main-thread work, almost entirely the
-  continuously-rendering animated WebGL shader background (35-iteration
-  fbm noise loop per pixel at 60fps). This is an intentional brand visual,
-  not a bug — deliberately not simplified or removed without a product
-  decision from the owner. See 30-day plan.
+- **Performance: 41/100 → 49/100, mobile shader disabled (2026-06-16).**
+  Root cause confirmed: ~27.7s of simulated main-thread work, almost
+  entirely the continuously-rendering animated WebGL shader background
+  (35-iteration fbm noise loop per pixel at 60fps) — exactly the kind of
+  thing that makes a phone GPU heat up and the UI feel janky. Owner
+  explicitly prioritized mobile feel over visual fidelity, so
+  `animated-shader-background.tsx` now skips WebGL entirely on mobile
+  (`IS_MOBILE`, same `<768px` check already used for other quality
+  tiers) and shows a static CSS gradient instead — desktop keeps the full
+  animated effect. Measured result: main-thread work 27.7s → 9.9s (−64%),
+  Total Blocking Time 710ms → 340ms (−52%). Remaining slowness (FCP/LCP
+  still ~4.7s/10s) is a different, unrelated bottleneck — live Firebase
+  Auth/Firestore/Analytics network calls on every load, measured against
+  a local emulator with no CDN, under Lighthouse's deliberately
+  pessimistic slow-4G throttling. Not touched this round — see 30-day plan.
 - Caught and fixed a `.gitignore` rule that excluded the entire `scripts/`
   folder — would have silently broken `npm run build` for anyone else
   cloning the repo, since `generateStaticPages.ts` is required at build time.
@@ -82,7 +91,8 @@ schedule these):
 | Add 5–8 more Turkish long-tail articles (remaining Phase 9 keyword clusters not yet covered: per-event guides, league-specific tactics) | MEDIUM | Medium |
 | Verify the new per-page OG images render correctly in a real Twitter/Facebook share-debugger test (generated locally, never checked against the live debuggers) | MEDIUM | Low |
 | Confirm GPTBot/ClaudeBot/PerplexityBot are not being blocked by any CDN/WAF rule in front of Firebase Hosting (robots.txt allows them, but a separate firewall could still block by user-agent) | **HIGH** | Low |
-| **Decide what to do about the 41/100 Performance score**: this is a product/design call, not an engineering one — options are (a) accept it as the cost of the brand's animated shader background, (b) cap/simplify the shader's iteration count, (c) only render it on desktop/high-end devices. Needs the owner's input on how much visual fidelity to trade for speed. | **HIGH** | Decision point |
+| ~~Performance score decision~~ | **HIGH** | ~~Done 2026-06-16~~ — owner chose mobile feel over fidelity; shader now desktop-only, 41→49, main-thread work −64% |
+| Investigate the remaining FCP/LCP slowness (~4.7s/10s) — likely live Firebase Auth/Firestore/Analytics calls blocking early paint; needs testing against real deployed Hosting (CDN), not the local emulator, before concluding anything | **HIGH** | Medium |
 
 **Expected outcome by day 30:** new URLs fully indexed; no organic traffic
 spike yet (indexing + initial ranking takes time), but AI crawlers should

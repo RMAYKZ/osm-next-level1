@@ -10,6 +10,12 @@ export default function AnimatedShaderBackground() {
     const container = containerRef.current;
     if (!container) return;
 
+    // Mobile GPUs heat up and stutter under a continuous full-screen
+    // fragment shader (35-iteration noise loop, every pixel, every frame).
+    // Not worth the trade-off on a phone — use the static CSS gradient
+    // fallback below instead. Desktop keeps the full animated effect.
+    if (IS_MOBILE) return;
+
     // Respect OS-level "reduce motion" — skip the continuous 60fps WebGL
     // render loop entirely for users who've asked for it. Falls back to the
     // plain background colour already set via CSS below.
@@ -161,7 +167,12 @@ export default function AnimatedShaderBackground() {
         zIndex: 0,
         overflow: 'hidden',
         pointerEvents: 'none',
-        background: '#070711', // fallback until WebGL paints
+        // Mobile: this IS the background (no WebGL) — static gradient in
+        // the same colour mood as the shader, zero ongoing CPU/GPU cost.
+        // Desktop: fallback colour shown only until WebGL paints over it.
+        background: IS_MOBILE
+          ? 'radial-gradient(ellipse 80% 60% at 75% 15%, rgba(52,211,153,0.10) 0%, transparent 60%), #070711'
+          : '#070711',
       }}
     />
   );
