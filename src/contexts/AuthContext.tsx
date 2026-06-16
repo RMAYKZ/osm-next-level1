@@ -24,7 +24,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     let unsubscribe: (() => void) | undefined;
     let active = true;
-    (async () => {
+
+    const init = async () => {
       try {
         const [{ onAuthStateChanged }, auth] = await Promise.all([
           import("firebase/auth"),
@@ -44,10 +45,27 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       } catch {
         setLoading(false);
       }
-    })();
+    };
+
+    // Defer downloading + initializing the Firebase Auth SDK until the
+    // browser is idle (capped at 2s so it still resolves promptly) — this
+    // fires for every visitor regardless of login state, so on a slow
+    // connection/device it was competing with the critical above-the-fold
+    // render. The existing `loading` state already covers this delay.
+    let idleId: number | undefined;
+    if (typeof window.requestIdleCallback === "function") {
+      idleId = window.requestIdleCallback(init, { timeout: 2000 });
+    } else {
+      idleId = window.setTimeout(init, 1);
+    }
+
     return () => {
       active = false;
       unsubscribe?.();
+      if (idleId !== undefined) {
+        if (typeof window.cancelIdleCallback === "function") window.cancelIdleCallback(idleId);
+        else window.clearTimeout(idleId);
+      }
     };
   }, []);
 

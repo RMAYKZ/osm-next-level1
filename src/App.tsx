@@ -39,12 +39,23 @@ export default function App() {
         <FavoritesProvider>
         <SavedTacticsProvider>
 
-          {/* ── Animated shader background — lazy so Three.js doesn't block first paint ── */}
-          <Suspense fallback={
-            <div style={{ position: "fixed", top: 0, left: 0, width: "100vw", height: "100vh", background: "#070711", zIndex: 0 }} />
-          }>
-            <AnimatedShaderBackground />
-          </Suspense>
+          {/* ── Background ──
+              Mobile: a plain static gradient div, no Three.js involved at
+              all — `<AnimatedShaderBackground />` is never rendered, so its
+              lazy import (and the ~500kB three.js chunk inside it) is never
+              even requested. Desktop: full animated WebGL shader. */}
+          {IS_MOBILE ? (
+            <div style={{
+              position: "fixed", top: 0, left: 0, width: "100vw", height: "100vh", zIndex: 0,
+              background: "radial-gradient(ellipse 80% 60% at 75% 15%, rgba(52,211,153,0.10) 0%, transparent 60%), #070711",
+            }} />
+          ) : (
+            <Suspense fallback={
+              <div style={{ position: "fixed", top: 0, left: 0, width: "100vw", height: "100vh", background: "#070711", zIndex: 0 }} />
+            }>
+              <AnimatedShaderBackground />
+            </Suspense>
+          )}
 
           {/* ── Scrollable content layer ── */}
           <div style={{

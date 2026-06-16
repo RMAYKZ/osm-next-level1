@@ -92,7 +92,9 @@ schedule these):
 | Verify the new per-page OG images render correctly in a real Twitter/Facebook share-debugger test (generated locally, never checked against the live debuggers) | MEDIUM | Low |
 | Confirm GPTBot/ClaudeBot/PerplexityBot are not being blocked by any CDN/WAF rule in front of Firebase Hosting (robots.txt allows them, but a separate firewall could still block by user-agent) | **HIGH** | Low |
 | ~~Performance score decision~~ | **HIGH** | ~~Done 2026-06-16~~ — owner chose mobile feel over fidelity; shader now desktop-only, 41→49, main-thread work −64% |
-| Investigate the remaining FCP/LCP slowness (~4.7s/10s) — likely live Firebase Auth/Firestore/Analytics calls blocking early paint; needs testing against real deployed Hosting (CDN), not the local emulator, before concluding anything | **HIGH** | Medium |
+| ~~Stop downloading three.js on mobile at all~~ | **HIGH** | ~~Done 2026-06-16~~ — `App.tsx` never mounts `<AnimatedShaderBackground />` on mobile now, so its lazy chunk is never requested. Total byte weight 1021KB → 896KB |
+| ~~Defer Firebase Auth init off the critical path~~ | MEDIUM | ~~Done 2026-06-16~~ — `AuthContext.tsx` now starts via `requestIdleCallback` (2s timeout fallback) instead of immediately on mount. FCP 4.7s → 3.8s in local testing |
+| **Re-measure Performance on the real deployed site**, not the local emulator — current lab score (41→46-49, noisy run-to-run) is measured against live Firebase/Firestore/Analytics network calls under Lighthouse's pessimistic slow-4G throttle with no CDN. Production Firebase Hosting's global CDN will very likely score meaningfully better than anything measurable locally. This is the single most informative next step before deciding whether more performance work is even needed. | **HIGH** | Low (just requires a deploy + one Lighthouse run against the live URL) |
 
 **Expected outcome by day 30:** new URLs fully indexed; no organic traffic
 spike yet (indexing + initial ranking takes time), but AI crawlers should
