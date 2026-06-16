@@ -351,8 +351,8 @@ export default function MatchPredictions() {
             <div className="mt-5">
               {!user ? (
                 <form onSubmit={loginAdmin} className="grid gap-3 md:grid-cols-[1fr_1fr_auto]">
-                  <input value={email} onChange={(event) => setEmail(event.target.value)} type="email" className="rounded-2xl border border-white/10 bg-white/[0.045] px-4 py-3 text-white outline-none focus:border-amber-300/60" placeholder={t("matches.adminEmail")} />
-                  <input value={password} onChange={(event) => setPassword(event.target.value)} type="password" className="rounded-2xl border border-white/10 bg-white/[0.045] px-4 py-3 text-white outline-none focus:border-amber-300/60" placeholder={t("matches.password")} />
+                  <input value={email} onChange={(event) => setEmail(event.target.value)} type="email" autoComplete="email" className="rounded-2xl border border-white/10 bg-white/[0.045] px-4 py-3 text-white outline-none focus:border-amber-300/60" placeholder={t("matches.adminEmail")} />
+                  <input value={password} onChange={(event) => setPassword(event.target.value)} type="password" autoComplete="current-password" className="rounded-2xl border border-white/10 bg-white/[0.045] px-4 py-3 text-white outline-none focus:border-amber-300/60" placeholder={t("matches.password")} />
                   <button className="rounded-2xl bg-amber-400 px-5 py-3 text-sm font-black text-stone-950">{t("matches.login")}</button>
                 </form>
               ) : (

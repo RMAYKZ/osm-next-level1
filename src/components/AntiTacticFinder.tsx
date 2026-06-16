@@ -1270,7 +1270,7 @@ export default function AntiTacticFinder() {
                   <div className="suctop">
                     <div className="suclbl">{t("anti.successRate")}</div>
                     <div className="sucval">
-                      <span className="sucbadge">{d.badge}</span>
+                      <span className="sucbadge">{d.badge === 'STRONG' ? t("anti.badgeElite") : d.badge === 'SOLID' ? t("anti.badgeSolid") : t("anti.badgeSit")}</span>
                       <span>{d.sr}%</span>
                     </div>
                   </div>

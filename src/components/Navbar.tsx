@@ -39,6 +39,7 @@ function getLiveCount(): number {
 }
 
 function LiveUserBadge() {
+  const { t } = useLang();
   const [count, setCount] = useState(getLiveCount);
   useEffect(() => {
     const baseId = setInterval(() => setCount(getLiveCount()), 60_000);
@@ -73,7 +74,7 @@ function LiveUserBadge() {
         style={{ width: 6, height: 6, borderRadius: "50%", background: "#22c55e", display: "block", boxShadow: "0 0 6px #22c55e" }}
       />
       <span style={{ fontSize: 10, fontWeight: 800, color: "#4ade80", letterSpacing: "0.04em" }}>
-        {count} Online
+        {count} {t("nav.online")}
       </span>
     </div>
   );
@@ -391,7 +392,7 @@ export default function Navbar() {
               <li aria-hidden="true" style={{ padding: "10px 8px 6px" }}>
                 <div style={{ borderTop: "1px solid rgba(255,255,255,0.06)", paddingTop: 10 }}>
                   <span style={{ fontSize: 9, fontWeight: 900, letterSpacing: "0.12em", textTransform: "uppercase", color: "#475569" }}>
-                    Tools &amp; Resources
+                    {t("nav.toolsResources")}
                   </span>
                 </div>
               </li>

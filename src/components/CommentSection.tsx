@@ -472,6 +472,7 @@ export default function CommentSection() {
                     value={email}
                     onChange={(event) => setEmail(event.target.value)}
                     type="email"
+                    autoComplete="email"
                     style={{ ...inputStyle, flex: 1, minWidth: 160 }}
                     placeholder={t("matches.adminEmail")}
                   />
@@ -479,6 +480,7 @@ export default function CommentSection() {
                     value={password}
                     onChange={(event) => setPassword(event.target.value)}
                     type="password"
+                    autoComplete="current-password"
                     style={{ ...inputStyle, flex: 1, minWidth: 160 }}
                     placeholder={t("matches.password")}
                   />

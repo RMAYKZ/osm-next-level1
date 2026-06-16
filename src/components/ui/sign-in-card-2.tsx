@@ -316,7 +316,7 @@ export function SignInCard2({ onSignIn, onSignUp, onGoogle, onClose, t }: SignIn
                 <Input type="email" placeholder={t("auth.emailPlaceholder")} value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   onFocus={() => setFocused("email")} onBlur={() => setFocused(null)}
-                  className="pl-10" required
+                  className="pl-10" required autoComplete="email"
                 />
                 {focusedInput === "email" && (
                   <motion.div layoutId="focus-ring" className="absolute inset-0 rounded-xl pointer-events-none"
@@ -334,6 +334,7 @@ export function SignInCard2({ onSignIn, onSignUp, onGoogle, onClose, t }: SignIn
                   value={password} onChange={(e) => setPassword(e.target.value)}
                   onFocus={() => setFocused("password")} onBlur={() => setFocused(null)}
                   className="pl-10 pr-10" required
+                  autoComplete={mode === "up" ? "new-password" : "current-password"}
                 />
                 <button type="button" onClick={() => setShowPass(!showPassword)}
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-white/25 transition-colors hover:text-white/60"

@@ -47,19 +47,32 @@ service cloud.firestore {
       allow read: if true;
       // Only authenticated users (admin) can create/delete matches
       allow create, delete: if request.auth != null;
-      // Anyone can cast a vote (update only the votes sub-field)
-      allow update: if true;
+      // Admins can update anything (e.g. open/close status). Anonymous
+      // visitors may only bump the vote counters by one per write — they
+      // can never touch teamA/teamB/competition/omerPick or jump the tally
+      // by an arbitrary amount in a single forged request.
+      allow update: if request.auth != null || (
+        request.resource.data.diff(resource.data).affectedKeys()
+          .hasOnly(['votesHome', 'votesDraw', 'votesAway', 'totalVotes'])
+        && request.resource.data.votesHome  <= resource.data.votesHome  + 1
+        && request.resource.data.votesDraw  <= resource.data.votesDraw  + 1
+        && request.resource.data.votesAway  <= resource.data.votesAway + 1
+        && request.resource.data.totalVotes <= resource.data.totalVotes + 1
+      );
     }
 
     // ── Community Meta Vote ──────────────────────────────────────────────
     // One document per week (e.g. "2026-W24"), tally map stores vote counts.
     // Read is public; write is open to allow anonymous voting (client enforces
     // one-vote-per-week via localStorage, consistent with /matches pattern).
+    // Update is restricted to the tally map only — weekKey can't be rewritten
+    // and no other field can be smuggled into the document.
     match /metaVotes/{weekId} {
       allow read: if true;
       allow create: if request.resource.data.keys().hasOnly(['tally', 'weekKey'])
                     && request.resource.data.tally is map;
-      allow update: if true;
+      allow update: if request.resource.data.diff(resource.data).affectedKeys().hasOnly(['tally'])
+                    && request.resource.data.tally is map;
     }
 
     // ── Email subscriptions (CommunityHub) ──────────────────────────────

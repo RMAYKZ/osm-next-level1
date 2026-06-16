@@ -104,6 +104,8 @@ extraTranslations.pt = { ...extraTranslations.en, "matches.nav": "Jogos do Dia",
 Object.assign(extraTranslations.tr, {
   "nav.squad": "Kadro Analiz",
   "nav.tools": "Araçlar",
+  "nav.toolsResources": "Araçlar ve Kaynaklar",
+  "nav.online": "Çevrimiçi",
   "nav.premium": "Premium",
   "nav.donate": "Destek Ol",
   "nav.login": "Giriş",
@@ -291,6 +293,8 @@ Object.assign(extraTranslations.tr, {
 Object.assign(extraTranslations.en, {
   "nav.squad": "Squad Analysis",
   "nav.tools": "Tools",
+  "nav.toolsResources": "Tools & Resources",
+  "nav.online": "Online",
   "nav.premium": "Premium",
   "nav.donate": "Support",
   "nav.login": "Sign in",

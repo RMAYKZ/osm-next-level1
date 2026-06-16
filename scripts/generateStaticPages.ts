@@ -71,6 +71,11 @@ interface UiStrings {
   compareHub: string;
   verdictLabel: string;
   backToCompare: string;
+  /** Appended to the strength label when a (location, strength) pair has more
+   *  than one Anti-Tactic Engine row — e.g. an "away/stronger" entry and its
+   *  "away/stronger (alt)" sibling — so the static table doesn't show two
+   *  identically-labelled rows with different numbers and no explanation. */
+  altSuffix: string;
 }
 
 const UI: Record<Lang, UiStrings> = {
@@ -104,6 +109,7 @@ const UI: Record<Lang, UiStrings> = {
     compareHub: "Formation Comparisons",
     verdictLabel: "Verdict",
     backToCompare: "← All comparisons",
+    altSuffix: " (Option B)",
   },
   tr: {
     home: "OSM Next Level",
@@ -135,6 +141,7 @@ const UI: Record<Lang, UiStrings> = {
     compareHub: "Formasyon Karşılaştırmaları",
     verdictLabel: "Sonuç",
     backToCompare: "← Tüm karşılaştırmalar",
+    altSuffix: " (B Seçeneği)",
   },
 };
 
@@ -426,8 +433,25 @@ function write(relPath: string, html: string) {
 
 // ── formation pages ──
 
+// Several (opponentId, location, strength) combinations have more than one
+// row in `antiTactics` — a primary recommendation plus an alternate
+// ("Option B") the live Anti-Tactic Engine exposes side-by-side. Filtered
+// only by opponentId, those rows would otherwise render as two table rows
+// with an identical Location/Strength label and different numbers, which
+// looks like contradictory data to a visitor or crawler. Tag every row past
+// the first occurrence of its (location, strength) pair as the alt option.
+function withAltFlags<T extends { location: string; strength: string }>(rows: T[]): (T & { isAlt: boolean })[] {
+  const seen = new Set<string>();
+  return rows.map((r) => {
+    const key = `${r.location}-${r.strength}`;
+    const isAlt = seen.has(key);
+    seen.add(key);
+    return { ...r, isAlt };
+  });
+}
+
 function counterTableHtml(t: UiStrings, opponentId: string): string {
-  const rows = antiTactics.filter((a) => a.opponentId === opponentId);
+  const rows = withAltFlags(antiTactics.filter((a) => a.opponentId === opponentId));
   const strengthLabel = (s: string) => (s === "stronger" ? t.stronger : s === "equal" ? t.equal : t.weaker);
   const locLabel = (l: string) => (l === "home" ? t.home2 : t.away);
   return `<table>
@@ -436,7 +460,7 @@ function counterTableHtml(t: UiStrings, opponentId: string): string {
 ${rows
   .map(
     (r) =>
-      `<tr><td>${locLabel(r.location)}</td><td>${strengthLabel(r.strength)}</td><td>${esc(r.recommendedFormation)}</td><td>${r.pressure}</td><td>${r.style}</td><td>${r.tempo}</td><td>${esc(r.note)}</td></tr>`
+      `<tr><td>${locLabel(r.location)}</td><td>${strengthLabel(r.strength)}${r.isAlt ? esc(t.altSuffix) : ""}</td><td>${esc(r.recommendedFormation)}</td><td>${r.pressure}</td><td>${r.style}</td><td>${r.tempo}</td><td>${esc(r.note)}</td></tr>`
   )
   .join("\n")}
 </tbody>
@@ -444,7 +468,7 @@ ${rows
 }
 
 function counterItemListJsonLd(opponentId: string, baseUrl: string) {
-  const rows = antiTactics.filter((a) => a.opponentId === opponentId);
+  const rows = withAltFlags(antiTactics.filter((a) => a.opponentId === opponentId));
   return {
     "@context": "https://schema.org",
     "@type": "ItemList",
@@ -453,7 +477,7 @@ function counterItemListJsonLd(opponentId: string, baseUrl: string) {
     itemListElement: rows.map((r, i) => ({
       "@type": "ListItem",
       position: i + 1,
-      name: `${r.location === "home" ? "Home" : "Away"} / ${r.strength} → ${r.recommendedFormation} (Pressure ${r.pressure}, Style ${r.style}, Tempo ${r.tempo})`,
+      name: `${r.location === "home" ? "Home" : "Away"} / ${r.strength}${r.isAlt ? " (Option B)" : ""} → ${r.recommendedFormation} (Pressure ${r.pressure}, Style ${r.style}, Tempo ${r.tempo})`,
     })),
   };
 }
