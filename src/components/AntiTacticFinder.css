@@ -1,4 +1,7 @@
-@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;900&family=Inter:wght@400;500;600;700;800;900&display=swap');
+/* Barlow Condensed + Inter are loaded via <link> in index.html, not a CSS
+   @import here — @import is render-blocking and invisible to the browser's
+   preload scanner (it can only be discovered after the main CSS bundle is
+   fetched and parsed), unlike a <link> tag in the raw HTML. */
 
 /* ═══════════════════════════════════════════════
    SECTION WRAPPER
