@@ -11,6 +11,8 @@ export default function ThemeSwitcher() {
           theme === "a" ? "bg-amber-400 text-stone-900" : "text-stone-400 hover:text-white"
         }`}
         title="Tema A (Amber)"
+        aria-label="Tema A (Amber)"
+        aria-pressed={theme === "a"}
       >
         A
       </button>
@@ -20,6 +22,8 @@ export default function ThemeSwitcher() {
           theme === "b" ? "bg-emerald-400 text-stone-900" : "text-stone-400 hover:text-white"
         }`}
         title="Tema B (Yeşil)"
+        aria-label="Tema B (Yeşil)"
+        aria-pressed={theme === "b"}
       >
         B
       </button>

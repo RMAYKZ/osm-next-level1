@@ -363,7 +363,7 @@ export default function MatchPredictions() {
                       <button
                         onClick={syncFromAPI}
                         disabled={syncing}
-                        className="rounded-full bg-emerald-600 px-4 py-2 text-xs font-black uppercase tracking-widest text-white hover:bg-emerald-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="rounded-full bg-emerald-600 px-4 py-2 text-xs font-black uppercase tracking-widest text-stone-900 hover:bg-emerald-500 disabled:opacity-50 disabled:cursor-not-allowed"
                       >
                         {syncing ? "⏳ Sync..." : "⚡ Football-Data Sync"}
                       </button>
@@ -394,7 +394,7 @@ export default function MatchPredictions() {
                           {!match.pointsAwarded && (
                             <button
                               onClick={() => finalizeMatch(match)}
-                              className="rounded-full bg-emerald-500 px-4 py-2 text-xs font-black uppercase tracking-widest text-white hover:bg-emerald-400"
+                              className="rounded-full bg-emerald-500 px-4 py-2 text-xs font-black uppercase tracking-widest text-stone-900 hover:bg-emerald-400"
                               title="Maç bitti, sonucu gir ve puanları dağıt"
                             >
                               🏆 Sonuçlandır
@@ -408,7 +408,7 @@ export default function MatchPredictions() {
                           <button onClick={() => toggleMatchStatus(match.id, match.status)} className="rounded-full border border-white/10 px-4 py-2 text-xs font-black uppercase tracking-widest text-stone-300">
                             {match.status === "open" ? t("matches.close") : t("matches.open")}
                           </button>
-                          <button onClick={() => removeMatch(match.id)} className="rounded-full bg-red-500 px-4 py-2 text-xs font-black uppercase tracking-widest text-white">{t("matches.delete")}</button>
+                          <button onClick={() => removeMatch(match.id)} className="rounded-full bg-red-500 px-4 py-2 text-xs font-black uppercase tracking-widest text-stone-900">{t("matches.delete")}</button>
                         </div>
                       </div>
                     ))}

@@ -72,6 +72,13 @@ exact, reproducible values.
 - https://osmnextlevel.com/tr/formations/532/ — 5-3-2 karşı taktik
 - https://osmnextlevel.com/tr/formations/5311/ — 5-3-1-1 karşı taktik
 
+### Formation comparisons (which one to use, EN+TR)
+- https://osmnextlevel.com/compare/433-vs-523/
+- https://osmnextlevel.com/compare/442-vs-433/
+- https://osmnextlevel.com/compare/523-vs-532/
+- https://osmnextlevel.com/compare/4231-vs-451/
+- https://osmnextlevel.com/compare/631-vs-541/
+
 ### Guides
 - https://osmnextlevel.com/blog/osm-4-3-3-counter-tactic-2026/
 - https://osmnextlevel.com/blog/osm-best-away-formation-2026/
@@ -83,6 +90,11 @@ exact, reproducible values.
 - https://osmnextlevel.com/tr/blog/osm-antrenman-rehberi/ — antrenman ve kamp rehberi
 - https://osmnextlevel.com/tr/blog/osm-scout-rehberi/ — genç oyuncu keşfi
 - https://osmnextlevel.com/tr/blog/osm-para-hilesi-gercegi/ — hile/hack iddialarının gerçeği
+- https://osmnextlevel.com/tr/blog/osm-hakem-renkleri-rehberi/
+- https://osmnextlevel.com/tr/blog/osm-mac-oncesi-kontrol-listesi/
+- https://osmnextlevel.com/tr/blog/osm-lig-hedefi-rehberi/
+- https://osmnextlevel.com/tr/blog/osm-haftalik-meta-rehberi/
+- https://osmnextlevel.com/tr/blog/osm-kadro-degeri-analizi/
 
 ## About the author
 

@@ -32,6 +32,7 @@
     "@types/react-dom": "19.2.3",
     "@vite-pwa/assets-generator": "^1.0.2",
     "@vitejs/plugin-react": "5.1.1",
+    "sharp": "^0.35.1",
     "tailwindcss": "4.1.17",
     "tsx": "^4.19.2",
     "typescript": "5.9.3",

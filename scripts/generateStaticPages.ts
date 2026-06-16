@@ -18,10 +18,12 @@
 import { mkdirSync, writeFileSync, existsSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
+import sharp from "sharp";
 
 import { blogPosts } from "../src/data/blog";
 import { blogPostsTr } from "../src/data/blogTr";
 import { formationPages, type FormationPage, type FormationContent } from "../src/data/formations";
+import { comparisonPages } from "../src/data/comparisons";
 import { antiTactics, opponentTactics } from "../src/data/tactics";
 import type { BlogPost } from "../src/data/blog";
 
@@ -66,6 +68,9 @@ interface UiStrings {
   away: string;
   allFormations: string;
   allGuides: string;
+  compareHub: string;
+  verdictLabel: string;
+  backToCompare: string;
 }
 
 const UI: Record<Lang, UiStrings> = {
@@ -96,6 +101,9 @@ const UI: Record<Lang, UiStrings> = {
     away: "Away",
     allFormations: "All Formations",
     allGuides: "All Guides",
+    compareHub: "Formation Comparisons",
+    verdictLabel: "Verdict",
+    backToCompare: "← All comparisons",
   },
   tr: {
     home: "OSM Next Level",
@@ -124,6 +132,9 @@ const UI: Record<Lang, UiStrings> = {
     away: "Deplasman",
     allFormations: "Tüm Formasyonlar",
     allGuides: "Tüm Rehberler",
+    compareHub: "Formasyon Karşılaştırmaları",
+    verdictLabel: "Sonuç",
+    backToCompare: "← Tüm karşılaştırmalar",
   },
 };
 
@@ -176,6 +187,133 @@ function renderList(items: string[]): string {
   return `<ul>${items.map((i) => `<li>${inlineMd(i)}</li>`).join("")}</ul>`;
 }
 
+// ── per-page OG share images ──
+//
+// Generated with sharp (SVG → PNG, no headless browser, no canvas native
+// build). Runs as a fully isolated, awaited pass BEFORE any HTML is
+// written, so every page-builder function can simply look up its image URL
+// synchronously. If image generation throws for any reason, the page keeps
+// using the original brand OG_IMAGE instead — a missing custom image must
+// never break the page or the build.
+
+const ogImageUrlByKey = new Map<string, string>();
+
+function wrapText(text: string, maxChars: number, maxLines: number): string[] {
+  // Pass 1: greedily wrap every word into lines of at most maxChars.
+  const words = text.split(/\s+/).filter(Boolean);
+  const lines: string[] = [];
+  let current = "";
+  for (const word of words) {
+    const candidate = current ? `${current} ${word}` : word;
+    if (candidate.length > maxChars && current) {
+      lines.push(current);
+      current = word;
+    } else {
+      current = candidate;
+    }
+  }
+  if (current) lines.push(current);
+
+  // Pass 2: if that produced more lines than allowed, truncate with "…".
+  if (lines.length > maxLines) {
+    const truncated = lines.slice(0, maxLines);
+    truncated[maxLines - 1] = truncated[maxLines - 1].replace(/[.,;:]+$/, "") + "…";
+    return truncated;
+  }
+  return lines;
+}
+
+function ogSvg(opts: { kicker: string; title: string; badge: string }): string {
+  const lines = wrapText(opts.title, 26, 3);
+  const titleY = 300 - (lines.length - 1) * 34;
+  const titleTspans = lines
+    .map((line, i) => `<tspan x="80" y="${titleY + i * 68}">${esc(line)}</tspan>`)
+    .join("");
+  return `<svg width="1200" height="630" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="glow" cx="85%" cy="20%" r="60%">
+      <stop offset="0%" stop-color="#34d399" stop-opacity="0.18"/>
+      <stop offset="100%" stop-color="#34d399" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="1200" height="630" fill="#070711"/>
+  <rect width="1200" height="630" fill="url(#glow)"/>
+  <rect x="0" y="0" width="1200" height="6" fill="#34d399"/>
+  <text x="80" y="90" font-size="30" font-family="Arial, sans-serif" font-weight="900" fill="#34d399">⚽ OSM NEXT LEVEL</text>
+  <text font-size="58" font-family="Arial, sans-serif" font-weight="900" fill="#f5f5f7">${titleTspans}</text>
+  <rect x="78" y="${titleY + lines.length * 68 - 8}" width="${Math.min(560, 28 + opts.badge.length * 17)}" height="46" rx="23" fill="none" stroke="#34d399" stroke-width="2"/>
+  <text x="${78 + Math.min(560, 28 + opts.badge.length * 17) / 2}" y="${titleY + lines.length * 68 + 23}" font-size="22" font-family="Arial, sans-serif" font-weight="700" fill="#34d399" text-anchor="middle">${esc(opts.badge)}</text>
+  <text x="80" y="600" font-size="20" font-family="Arial, sans-serif" fill="#7a8094">${esc(opts.kicker)}</text>
+</svg>`;
+}
+
+async function generateOgImage(key: string, relOutPath: string, svgOpts: Parameters<typeof ogSvg>[0]): Promise<void> {
+  try {
+    const outPath = resolve(DIST, relOutPath.replace(/^[/\\]+/, ""));
+    mkdirSync(dirname(outPath), { recursive: true });
+    await sharp(Buffer.from(ogSvg(svgOpts))).png().toFile(outPath);
+    ogImageUrlByKey.set(key, `${SITE}/${relOutPath.replace(/^[/\\]+/, "")}`);
+  } catch (err) {
+    console.warn(`[generateStaticPages] OG image failed for "${key}", falling back to default:`, (err as Error).message);
+  }
+}
+
+function ogImageFor(key: string): string {
+  return ogImageUrlByKey.get(key) ?? OG_IMAGE;
+}
+
+async function generateAllOgImages(): Promise<void> {
+  const jobs: Promise<void>[] = [];
+  for (const fp of formationPages) {
+    for (const lang of ["en", "tr"] as const) {
+      const c = fp[lang];
+      const badge = lang === "en" ? "Counter Tactic Guide" : "Karşı Taktik Rehberi";
+      const kicker = lang === "en" ? "osmnextlevel.com/formations" : "osmnextlevel.com/tr/formations";
+      jobs.push(
+        generateOgImage(`formation:${lang}:${fp.slug}`, `og/${lang}-formations-${fp.slug}.png`, {
+          kicker,
+          title: c.title,
+          badge,
+        })
+      );
+    }
+  }
+  for (const post of blogPosts) {
+    jobs.push(
+      generateOgImage(`blog:en:${post.slug}`, `og/en-blog-${post.slug}.png`, {
+        kicker: "osmnextlevel.com/blog",
+        title: post.title,
+        badge: post.category,
+      })
+    );
+  }
+  for (const post of blogPostsTr) {
+    jobs.push(
+      generateOgImage(`blog:tr:${post.slug}`, `og/tr-blog-${post.slug}.png`, {
+        kicker: "osmnextlevel.com/tr/blog",
+        title: post.title,
+        badge: post.category,
+      })
+    );
+  }
+  for (const cp of comparisonPages) {
+    for (const lang of ["en", "tr"] as const) {
+      const pathPrefix = lang === "en" ? "" : "/tr";
+      jobs.push(
+        generateOgImage(`compare:${lang}:${cp.slug}`, `og/${lang}-compare-${cp.slug}.png`, {
+          kicker: `osmnextlevel.com${pathPrefix}/compare`,
+          title: cp[lang].title,
+          badge: lang === "en" ? "Formation Comparison" : "Formasyon Karşılaştırması",
+        })
+      );
+    }
+  }
+  await Promise.all(jobs);
+  console.log(`[generateStaticPages] generated ${ogImageUrlByKey.size}/${jobs.length} custom OG images`);
+}
+
+await generateAllOgImages();
+
 // ── page shell ──
 
 interface Alternate { lang: string; href: string }
@@ -186,10 +324,11 @@ function basePage(opts: {
   alternates?: Alternate[];
   title: string;
   description: string;
+  image?: string;
   jsonLd: object[];
   bodyHtml: string;
 }): string {
-  const { lang, canonical, alternates = [], title, description, jsonLd, bodyHtml } = opts;
+  const { lang, canonical, alternates = [], title, description, image = OG_IMAGE, jsonLd, bodyHtml } = opts;
   const hreflangTags = alternates.map((a) => `<link rel="alternate" hreflang="${a.lang}" href="${a.href}" />`).join("\n    ");
   return `<!doctype html>
 <html lang="${lang}" dir="ltr">
@@ -206,11 +345,11 @@ ${hreflangTags}
 <meta property="og:title" content="${esc(title)}" />
 <meta property="og:description" content="${esc(description)}" />
 <meta property="og:url" content="${canonical}" />
-<meta property="og:image" content="${OG_IMAGE}" />
+<meta property="og:image" content="${image}" />
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content="${esc(title)}" />
 <meta name="twitter:description" content="${esc(description)}" />
-<meta name="twitter:image" content="${OG_IMAGE}" />
+<meta name="twitter:image" content="${image}" />
 <link rel="icon" href="/favicon.ico" sizes="64x64" />
 <script type="application/ld+json">${JSON.stringify(jsonLd.length === 1 ? jsonLd[0] : jsonLd)}</script>
 <style>
@@ -273,7 +412,7 @@ function breadcrumbJsonLd(items: { name: string; url: string }[]) {
   };
 }
 
-const sitemapEntries: { loc: string; lastmod: string; priority: string; alternates?: Alternate[] }[] = [];
+const sitemapEntries: { loc: string; lastmod: string; priority: string; alternates?: Alternate[]; image?: string }[] = [];
 
 function write(relPath: string, html: string) {
   // Strip any leading slash — path.resolve() treats a segment starting
@@ -413,6 +552,7 @@ ${c.faq.map((f) => `<dt>${inlineMd(f.q)}</dt><dd>${inlineMd(f.a)}</dd>`).join("\
     ],
     title: c.metaTitle,
     description: c.metaDesc,
+    image: ogImageFor(`formation:${lang}:${fp.slug}`),
     jsonLd: [webPageJsonLd, breadcrumbJsonLd(breadcrumb), faqJsonLd, howTo, counterItemListJsonLd(fp.id, canonical)],
     bodyHtml,
   });
@@ -424,6 +564,7 @@ ${c.faq.map((f) => `<dt>${inlineMd(f.q)}</dt><dd>${inlineMd(f.a)}</dd>`).join("\
       loc: canonical,
       lastmod: BUILD_DATE,
       priority: "0.8",
+      image: ogImageFor(`formation:${lang}:${fp.slug}`),
       alternates: [
         { lang: "x-default", href: canonical },
         { lang: "en", href: canonical },
@@ -435,6 +576,7 @@ ${c.faq.map((f) => `<dt>${inlineMd(f.q)}</dt><dd>${inlineMd(f.a)}</dd>`).join("\
       loc: canonical,
       lastmod: BUILD_DATE,
       priority: "0.8",
+      image: ogImageFor(`formation:${lang}:${fp.slug}`),
       alternates: [
         { lang: "x-default", href: `${SITE}/formations/${fp.slug}/` },
         { lang: "en", href: `${SITE}/formations/${fp.slug}/` },
@@ -519,6 +661,209 @@ ${items.map((it) => `<div class="card"><h3><a href="${it.href}">${esc(it.title)}
 buildFormationsHub("en");
 buildFormationsHub("tr");
 
+// ── comparison pages (formation vs. formation) ──
+//
+// Strong AEO/AI-citation format: side-by-side tables + a clear verdict.
+// Strengths/weaknesses and counter-tactic numbers are looked up live from
+// formationPages/antiTactics — only the qualitative verdict/when-to-use
+// text lives in comparisons.ts.
+
+function findFormation(slug: string): FormationPage {
+  const fp = formationPages.find((f) => f.slug === slug);
+  if (!fp) throw new Error(`comparisons.ts references unknown formation slug "${slug}"`);
+  return fp;
+}
+
+function headlineRow(opponentId: string, strength: "weaker" | "stronger", location: "home" | "away") {
+  return antiTactics.find((a) => a.opponentId === opponentId && a.strength === strength && a.location === location);
+}
+
+function buildComparisonPage(cp: (typeof comparisonPages)[number], lang: Lang) {
+  const t = UI[lang];
+  const c = cp[lang];
+  const fpA = findFormation(cp.slugA);
+  const fpB = findFormation(cp.slugB);
+  const pathPrefix = lang === "en" ? "" : "/tr";
+  const canonical = `${SITE}${pathPrefix}/compare/${cp.slug}/`;
+  const hubUrl = `${SITE}${pathPrefix}/compare/`;
+
+  const rowFor = (fp: FormationPage) => {
+    const away = headlineRow(fp.id, "weaker", "away");
+    const home = headlineRow(fp.id, "stronger", "home");
+    return { away, home };
+  };
+  const rowsA = rowFor(fpA);
+  const rowsB = rowFor(fpB);
+
+  const breadcrumb = [
+    { name: t.breadcrumbHome, url: `${SITE}/` },
+    { name: t.compareHub, url: hubUrl },
+    { name: c.title, url: canonical },
+  ];
+
+  const faqJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: c.faq.map((f) => ({
+      "@type": "Question",
+      name: f.q,
+      acceptedAnswer: { "@type": "Answer", text: f.a },
+    })),
+  };
+
+  const webPageJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    name: c.title,
+    description: c.metaDesc,
+    url: canonical,
+    inLanguage: lang,
+    isPartOf: { "@type": "WebSite", name: "OSM Next Level", url: `${SITE}/` },
+  };
+
+  const fmtRow = (label: string, row: ReturnType<typeof headlineRow>) =>
+    row ? `<tr><td>${esc(label)}</td><td>${esc(row.recommendedFormation)}</td><td>${row.pressure}</td><td>${row.style}</td><td>${row.tempo}</td></tr>` : "";
+
+  const bodyHtml = `
+${breadcrumbHtml([
+  { name: t.breadcrumbHome, href: "/" },
+  { name: t.compareHub, href: pathPrefix + "/compare/" },
+  { name: c.title },
+])}
+<h1>${fpA.emoji} ${esc(fpA.formation)} vs ${fpB.emoji} ${esc(fpB.formation)}</h1>
+<p>${inlineMd(c.verdict)}</p>
+
+<div class="grid2">
+  <div class="card"><h3>${fpA.emoji} ${esc(fpA.formation)}</h3>${renderList(fpA[lang].strengths.slice(0, 3))}</div>
+  <div class="card"><h3>${fpB.emoji} ${esc(fpB.formation)}</h3>${renderList(fpB[lang].strengths.slice(0, 3))}</div>
+</div>
+
+<h2>${lang === "en" ? "Counter-Tactic Snapshot" : "Karşı Taktik Özeti"}</h2>
+<table>
+<thead><tr><th>${t.colFormation}</th><th>${lang === "en" ? "Best Counter" : "En İyi Karşı Taktik"}</th><th>${t.colPressure}</th><th>${t.colStyle}</th><th>${t.colTempo}</th></tr></thead>
+<tbody>
+${fmtRow(`${fpA.formation} (${lang === "en" ? "away, weaker" : "deplasman, zayıf"})`, rowsA.away)}
+${fmtRow(`${fpA.formation} (${lang === "en" ? "home, stronger" : "ev, güçlü"})`, rowsA.home)}
+${fmtRow(`${fpB.formation} (${lang === "en" ? "away, weaker" : "deplasman, zayıf"})`, rowsB.away)}
+${fmtRow(`${fpB.formation} (${lang === "en" ? "home, stronger" : "ev, güçlü"})`, rowsB.home)}
+</tbody>
+</table>
+
+<div class="grid2">
+  <div class="card"><h3>${lang === "en" ? `When to use ${fpA.formation}` : `${fpA.formation} Ne Zaman Kullanılır`}</h3><p>${inlineMd(c.whenA)}</p></div>
+  <div class="card"><h3>${lang === "en" ? `When to use ${fpB.formation}` : `${fpB.formation} Ne Zaman Kullanılır`}</h3><p>${inlineMd(c.whenB)}</p></div>
+</div>
+
+<h2>${t.faqTitle}</h2>
+<dl>
+${c.faq.map((f) => `<dt>${inlineMd(f.q)}</dt><dd>${inlineMd(f.a)}</dd>`).join("\n")}
+</dl>
+
+<p>
+  <a href="${pathPrefix}/formations/${fpA.slug}/">${fpA.emoji} ${esc(fpA[lang].title)}</a> ·
+  <a href="${pathPrefix}/formations/${fpB.slug}/">${fpB.emoji} ${esc(fpB[lang].title)}</a>
+</p>
+<a class="cta" href="/?lang=${lang}#anti-taktik">${t.openEngine}</a>
+<p><a href="${pathPrefix}/compare/">${t.backToCompare}</a></p>
+`;
+
+  const html = basePage({
+    lang,
+    canonical,
+    image: ogImageFor(`compare:${lang}:${cp.slug}`),
+    alternates: [
+      { lang: "x-default", href: `${SITE}/compare/${cp.slug}/` },
+      { lang: "en", href: `${SITE}/compare/${cp.slug}/` },
+      { lang: "tr", href: `${SITE}/tr/compare/${cp.slug}/` },
+    ],
+    title: c.metaTitle,
+    description: c.metaDesc,
+    jsonLd: [webPageJsonLd, breadcrumbJsonLd(breadcrumb), faqJsonLd],
+    bodyHtml,
+  });
+
+  write(`${pathPrefix}/compare/${cp.slug}`, html);
+  sitemapEntries.push({
+    loc: canonical,
+    lastmod: BUILD_DATE,
+    priority: "0.7",
+    image: ogImageFor(`compare:${lang}:${cp.slug}`),
+    alternates: [
+      { lang: "x-default", href: `${SITE}/compare/${cp.slug}/` },
+      { lang: "en", href: `${SITE}/compare/${cp.slug}/` },
+      { lang: "tr", href: `${SITE}/tr/compare/${cp.slug}/` },
+    ],
+  });
+}
+
+for (const cp of comparisonPages) {
+  buildComparisonPage(cp, "en");
+  buildComparisonPage(cp, "tr");
+}
+
+function buildComparisonsHub(lang: Lang) {
+  const t = UI[lang];
+  const pathPrefix = lang === "en" ? "" : "/tr";
+  const canonical = `${SITE}${pathPrefix}/compare/`;
+  const items = comparisonPages.map((cp) => ({
+    href: `${pathPrefix}/compare/${cp.slug}/`,
+    title: cp[lang].title,
+    desc: cp[lang].metaDesc,
+  }));
+
+  const itemListJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    name: t.compareHub,
+    url: canonical,
+    itemListElement: items.map((it, i) => ({ "@type": "ListItem", position: i + 1, url: `${SITE}${it.href}`, name: it.title })),
+  };
+
+  const breadcrumb = [
+    { name: t.breadcrumbHome, url: `${SITE}/` },
+    { name: t.compareHub, url: canonical },
+  ];
+
+  const bodyHtml = `
+${breadcrumbHtml([{ name: t.breadcrumbHome, href: "/" }, { name: t.compareHub }])}
+<h1>${t.compareHub}</h1>
+<p>${lang === "en" ? "Side-by-side formation comparisons with a clear verdict on which one fits your squad and matchup." : "Hangi formasyonun kadrona ve maçına uyduğuna dair net sonuçlu, yan yana formasyon karşılaştırmaları."}</p>
+<div class="grid2">
+${items.map((it) => `<div class="card"><h3><a href="${it.href}">${esc(it.title)}</a></h3><p>${esc(it.desc)}</p></div>`).join("\n")}
+</div>
+<a class="cta" href="/?lang=${lang}#anti-taktik">${t.openEngine}</a>
+`;
+
+  const html = basePage({
+    lang,
+    canonical,
+    alternates: [
+      { lang: "x-default", href: `${SITE}/compare/` },
+      { lang: "en", href: `${SITE}/compare/` },
+      { lang: "tr", href: `${SITE}/tr/compare/` },
+    ],
+    title: lang === "en" ? "OSM Formation Comparisons | OSM Next Level" : "OSM Formasyon Karşılaştırmaları | OSM Next Level",
+    description: lang === "en" ? "Compare OSM formations side by side and see which one wins for your squad and matchup." : "OSM formasyonlarını yan yana karşılaştır, kadron ve maçın için hangisinin kazandığını gör.",
+    jsonLd: [itemListJsonLd, breadcrumbJsonLd(breadcrumb)],
+    bodyHtml,
+  });
+
+  write(`${pathPrefix}/compare`, html);
+  sitemapEntries.push({
+    loc: canonical,
+    lastmod: BUILD_DATE,
+    priority: "0.7",
+    alternates: [
+      { lang: "x-default", href: `${SITE}/compare/` },
+      { lang: "en", href: `${SITE}/compare/` },
+      { lang: "tr", href: `${SITE}/tr/compare/` },
+    ],
+  });
+}
+
+buildComparisonsHub("en");
+buildComparisonsHub("tr");
+
 // ── blog pages ──
 
 function buildBlogPost(post: BlogPost, lang: Lang) {
@@ -545,7 +890,7 @@ function buildBlogPost(post: BlogPost, lang: Lang) {
     author: { "@type": "Person", name: "omerovvvvv" },
     publisher: { "@type": "Organization", name: "OSM Next Level", url: `${SITE}/` },
     mainEntityOfPage: canonical,
-    image: OG_IMAGE,
+    image: ogImageFor(`blog:${lang}:${post.slug}`),
   };
 
   const bodyHtml = `
@@ -566,12 +911,13 @@ ${renderContent(post.content)}
     canonical,
     title: post.metaTitle,
     description: post.metaDesc,
+    image: ogImageFor(`blog:${lang}:${post.slug}`),
     jsonLd: [articleJsonLd, breadcrumbJsonLd(breadcrumb)],
     bodyHtml,
   });
 
   write(`${pathPrefix}/blog/${post.slug}`, html);
-  sitemapEntries.push({ loc: canonical, lastmod: post.date, priority: "0.7" });
+  sitemapEntries.push({ loc: canonical, lastmod: post.date, priority: "0.7", image: ogImageFor(`blog:${lang}:${post.slug}`) });
 }
 
 for (const post of blogPosts) buildBlogPost(post, "en");
@@ -777,18 +1123,22 @@ function buildSitemap() {
       const alt = (e.alternates ?? [])
         .map((a) => `\n    <xhtml:link rel="alternate" hreflang="${a.lang}" href="${a.href}"/>`)
         .join("");
+      // Only list genuinely custom images — repeating the shared brand
+      // OG_IMAGE across every page adds noise without value for image search.
+      const img = e.image && e.image !== OG_IMAGE ? `\n    <image:image>\n      <image:loc>${e.image}</image:loc>\n    </image:image>` : "";
       return `  <url>
     <loc>${e.loc}</loc>
     <lastmod>${e.lastmod}</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>${e.priority}</priority>${alt}
+    <priority>${e.priority}</priority>${alt}${img}
   </url>`;
     })
     .join("\n");
 
   const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
-        xmlns:xhtml="http://www.w3.org/1999/xhtml">
+        xmlns:xhtml="http://www.w3.org/1999/xhtml"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
 ${homepageEntry}
 ${enHomepageEntry}
 ${urlEntries}
@@ -802,5 +1152,5 @@ buildSitemap();
 console.log(
   `[generateStaticPages] wrote ${formationPages.length * 2} formation pages, ${
     blogPosts.length + blogPostsTr.length
-  } blog pages, 1 English homepage, 4 hub pages, and sitemap.xml (${sitemapEntries.length + 2} URLs) into dist/`
+  } blog pages, ${comparisonPages.length * 2} comparison pages, 1 English homepage, 6 hub pages, and sitemap.xml (${sitemapEntries.length + 2} URLs) into dist/`
 );

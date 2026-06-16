@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAuth } from "../contexts/AuthContext";
@@ -11,6 +11,15 @@ export default function ProfilePanel() {
   const { user, profile, loading, signIn, signUp, signInWithGoogle, logOut, saveProfile } = useAuth();
   const { t } = useLang();
   const [open, setOpen] = useState(false);
+
+  useEffect(() => {
+    if (!open) return;
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setOpen(false);
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [open]);
 
   if (loading) {
     return (
@@ -55,6 +64,9 @@ export default function ProfilePanel() {
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
             className="fixed inset-0 z-[9999] overflow-y-auto bg-black/85 backdrop-blur-md"
+            role="dialog"
+            aria-modal="true"
+            aria-label={user ? t("nav.profile") : t("profile.modalTitle")}
           >
             <div onClick={() => setOpen(false)} className="fixed inset-0 z-0" aria-hidden="true" />
 

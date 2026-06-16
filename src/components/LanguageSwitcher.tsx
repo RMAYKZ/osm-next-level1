@@ -12,9 +12,11 @@ export default function LanguageSwitcher() {
             key={l.code}
             onClick={() => setLang(l.code)}
             title={l.native}
+            aria-label={l.native}
+            aria-pressed={lang === l.code}
             className={`px-1.5 py-0.5 rounded text-sm transition-all ${
               lang === l.code
-                ? "bg-red-500 text-white shadow-sm"
+                ? "bg-red-500 text-stone-900 shadow-sm"
                 : "text-gray-300 hover:bg-white/10"
             }`}
           >

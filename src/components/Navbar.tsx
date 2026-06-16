@@ -122,6 +122,17 @@ export default function Navbar() {
     };
   }, [open]);
 
+  useEffect(() => {
+    if (!open && !activeSheet) return;
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key !== "Escape") return;
+      if (activeSheet) setActiveSheet(null);
+      else setOpen(false);
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [open, activeSheet]);
+
   const links = [
     { href: "#anasayfa",    label: t("nav.home") },
     { href: "#anti-taktik", label: t("nav.anti") },
@@ -330,6 +341,9 @@ export default function Navbar() {
               visibility: open ? "visible" : "hidden",
             }}
             aria-hidden={!open}
+            role="dialog"
+            aria-modal={open}
+            aria-label={t("nav.menu")}
           >
             {/* Header */}
             <div className="shrink-0 flex items-center justify-between border-b border-white/10 px-5 py-4">
@@ -457,6 +471,9 @@ export default function Navbar() {
                   flexDirection: "column",
                   boxShadow: "0 -20px 60px rgba(0,0,0,0.8), 0 -1px 0 oklch(0.87 0.27 152 / 0.12)",
                 }}
+                role="dialog"
+                aria-modal="true"
+                aria-label={sheetMeta.title}
               >
                 {/* Drag handle + header */}
                 <div style={{ padding: "14px 20px 0", flexShrink: 0, display: "flex", flexDirection: "column", alignItems: "center", gap: 14 }}>

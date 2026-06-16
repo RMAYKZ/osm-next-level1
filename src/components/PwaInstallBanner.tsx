@@ -155,7 +155,7 @@ export function PwaInstallBanner() {
               style={{
                 background: "#ef4444",
                 border: "none",
-                color: "#fff",
+                color: "#1c1917",
                 cursor: "pointer",
                 fontSize: 12,
                 fontWeight: 800,

@@ -10,6 +10,11 @@ export default function AnimatedShaderBackground() {
     const container = containerRef.current;
     if (!container) return;
 
+    // Respect OS-level "reduce motion" — skip the continuous 60fps WebGL
+    // render loop entirely for users who've asked for it. Falls back to the
+    // plain background colour already set via CSS below.
+    if (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) return;
+
     // ── Renderer ──────────────────────────────────────────────────────────────
     const renderer = new THREE.WebGLRenderer({
       antialias: false,
