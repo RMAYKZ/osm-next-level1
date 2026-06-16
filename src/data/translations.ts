@@ -103,6 +103,8 @@ export const translations: Record<Lang, Dict> = {
     "footer.nav": "Navigasyon",
     "footer.contact": "Bağlantı",
     "footer.active": "Aktif",
+    "footer.guides": "Tüm Rehberler",
+    "footer.compare": "Formasyon Karşılaştırmaları",
     "footer.rights": "Bu site OSM oyuncularına yardımcı olmak için tasarlanmıştır.",
     "footer.disclaimer": "Online Soccer Manager™ resmi bir markadır. Bu site bağımsız bir rehberdir.",
 
@@ -221,6 +223,8 @@ export const translations: Record<Lang, Dict> = {
     "footer.nav": "Navigation",
     "footer.contact": "Contact",
     "footer.active": "Active",
+    "footer.guides": "All Guides",
+    "footer.compare": "Formation Comparisons",
     "footer.rights": "This site is designed to help OSM players.",
     "footer.disclaimer": "Online Soccer Manager™ is a trademark. This site is an independent guide.",
 

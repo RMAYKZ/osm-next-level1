@@ -31,7 +31,8 @@ const SOCIAL = [
 ];
 
 export default function Footer() {
-  const { t } = useLang();
+  const { t, lang } = useLang();
+  const langPrefix = lang === "tr" ? "/tr" : "";
 
   return (
     <footer style={{ position: "relative", background: "transparent" }}>
@@ -125,6 +126,9 @@ export default function Footer() {
                 { href: "#formasyonlar", label: t("nav.formations"),  dot: "#10d9a1" },
                 { href: "#hakkimda",     label: t("nav.about"),       dot: "#f5a623" },
                 { href: "#yorumlar",     label: t("footer.comments"), dot: "#f43f5e" },
+                { href: `${langPrefix}/formations/`, label: t("form.viewAllGuides"), dot: "#10d9a1" },
+                { href: `${langPrefix}/blog/`,    label: t("footer.guides"),  dot: "#22d3ee" },
+                { href: `${langPrefix}/compare/`, label: t("footer.compare"), dot: "#fb923c" },
               ].map((link) => (
                 <li key={link.href}>
                   <a
