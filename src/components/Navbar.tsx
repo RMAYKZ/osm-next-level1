@@ -224,7 +224,7 @@ export default function Navbar() {
               <img
                 src="/osm-logo.png"
                 alt="OSM Next Level"
-                style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+                style={{ width: "100%", height: "100%", objectFit: "cover", display: "block", filter: "grayscale(1) brightness(1.8) contrast(0.9)" }}
               />
             </motion.div>
             <div className="flex flex-col justify-center leading-none me-4">

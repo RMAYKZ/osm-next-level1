@@ -1,48 +1,22 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
   <defs>
-    <radialGradient id="bg" cx="50%" cy="40%" r="60%">
-      <stop offset="0%" stop-color="#0f1140"/>
-      <stop offset="100%" stop-color="#060818"/>
-    </radialGradient>
-    <radialGradient id="ball" cx="42%" cy="38%" r="55%">
-      <stop offset="0%" stop-color="#f87171"/>
-      <stop offset="100%" stop-color="#dc2626"/>
-    </radialGradient>
+    <clipPath id="bc"><circle cx="50" cy="50" r="46"/></clipPath>
   </defs>
-
-  <!-- Background (safe area for maskable) -->
-  <rect width="512" height="512" fill="url(#bg)"/>
-
-  <!-- Red circle -->
-  <circle cx="256" cy="210" r="155" fill="url(#ball)"/>
-
-  <!-- Football seam lines -->
-  <circle cx="256" cy="210" r="155" fill="none" stroke="rgba(255,255,255,0.18)" stroke-width="3"/>
-  <!-- Horizontal seam -->
-  <path d="M105 210 Q180 185 256 210 Q332 235 407 210" fill="none" stroke="rgba(255,255,255,0.22)" stroke-width="3"/>
-  <!-- Vertical seam -->
-  <path d="M256 58 Q282 130 256 210 Q230 290 256 362" fill="none" stroke="rgba(255,255,255,0.22)" stroke-width="3"/>
-  <!-- Diagonal seam 1 -->
-  <path d="M155 117 Q215 165 256 210 Q297 255 357 303" fill="none" stroke="rgba(255,255,255,0.14)" stroke-width="2.5"/>
-  <!-- Diagonal seam 2 -->
-  <path d="M357 117 Q297 165 256 210 Q215 255 155 303" fill="none" stroke="rgba(255,255,255,0.14)" stroke-width="2.5"/>
-
-  <!-- "NL" monogram -->
-  <text x="256" y="240"
-    text-anchor="middle"
-    font-family="Arial Black, Arial, sans-serif"
-    font-size="96"
-    font-weight="900"
-    fill="white"
-    opacity="0.95"
-    letter-spacing="-4">NL</text>
-
-  <!-- OSM NEXT LEVEL label -->
-  <text x="256" y="410"
-    text-anchor="middle"
-    font-family="Arial, sans-serif"
-    font-size="30"
-    font-weight="700"
-    fill="rgba(255,255,255,0.55)"
-    letter-spacing="5">OSM NEXT LEVEL</text>
+  <!-- White ball with black border -->
+  <circle cx="50" cy="50" r="48" fill="#fff" stroke="#111" stroke-width="4"/>
+  <!-- Classic football patch pattern -->
+  <g fill="#111" clip-path="url(#bc)">
+    <!-- Center pentagon (pointing up) -->
+    <polygon points="50,35 64,45 59,62 41,62 36,45"/>
+    <!-- Top outer pentagon -->
+    <polygon points="50,31 41,25 45,15 55,15 59,25"/>
+    <!-- Upper-right outer pentagon -->
+    <polygon points="85,39 82,49 71,49 68,39 77,32"/>
+    <!-- Lower-right outer pentagon -->
+    <polygon points="72,80 61,80 58,70 67,64 75,70"/>
+    <!-- Lower-left outer pentagon -->
+    <polygon points="28,80 25,70 34,64 42,70 39,80"/>
+    <!-- Upper-left outer pentagon -->
+    <polygon points="15,39 23,32 32,39 29,49 18,49"/>
+  </g>
 </svg>
