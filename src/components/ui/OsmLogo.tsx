@@ -1,4 +1,4 @@
-// Inline SVG pitch logo — replaces osm-logo.png everywhere
+// Premium inline SVG pitch logo — blue-purple gradient
 export function OsmLogo({ size = "100%" }: { size?: number | string }) {
   return (
     <svg
@@ -11,9 +11,13 @@ export function OsmLogo({ size = "100%" }: { size?: number | string }) {
     >
       <defs>
         <radialGradient id="olbg" cx="50%" cy="50%" r="50%">
-          <stop offset="0%"   stopColor="#0d1a0f" />
-          <stop offset="100%" stopColor="#070b15" />
+          <stop offset="0%"   stopColor="#0d1228" />
+          <stop offset="100%" stopColor="#07070f" />
         </radialGradient>
+        <linearGradient id="olstroke" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%"   stopColor="#5b8af7" />
+          <stop offset="100%" stopColor="#9161f5" />
+        </linearGradient>
         <filter id="olglow" x="-60%" y="-60%" width="220%" height="220%">
           <feGaussianBlur stdDeviation="0.9" result="blur" />
           <feMerge>
@@ -27,11 +31,10 @@ export function OsmLogo({ size = "100%" }: { size?: number | string }) {
       <rect width="44" height="44" fill="url(#olbg)" />
 
       {/* Subtle ambient field glow */}
-      <ellipse cx="22" cy="22" rx="17" ry="14"
-        fill="oklch(0.87 0.27 152 / 0.07)" />
+      <ellipse cx="22" cy="22" rx="17" ry="14" fill="rgba(91,138,247,0.07)" />
 
-      {/* Pitch lines — glow filter */}
-      <g filter="url(#olglow)" style={{ stroke: "oklch(0.87 0.27 152)", fill: "none" }}>
+      {/* Pitch lines — gradient stroke via filter */}
+      <g filter="url(#olglow)" stroke="url(#olstroke)" fill="none">
         {/* Outer border */}
         <rect x="7" y="4.5" width="30" height="35" rx="1.5" strokeWidth="1.3" />
 
@@ -43,25 +46,25 @@ export function OsmLogo({ size = "100%" }: { size?: number | string }) {
 
         {/* Top penalty box */}
         <rect x="13.5" y="4.5" width="17" height="7.5" rx="0.5"
-          strokeWidth="0.75" style={{ stroke: "oklch(0.87 0.27 152 / 0.55)" }} />
+          strokeWidth="0.75" strokeOpacity="0.55" />
 
         {/* Bottom penalty box */}
         <rect x="13.5" y="32" width="17" height="7.5" rx="0.5"
-          strokeWidth="0.75" style={{ stroke: "oklch(0.87 0.27 152 / 0.55)" }} />
+          strokeWidth="0.75" strokeOpacity="0.55" />
 
         {/* Corner arcs */}
-        <path d="M7 6.5 A2 2 0 0 1 9 4.5"   strokeWidth="0.6" style={{ stroke: "oklch(0.87 0.27 152 / 0.4)" }} />
-        <path d="M35 4.5 A2 2 0 0 1 37 6.5"  strokeWidth="0.6" style={{ stroke: "oklch(0.87 0.27 152 / 0.4)" }} />
-        <path d="M7 37.5 A2 2 0 0 0 9 39.5"  strokeWidth="0.6" style={{ stroke: "oklch(0.87 0.27 152 / 0.4)" }} />
-        <path d="M35 39.5 A2 2 0 0 0 37 37.5" strokeWidth="0.6" style={{ stroke: "oklch(0.87 0.27 152 / 0.4)" }} />
+        <path d="M7 6.5 A2 2 0 0 1 9 4.5"    strokeWidth="0.6" strokeOpacity="0.4" />
+        <path d="M35 4.5 A2 2 0 0 1 37 6.5"   strokeWidth="0.6" strokeOpacity="0.4" />
+        <path d="M7 37.5 A2 2 0 0 0 9 39.5"   strokeWidth="0.6" strokeOpacity="0.4" />
+        <path d="M35 39.5 A2 2 0 0 0 37 37.5"  strokeWidth="0.6" strokeOpacity="0.4" />
       </g>
 
-      {/* Centre spot — brighter, no filter (stands out) */}
-      <circle cx="22" cy="22" r="1.5" fill="oklch(0.87 0.27 152)" />
+      {/* Centre spot — bright blue */}
+      <circle cx="22" cy="22" r="1.5" fill="#5b8af7" />
 
       {/* Penalty spots */}
-      <circle cx="22" cy="9.5"  r="0.9" fill="oklch(0.87 0.27 152 / 0.65)" />
-      <circle cx="22" cy="34.5" r="0.9" fill="oklch(0.87 0.27 152 / 0.65)" />
+      <circle cx="22" cy="9.5"  r="0.9" fill="#9161f5" fillOpacity="0.65" />
+      <circle cx="22" cy="34.5" r="0.9" fill="#9161f5" fillOpacity="0.65" />
     </svg>
   );
 }

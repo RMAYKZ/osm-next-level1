@@ -34,8 +34,8 @@ export default function App() {
         <FavoritesProvider>
         <SavedTacticsProvider>
 
-          {/* ── Global background — pure black ── */}
-          <div className="fixed inset-0 -z-10" style={{ background: "#000000" }} />
+          {/* ── Global background ── */}
+          <div className="fixed inset-0 -z-10" style={{ background: "#070711" }} />
 
           {/* ── Scrollable content layer ── */}
           <div style={{
@@ -51,7 +51,7 @@ export default function App() {
               left: 0,
               width: "100%",
               height: "100%",
-              backgroundColor: "oklch(0.13 0.02 250 / 0.72)",
+              backgroundColor: "rgba(7,7,17,0.65)",
               overflowY: "auto",
               overflowX: "hidden",
             }}>

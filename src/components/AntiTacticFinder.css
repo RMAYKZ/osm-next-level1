@@ -17,7 +17,7 @@
   position: absolute;
   top: 0; left: 0; right: 0;
   height: 1px;
-  background: rgba(255,255,255,0.06);
+  background: linear-gradient(90deg, transparent, rgba(91,138,247,0.25) 35%, rgba(145,97,245,0.25) 65%, transparent);
   pointer-events: none;
 }
 
@@ -41,15 +41,15 @@
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  background: rgba(255,255,255,0.04);
-  border: 1px solid rgba(255,255,255,0.15);
+  background: rgba(91,138,247,0.08);
+  border: 1px solid rgba(91,138,247,0.28);
   border-radius: 999px;
   padding: 6px 18px;
   font-size: 10px;
   font-weight: 900;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: rgba(255,255,255,0.5);
+  color: rgba(126,168,255,0.9);
   margin-bottom: 16px;
 }
 
@@ -58,13 +58,13 @@
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: #fff;
+  background: #5b8af7;
   flex-shrink: 0;
   animation: blink 2s infinite;
 }
 
 .atf-head-title {
-  font-family: 'Barlow Condensed', system-ui, sans-serif;
+  font-family: 'Outfit', system-ui, sans-serif;
   font-size: clamp(2.2rem, 6vw, 4.5rem);
   font-weight: 900;
   letter-spacing: -0.02em;
@@ -74,19 +74,24 @@
   text-wrap: balance;
 }
 
-.atf-head-title span { color: rgba(255,255,255,0.6); }
+.atf-head-title span {
+  background: linear-gradient(135deg, #5b8af7 0%, #9161f5 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
 
 /* ═══════════════════════════════════════════════
    ROOT CARD
 ═══════════════════════════════════════════════ */
 .root {
-  background: rgba(255,255,255,0.03);
+  background: rgba(7,7,17,0.85);
   border-radius: 16px;
   overflow: hidden;
-  border: 1px solid rgba(255,255,255,0.08);
+  border: 1px solid rgba(91,138,247,0.14);
   width: 100%;
   max-width: 1400px;
-  box-shadow: 0 40px 100px rgba(0,0,0,0.6);
+  box-shadow: 0 40px 100px rgba(0,0,0,0.6), 0 0 0 1px rgba(91,138,247,0.07);
   position: relative;
   z-index: 1;
 }
@@ -207,16 +212,16 @@
   transform: translateY(-1px);
 }
 .sbtn.on {
-  background: #fff;
-  border-color: #fff;
-  color: #000;
-  box-shadow: none;
+  background: linear-gradient(135deg, #5b8af7, #9161f5);
+  border-color: transparent;
+  color: #fff;
+  box-shadow: 0 4px 16px rgba(91,138,247,0.35);
 }
 .strseg .sbtn.on {
-  background: #fff;
-  border-color: #fff;
-  color: #000;
-  box-shadow: none;
+  background: linear-gradient(135deg, #5b8af7, #9161f5);
+  border-color: transparent;
+  color: #fff;
+  box-shadow: 0 4px 16px rgba(91,138,247,0.35);
 }
 
 /* ─ Opponent list ─ */
@@ -237,8 +242,8 @@
 }
 .ti:hover { background: rgba(255,255,255,0.05); }
 .ti.on {
-  background: rgba(255,255,255,0.07);
-  border-color: rgba(255,255,255,0.3);
+  background: rgba(91,138,247,0.10);
+  border-color: rgba(91,138,247,0.35);
 }
 
 .tirow { display: flex; align-items: center; gap: 8px; margin-bottom: 5px; }
@@ -429,7 +434,7 @@
 
 .sucfill {
   height: 100%; border-radius: 4px;
-  background: #ffffff;
+  background: linear-gradient(90deg, #5b8af7, #9161f5);
   transition: width 0.7s cubic-bezier(0.19, 1, 0.22, 1);
 }
 
