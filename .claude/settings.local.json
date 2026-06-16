@@ -47,7 +47,16 @@
       "Bash(npx shadcn@latest add https://21st.dev/r/moumensoliman/floating-chat-widget-shadcnui)",
       "Bash(yes \"\")",
       "PowerShell(cd \"C:\\\\Users\\\\RMAYK\\\\Desktop\\\\TOPTOPS\"; npx tsc --noEmit 2>&1 | Where-Object { $_ -notmatch \"floating-chat-widget\" -and $_ -notmatch \"MatchPredictions\" } | Select-Object -First 20)",
-      "PowerShell(cd \"C:\\\\Users\\\\RMAYK\\\\Desktop\\\\TOPTOPS\"; npx tsc --noEmit 2>&1 | Where-Object { $_ -notmatch \"floating-chat-widget\" -and $_ -notmatch \"MatchPredictions\" })"
+      "PowerShell(cd \"C:\\\\Users\\\\RMAYK\\\\Desktop\\\\TOPTOPS\"; npx tsc --noEmit 2>&1 | Where-Object { $_ -notmatch \"floating-chat-widget\" -and $_ -notmatch \"MatchPredictions\" })",
+      "Bash(firebase functions:secrets:access GEMINI_API_KEY)",
+      "Bash(firebase functions:log --only aiChat --limit 20)",
+      "Bash(firebase functions:log --only aiChat)",
+      "WebSearch",
+      "PowerShell(vercel *)",
+      "Bash(findstr /C:\"main\" /C:\"engines\")",
+      "Bash(git add *)",
+      "Bash(git push *)",
+      "Bash(git commit -m ' *)"
     ]
   }
 }

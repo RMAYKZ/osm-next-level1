@@ -1,4 +1,4 @@
-import { useMemo, useState, useEffect } from "react";
+﻿import { useMemo, useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { antiTactics, opponentTactics } from "../data/tactics";
 import { useTacticEngine, getWeeklyMetaSliders } from "../utils/tacticEngine";
@@ -19,25 +19,25 @@ const tCat = (v: number): TempoCat =>
   v < 55 ? "slow" : v < 63 ? "controlled" : v < 72 ? "medium" : v < 80 ? "fast" : "sprint";
 
 const PRESSURE_GRAD: Record<PressureCat, string> = {
-  ultra_low: "#ffffff",
-  low:        "#ffffff",
-  moderate:   "#ffffff",
-  high:       "#ffffff",
-  very_high:  "#ffffff",
+  ultra_low: "linear-gradient(90deg,#5b8af7,#9161f5)",
+  low:        "linear-gradient(90deg,#5b8af7,#9161f5)",
+  moderate:   "linear-gradient(90deg,#10d9a1,#5b8af7)",
+  high:       "linear-gradient(90deg,#f5a623,#f43f5e)",
+  very_high:  "linear-gradient(90deg,#f43f5e,#9161f5)",
 };
 const STYLE_GRAD: Record<StyleCat, string> = {
-  ultra_def:   "#ffffff",
-  defensive:   "#ffffff",
-  balanced:    "#ffffff",
-  attacking:   "#ffffff",
-  full_attack: "#ffffff",
+  ultra_def:   "linear-gradient(90deg,#5b8af7,#9161f5)",
+  defensive:   "linear-gradient(90deg,#5b8af7,#9161f5)",
+  balanced:    "linear-gradient(90deg,#10d9a1,#5b8af7)",
+  attacking:   "linear-gradient(90deg,#f5a623,#f43f5e)",
+  full_attack: "linear-gradient(90deg,#f43f5e,#9161f5)",
 };
 const TEMPO_GRAD: Record<TempoCat, string> = {
-  slow:       "#ffffff",
-  controlled: "#ffffff",
-  medium:     "#ffffff",
-  fast:       "#ffffff",
-  sprint:     "#ffffff",
+  slow:       "linear-gradient(90deg,#5b8af7,#9161f5)",
+  controlled: "linear-gradient(90deg,#5b8af7,#9161f5)",
+  medium:     "linear-gradient(90deg,#10d9a1,#5b8af7)",
+  fast:       "linear-gradient(90deg,#f5a623,#f43f5e)",
+  sprint:     "linear-gradient(90deg,#f43f5e,#9161f5)",
 };
 
 // ─── i18n ─────────────────────────────────────────────────────────────────────
@@ -238,7 +238,7 @@ function WMSliderBar({ label, value, gradient, catLabel, delay = 0 }: {
   );
 }
 
-function WMLineTacticRow({ label, value, display, isLast }: {
+function WMLineTacticRow({ label, display, isLast }: {
   label: string; value: string; display: string; isLast?: boolean;
 }) {
   return (
@@ -280,10 +280,9 @@ function WMExplainRow({ icon, title, value, text }: { icon: string; title: strin
 }
 
 // ─── Card style constant ──────────────────────────────────────────────────────
-const isMobileViewport = typeof window !== "undefined" && window.innerWidth < 768;
 const CARD: React.CSSProperties = {
-  background: "rgba(255,255,255,0.03)",
-  border: "1px solid rgba(255,255,255,0.08)", borderRadius: 16,
+  background: "rgba(91,138,247,0.04)",
+  border: "1px solid rgba(91,138,247,0.14)", borderRadius: 16,
   boxShadow: "0 20px 60px rgba(0,0,0,0.5)",
 };
 
@@ -350,7 +349,7 @@ export default function WeeklyMeta() {
   if (!tactic) return null;
 
   return (
-    <section id="haftanin-taktigi" style={{ padding: "80px 20px", maxWidth: 1100, margin: "0 auto" }}>
+    <section id="haftanin-taktigi" style={{ padding: "80px 20px", maxWidth: 1100, margin: "0 auto", background: "transparent" }}>
 
       {/* ── Header ── */}
       <motion.div
@@ -360,9 +359,9 @@ export default function WeeklyMeta() {
       >
         <span style={{
           display: "inline-block", fontSize: 11, fontWeight: 700, letterSpacing: "0.14em",
-          textTransform: "uppercase", color: "rgba(255,255,255,0.4)",
+          textTransform: "uppercase", color: "rgba(126,168,255,0.9)",
           padding: "6px 14px", borderRadius: 99,
-          background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.12)",
+          background: "rgba(91,138,247,0.08)", border: "1px solid rgba(91,138,247,0.28)",
           marginBottom: 20,
         }}>{t("meta.badge")}</span>
 
@@ -392,16 +391,16 @@ export default function WeeklyMeta() {
         </div>
 
         {/* Live week badge */}
-        <div style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "6px 14px", borderRadius: 99, background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.12)" }}>
+        <div style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "6px 14px", borderRadius: 99, background: "rgba(16,217,161,0.07)", border: "1px solid rgba(16,217,161,0.22)" }}>
           <motion.span
             animate={{ opacity: [1, 0.3, 1] }} transition={{ duration: 2, repeat: Infinity }}
-            style={{ width: 6, height: 6, borderRadius: "50%", background: "#fff", display: "inline-block" }}
+            style={{ width: 6, height: 6, borderRadius: "50%", background: "#10d9a1", display: "inline-block" }}
           />
-          <span style={{ color: "#fff", fontSize: 11, fontWeight: 700, letterSpacing: "0.06em" }}>
+          <span style={{ color: "#10d9a1", fontSize: 11, fontWeight: 700, letterSpacing: "0.06em" }}>
             {w.weekLabel} · Week {ukWeek}
           </span>
           <span style={{ color: "rgba(255,255,255,0.22)", fontSize: 10 }}>·</span>
-          <span style={{ color: "rgba(255,255,255,0.22)", fontSize: 10, letterSpacing: "0.03em" }}>{w.weeklyNote}</span>
+          <span style={{ color: "rgba(255,255,255,0.35)", fontSize: 10, letterSpacing: "0.03em" }}>{w.weeklyNote}</span>
         </div>
       </motion.div>
 
@@ -555,10 +554,11 @@ export default function WeeklyMeta() {
           whileTap={{ scale: 0.97 }}
           style={{
             width: "100%", padding: "17px 24px", borderRadius: 999,
-            background: "#fff",
+            background: "linear-gradient(135deg,#5b8af7,#9161f5)",
             border: "none", cursor: "pointer",
-            color: "#000", fontWeight: 900, fontSize: 13,
+            color: "#fff", fontWeight: 900, fontSize: 13,
             letterSpacing: "0.1em", textTransform: "uppercase",
+            boxShadow: "0 8px 32px rgba(91,138,247,0.38)",
             WebkitTapHighlightColor: "transparent",
           }}
         >

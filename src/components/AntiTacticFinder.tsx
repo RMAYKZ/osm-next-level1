@@ -323,23 +323,28 @@ function toXY(nx: number, ny: number, cw: number, ch: number, pad: number) {
 function drawBg(ctx: CanvasRenderingContext2D, cw: number, ch: number, pad: number) {
   const pl = pad, pr = cw - pad, pt = pad, pb = ch - pad, pw = pr - pl, ph = pb - pt;
   const ns = 8;
+  // Green grass base
+  ctx.fillStyle = '#0f4a20';
+  ctx.fillRect(pl, pt, pw, ph);
+  // Alternating stripes
   for (let i = 0; i < ns; i++) {
-    ctx.fillStyle = i % 2 === 0 ? '#0d0d0d' : '#111111';
-    ctx.fillRect(pl + i * (pw / ns), pt, pw / ns, ph);
+    ctx.fillStyle = i % 2 === 0 ? 'rgba(255,255,255,0.04)' : 'rgba(0,0,0,0.06)';
+    ctx.fillRect(pl, pt + i * (ph / ns), pw, ph / ns);
   }
-  ctx.strokeStyle = 'rgba(255,255,255,0.32)'; ctx.lineWidth = 1; ctx.strokeRect(pl, pt, pw, ph);
+  // Bright field markings
+  ctx.strokeStyle = 'rgba(255,255,255,0.82)'; ctx.lineWidth = 1; ctx.strokeRect(pl, pt, pw, ph);
   ctx.beginPath(); ctx.moveTo(pl, pt + ph / 2); ctx.lineTo(pr, pt + ph / 2); ctx.stroke();
   ctx.beginPath(); ctx.arc(pl + pw / 2, pt + ph / 2, ph * .12, 0, Math.PI * 2); ctx.stroke();
-  ctx.fillStyle = 'rgba(255,255,255,0.4)'; ctx.beginPath(); ctx.arc(pl + pw / 2, pt + ph / 2, 2, 0, Math.PI * 2); ctx.fill();
-  ctx.strokeStyle = 'rgba(255,255,255,0.2)'; ctx.lineWidth = 0.8;
+  ctx.fillStyle = 'rgba(255,255,255,0.9)'; ctx.beginPath(); ctx.arc(pl + pw / 2, pt + ph / 2, 2, 0, Math.PI * 2); ctx.fill();
+  ctx.strokeStyle = 'rgba(255,255,255,0.7)'; ctx.lineWidth = 0.8;
   ctx.strokeRect(pl + pw * .22, pb - ph * .26, pw * .56, ph * .26);
   ctx.strokeRect(pl + pw * .35, pb - ph * .11, pw * .30, ph * .11);
   ctx.strokeRect(pl + pw * .22, pt, pw * .56, ph * .26);
   ctx.strokeRect(pl + pw * .35, pt, pw * .30, ph * .11);
-  ctx.strokeStyle = 'rgba(255,255,255,0.45)'; ctx.lineWidth = 1.4;
+  ctx.strokeStyle = 'rgba(255,255,255,0.75)'; ctx.lineWidth = 1.4;
   ctx.strokeRect(pl + pw * .36, pb, pw * .28, 6);
   ctx.strokeRect(pl + pw * .36, pt - 6, pw * .28, 6);
-  ctx.fillStyle = 'rgba(255,255,255,0.4)';
+  ctx.fillStyle = 'rgba(255,255,255,0.85)';
   ctx.beginPath(); ctx.arc(pl + pw * .5, pt + ph * .18, 1.5, 0, Math.PI * 2); ctx.fill();
   ctx.beginPath(); ctx.arc(pl + pw * .5, pb - ph * .18, 1.5, 0, Math.PI * 2); ctx.fill();
   const vg = ctx.createRadialGradient(cw / 2, ch / 2, ch * .2, cw / 2, ch / 2, ch * .75);
@@ -402,10 +407,10 @@ function drawPlayer(
 ) {
   // monochrome: GK = white, DEF = rgba(255,255,255,0.6), MID = rgba(255,255,255,0.5), FWD = #ffffff
   const col =
-    size === 'gk'  ? '#ffffff' :
-    size === 'fwd' ? 'rgba(255,255,255,0.95)' :
-    size === 'mid' ? 'rgba(255,255,255,0.65)' :
-    'rgba(255,255,255,0.55)';
+    size === 'gk'  ? '#f5a623' :
+    size === 'fwd' ? '#5b8af7' :
+    size === 'mid' ? 'rgba(91,138,247,0.85)' :
+    'rgba(16,217,161,0.85)';
   const r = size === 'fwd' ? 9 : size === 'gk' ? 9 : 8;
   const lw = size === 'fwd' ? 2.3 : size === 'gk' ? 2 : 1.8;
   if (size === 'fwd' || size === 'gk') {
@@ -417,7 +422,7 @@ function drawPlayer(
   const sc2 = 0.1 + 0.9 * entranceProgress;
   ctx.translate(x, y); ctx.scale(sc2, sc2); ctx.translate(-x, -y);
   ctx.shadowColor = col; ctx.shadowBlur = 10;
-  ctx.fillStyle = '#0a0a0a'; ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI * 2); ctx.fill();
+  ctx.fillStyle = '#071a10'; ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI * 2); ctx.fill();
   ctx.strokeStyle = col; ctx.lineWidth = lw; ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI * 2); ctx.stroke();
   ctx.shadowBlur = 0;
   const fs = role.length > 3 ? 4.5 : role.length > 2 ? 5 : 6;
@@ -500,14 +505,21 @@ const ATF_SAVE_AUTH: Record<string, string> = {
 };
 
 // ─── GRADIENT HELPERS ─────────────────────────────────────────────────
-function _pGrad(_v: number): string {
-  return '#ffffff';
+function _pGrad(v: number): string {
+  if (v >= 70) return 'linear-gradient(90deg,#f43f5e,#9161f5)';
+  if (v >= 45) return 'linear-gradient(90deg,#f5a623,#f43f5e)';
+  if (v >= 25) return 'linear-gradient(90deg,#10d9a1,#5b8af7)';
+  return 'linear-gradient(90deg,#5b8af7,#9161f5)';
 }
-function _sGrad(_v: number): string {
-  return '#ffffff';
+function _sGrad(v: number): string {
+  if (v >= 70) return 'linear-gradient(90deg,#f43f5e,#9161f5)';
+  if (v >= 45) return 'linear-gradient(90deg,#10d9a1,#5b8af7)';
+  return 'linear-gradient(90deg,#5b8af7,#9161f5)';
 }
-function _tGrad(_v: number): string {
-  return '#ffffff';
+function _tGrad(v: number): string {
+  if (v >= 70) return 'linear-gradient(90deg,#f5a623,#f43f5e)';
+  if (v >= 45) return 'linear-gradient(90deg,#10d9a1,#5b8af7)';
+  return 'linear-gradient(90deg,#5b8af7,#9161f5)';
 }
 
 // ─── SUB-COMPONENTS ───────────────────────────────────────────────────
@@ -560,8 +572,8 @@ function ATFLineTacticRow({ label, rawVal: _rawVal, displayVal, isLast }: {
       <span style={{ color: 'rgba(255,255,255,0.42)', fontSize: 11.5, fontWeight: 600, letterSpacing: '0.04em' }}>{label}</span>
       <span style={{
         fontSize: 11, fontWeight: 700, letterSpacing: '0.06em',
-        color: 'rgba(255,255,255,0.8)', padding: '3px 10px', borderRadius: 99,
-        background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.12)',
+        color: '#7eb8ff', padding: '3px 10px', borderRadius: 99,
+        background: 'rgba(91,138,247,0.08)', border: '1px solid rgba(91,138,247,0.22)',
       }}>{displayVal}</span>
     </div>
   );
@@ -828,9 +840,9 @@ export default function AntiTacticFinder() {
         aria-hidden="true"
         animate={isMobile ? { opacity: 0.22 } : { opacity: [0.14, 0.38, 0.14] }}
         transition={isMobile ? {} : { duration: 7, repeat: Infinity }}
-        style={{ position:'absolute', top:'4%', right:'-10%', width:'48%', height:'58%', borderRadius:'50%', background:'radial-gradient(ellipse, rgba(255,255,255,0.04) 0%, transparent 70%)', filter:'blur(90px)', pointerEvents:'none', zIndex:0 }}
+        style={{ position:'absolute', top:'4%', right:'-10%', width:'48%', height:'58%', borderRadius:'50%', background:'radial-gradient(ellipse, rgba(91,138,247,0.08) 0%, transparent 70%)', filter:'blur(90px)', pointerEvents:'none', zIndex:0 }}
       />
-      <div aria-hidden="true" style={{ position:'absolute', bottom:'8%', left:'-8%', width:'40%', height:'50%', borderRadius:'50%', background:'radial-gradient(ellipse, rgba(255,255,255,0.03) 0%, transparent 70%)', filter:'blur(80px)', pointerEvents:'none', zIndex:0 }} />
+      <div aria-hidden="true" style={{ position:'absolute', bottom:'8%', left:'-8%', width:'40%', height:'50%', borderRadius:'50%', background:'radial-gradient(ellipse, rgba(16,217,161,0.07) 0%, transparent 70%)', filter:'blur(80px)', pointerEvents:'none', zIndex:0 }} />
 
       {/* ── Section heading (outside card) ── */}
       <motion.div
@@ -848,12 +860,12 @@ export default function AntiTacticFinder() {
         <p style={{ color: 'rgba(255,255,255,0.42)', fontSize: 'clamp(13px,2vw,15px)', lineHeight: 1.7, maxWidth: 640, margin: '14px auto 20px', textAlign: 'center' }}>
           {ATF_DESC[lang] ?? ATF_DESC.en}
         </p>
-        <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '6px 14px', borderRadius: 99, background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.15)' }}>
+        <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '6px 14px', borderRadius: 99, background: 'rgba(16,217,161,0.08)', border: '1px solid rgba(16,217,161,0.28)' }}>
           <motion.span
             animate={{ opacity: [1, 0.35, 1] }} transition={{ duration: 2, repeat: Infinity }}
-            style={{ width: 6, height: 6, borderRadius: '50%', background: '#ffffff', display: 'inline-block' }}
+            style={{ width: 6, height: 6, borderRadius: '50%', background: '#10d9a1', display: 'inline-block' }}
           />
-          <span style={{ color: 'rgba(255,255,255,0.7)', fontSize: 11, fontWeight: 700, letterSpacing: '0.06em' }}>
+          <span style={{ color: '#4aedc0', fontSize: 11, fontWeight: 700, letterSpacing: '0.06em' }}>
             {ATF_LIVE[lang] ?? ATF_LIVE.en}
           </span>
         </div>

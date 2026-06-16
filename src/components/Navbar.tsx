@@ -24,7 +24,6 @@ const HighRiskEngine     = lazy(() => import("./HighRiskEngine"));
 const SliderCalculator   = lazy(() => import("./SliderCalculator"));
 const MatchAutopsy       = lazy(() => import("./MatchAutopsy"));
 
-const ease = [0.16, 1, 0.3, 1] as const;
 
 // Gece (22:00-07:59) → 2-3, Gündüz (08:00-21:59) → 5-15
 function getLiveCount(): number {
@@ -87,13 +86,6 @@ export default function Navbar() {
   const [open, setOpen] = useState(false);
   const [activeSheet, setActiveSheet] = useState<ActiveSheet>(null);
   const [showScrollBtn, setShowScrollBtn] = useState(false);
-  const [isMobile, setIsMobile] = useState(() => typeof window !== "undefined" && window.innerWidth < 768);
-  useEffect(() => {
-    const mq = window.matchMedia("(max-width: 767px)");
-    const h = (e: MediaQueryListEvent) => setIsMobile(e.matches);
-    mq.addEventListener("change", h);
-    return () => mq.removeEventListener("change", h);
-  }, []);
 
   const scrollToTop = () => {
     document.getElementById("scroll-root")?.scrollTo({ top: 0, behavior: "smooth" });
@@ -208,26 +200,29 @@ export default function Navbar() {
           {/* Logo */}
           <a href="#anasayfa" className="flex items-center justify-start gap-3 shrink-0" onClick={(e) => { e.preventDefault(); setOpen(false); scrollToTop(); }}>
             <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
+              initial={{ opacity: 0, scale: 0.88 }}
               animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+              transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
               style={{
-                width: 44,
-                height: 44,
-                borderRadius: "50%",
+                width: 42,
+                height: 42,
+                borderRadius: 11,
                 overflow: "hidden",
-                border: "1.5px solid oklch(0.87 0.27 152 / 0.45)",
+                border: "1px solid rgba(91,138,247,0.38)",
                 flexShrink: 0,
                 transform: "translateZ(0)",
-                boxShadow: "0 0 12px oklch(0.87 0.27 152 / 0.15)",
+                boxShadow: "0 0 14px rgba(91,138,247,0.18), inset 0 1px 0 rgba(255,255,255,0.06)",
               }}
             >
               <OsmLogo />
             </motion.div>
-            <div className="flex flex-col justify-center leading-none me-4">
-              <span className="font-display text-sm font-bold tracking-widest text-white md:text-base">OSM NEXT LEVEL</span>
-              <div className="flex items-center gap-2 mt-0.5">
-                <span className="text-[9px] uppercase tracking-widest text-stone-500 md:text-[10px]">by omerovvvvv · 26/27</span>
+            <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", lineHeight: 1, marginInlineEnd: 8 }}>
+              <div style={{ display: "flex", alignItems: "baseline", gap: "0.22em" }}>
+                <span style={{ fontSize: "0.9rem", fontWeight: 900, letterSpacing: "0.04em", color: "#6b96f8" }}>OSM</span>
+                <span style={{ fontSize: "0.9rem", fontWeight: 700, letterSpacing: "0.04em", color: "rgba(255,255,255,0.88)" }}>NEXT LEVEL</span>
+              </div>
+              <div style={{ display: "flex", alignItems: "center", gap: 6, marginTop: 4 }}>
+                <span style={{ fontSize: 9, fontWeight: 600, letterSpacing: "0.05em", color: "rgba(255,255,255,0.28)", textTransform: "uppercase" }}>omerovvvvv · 26/27</span>
                 <LiveUserBadge />
               </div>
             </div>

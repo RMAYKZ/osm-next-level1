@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+﻿import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { getDb } from "../lib/firebase";
 import { getISOWeekKey } from "../utils/weeklyTactics";
@@ -8,10 +8,10 @@ import { analytics } from "../lib/analytics";
 const EASE = [0.16, 1, 0.3, 1] as const;
 
 const GLASS: React.CSSProperties = {
-  background: "rgba(255,255,255,0.03)",
+  background: "rgba(91,138,247,0.04)",
   backdropFilter: "blur(20px)",
   WebkitBackdropFilter: "blur(20px)",
-  border: "1px solid rgba(255,255,255,0.08)",
+  border: "1px solid rgba(91,138,247,0.14)",
   borderRadius: 16,
 };
 
@@ -90,17 +90,17 @@ export default function MetaVote() {
   const maxVotes = Math.max(...VOTE_OPTIONS.map((o) => tally[o.id] ?? 0), 1);
 
   return (
-    <section style={{ padding: "clamp(40px,6vw,80px) 0", position: "relative", overflow: "hidden" }}>
+    <section style={{ padding: "clamp(40px,6vw,80px) 0", position: "relative", overflow: "hidden", background: "transparent" }}>
 
       <div className="pointer-events-none absolute inset-0 -z-10" aria-hidden="true">
         <div style={{
           position: "absolute", top: 0, left: 0, right: 0, height: 1,
-          background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.06), transparent)",
+          background: "linear-gradient(90deg, transparent, rgba(91,138,247,0.25) 35%, rgba(145,97,245,0.25) 65%, transparent)",
         }} />
         <div style={{
           position: "absolute", top: "20%", left: "-10%",
           width: "40%", height: "60%", borderRadius: "50%",
-          background: "radial-gradient(ellipse, rgba(255,255,255,0.03) 0%, transparent 70%)",
+          background: "radial-gradient(ellipse, rgba(145,97,245,0.08) 0%, transparent 70%)",
           filter: "blur(80px)",
         }} />
       </div>
@@ -117,16 +117,16 @@ export default function MetaVote() {
         >
           <div style={{
             display: "inline-flex", alignItems: "center", gap: 7,
-            background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.15)",
+            background: "rgba(145,97,245,0.08)", border: "1px solid rgba(145,97,245,0.28)",
             borderRadius: 999, padding: "5px 14px", marginBottom: 14,
           }}>
             <span style={{ fontSize: 13 }}>🗳️</span>
-            <span style={{ fontSize: 10, fontWeight: 900, textTransform: "uppercase", letterSpacing: "0.18em", color: "rgba(255,255,255,0.7)" }}>
+            <span style={{ fontSize: 10, fontWeight: 900, textTransform: "uppercase", letterSpacing: "0.18em", color: "#b08eff" }}>
               {t("vote.badge")}
             </span>
             <span style={{
               fontSize: 9, fontWeight: 900, textTransform: "uppercase", letterSpacing: "0.1em",
-              background: "rgba(255,255,255,0.06)", borderRadius: 999, padding: "2px 7px", color: "rgba(255,255,255,0.5)",
+              background: "rgba(145,97,245,0.12)", borderRadius: 999, padding: "2px 7px", color: "rgba(176,142,255,0.7)",
             }}>
               {weekKey}
             </span>
@@ -183,16 +183,16 @@ export default function MetaVote() {
                   style={{
                     position: "relative", overflow: "hidden",
                     background: isMyVote
-                      ? "rgba(255,255,255,0.1)"
+                      ? "rgba(91,138,247,0.14)"
                       : hoveredId === opt.id
-                        ? "rgba(255,255,255,0.06)"
-                        : "rgba(255,255,255,0.03)",
+                        ? "rgba(91,138,247,0.07)"
+                        : "rgba(255,255,255,0.025)",
                     border: isWinner
-                      ? "1px solid rgba(255,255,255,0.4)"
+                      ? "1px solid rgba(91,138,247,0.55)"
                       : isMyVote
-                        ? "1px solid rgba(255,255,255,0.3)"
+                        ? "1px solid rgba(91,138,247,0.45)"
                         : hoveredId === opt.id
-                          ? "1px solid rgba(255,255,255,0.2)"
+                          ? "1px solid rgba(91,138,247,0.25)"
                           : "1px solid rgba(255,255,255,0.07)",
                     borderRadius: 16,
                     padding: "18px 14px 14px",
@@ -205,7 +205,7 @@ export default function MetaVote() {
                   {isWinner && (
                     <div style={{
                       position: "absolute", inset: 0, borderRadius: 16, pointerEvents: "none",
-                      background: "radial-gradient(ellipse at 50% 0%, rgba(255,255,255,0.07) 0%, transparent 70%)",
+                      background: "radial-gradient(ellipse at 50% 0%, rgba(91,138,247,0.18) 0%, transparent 70%)",
                     }} />
                   )}
 
@@ -244,7 +244,7 @@ export default function MetaVote() {
                             transition={{ duration: 0.65, delay: 0.2 + i * 0.05, ease: EASE }}
                             style={{
                               height: "100%", borderRadius: 999,
-                              background: "#ffffff",
+                              background: "linear-gradient(90deg,#5b8af7,#9161f5)",
                             }}
                           />
                         </div>
@@ -266,7 +266,7 @@ export default function MetaVote() {
                             initial={{ opacity: 0, scale: 0.8 }}
                             animate={{ opacity: 1, scale: 1 }}
                             transition={{ delay: 0.6 }}
-                            style={{ marginTop: 5, fontSize: 9, fontWeight: 900, textTransform: "uppercase", letterSpacing: "0.14em", color: "rgba(255,255,255,0.7)" }}
+                            style={{ marginTop: 5, fontSize: 9, fontWeight: 900, textTransform: "uppercase", letterSpacing: "0.14em", color: "#ffc852" }}
                           >
                             👑 {t("vote.leader")}
                           </motion.div>

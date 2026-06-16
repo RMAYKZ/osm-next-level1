@@ -1,4 +1,4 @@
-import { motion } from "framer-motion";
+﻿import { motion } from "framer-motion";
 import { siteMeta } from "../data/tactics";
 import { useLang } from "../contexts/LanguageContext";
 
@@ -8,7 +8,7 @@ export default function About() {
   const { t } = useLang();
 
   return (
-    <section id="hakkimda" style={{ position: "relative", overflow: "hidden", padding: "clamp(48px,7vw,96px) 0", background: "#070711" }}>
+    <section id="hakkimda" style={{ position: "relative", overflow: "hidden", padding: "clamp(48px,7vw,96px) 0", background: "transparent" }}>
 
       {/* Background accents */}
       <div className="pointer-events-none absolute inset-0 -z-10" aria-hidden="true">

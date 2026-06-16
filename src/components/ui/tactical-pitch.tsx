@@ -1,55 +1,97 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { motion, MotionConfig } from "framer-motion";
 
-const NEON   = "oklch(0.87 0.27 152)";
-const NEON_G = "oklch(0.87 0.27 152 / 0.4)";
-const NEON_D = "oklch(0.87 0.27 152 / 0.15)";
+const NEON   = "#5b8af7";
+const NEON_G = "rgba(91,138,247,0.4)";
 
 // ── Pitch SVG ─────────────────────────────────────────────────────────────────
 function PitchSVG() {
-  const stripes = Array.from({ length: 9 });
+  const stripes = Array.from({ length: 10 });
   return (
     <svg viewBox="0 0 100 140" style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }} aria-hidden>
       <defs>
-        <clipPath id="pc"><rect x="2" y="2" width="96" height="136" rx="4" /></clipPath>
-        <filter id="lg"><feGaussianBlur stdDeviation="0.3" /></filter>
-        <radialGradient id="pg" cx="50%" cy="50%">
-          <stop offset="0%" stopColor="#0a1f0e" />
-          <stop offset="100%" stopColor="#061208" />
+        <clipPath id="pc"><rect x="1.5" y="1.5" width="97" height="137" rx="3" /></clipPath>
+        <radialGradient id="pg" cx="50%" cy="45%" r="60%">
+          <stop offset="0%" stopColor="#1a6b30" />
+          <stop offset="40%" stopColor="#145425" />
+          <stop offset="100%" stopColor="#0a3016" />
         </radialGradient>
+        <radialGradient id="spotlight" cx="50%" cy="30%" r="55%">
+          <stop offset="0%" stopColor="rgba(255,255,255,0.06)" />
+          <stop offset="100%" stopColor="rgba(0,0,0,0)" />
+        </radialGradient>
+        <radialGradient id="vign" cx="50%" cy="50%" r="70%">
+          <stop offset="60%" stopColor="rgba(0,0,0,0)" />
+          <stop offset="100%" stopColor="rgba(0,0,0,0.35)" />
+        </radialGradient>
+        <filter id="glow-line">
+          <feGaussianBlur stdDeviation="0.5" result="b" />
+          <feMerge><feMergeNode in="b" /><feMergeNode in="SourceGraphic" /></feMerge>
+        </filter>
       </defs>
 
-      <rect x="2" y="2" width="96" height="136" rx="4" fill="url(#pg)" />
+      {/* Grass base */}
+      <rect x="1.5" y="1.5" width="97" height="137" rx="3" fill="url(#pg)" />
 
+      {/* Alternating lawn stripes */}
       {stripes.map((_, i) => (
-        <rect key={i} x="2" y={2 + i * 15.2} width="96" height="7.6"
-          fill="#0c2410" clipPath="url(#pc)" opacity="0.55" />
+        <rect key={i} x="1.5" y={1.5 + i * 13.7} width="97" height="6.85"
+          fill={i % 2 === 0 ? "rgba(255,255,255,0.035)" : "rgba(0,0,0,0.05)"}
+          clipPath="url(#pc)" />
       ))}
 
-      <rect x="2" y="2" width="96" height="136" rx="4" fill="none"
-        stroke="rgba(255,255,255,0.22)" strokeWidth="0.8" />
+      {/* Stadium spotlight overlay */}
+      <rect x="1.5" y="1.5" width="97" height="137" rx="3" fill="url(#spotlight)" clipPath="url(#pc)" />
 
-      <line x1="2" y1="71" x2="98" y2="71" stroke="rgba(255,255,255,0.18)" strokeWidth="0.6" />
-      <circle cx="50" cy="71" r="12" fill="none" stroke="rgba(255,255,255,0.18)" strokeWidth="0.6" />
-      <circle cx="50" cy="71" r="1.1" fill="rgba(255,255,255,0.3)" />
+      {/* Pitch boundary — bright white with glow */}
+      <rect x="3" y="3" width="94" height="134" rx="2" fill="none"
+        stroke="rgba(255,255,255,0.85)" strokeWidth="0.7" filter="url(#glow-line)" />
+      <rect x="3" y="3" width="94" height="134" rx="2" fill="none"
+        stroke="rgba(255,255,255,0.2)" strokeWidth="2.5" />
 
-      <rect x="19" y="2" width="62" height="22" fill="none" stroke="rgba(255,255,255,0.18)" strokeWidth="0.6" />
-      <rect x="32" y="2" width="36" height="8" fill="none" stroke="rgba(255,255,255,0.1)" strokeWidth="0.4" />
-      <circle cx="50" cy="15" r="1" fill="rgba(255,255,255,0.18)" />
-      <path d="M 34 24 A 12 12 0 0 0 66 24" fill="none" stroke="rgba(255,255,255,0.1)" strokeWidth="0.4" />
+      {/* Halfway line */}
+      <line x1="3" y1="70" x2="97" y2="70" stroke="rgba(255,255,255,0.8)" strokeWidth="0.55" />
 
-      <rect x="19" y="116" width="62" height="22" fill="none" stroke="rgba(255,255,255,0.18)" strokeWidth="0.6" />
-      <rect x="32" y="130" width="36" height="8" fill="none" stroke="rgba(255,255,255,0.1)" strokeWidth="0.4" />
-      <circle cx="50" cy="125" r="1" fill="rgba(255,255,255,0.18)" />
-      <path d="M 34 116 A 12 12 0 0 1 66 116" fill="none" stroke="rgba(255,255,255,0.1)" strokeWidth="0.4" />
+      {/* Center circle */}
+      <circle cx="50" cy="70" r="12" fill="none" stroke="rgba(255,255,255,0.8)" strokeWidth="0.55" />
+      <circle cx="50" cy="70" r="1.2" fill="rgba(255,255,255,0.95)" />
 
-      <path d="M 2 6 A 4 4 0 0 1 6 2" fill="none" stroke="rgba(255,255,255,0.1)" strokeWidth="0.4" />
-      <path d="M 94 6 A 4 4 0 0 0 98 2" fill="none" stroke="rgba(255,255,255,0.1)" strokeWidth="0.4" />
-      <path d="M 2 136 A 4 4 0 0 0 6 138" fill="none" stroke="rgba(255,255,255,0.1)" strokeWidth="0.4" />
-      <path d="M 94 136 A 4 4 0 0 1 98 138" fill="none" stroke="rgba(255,255,255,0.1)" strokeWidth="0.4" />
+      {/* Attack penalty area (top) */}
+      <rect x="22" y="3" width="56" height="20" fill="rgba(255,255,255,0.025)" stroke="rgba(255,255,255,0.75)" strokeWidth="0.5" />
+      {/* Attack 6-yard box */}
+      <rect x="34" y="3" width="32" height="8" fill="none" stroke="rgba(255,255,255,0.6)" strokeWidth="0.4" />
+      {/* Attack penalty spot */}
+      <circle cx="50" cy="16" r="0.85" fill="rgba(255,255,255,0.9)" />
+      {/* Attack penalty arc */}
+      <path d="M 36 23 A 10 10 0 0 0 64 23" fill="none" stroke="rgba(255,255,255,0.65)" strokeWidth="0.45" />
+      {/* Attack goal net */}
+      <rect x="38" y="1" width="24" height="3.5" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.55)" strokeWidth="0.55" />
 
-      <rect x="36" y="0" width="28" height="3.5" rx="0.5" fill="none" stroke="rgba(255,255,255,0.3)" strokeWidth="0.7" />
-      <rect x="36" y="136.5" width="28" height="3.5" rx="0.5" fill="none" stroke="rgba(255,255,255,0.3)" strokeWidth="0.7" />
+      {/* Defense penalty area (bottom) */}
+      <rect x="22" y="117" width="56" height="20" fill="rgba(255,255,255,0.025)" stroke="rgba(255,255,255,0.75)" strokeWidth="0.5" />
+      {/* Defense 6-yard box */}
+      <rect x="34" y="129" width="32" height="8" fill="none" stroke="rgba(255,255,255,0.6)" strokeWidth="0.4" />
+      {/* Defense penalty spot */}
+      <circle cx="50" cy="124" r="0.85" fill="rgba(255,255,255,0.9)" />
+      {/* Defense penalty arc */}
+      <path d="M 36 117 A 10 10 0 0 1 64 117" fill="none" stroke="rgba(255,255,255,0.65)" strokeWidth="0.45" />
+      {/* Defense goal net */}
+      <rect x="38" y="135.5" width="24" height="3.5" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.55)" strokeWidth="0.55" />
+
+      {/* Corner arcs */}
+      <path d="M 3 9 A 6 6 0 0 0 9 3" fill="none" stroke="rgba(255,255,255,0.65)" strokeWidth="0.45" />
+      <path d="M 91 3 A 6 6 0 0 0 97 9" fill="none" stroke="rgba(255,255,255,0.65)" strokeWidth="0.45" />
+      <path d="M 3 131 A 6 6 0 0 1 9 137" fill="none" stroke="rgba(255,255,255,0.65)" strokeWidth="0.45" />
+      <path d="M 91 137 A 6 6 0 0 1 97 131" fill="none" stroke="rgba(255,255,255,0.65)" strokeWidth="0.45" />
+
+      {/* Corner flags (dots) */}
+      <circle cx="3" cy="3" r="1.2" fill="rgba(245,166,35,0.9)" />
+      <circle cx="97" cy="3" r="1.2" fill="rgba(245,166,35,0.9)" />
+      <circle cx="3" cy="137" r="1.2" fill="rgba(245,166,35,0.9)" />
+      <circle cx="97" cy="137" r="1.2" fill="rgba(245,166,35,0.9)" />
+
+      {/* Depth vignette */}
+      <rect x="1.5" y="1.5" width="97" height="137" rx="3" fill="url(#vign)" clipPath="url(#pc)" />
     </svg>
   );
 }
@@ -159,7 +201,7 @@ function Ball({ onGoal }: { onGoal: () => void }) {
     timerRef.current = setInterval(() => {
       setBi(i => {
         const next = (i + 1) % BALL_PATH.length;
-        if (GOAL_INDICES.has(next)) onGoalRef.current();
+        if (GOAL_INDICES.has(next)) setTimeout(() => onGoalRef.current(), 0);
         return next;
       });
     }, 1800);
@@ -188,7 +230,7 @@ function Ball({ onGoal }: { onGoal: () => void }) {
 function RunningPlayer({ x, y, dx, dy, dur, phase, isGK, celebrating }:
   typeof PLAYERS[0] & { celebrating?: boolean }) {
 
-  const color = isGK ? "rgba(255,255,255,0.9)" : NEON;
+  const color = isGK ? "#f5a623" : NEON;
   const kx = [x, x + dx, x, x - dx, x];
   const ky = [y, y + dy * 0.5, y - dy * 0.5, y + dy * 0.3, y];
 
@@ -234,7 +276,7 @@ export function TacticalPitchScene() {
         <div aria-hidden style={{
           position: "absolute",
           width: "70%", height: "80%",
-          background: `radial-gradient(ellipse, oklch(0.87 0.27 152 / 0.07) 0%, transparent 65%)`,
+          background: `radial-gradient(ellipse, rgba(20,100,40,0.25) 0%, transparent 65%)`,
           filter: "blur(40px)",
           pointerEvents: "none",
         }} />
@@ -245,7 +287,7 @@ export function TacticalPitchScene() {
           width: "100%",
           maxWidth: 360,
           aspectRatio: "100 / 140",
-          boxShadow: `0 0 0 1px ${NEON_D}, 0 20px 60px rgba(0,0,0,0.7)`,
+          boxShadow: `0 0 0 1px rgba(91,138,247,0.2), 0 0 40px rgba(91,138,247,0.06), 0 20px 60px rgba(0,0,0,0.7)`,
           borderRadius: 6,
         }}>
           <PitchSVG />
@@ -270,8 +312,8 @@ export function TacticalPitchScene() {
                 fontFamily: "'Outfit', sans-serif",
                 fontSize: "clamp(24px, 12vw, 44px)",
                 fontWeight: 900,
-                color: NEON,
-                textShadow: `0 0 24px ${NEON_G}, 0 0 60px ${NEON_D}, 0 2px 8px rgba(0,0,0,0.8)`,
+                color: "#f5a623",
+                textShadow: `0 0 24px rgba(245,166,35,0.6), 0 0 60px rgba(245,166,35,0.2), 0 2px 8px rgba(0,0,0,0.8)`,
                 letterSpacing: "0.12em",
               }}>
                 GOL!

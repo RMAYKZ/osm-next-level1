@@ -1,22 +1,45 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
   <defs>
-    <clipPath id="bc"><circle cx="50" cy="50" r="46"/></clipPath>
+    <radialGradient id="bg" cx="40%" cy="30%" r="75%">
+      <stop offset="0%"   stop-color="#141a35"/>
+      <stop offset="100%" stop-color="#06060e"/>
+    </radialGradient>
+    <linearGradient id="line" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%"   stop-color="#6b96f8"/>
+      <stop offset="100%" stop-color="#8b64f0"/>
+    </linearGradient>
+    <filter id="glow" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="1.8" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
   </defs>
-  <!-- White ball with black border -->
-  <circle cx="50" cy="50" r="48" fill="#fff" stroke="#111" stroke-width="4"/>
-  <!-- Classic football patch pattern -->
-  <g fill="#111" clip-path="url(#bc)">
-    <!-- Center pentagon (pointing up) -->
-    <polygon points="50,35 64,45 59,62 41,62 36,45"/>
-    <!-- Top outer pentagon -->
-    <polygon points="50,31 41,25 45,15 55,15 59,25"/>
-    <!-- Upper-right outer pentagon -->
-    <polygon points="85,39 82,49 71,49 68,39 77,32"/>
-    <!-- Lower-right outer pentagon -->
-    <polygon points="72,80 61,80 58,70 67,64 75,70"/>
-    <!-- Lower-left outer pentagon -->
-    <polygon points="28,80 25,70 34,64 42,70 39,80"/>
-    <!-- Upper-left outer pentagon -->
-    <polygon points="15,39 23,32 32,39 29,49 18,49"/>
+
+  <!-- Rounded square background -->
+  <rect width="100" height="100" rx="20" fill="url(#bg)"/>
+
+  <!-- Subtle field ambient glow -->
+  <ellipse cx="50" cy="50" rx="36" ry="30" fill="rgba(91,138,247,0.07)"/>
+
+  <!-- Pitch lines -->
+  <g filter="url(#glow)" stroke="url(#line)" fill="none">
+    <!-- Outer border -->
+    <rect x="16" y="10" width="68" height="80" rx="3" stroke-width="3.2" stroke-opacity="0.95"/>
+    <!-- Halfway line -->
+    <line x1="16" y1="50" x2="84" y2="50" stroke-width="2.2" stroke-opacity="0.85"/>
+    <!-- Centre circle -->
+    <circle cx="50" cy="50" r="13" stroke-width="2.2" stroke-opacity="0.85"/>
+    <!-- Top penalty box -->
+    <rect x="31" y="10" width="38" height="18" rx="1" stroke-width="1.6" stroke-opacity="0.5"/>
+    <!-- Bottom penalty box -->
+    <rect x="31" y="72" width="38" height="18" rx="1" stroke-width="1.6" stroke-opacity="0.5"/>
   </g>
+
+  <!-- Centre spot -->
+  <circle cx="50" cy="50" r="4" fill="#6b96f8"/>
+  <!-- Penalty spots -->
+  <circle cx="50" cy="22" r="2.2" fill="#8b64f0" fill-opacity="0.72"/>
+  <circle cx="50" cy="78" r="2.2" fill="#8b64f0" fill-opacity="0.72"/>
 </svg>

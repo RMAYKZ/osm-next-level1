@@ -1,19 +1,48 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 180">
   <defs>
-    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#ef4444"/>
-      <stop offset="50%" stop-color="#f97316"/>
-      <stop offset="100%" stop-color="#fbbf24"/>
+    <radialGradient id="bg" cx="40%" cy="30%" r="75%">
+      <stop offset="0%"   stop-color="#141a35"/>
+      <stop offset="100%" stop-color="#06060e"/>
+    </radialGradient>
+    <linearGradient id="line" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%"   stop-color="#6b96f8"/>
+      <stop offset="100%" stop-color="#8b64f0"/>
     </linearGradient>
+    <filter id="glow" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
   </defs>
-  <rect width="180" height="180" rx="38" fill="url(#bg)"/>
-  <rect width="180" height="180" rx="38" fill="none" stroke="#ffffff" stroke-opacity="0.18" stroke-width="3"/>
-  <text x="90" y="118"
-        text-anchor="middle"
-        font-family="Oswald, Arial Black, sans-serif"
-        font-weight="900"
-        font-size="86"
-        fill="#ffffff"
-        letter-spacing="-2">NL</text>
+
+  <!-- Rounded square background -->
+  <rect width="180" height="180" rx="36" fill="url(#bg)"/>
+  <!-- Subtle border -->
+  <rect width="180" height="180" rx="36" fill="none" stroke="rgba(107,150,248,0.2)" stroke-width="2"/>
+
+  <!-- Field ambient glow -->
+  <ellipse cx="90" cy="90" rx="65" ry="54" fill="rgba(91,138,247,0.07)"/>
+
+  <!-- Pitch lines -->
+  <g filter="url(#glow)" stroke="url(#line)" fill="none">
+    <!-- Outer border -->
+    <rect x="28" y="18" width="124" height="144" rx="5" stroke-width="5.5" stroke-opacity="0.95"/>
+    <!-- Halfway line -->
+    <line x1="28" y1="90" x2="152" y2="90" stroke-width="3.8" stroke-opacity="0.85"/>
+    <!-- Centre circle -->
+    <circle cx="90" cy="90" r="24" stroke-width="3.8" stroke-opacity="0.85"/>
+    <!-- Top penalty box -->
+    <rect x="57" y="18" width="66" height="32" rx="2" stroke-width="2.8" stroke-opacity="0.5"/>
+    <!-- Bottom penalty box -->
+    <rect x="57" y="130" width="66" height="32" rx="2" stroke-width="2.8" stroke-opacity="0.5"/>
+  </g>
+
+  <!-- Centre spot -->
+  <circle cx="90" cy="90" r="7" fill="#6b96f8"/>
+  <!-- Penalty spots -->
+  <circle cx="90" cy="40" r="4" fill="#8b64f0" fill-opacity="0.72"/>
+  <circle cx="90" cy="140" r="4" fill="#8b64f0" fill-opacity="0.72"/>
 </svg>

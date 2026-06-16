@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+﻿import { useEffect, useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import type { Timestamp } from "firebase/firestore";
 import type { User } from "firebase/auth";
@@ -72,10 +72,10 @@ const SEED_COMMENTS: SiteComment[] = [
 ];
 
 const GLASS: React.CSSProperties = {
-  background: "rgba(255,255,255,0.03)",
+  background: "rgba(91,138,247,0.04)",
   backdropFilter: "blur(20px)",
   WebkitBackdropFilter: "blur(20px)",
-  border: "1px solid rgba(255,255,255,0.08)",
+  border: "1px solid rgba(91,138,247,0.14)",
   borderRadius: 16,
 };
 
@@ -268,17 +268,17 @@ export default function CommentSection() {
   };
 
   return (
-    <section id="yorumlar" style={{ position: "relative", overflow: "hidden", padding: "clamp(48px,7vw,96px) 0" }}>
+    <section id="yorumlar" style={{ position: "relative", overflow: "hidden", padding: "clamp(48px,7vw,96px) 0", background: "transparent" }}>
 
       <div className="pointer-events-none absolute inset-0 -z-10" aria-hidden="true">
         <div style={{
           position: "absolute", top: 0, left: 0, right: 0, height: 1,
-          background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.06), transparent)",
+          background: "linear-gradient(90deg, transparent, rgba(245,166,35,0.2) 35%, rgba(91,138,247,0.2) 65%, transparent)",
         }} />
         <div style={{
           position: "absolute", bottom: "5%", left: "-5%",
           width: "35%", height: "50%", borderRadius: "50%",
-          background: "radial-gradient(ellipse, rgba(255,255,255,0.03) 0%, transparent 70%)",
+          background: "radial-gradient(ellipse, rgba(245,166,35,0.07) 0%, transparent 70%)",
           filter: "blur(80px)",
         }} />
       </div>
@@ -295,17 +295,17 @@ export default function CommentSection() {
         >
           <div style={{
             display: "inline-flex", alignItems: "center", gap: 7,
-            background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.15)",
+            background: "rgba(245,166,35,0.08)", border: "1px solid rgba(245,166,35,0.28)",
             borderRadius: 999, padding: "5px 14px", marginBottom: 14,
           }}>
             <span style={{ fontSize: 12 }}>💬</span>
-            <span style={{ fontSize: 10, fontWeight: 900, textTransform: "uppercase", letterSpacing: "0.18em", color: "rgba(255,255,255,0.7)" }}>
+            <span style={{ fontSize: 10, fontWeight: 900, textTransform: "uppercase", letterSpacing: "0.18em", color: "#ffc852" }}>
               {t("comments.badge")}
             </span>
           </div>
           <h2 style={{ margin: "0 0 10px", fontSize: "clamp(1.8rem,4vw,3.2rem)", fontWeight: 900, lineHeight: 1.1, letterSpacing: "-0.02em" }}>
             <span style={{ color: "#ffffff" }}>{t("comments.titleA")} </span>
-            <span style={{ color: "rgba(255,255,255,0.6)" }}>{t("comments.titleB")}</span>
+            <span style={{ color: "#f5a623" }}>{t("comments.titleB")}</span>
           </h2>
           <p style={{ margin: 0, fontSize: 14, color: "rgba(255,255,255,0.42)", lineHeight: 1.6 }}>
             {t("comments.desc")}
@@ -376,12 +376,13 @@ export default function CommentSection() {
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.97 }}
                 style={{
-                  background: "#ffffff",
+                  background: "linear-gradient(135deg, #5b8af7, #9161f5)",
                   borderRadius: 999, padding: "13px 0", width: "100%",
-                  color: "#000000", fontSize: 13, fontWeight: 900,
+                  color: "#ffffff", fontSize: 13, fontWeight: 900,
                   textTransform: "uppercase", letterSpacing: "0.1em",
                   cursor: loading ? "not-allowed" : "pointer", border: "none",
                   opacity: loading ? 0.6 : 1,
+                  boxShadow: "0 8px 24px rgba(91,138,247,0.3)",
                 }}
               >
                 {loading ? t("comments.sending") : t("comments.submit")}
@@ -529,9 +530,9 @@ export default function CommentSection() {
                             <button
                               onClick={() => approveComment(comment.id)}
                               style={{
-                                background: "#ffffff", borderRadius: 999, padding: "7px 16px",
+                                background: "linear-gradient(135deg,#10d9a1,#5b8af7)", borderRadius: 999, padding: "7px 16px",
                                 fontSize: 11, fontWeight: 900, textTransform: "uppercase", letterSpacing: "0.1em",
-                                color: "#000000", cursor: "pointer", border: "none",
+                                color: "#ffffff", cursor: "pointer", border: "none",
                               }}
                             >
                               {t("comments.approve")}
@@ -570,9 +571,9 @@ function CommentCard({ comment, compact = false, index }: { comment: SiteComment
           <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
             <div style={{
               width: 36, height: 36, borderRadius: "50%",
-              background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.12)",
+              background: "rgba(91,138,247,0.15)", border: "1px solid rgba(91,138,247,0.35)",
               display: "flex", alignItems: "center", justifyContent: "center",
-              fontSize: 14, fontWeight: 900, color: "#ffffff",
+              fontSize: 14, fontWeight: 900, color: "#7eb8ff",
             }}>
               {comment.author.charAt(0).toUpperCase()}
             </div>
@@ -581,7 +582,7 @@ function CommentCard({ comment, compact = false, index }: { comment: SiteComment
               <div style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: "rgba(255,255,255,0.3)" }}>{formatDate(comment)}</div>
             </div>
           </div>
-          <div style={{ fontSize: 12, color: "rgba(255,255,255,0.6)", whiteSpace: "nowrap" }}>{"★".repeat(comment.rating || 5)}</div>
+          <div style={{ fontSize: 12, color: "#f5a623", whiteSpace: "nowrap" }}>{"★".repeat(comment.rating || 5)}</div>
         </div>
         <p style={{ margin: 0, fontSize: 13, lineHeight: 1.7, color: "rgba(255,255,255,0.42)" }}>"{comment.text}"</p>
       </article>
@@ -595,10 +596,10 @@ function CommentCard({ comment, compact = false, index }: { comment: SiteComment
       viewport={{ once: true }}
       transition={{ duration: 0.4, delay: Math.min(index, 5) * 0.07, ease: EASE }}
       style={{
-        background: "rgba(255,255,255,0.03)",
+        background: "rgba(91,138,247,0.04)",
         backdropFilter: "blur(16px)",
         WebkitBackdropFilter: "blur(16px)",
-        border: "1px solid rgba(255,255,255,0.08)",
+        border: "1px solid rgba(91,138,247,0.12)",
         borderRadius: 16, padding: 18,
       }}
     >
@@ -606,9 +607,9 @@ function CommentCard({ comment, compact = false, index }: { comment: SiteComment
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
           <div style={{
             width: 38, height: 38, borderRadius: "50%", flexShrink: 0,
-            background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.12)",
+            background: "rgba(91,138,247,0.15)", border: "1px solid rgba(91,138,247,0.35)",
             display: "flex", alignItems: "center", justifyContent: "center",
-            fontSize: 15, fontWeight: 900, color: "#ffffff",
+            fontSize: 15, fontWeight: 900, color: "#7eb8ff",
           }}>
             {comment.author.charAt(0).toUpperCase()}
           </div>

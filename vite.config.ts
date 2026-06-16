@@ -476,5 +476,18 @@ export default defineConfig(({ mode }) => {
         ignored: ["**/*.png", "**/*.jpg", "**/*.jpeg", "**/*.gif", "**/*.webp"],
       },
     },
+    build: {
+      rollupOptions: {
+        output: {
+          manualChunks(id: string) {
+            // Firebase is huge (~400KB raw). Split so it caches independently.
+            if (id.includes("node_modules/firebase")) return "vendor-firebase";
+            // React & React-DOM rarely change — long-lived cache.
+            if (id.includes("node_modules/react-dom")) return "vendor-react-dom";
+            if (id.includes("node_modules/react/") || id.includes("node_modules/react-is")) return "vendor-react";
+          },
+        },
+      },
+    },
   };
 });

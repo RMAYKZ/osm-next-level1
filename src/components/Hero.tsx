@@ -2,7 +2,6 @@ import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useLang } from "../contexts/LanguageContext";
 import { siteMeta } from "../data/tactics";
-import { TacticalPitchScene } from "./ui/tactical-pitch";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 
@@ -189,60 +188,6 @@ function Reveal({ children, delay = 0, y = 40, lite = false }: {
   );
 }
 
-// ── Gradient background blobs ─────────────────────────────────────────────────
-function GradientMesh() {
-  return (
-    <div aria-hidden style={{ position: "absolute", inset: 0, overflow: "hidden", pointerEvents: "none" }}>
-      {/* Blue blob — top left */}
-      <motion.div
-        animate={{ x: [0, 20, -10, 0], y: [0, -15, 10, 0], scale: [1, 1.08, 0.95, 1] }}
-        transition={{ duration: 22, repeat: Infinity, ease: "easeInOut" }}
-        style={{
-          position: "absolute", left: "-10%", top: "-8%",
-          width: "55%", height: "65%",
-          background: "radial-gradient(ellipse, rgba(91,138,247,0.22) 0%, transparent 65%)",
-          filter: "blur(80px)",
-        }}
-      />
-      {/* Purple blob — top right */}
-      <motion.div
-        animate={{ x: [0, -18, 12, 0], y: [0, 20, -8, 0], scale: [1, 0.92, 1.06, 1] }}
-        transition={{ duration: 28, repeat: Infinity, ease: "easeInOut", delay: 5 }}
-        style={{
-          position: "absolute", right: "-5%", top: "5%",
-          width: "45%", height: "55%",
-          background: "radial-gradient(ellipse, rgba(145,97,245,0.18) 0%, transparent 65%)",
-          filter: "blur(80px)",
-        }}
-      />
-      {/* Gold blob — bottom center */}
-      <motion.div
-        animate={{ x: [0, 25, -15, 0], y: [0, -20, 12, 0] }}
-        transition={{ duration: 18, repeat: Infinity, ease: "easeInOut", delay: 9 }}
-        style={{
-          position: "absolute", left: "30%", bottom: "-5%",
-          width: "40%", height: "40%",
-          background: "radial-gradient(ellipse, rgba(245,166,35,0.10) 0%, transparent 65%)",
-          filter: "blur(70px)",
-        }}
-      />
-      {/* Emerald small — mid right */}
-      <motion.div
-        animate={{ x: [0, -12, 8, 0], y: [0, 15, -10, 0] }}
-        transition={{ duration: 32, repeat: Infinity, ease: "easeInOut", delay: 14 }}
-        style={{
-          position: "absolute", right: "10%", top: "50%",
-          width: "25%", height: "35%",
-          background: "radial-gradient(ellipse, rgba(16,217,161,0.10) 0%, transparent 65%)",
-          filter: "blur(60px)",
-        }}
-      />
-      {/* Subtle grid overlay */}
-      <div className="g-grid-bg" style={{ opacity: 0.4 }} />
-    </div>
-  );
-}
-
 // ── Main Hero ─────────────────────────────────────────────────────────────────
 export default function Hero() {
   const { t, lang } = useLang();
@@ -257,14 +202,12 @@ export default function Hero() {
       style={{
         position: "relative",
         minHeight: "100vh",
-        background: "#070711",
+        background: "transparent",
         display: "flex",
         flexDirection: "column",
         overflow: "hidden",
       }}
     >
-      <GradientMesh />
-
       {/* ── Thin top rule ── */}
       <div style={{ height: 1, background: "linear-gradient(90deg, transparent, rgba(91,138,247,0.3) 35%, rgba(145,97,245,0.3) 65%, transparent)", flexShrink: 0 }} />
 
@@ -343,23 +286,22 @@ export default function Hero() {
         ))}
       </motion.div>
 
-      {/* ── MAIN CONTENT — 2-col desktop, 1-col mobile ── */}
+      {/* ── MAIN CONTENT — centred single column ── */}
       <div style={{
         flex: 1,
-        display: "grid",
-        gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr",
-        gap: isMobile ? 0 : "clamp(24px, 4vw, 60px)",
-        maxWidth: 1280,
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        maxWidth: 860,
         margin: "0 auto",
         width: "100%",
         padding: `clamp(80px, 12vw, 120px) clamp(16px, 4vw, 48px) clamp(32px, 5vw, 60px)`,
         position: "relative",
         zIndex: 2,
-        alignItems: "center",
       }}>
 
-        {/* ── LEFT COLUMN — Text content ── */}
-        <div style={{ display: "flex", flexDirection: "column", alignItems: isMobile ? "center" : "flex-start" }}>
+        {/* ── Content ── */}
+        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", width: "100%" }}>
 
           {/* Badge */}
           <Reveal delay={0.05} lite>
@@ -395,21 +337,18 @@ export default function Hero() {
               fontWeight: 900,
               lineHeight: 0.88,
               letterSpacing: "-0.03em",
-              textAlign: isMobile ? "center" : "left",
+              textAlign: "center",
             }}>
               <span style={{
                 display: "block",
-                fontSize: "clamp(3.5rem, 10vw, 6.5rem)",
-                background: "linear-gradient(135deg, #5b8af7 0%, #9161f5 100%)",
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-                backgroundClip: "text",
+                fontSize: "clamp(3.5rem, 10vw, 6rem)",
+                color: "#5b8af7",
               }}>
                 {hs.title1}
               </span>
               <span style={{
                 display: "block",
-                fontSize: "clamp(2.8rem, 8.5vw, 5.5rem)",
+                fontSize: "clamp(2.8rem, 8.5vw, 6rem)",
                 color: "#ffffff",
                 lineHeight: 0.92,
               }}>
@@ -433,11 +372,11 @@ export default function Hero() {
           <Reveal delay={0.3} lite>
             <p style={{
               margin: "0 0 28px",
-              fontSize: "clamp(13px, 1.5vw, 15px)",
+              fontSize: "clamp(13px, 1.5vw, 16px)",
               color: "rgba(255,255,255,0.55)",
               lineHeight: 1.7,
-              maxWidth: 480,
-              textAlign: isMobile ? "center" : "left",
+              maxWidth: 560,
+              textAlign: "center",
             }}>
               {hs.subtitle}
             </p>
@@ -445,7 +384,7 @@ export default function Hero() {
 
           {/* Feature pills */}
           <Reveal delay={0.35} lite>
-            <div style={{ display: "flex", gap: 8, flexWrap: "wrap", justifyContent: isMobile ? "center" : "flex-start", marginBottom: 28 }}>
+            <div style={{ display: "flex", gap: 8, flexWrap: "wrap", justifyContent: "center", marginBottom: 28 }}>
               <span className="g-badge g-badge-blue">⚡ {hs.pill1}</span>
               <span className="g-badge g-badge-emerald">📊 {hs.pill2}</span>
               <span className="g-badge g-badge-gold">👑 {hs.pill3}</span>
@@ -454,7 +393,7 @@ export default function Hero() {
 
           {/* CTA buttons */}
           <Reveal delay={0.42} lite>
-            <div style={{ display: "flex", gap: 10, flexWrap: "wrap", justifyContent: isMobile ? "center" : "flex-start", marginBottom: 36 }}>
+            <div style={{ display: "flex", gap: 10, flexWrap: "wrap", justifyContent: "center", marginBottom: 36 }}>
               <motion.a
                 href="#anti-taktik"
                 className="g-btn-primary"
@@ -489,7 +428,7 @@ export default function Hero() {
             <div style={{
               display: "flex",
               gap: "clamp(20px, 4vw, 40px)",
-              justifyContent: isMobile ? "center" : "flex-start",
+              justifyContent: "center",
               flexWrap: "wrap",
               paddingTop: 20,
               borderTop: "1px solid rgba(255,255,255,0.07)",
@@ -526,51 +465,7 @@ export default function Hero() {
             </div>
           </Reveal>
         </div>
-
-        {/* ── RIGHT COLUMN — Tactical Pitch ── */}
-        {!isMobile && (
-          <motion.div
-            initial={{ opacity: 0, x: 40, scale: 0.95 }}
-            animate={{ opacity: 1, x: 0, scale: 1 }}
-            transition={{ duration: 1.0, delay: 0.3, ease: EASE }}
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              minHeight: 420,
-              position: "relative",
-            }}
-          >
-            {/* Pitch glow halo */}
-            <div aria-hidden style={{
-              position: "absolute",
-              width: "70%", height: "70%",
-              background: "radial-gradient(ellipse, rgba(91,138,247,0.15) 0%, rgba(145,97,245,0.08) 40%, transparent 70%)",
-              filter: "blur(50px)",
-              pointerEvents: "none",
-            }} />
-            <TacticalPitchScene />
-          </motion.div>
-        )}
       </div>
-
-      {/* ── Mobile: pitch below text ── */}
-      {isMobile && (
-        <motion.div
-          initial={{ opacity: 0, y: 24 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.5, ease: EASE }}
-          style={{
-            display: "flex", alignItems: "center", justifyContent: "center",
-            padding: "0 16px 8px",
-            minHeight: 320,
-            position: "relative",
-            zIndex: 2,
-          }}
-        >
-          <TacticalPitchScene />
-        </motion.div>
-      )}
 
       {/* ── Coach disclaimer ── */}
       <motion.div
@@ -652,7 +547,7 @@ export default function Hero() {
       {/* ── Bottom fade ── */}
       <div style={{
         position: "absolute", bottom: 0, left: 0, right: 0, height: "18%",
-        background: "linear-gradient(0deg, #070711, transparent)",
+        background: "linear-gradient(0deg, rgba(7,7,17,0.6), transparent)",
         pointerEvents: "none", zIndex: 1,
       }} />
     </section>

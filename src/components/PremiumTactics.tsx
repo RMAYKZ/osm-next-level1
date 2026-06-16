@@ -1,4 +1,4 @@
-import { useState } from "react";
+﻿import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { getLocalizedPremiumTactics, siteConfig, type PremiumTactic } from "../data/extras";
 import { usePremium } from "../contexts/PremiumContext";
@@ -30,14 +30,14 @@ const TAKEN_MSG: Record<string, string> = {
 
 const LOC_STYLE = {
   home: {
-    primary: "#ffffff", secondary: "rgba(255,255,255,0.7)",
-    dim: "rgba(255,255,255,0.04)", border: "rgba(255,255,255,0.12)",
-    glow: "rgba(255,255,255,0.05)", label: "EV", icon: "🏠", styleColor: "rgba(255,255,255,0.6)",
+    primary: "#5b8af7", secondary: "rgba(91,138,247,0.7)",
+    dim: "rgba(91,138,247,0.10)", border: "rgba(91,138,247,0.28)",
+    glow: "rgba(91,138,247,0.08)", label: "EV", icon: "🏠", styleColor: "rgba(91,138,247,0.7)",
   },
   away: {
-    primary: "rgba(255,255,255,0.85)", secondary: "rgba(255,255,255,0.6)",
-    dim: "rgba(255,255,255,0.03)", border: "rgba(255,255,255,0.09)",
-    glow: "rgba(255,255,255,0.04)", label: "DEPLASMAN", icon: "✈️", styleColor: "rgba(255,255,255,0.55)",
+    primary: "#10d9a1", secondary: "rgba(16,217,161,0.7)",
+    dim: "rgba(16,217,161,0.08)", border: "rgba(16,217,161,0.25)",
+    glow: "rgba(16,217,161,0.06)", label: "DEPLASMAN", icon: "✈️", styleColor: "rgba(16,217,161,0.65)",
   },
 };
 
@@ -83,7 +83,7 @@ function Slider({ label, value, color: _color }: { label: string; value: number;
       </div>
       <div style={{ height: 4, borderRadius: 99, background: "rgba(255,255,255,0.08)", overflow: "hidden" }}>
         <div
-          style={{ width: `${value}%`, height: "100%", borderRadius: 99, background: "#ffffff" }}
+          style={{ width: `${value}%`, height: "100%", borderRadius: 99, background: "linear-gradient(90deg,#5b8af7,#9161f5)" }}
         />
       </div>
     </div>
@@ -93,7 +93,7 @@ function Slider({ label, value, color: _color }: { label: string; value: number;
 // ── Line cell ────────────────────────────────────────────────────────
 function LineCell({ role, value, icon }: { role: string; value: string; icon: string }) {
   return (
-    <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: 3, background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.07)", borderRadius: 10, padding: "8px 10px" }}>
+    <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: 3, background: "rgba(91,138,247,0.05)", border: "1px solid rgba(91,138,247,0.14)", borderRadius: 10, padding: "8px 10px" }}>
       <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
         <span style={{ fontSize: 10 }}>{icon}</span>
         <span style={{ fontSize: 8, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.13em", color: "rgba(255,255,255,0.3)" }}>{role}</span>
@@ -114,13 +114,13 @@ function TacticCard({ tactic, index }: { tactic: PremiumTactic; index: number })
       whileHover={{ y: -5, transition: { duration: 0.2 } }}
       style={{
         position: "relative", overflow: "hidden",
-        background: "rgba(255,255,255,0.03)",
-        border: "1px solid rgba(255,255,255,0.08)", borderRadius: 16,
+        background: "rgba(91,138,247,0.04)",
+        border: "1px solid rgba(91,138,247,0.14)", borderRadius: 16,
         ...(isMobileDevice ? {} : { backdropFilter: "blur(24px)", WebkitBackdropFilter: "blur(24px)" }),
       }}
     >
       {/* Corner glow */}
-      <div style={{ position: "absolute", top: -40, right: -40, width: 140, height: 140, borderRadius: "50%", background: "radial-gradient(circle, rgba(255,255,255,0.03) 0%, transparent 70%)", pointerEvents: "none" }} />
+      <div style={{ position: "absolute", top: -40, right: -40, width: 140, height: 140, borderRadius: "50%", background: "radial-gradient(circle, rgba(91,138,247,0.1) 0%, transparent 70%)", pointerEvents: "none" }} />
       {/* Shimmer — disabled on mobile to prevent infinite RAF overhead */}
       {!isMobileDevice && (
         <motion.div
@@ -131,7 +131,7 @@ function TacticCard({ tactic, index }: { tactic: PremiumTactic; index: number })
       )}
       {/* SOLID badge */}
       {tactic.solid && (
-        <div style={{ position: "absolute", top: 14, right: 14, zIndex: 2, background: "rgba(255,255,255,0.07)", border: "1px solid rgba(255,255,255,0.2)", borderRadius: 6, padding: "4px 10px", fontSize: 9, fontWeight: 900, letterSpacing: "0.2em", textTransform: "uppercase", color: "rgba(255,255,255,0.7)" }}>
+        <div style={{ position: "absolute", top: 14, right: 14, zIndex: 2, background: "rgba(91,138,247,0.10)", border: "1px solid rgba(91,138,247,0.3)", borderRadius: 6, padding: "4px 10px", fontSize: 9, fontWeight: 900, letterSpacing: "0.2em", textTransform: "uppercase", color: "#7eb8ff" }}>
           ✦ SOLID
         </div>
       )}
@@ -148,9 +148,9 @@ function TacticCard({ tactic, index }: { tactic: PremiumTactic; index: number })
               </div>
               {tactic.winRate && (
                 <motion.div animate={{ scale: [1, 1.06, 1] }} transition={{ duration: 2.4, repeat: Infinity }}
-                  style={{ display: "inline-flex", alignItems: "center", gap: 4, background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.15)", borderRadius: 999, padding: "3px 10px" }}>
+                  style={{ display: "inline-flex", alignItems: "center", gap: 4, background: "rgba(245,166,35,0.08)", border: "1px solid rgba(245,166,35,0.28)", borderRadius: 999, padding: "3px 10px" }}>
                   <span style={{ fontSize: 10 }}>🏆</span>
-                  <span style={{ fontSize: 8.5, fontWeight: 900, letterSpacing: "0.1em", color: "rgba(255,255,255,0.75)" }}>%{tactic.winRate} {t("premium.winRateSuffix")}</span>
+                  <span style={{ fontSize: 8.5, fontWeight: 900, letterSpacing: "0.1em", color: "#ffc852" }}>%{tactic.winRate} {t("premium.winRateSuffix")}</span>
                 </motion.div>
               )}
             </div>
@@ -161,8 +161,8 @@ function TacticCard({ tactic, index }: { tactic: PremiumTactic; index: number })
           </div>
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 18 }}>
-          <div style={{ display: "inline-flex", alignItems: "center", background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.12)", borderRadius: 8, padding: "5px 12px" }}>
-            <span style={{ fontSize: 13, fontWeight: 900, color: "#ffffff", letterSpacing: "0.06em", fontFamily: "'Outfit', sans-serif" }}>{tactic.formation}</span>
+          <div style={{ display: "inline-flex", alignItems: "center", background: "rgba(91,138,247,0.08)", border: "1px solid rgba(91,138,247,0.25)", borderRadius: 8, padding: "5px 12px" }}>
+            <span style={{ fontSize: 13, fontWeight: 900, color: "#7eb8ff", letterSpacing: "0.06em", fontFamily: "'Outfit', sans-serif" }}>{tactic.formation}</span>
           </div>
           <span style={{ fontSize: 11, fontWeight: 600, color: "rgba(255,255,255,0.35)", letterSpacing: "0.04em" }}>· {tactic.playStyle}</span>
         </div>
@@ -219,22 +219,22 @@ function TeaserCard({ tactic, index }: { tactic: PremiumTactic; index: number })
       transition={{ duration: 0.45, delay: index * 0.08, ease: EASE }}
       style={{
         position: "relative", overflow: "hidden",
-        background: "rgba(255,255,255,0.03)",
-        border: "1px solid rgba(255,255,255,0.08)", borderRadius: 18,
+        background: "rgba(91,138,247,0.04)",
+        border: "1px solid rgba(91,138,247,0.14)", borderRadius: 18,
         backdropFilter: "blur(24px)", WebkitBackdropFilter: "blur(24px)",
       }}
     >
       {/* Subtle top glow */}
-      <div style={{ position: "absolute", top: -30, left: "50%", transform: "translateX(-50%)", width: 180, height: 60, borderRadius: "50%", background: "radial-gradient(ellipse, rgba(255,255,255,0.03) 0%, transparent 70%)", pointerEvents: "none" }} />
+      <div style={{ position: "absolute", top: -30, left: "50%", transform: "translateX(-50%)", width: 180, height: 60, borderRadius: "50%", background: "radial-gradient(ellipse, rgba(91,138,247,0.12) 0%, transparent 70%)", pointerEvents: "none" }} />
 
       {/* VIP ribbon top-right */}
       <div style={{
         position: "absolute", top: 0, right: 0,
-        background: "rgba(255,255,255,0.1)",
-        border: "1px solid rgba(255,255,255,0.18)",
+        background: "linear-gradient(135deg,rgba(245,166,35,0.18),rgba(255,200,82,0.08))",
+        border: "1px solid rgba(245,166,35,0.32)",
         padding: "5px 14px 5px 20px",
         borderBottomLeftRadius: 14,
-        fontSize: 9, fontWeight: 900, letterSpacing: "0.18em", color: "rgba(255,255,255,0.8)",
+        fontSize: 9, fontWeight: 900, letterSpacing: "0.18em", color: "#ffc852",
         textTransform: "uppercase", zIndex: 3,
         clipPath: "polygon(12px 0, 100% 0, 100% 100%, 0 100%)",
       }}>
@@ -304,8 +304,8 @@ function TeaserCard({ tactic, index }: { tactic: PremiumTactic; index: number })
               transition={{ duration: 2.8, repeat: Infinity, delay: index * 0.4 }}
               style={{
                 width: 44, height: 44, borderRadius: "50%",
-                background: "rgba(255,255,255,0.06)",
-                border: "1px solid rgba(255,255,255,0.2)",
+                background: "rgba(245,166,35,0.12)",
+                border: "1px solid rgba(245,166,35,0.35)",
                 display: "flex", alignItems: "center", justifyContent: "center",
                 fontSize: 20,
               }}
@@ -352,15 +352,15 @@ export default function PremiumTactics() {
   };
 
   return (
-    <section id="premium" style={{ position: "relative", overflow: "hidden", padding: "clamp(48px,7vw,96px) 0" }}>
+    <section id="premium" style={{ position: "relative", overflow: "hidden", padding: "clamp(48px,7vw,96px) 0", background: "transparent" }}>
 
       {/* Ambient glows */}
       <div className="pointer-events-none absolute inset-0 -z-10" aria-hidden="true">
         <motion.div animate={{ opacity: [0.2, 0.4, 0.2] }} transition={{ duration: 9, repeat: Infinity }}
-          style={{ position: "absolute", top: "5%", right: "-8%", width: "45%", height: "60%", borderRadius: "50%", background: "radial-gradient(ellipse, rgba(255,255,255,0.03) 0%, transparent 70%)", filter: "blur(90px)" }} />
+          style={{ position: "absolute", top: "5%", right: "-8%", width: "45%", height: "60%", borderRadius: "50%", background: "radial-gradient(ellipse, rgba(145,97,245,0.12) 0%, transparent 70%)", filter: "blur(90px)" }} />
         <motion.div animate={{ opacity: [0.1, 0.25, 0.1] }} transition={{ duration: 11, repeat: Infinity, delay: 3 }}
-          style={{ position: "absolute", bottom: "10%", left: "-5%", width: "35%", height: "50%", borderRadius: "50%", background: "radial-gradient(ellipse, rgba(255,255,255,0.02) 0%, transparent 70%)", filter: "blur(80px)" }} />
-        <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 1, background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.06), transparent)" }} />
+          style={{ position: "absolute", bottom: "10%", left: "-5%", width: "35%", height: "50%", borderRadius: "50%", background: "radial-gradient(ellipse, rgba(91,138,247,0.10) 0%, transparent 70%)", filter: "blur(80px)" }} />
+        <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 1, background: "linear-gradient(90deg, transparent, rgba(91,138,247,0.25) 35%, rgba(145,97,245,0.25) 65%, transparent)" }} />
       </div>
 
       <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 clamp(16px,4vw,40px)" }}>
@@ -372,20 +372,20 @@ export default function PremiumTactics() {
             style={{ marginBottom: 32, display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 14 }}
           >
             <div>
-              <div style={{ display: "inline-flex", alignItems: "center", gap: 7, background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.15)", borderRadius: 999, padding: "5px 14px", marginBottom: 12 }}>
+              <div style={{ display: "inline-flex", alignItems: "center", gap: 7, background: "rgba(245,166,35,0.10)", border: "1px solid rgba(245,166,35,0.3)", borderRadius: 999, padding: "5px 14px", marginBottom: 12 }}>
                 <span style={{ fontSize: 12 }}>👑</span>
-                <span style={{ fontSize: 10, fontWeight: 900, textTransform: "uppercase", letterSpacing: "0.18em", color: "rgba(255,255,255,0.8)" }}>{t("premium.badge")}</span>
+                <span style={{ fontSize: 10, fontWeight: 900, textTransform: "uppercase", letterSpacing: "0.18em", color: "#ffc852" }}>{t("premium.badge")}</span>
               </div>
               <h2 style={{ margin: 0, fontSize: "clamp(1.8rem,4vw,3.2rem)", fontWeight: 900, lineHeight: 1.1, letterSpacing: "-0.02em" }}>
                 <span style={{ color: "#ffffff" }}>{t("premium.title1")} </span>
-                <span style={{ color: "rgba(255,255,255,0.7)" }}>{t("premium.title2")}</span>
+                <span style={{ color: "#f5a623" }}>{t("premium.title2")}</span>
               </h2>
             </div>
             <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-              <div style={{ display: "inline-flex", alignItems: "center", gap: 7, background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.18)", borderRadius: 999, padding: "7px 16px" }}>
+              <div style={{ display: "inline-flex", alignItems: "center", gap: 7, background: "rgba(16,217,161,0.08)", border: "1px solid rgba(16,217,161,0.25)", borderRadius: 999, padding: "7px 16px" }}>
                 <motion.span animate={{ opacity: [1, 0.3, 1] }} transition={{ duration: 2, repeat: Infinity }}
-                  style={{ width: 7, height: 7, borderRadius: "50%", background: "#ffffff", display: "block", boxShadow: "0 0 8px rgba(255,255,255,0.5)" }} />
-                <span style={{ fontSize: 11, fontWeight: 900, textTransform: "uppercase", letterSpacing: "0.14em", color: "rgba(255,255,255,0.75)" }}>{t("premium.active")}</span>
+                  style={{ width: 7, height: 7, borderRadius: "50%", background: "#10d9a1", display: "block" }} />
+                <span style={{ fontSize: 11, fontWeight: 900, textTransform: "uppercase", letterSpacing: "0.14em", color: "#4aedc0" }}>{t("premium.active")}</span>
               </div>
               <motion.button onClick={lock} whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.96 }}
                 style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 10, padding: "7px 16px", color: "rgba(255,255,255,0.45)", cursor: "pointer", fontSize: 12, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em" }}>
@@ -412,7 +412,7 @@ export default function PremiumTactics() {
                 backdropFilter: "blur(20px)", WebkitBackdropFilter: "blur(20px)",
               }}>
                 {/* Top bar */}
-                <div style={{ height: 3, background: "rgba(255,255,255,0.15)" }} />
+                <div style={{ height: 3, background: "linear-gradient(90deg,#5b8af7,#9161f5,#f5a623)" }} />
 
                 {/* Shimmer sweep */}
                 <motion.div
@@ -427,14 +427,14 @@ export default function PremiumTactics() {
                   <div>
                     {/* Badge row */}
                     <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 18, flexWrap: "wrap" }}>
-                      <div style={{ display: "inline-flex", alignItems: "center", gap: 7, background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.18)", borderRadius: 999, padding: "5px 14px" }}>
+                      <div style={{ display: "inline-flex", alignItems: "center", gap: 7, background: "rgba(245,166,35,0.10)", border: "1px solid rgba(245,166,35,0.3)", borderRadius: 999, padding: "5px 14px" }}>
                         <span style={{ fontSize: 13 }}>👑</span>
-                        <span style={{ fontSize: 10, fontWeight: 900, textTransform: "uppercase", letterSpacing: "0.18em", color: "rgba(255,255,255,0.8)" }}>{t("premium.heroBadge")}</span>
+                        <span style={{ fontSize: 10, fontWeight: 900, textTransform: "uppercase", letterSpacing: "0.18em", color: "#ffc852" }}>{t("premium.heroBadge")}</span>
                       </div>
-                      <div style={{ display: "inline-flex", alignItems: "center", gap: 6, background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.12)", borderRadius: 999, padding: "5px 14px" }}>
+                      <div style={{ display: "inline-flex", alignItems: "center", gap: 6, background: "rgba(16,217,161,0.07)", border: "1px solid rgba(16,217,161,0.22)", borderRadius: 999, padding: "5px 14px" }}>
                         <motion.span animate={{ opacity: [1, 0.3, 1] }} transition={{ duration: 1.8, repeat: Infinity }}
-                          style={{ width: 6, height: 6, borderRadius: "50%", background: "#ffffff", display: "block", boxShadow: "0 0 7px rgba(255,255,255,0.5)" }} />
-                        <span style={{ fontSize: 10, fontWeight: 900, textTransform: "uppercase", letterSpacing: "0.14em", color: "rgba(255,255,255,0.65)" }}>{t("premium.heroLive")}</span>
+                          style={{ width: 6, height: 6, borderRadius: "50%", background: "#10d9a1", display: "block" }} />
+                        <span style={{ fontSize: 10, fontWeight: 900, textTransform: "uppercase", letterSpacing: "0.14em", color: "#4aedc0" }}>{t("premium.heroLive")}</span>
                       </div>
                     </div>
 
@@ -467,8 +467,8 @@ export default function PremiumTactics() {
                         >
                           <div style={{
                             width: 22, height: 22, borderRadius: "50%", flexShrink: 0,
-                            background: "rgba(255,255,255,0.06)",
-                            border: "1px solid rgba(255,255,255,0.18)",
+                            background: "rgba(91,138,247,0.1)",
+                            border: "1px solid rgba(91,138,247,0.28)",
                             display: "flex", alignItems: "center", justifyContent: "center",
                             fontSize: 11,
                           }}>
@@ -484,14 +484,15 @@ export default function PremiumTactics() {
                       <motion.a
                         href={siteConfig.premiumUrl}
                         target="_blank" rel="noreferrer"
-                        whileHover={{ scale: 1.04, boxShadow: "0 0 24px rgba(255,255,255,0.15)" }}
+                        whileHover={{ scale: 1.04, boxShadow: "0 14px 40px rgba(91,138,247,0.5)" }}
                         whileTap={{ scale: 0.97 }}
                         style={{
                           display: "inline-flex", alignItems: "center", gap: 9,
-                          background: "#ffffff",
+                          background: "linear-gradient(135deg,#5b8af7,#9161f5)",
                           borderRadius: 999, padding: "14px 28px",
-                          color: "#000000", fontSize: 14, fontWeight: 900,
+                          color: "#ffffff", fontSize: 14, fontWeight: 900,
                           textDecoration: "none", textTransform: "uppercase", letterSpacing: "0.1em",
+                          boxShadow: "0 8px 32px rgba(91,138,247,0.38)",
                         }}
                       >
                         {t("premium.becomePremium")}
@@ -572,9 +573,9 @@ export default function PremiumTactics() {
                               whileTap={unlocking ? {} : { scale: 0.97 }}
                               style={{
                                 marginTop: 10, width: "100%",
-                                background: unlocking ? "rgba(255,255,255,0.4)" : "#ffffff",
+                                background: unlocking ? "rgba(91,138,247,0.4)" : "linear-gradient(135deg,#5b8af7,#9161f5)",
                                 borderRadius: 999, padding: "11px 0",
-                                color: "#000000", fontSize: 13, fontWeight: 900,
+                                color: "#ffffff", fontSize: 13, fontWeight: 900,
                                 textTransform: "uppercase", letterSpacing: "0.1em",
                                 cursor: unlocking ? "default" : "pointer", border: "none",
                                 display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
@@ -622,13 +623,13 @@ export default function PremiumTactics() {
                             initial={{ opacity: 0, x: 16 }} animate={{ opacity: 1, x: 0 }}
                             transition={{ delay: 0.2 + i * 0.08, ease: EASE }}
                             style={{
-                              background: "rgba(255,255,255,0.03)",
-                              border: "1px solid rgba(255,255,255,0.1)",
+                              background: i === 0 ? "rgba(91,138,247,0.06)" : i === 1 ? "rgba(245,166,35,0.06)" : "rgba(16,217,161,0.06)",
+                              border: `1px solid ${i === 0 ? "rgba(91,138,247,0.2)" : i === 1 ? "rgba(245,166,35,0.2)" : "rgba(16,217,161,0.2)"}`,
                               borderRadius: 14, padding: "14px 18px",
                             }}
                           >
                             <div style={{ fontSize: 9, fontWeight: 900, textTransform: "uppercase", letterSpacing: "0.16em", color: "rgba(255,255,255,0.35)", marginBottom: 4 }}>{s.label}</div>
-                            <div style={{ fontSize: 22, fontWeight: 900, color: "#ffffff", fontFamily: "'Outfit', sans-serif", letterSpacing: "-0.01em", lineHeight: 1 }}>{s.value}</div>
+                            <div style={{ fontSize: 22, fontWeight: 900, color: i === 0 ? "#7eb8ff" : i === 1 ? "#ffc852" : "#4aedc0", fontFamily: "'Outfit', sans-serif", letterSpacing: "-0.01em", lineHeight: 1 }}>{s.value}</div>
                             <div style={{ fontSize: 10, color: "rgba(255,255,255,0.3)", fontWeight: 600, marginTop: 2 }}>{s.sub}</div>
                           </motion.div>
                         ))}
@@ -641,12 +642,12 @@ export default function PremiumTactics() {
                 <div style={{
                   margin: "0 clamp(24px,4vw,40px) clamp(20px,3vw,28px)",
                   display: "flex", alignItems: "flex-start", gap: 10,
-                  background: "rgba(255,255,255,0.03)",
-                  border: "1px solid rgba(255,255,255,0.08)",
+                  background: "rgba(245,166,35,0.05)",
+                  border: "1px solid rgba(245,166,35,0.18)",
                   borderRadius: 12, padding: "10px 16px",
                 }}>
                   <span style={{ fontSize: 14, flexShrink: 0 }}>🔐</span>
-                  <span style={{ fontSize: 12, fontWeight: 600, color: "rgba(255,255,255,0.45)", lineHeight: 1.55 }}>
+                  <span style={{ fontSize: 12, fontWeight: 600, color: "rgba(255,198,82,0.7)", lineHeight: 1.55 }}>
                     {t("premium.secureNote")}
                   </span>
                 </div>

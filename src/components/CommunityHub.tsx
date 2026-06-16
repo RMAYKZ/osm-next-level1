@@ -1,4 +1,4 @@
-import { useState } from "react";
+﻿import { useState } from "react";
 import { motion } from "framer-motion";
 import { getDb } from "../lib/firebase";
 import { getLocalizedChangelog, siteConfig } from "../data/extras";
@@ -7,10 +7,10 @@ import { useLang } from "../contexts/LanguageContext";
 const EASE = [0.16, 1, 0.3, 1] as const;
 
 const GLASS: React.CSSProperties = {
-  background: "rgba(255,255,255,0.03)",
+  background: "rgba(16,217,161,0.04)",
   backdropFilter: "blur(20px)",
   WebkitBackdropFilter: "blur(20px)",
-  border: "1px solid rgba(255,255,255,0.08)",
+  border: "1px solid rgba(16,217,161,0.14)",
   borderRadius: 16,
 };
 
@@ -47,17 +47,17 @@ export default function CommunityHub() {
   };
 
   return (
-    <section id="topluluk" style={{ position: "relative", overflow: "hidden", padding: "clamp(48px,7vw,96px) 0" }}>
+    <section id="topluluk" style={{ position: "relative", overflow: "hidden", padding: "clamp(48px,7vw,96px) 0", background: "transparent" }}>
 
       <div className="pointer-events-none absolute inset-0 -z-10" aria-hidden="true">
         <div style={{
           position: "absolute", top: 0, left: 0, right: 0, height: 1,
-          background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.06), transparent)",
+          background: "linear-gradient(90deg, transparent, rgba(16,217,161,0.2) 35%, rgba(91,138,247,0.2) 65%, transparent)",
         }} />
         <div style={{
           position: "absolute", bottom: "10%", right: 0,
           width: "35%", height: "45%", borderRadius: "50%",
-          background: "radial-gradient(ellipse, rgba(255,255,255,0.03) 0%, transparent 70%)",
+          background: "radial-gradient(ellipse, rgba(16,217,161,0.08) 0%, transparent 70%)",
           filter: "blur(80px)",
         }} />
       </div>
@@ -73,11 +73,11 @@ export default function CommunityHub() {
         >
           <div style={{
             display: "inline-flex", alignItems: "center", gap: 7,
-            background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.15)",
+            background: "rgba(16,217,161,0.08)", border: "1px solid rgba(16,217,161,0.25)",
             borderRadius: 999, padding: "5px 14px", marginBottom: 14,
           }}>
             <span style={{ fontSize: 12 }}>🌐</span>
-            <span style={{ fontSize: 10, fontWeight: 900, textTransform: "uppercase", letterSpacing: "0.18em", color: "rgba(255,255,255,0.7)" }}>
+            <span style={{ fontSize: 10, fontWeight: 900, textTransform: "uppercase", letterSpacing: "0.18em", color: "#4aedc0" }}>
               {t("hub.emailBadge")}
             </span>
           </div>
@@ -118,11 +118,12 @@ export default function CommunityHub() {
                   whileHover={{ scale: 1.03 }}
                   whileTap={{ scale: 0.97 }}
                   style={{
-                    background: "#ffffff",
+                    background: "linear-gradient(135deg,#5b8af7,#9161f5)",
                     borderRadius: 999, padding: "12px 20px",
-                    color: "#000000", fontSize: 12, fontWeight: 900,
+                    color: "#ffffff", fontSize: 12, fontWeight: 900,
                     textTransform: "uppercase", letterSpacing: "0.1em",
                     cursor: "pointer", border: "none", whiteSpace: "nowrap",
+                    boxShadow: "0 6px 20px rgba(91,138,247,0.3)",
                   }}
                 >
                   {t("hub.subscribe")}
@@ -139,9 +140,9 @@ export default function CommunityHub() {
                 whileHover={{ y: -2, transition: { duration: 0.15 } }}
                 style={{
                   display: "flex", alignItems: "center", justifyContent: "center", gap: 6,
-                  background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.12)",
+                  background: "rgba(244,63,94,0.08)", border: "1px solid rgba(244,63,94,0.25)",
                   borderRadius: 12, padding: "12px 10px",
-                  color: "rgba(255,255,255,0.7)", fontSize: 11, fontWeight: 900,
+                  color: "#f87091", fontSize: 11, fontWeight: 900,
                   textDecoration: "none", textTransform: "uppercase", letterSpacing: "0.08em",
                 }}
               >
@@ -153,9 +154,9 @@ export default function CommunityHub() {
                 whileHover={{ y: -2, transition: { duration: 0.15 } }}
                 style={{
                   display: "flex", alignItems: "center", justifyContent: "center", gap: 6,
-                  background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.12)",
+                  background: "rgba(245,166,35,0.08)", border: "1px solid rgba(245,166,35,0.25)",
                   borderRadius: 12, padding: "12px 10px",
-                  color: "rgba(255,255,255,0.7)", fontSize: 11, fontWeight: 900,
+                  color: "#ffc852", fontSize: 11, fontWeight: 900,
                   textDecoration: "none", textTransform: "uppercase", letterSpacing: "0.08em",
                 }}
               >
@@ -174,11 +175,11 @@ export default function CommunityHub() {
           >
             <div style={{
               display: "inline-flex", alignItems: "center", gap: 7,
-              background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.15)",
+              background: "rgba(16,217,161,0.08)", border: "1px solid rgba(16,217,161,0.25)",
               borderRadius: 999, padding: "4px 12px", marginBottom: 14,
             }}>
               <span style={{ fontSize: 10 }}>📰</span>
-              <span style={{ fontSize: 10, fontWeight: 900, textTransform: "uppercase", letterSpacing: "0.18em", color: "rgba(255,255,255,0.7)" }}>
+              <span style={{ fontSize: 10, fontWeight: 900, textTransform: "uppercase", letterSpacing: "0.18em", color: "#4aedc0" }}>
                 {t("hub.changelogBadge")}
               </span>
             </div>
@@ -190,7 +191,7 @@ export default function CommunityHub() {
                 <div
                   key={index}
                   style={{
-                    background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.06)",
+                    background: "rgba(16,217,161,0.03)", border: "1px solid rgba(16,217,161,0.1)",
                     borderRadius: 12, padding: 14,
                   }}
                 >
@@ -198,8 +199,8 @@ export default function CommunityHub() {
                     <span style={{
                       fontSize: 9, fontWeight: 900, textTransform: "uppercase", letterSpacing: "0.14em",
                       borderRadius: 999, padding: "3px 10px",
-                      background: "rgba(255,255,255,0.06)",
-                      color: "rgba(255,255,255,0.65)",
+                      background: "rgba(16,217,161,0.1)",
+                      color: "#4aedc0",
                     }}>{entry.typeLabel}</span>
                     <span style={{ fontSize: 9, fontWeight: 700, color: "rgba(255,255,255,0.22)", textTransform: "uppercase", letterSpacing: "0.1em" }}>{entry.date}</span>
                   </div>

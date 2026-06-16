@@ -75,7 +75,7 @@ html, body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
-  background: var(--c-bg);
+  background: transparent;
 }
 
 @media (max-width: 768px) {
@@ -96,30 +96,10 @@ body { margin: 0; padding: 0; }
 /* ══════════════════════════════════════════════════════════
    GRADIENT TEXT UTILITIES
 ══════════════════════════════════════════════════════════ */
-.g-text-blue {
-  background: linear-gradient(135deg, var(--c-blue) 0%, var(--c-purple) 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-.g-text-gold {
-  background: linear-gradient(135deg, var(--c-gold) 0%, var(--c-gold-l) 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-.g-text-emerald {
-  background: linear-gradient(135deg, var(--c-emerald) 0%, var(--c-emerald-l) 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-.g-text-purple {
-  background: linear-gradient(135deg, var(--c-purple) 0%, var(--c-purple-l) 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
+.g-text-blue    { color: var(--c-blue); }
+.g-text-gold    { color: var(--c-gold); }
+.g-text-emerald { color: var(--c-emerald); }
+.g-text-purple  { color: var(--c-purple); }
 
 /* ══════════════════════════════════════════════════════════
    CARD UTILITIES

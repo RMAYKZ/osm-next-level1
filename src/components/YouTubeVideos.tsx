@@ -1,4 +1,4 @@
-import { useState } from "react";
+﻿import { useState } from "react";
 import { motion } from "framer-motion";
 import { useLang } from "../contexts/LanguageContext";
 
@@ -35,17 +35,17 @@ export default function YouTubeVideos() {
   const [activeId, setActiveId] = useState<string | null>(null);
 
   return (
-    <section id="videolar" style={{ position: "relative", overflow: "hidden", padding: "clamp(48px,7vw,96px) 0" }}>
+    <section id="videolar" style={{ position: "relative", overflow: "hidden", padding: "clamp(48px,7vw,96px) 0", background: "transparent" }}>
 
       <div className="pointer-events-none absolute inset-0 -z-10" aria-hidden="true">
         <div style={{
           position: "absolute", top: 0, left: 0, right: 0, height: 1,
-          background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.06), transparent)",
+          background: "linear-gradient(90deg, transparent, rgba(244,63,94,0.25) 35%, rgba(145,97,245,0.2) 65%, transparent)",
         }} />
         <div style={{
-          position: "absolute", top: "10%", left: "-5%",
+          position: "absolute", top: "10%", right: "-5%",
           width: "35%", height: "50%", borderRadius: "50%",
-          background: "radial-gradient(ellipse, rgba(255,255,255,0.03) 0%, transparent 70%)",
+          background: "radial-gradient(ellipse, rgba(244,63,94,0.08) 0%, transparent 70%)",
           filter: "blur(80px)",
         }} />
       </div>
@@ -61,17 +61,17 @@ export default function YouTubeVideos() {
         >
           <div style={{
             display: "inline-flex", alignItems: "center", gap: 7,
-            background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.15)",
+            background: "rgba(244,63,94,0.08)", border: "1px solid rgba(244,63,94,0.28)",
             borderRadius: 999, padding: "5px 14px", marginBottom: 14,
           }}>
-            <span style={{ fontSize: 12, color: "rgba(255,255,255,0.6)" }}>▶</span>
-            <span style={{ fontSize: 10, fontWeight: 900, textTransform: "uppercase", letterSpacing: "0.18em", color: "rgba(255,255,255,0.7)" }}>
+            <span style={{ fontSize: 12, color: "#f87091" }}>▶</span>
+            <span style={{ fontSize: 10, fontWeight: 900, textTransform: "uppercase", letterSpacing: "0.18em", color: "#f87091" }}>
               {t("videos.badge") || "Video Rehberler"}
             </span>
           </div>
           <h2 style={{ margin: "0 0 10px", fontSize: "clamp(1.8rem,4vw,3.2rem)", fontWeight: 900, lineHeight: 1.1, letterSpacing: "-0.02em" }}>
-            <span style={{ color: "#ffffff" }}>{t("videos.title1") || "YouTube"} </span>
-            <span style={{ color: "rgba(255,255,255,0.6)" }}>{t("videos.title2") || "Kanalı"}</span>
+            <span style={{ color: "#f43f5e" }}>{t("videos.title1") || "YouTube"} </span>
+            <span style={{ color: "#ffffff" }}>{t("videos.title2") || "Kanalı"}</span>
           </h2>
           <p style={{ margin: 0, fontSize: 14, color: "rgba(255,255,255,0.42)", lineHeight: 1.6 }}>
             {t("videos.desc") || "Taktiklerin saha üstünde nasıl uygulandığını videolarla izle. Yeni içerikler için abone ol."}
@@ -99,10 +99,11 @@ export default function YouTubeVideos() {
             whileTap={{ scale: 0.97 }}
             style={{
               display: "inline-flex", alignItems: "center", gap: 8,
-              background: "#ffffff",
+              background: "linear-gradient(135deg, #f43f5e, #c0392b)",
               borderRadius: 999, padding: "14px 28px",
-              color: "#000000", fontSize: 13, fontWeight: 900,
+              color: "#ffffff", fontSize: 13, fontWeight: 900,
               textDecoration: "none", textTransform: "uppercase", letterSpacing: "0.1em",
+              boxShadow: "0 8px 24px rgba(244,63,94,0.35)",
             }}
           >
             <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
@@ -135,10 +136,10 @@ function VideoCard({
       transition={{ duration: 0.45, delay, ease: EASE }}
       whileHover={{ y: -4, transition: { duration: 0.18 } }}
       style={{
-        background: "rgba(255,255,255,0.03)",
+        background: "rgba(244,63,94,0.04)",
         backdropFilter: "blur(20px)",
         WebkitBackdropFilter: "blur(20px)",
-        border: "1px solid rgba(255,255,255,0.08)",
+        border: "1px solid rgba(244,63,94,0.14)",
         borderRadius: 16, overflow: "hidden",
       }}
     >
@@ -173,8 +174,8 @@ function VideoCard({
                 position: "absolute", top: "50%", left: "50%",
                 transform: "translate(-50%, -50%)",
                 width: 54, height: 38, borderRadius: 11,
-                background: "rgba(255,255,255,0.12)",
-                border: "1px solid rgba(255,255,255,0.3)",
+                background: "rgba(244,63,94,0.85)",
+                border: "1px solid rgba(244,63,94,0.6)",
                 display: "flex", alignItems: "center", justifyContent: "center",
               }}
             >

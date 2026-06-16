@@ -34,7 +34,7 @@ export default function Footer() {
   const { t } = useLang();
 
   return (
-    <footer style={{ position: "relative", background: "#070711" }}>
+    <footer style={{ position: "relative", background: "transparent" }}>
       {/* Top gradient rule */}
       <div style={{ height: 1, background: "linear-gradient(90deg, transparent, rgba(91,138,247,0.3) 35%, rgba(145,97,245,0.3) 65%, transparent)" }} />
 
@@ -64,20 +64,12 @@ export default function Footer() {
                 border: "1px solid rgba(91,138,247,0.28)",
                 display: "flex", alignItems: "center", justifyContent: "center",
                 fontWeight: 900, fontSize: 20,
-                color: "transparent",
-                backgroundImage: "linear-gradient(135deg, #5b8af7, #9161f5)",
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-                backgroundClip: "text",
+                color: "#5b8af7",
               } as React.CSSProperties}>O</div>
               <div>
-                <div style={{
-                  fontSize: 13, fontWeight: 900, letterSpacing: "0.02em",
-                  background: "linear-gradient(135deg, #5b8af7, #9161f5)",
-                  WebkitBackgroundClip: "text",
-                  WebkitTextFillColor: "transparent",
-                  backgroundClip: "text",
-                }}>OSM NEXT LEVEL</div>
+                <div style={{ fontSize: 13, fontWeight: 900, letterSpacing: "0.02em", color: "#5b8af7" }}>
+                  OSM NEXT LEVEL
+                </div>
                 <div style={{ fontSize: 9, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.2em", color: "rgba(255,255,255,0.22)" }}>
                   OSM Tactics 26/27
                 </div>
@@ -122,10 +114,7 @@ export default function Footer() {
             <h4 style={{
               margin: "0 0 16px",
               fontSize: 10, fontWeight: 900, textTransform: "uppercase", letterSpacing: "0.2em",
-              background: "linear-gradient(135deg, #5b8af7, #9161f5)",
-              WebkitBackgroundClip: "text",
-              WebkitTextFillColor: "transparent",
-              backgroundClip: "text",
+              color: "#5b8af7",
             }}>
               {t("footer.nav")}
             </h4>
@@ -170,10 +159,7 @@ export default function Footer() {
             <h4 style={{
               margin: "0 0 16px",
               fontSize: 10, fontWeight: 900, textTransform: "uppercase", letterSpacing: "0.2em",
-              background: "linear-gradient(135deg, #f5a623, #ffc852)",
-              WebkitBackgroundClip: "text",
-              WebkitTextFillColor: "transparent",
-              backgroundClip: "text",
+              color: "#f5a623",
             }}>
               {t("footer.contact")}
             </h4>

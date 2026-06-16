@@ -107,11 +107,24 @@ function useCountdown() {
   return val;
 }
 
-// ── Gradient helpers (monochrome) ──────────────────────────────────────────────
+// ── Gradient helpers ───────────────────────────────────────────────────────────
 
-function pGrad(_v: number) { return '#ffffff'; }
-function sGrad(_v: number) { return '#ffffff'; }
-function tGrad(_v: number) { return '#ffffff'; }
+function pGrad(v: number) {
+  if (v >= 70) return 'linear-gradient(90deg,#f43f5e,#9161f5)';
+  if (v >= 45) return 'linear-gradient(90deg,#f5a623,#f43f5e)';
+  if (v >= 25) return 'linear-gradient(90deg,#10d9a1,#5b8af7)';
+  return 'linear-gradient(90deg,#5b8af7,#9161f5)';
+}
+function sGrad(v: number) {
+  if (v >= 70) return 'linear-gradient(90deg,#f43f5e,#9161f5)';
+  if (v >= 45) return 'linear-gradient(90deg,#10d9a1,#5b8af7)';
+  return 'linear-gradient(90deg,#5b8af7,#9161f5)';
+}
+function tGrad(v: number) {
+  if (v >= 70) return 'linear-gradient(90deg,#f5a623,#f43f5e)';
+  if (v >= 45) return 'linear-gradient(90deg,#10d9a1,#5b8af7)';
+  return 'linear-gradient(90deg,#5b8af7,#9161f5)';
+}
 
 // ── Canvas helpers ────────────────────────────────────────────────────────────
 
@@ -281,8 +294,8 @@ function CountUnit({ value, label }: { value: number; label: string }) {
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6, minWidth: 52 }}>
       <div style={{
         position: 'relative',
-        background: 'rgba(255,255,255,0.03)',
-        border: '1px solid rgba(255,255,255,0.08)',
+        background: 'rgba(91,138,247,0.08)',
+        border: '1px solid rgba(91,138,247,0.2)',
         borderRadius: 10,
         padding: '10px 8px 8px',
         minWidth: 52,
@@ -322,11 +335,11 @@ function CountUnit({ value, label }: { value: number; label: string }) {
 
 const _isMobile = typeof window !== "undefined" && window.innerWidth < 768;
 const CARD: React.CSSProperties = {
-  background: _isMobile ? 'rgba(255,255,255,0.04)' : 'rgba(255,255,255,0.03)',
+  background: _isMobile ? 'rgba(91,138,247,0.05)' : 'rgba(91,138,247,0.04)',
   ...(_isMobile ? {} : { backdropFilter: 'blur(20px)' }),
-  border: '1px solid rgba(255,255,255,0.08)',
+  border: '1px solid rgba(91,138,247,0.16)',
   borderRadius: 16,
-  boxShadow: '0 20px 60px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.05)',
+  boxShadow: '0 20px 60px rgba(0,0,0,0.5), inset 0 1px 0 rgba(91,138,247,0.08)',
 };
 
 export default function MetaShareCard() {
@@ -377,14 +390,14 @@ export default function MetaShareCard() {
       >
         <div style={{
           display: 'inline-flex', alignItems: 'center', gap: 8, padding: '6px 16px',
-          borderRadius: 99, background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.15)',
+          borderRadius: 99, background: 'rgba(91,138,247,0.08)', border: '1px solid rgba(91,138,247,0.28)',
           marginBottom: 20,
         }}>
           <motion.span
             animate={{ opacity: [1, 0.35, 1] }} transition={{ duration: 2, repeat: Infinity }}
-            style={{ width: 6, height: 6, borderRadius: '50%', background: '#ffffff', display: 'inline-block' }}
+            style={{ width: 6, height: 6, borderRadius: '50%', background: '#5b8af7', display: 'inline-block' }}
           />
-          <span style={{ color: 'rgba(255,255,255,0.7)', fontSize: 11, fontWeight: 800, letterSpacing: '0.12em', textTransform: 'uppercase' }}>
+          <span style={{ color: '#7eb8ff', fontSize: 11, fontWeight: 800, letterSpacing: '0.12em', textTransform: 'uppercase' }}>
             {w.badge}
           </span>
         </div>
@@ -401,13 +414,13 @@ export default function MetaShareCard() {
 
         <div style={{
           display: 'inline-flex', alignItems: 'center', gap: 8, padding: '6px 14px',
-          borderRadius: 99, background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.15)',
+          borderRadius: 99, background: 'rgba(16,217,161,0.08)', border: '1px solid rgba(16,217,161,0.25)',
         }}>
           <motion.span
             animate={{ opacity: [1, 0.35, 1] }} transition={{ duration: 2, repeat: Infinity }}
-            style={{ width: 6, height: 6, borderRadius: '50%', background: '#ffffff', display: 'inline-block' }}
+            style={{ width: 6, height: 6, borderRadius: '50%', background: '#10d9a1', display: 'inline-block' }}
           />
-          <span style={{ color: 'rgba(255,255,255,0.65)', fontSize: 11, fontWeight: 700, letterSpacing: '0.06em' }}>
+          <span style={{ color: '#4aedc0', fontSize: 11, fontWeight: 700, letterSpacing: '0.06em' }}>
             {w.liveNote}
           </span>
         </div>
@@ -453,7 +466,7 @@ export default function MetaShareCard() {
               initial={{ width: 0 }}
               animate={{ width: `${weekProgress}%` }}
               transition={{ duration: 1.4, ease: [0.16, 1, 0.3, 1] }}
-              style={{ height: '100%', borderRadius: 99, background: '#ffffff' }}
+              style={{ height: '100%', borderRadius: 99, background: 'linear-gradient(90deg,#5b8af7,#9161f5)' }}
             />
           </div>
           <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 5 }}>
@@ -503,9 +516,9 @@ export default function MetaShareCard() {
           onClick={handleDownload}
           className="mscard-btn"
           style={{
-            background: downloaded ? 'rgba(255,255,255,0.1)' : 'rgba(255,255,255,0.06)',
-            border: `1px solid ${downloaded ? 'rgba(255,255,255,0.35)' : 'rgba(255,255,255,0.18)'}`,
-            color: downloaded ? '#ffffff' : 'rgba(255,255,255,0.75)',
+            background: downloaded ? 'rgba(16,217,161,0.12)' : 'linear-gradient(135deg,#5b8af7,#9161f5)',
+            border: `1px solid ${downloaded ? 'rgba(16,217,161,0.4)' : 'transparent'}`,
+            color: '#ffffff',
           }}
         >
           <span style={{ fontSize: 17 }}>{downloaded ? '✓' : '↓'}</span>
