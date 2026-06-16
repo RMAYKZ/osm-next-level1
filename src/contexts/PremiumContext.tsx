@@ -3,10 +3,6 @@ import { premiumCodes } from "../data/extras";
 import { validcodes } from "../data/validcodes";
 import { getDb } from "../lib/firebase";
 
-// ── Google Sheets config ──────────────────────────────────────────────
-const SHEETS_ID  = import.meta.env.VITE_SHEETS_ID  as string | undefined;
-const SHEETS_KEY = import.meta.env.VITE_SHEETS_KEY as string | undefined;
-
 const STORAGE_KEY    = "osm-next-level-premium";
 const PREMIUM_CODE_KEY = "osm-premium-code";
 const DEVICE_KEY     = "osm-device-id";
@@ -36,42 +32,6 @@ function getDeviceId(): string {
   document.cookie = `${DEVICE_COOKIE}=${id}; max-age=${exp}; SameSite=Strict`;
   return id;
 }
-
-// ── Remote codes cache (Google Sheets) ───────────────────────────────
-let _cachedCodes: string[] | null = null;
-let _fetchOnce: Promise<string[]> | null = null;
-
-async function getRemoteCodes(): Promise<string[]> {
-  if (_cachedCodes !== null) return _cachedCodes;
-  if (_fetchOnce) return _fetchOnce;
-  if (!SHEETS_ID || !SHEETS_KEY) return [];
-
-  const url =
-    `https://sheets.googleapis.com/v4/spreadsheets/${SHEETS_ID}` +
-    `/values/Sayfa1!A:A?key=${SHEETS_KEY}`;
-
-  _fetchOnce = fetch(url)
-    .then(r => {
-      if (!r.ok) throw new Error(`Sheets ${r.status}`);
-      return r.json() as Promise<{ values?: string[][] }>;
-    })
-    .then(data => {
-      const codes = (data.values ?? []).flat()
-        .map(c => c.trim().toUpperCase())
-        .filter(Boolean);
-      _cachedCodes = codes;
-      return codes;
-    })
-    .catch(err => {
-      console.warn("[Premium] Remote codes unavailable:", err.message);
-      _fetchOnce = null;
-      return [] as string[];
-    });
-
-  return _fetchOnce;
-}
-
-if (SHEETS_ID && SHEETS_KEY) getRemoteCodes();
 
 // ── Firestore: check + claim code ────────────────────────────────────
 // Returns:
@@ -152,20 +112,13 @@ export function PremiumProvider({ children }: { children: ReactNode }) {
       const localAll = [...premiumCodes, ...validcodes];
       const localValid = localAll.some(c => c.toUpperCase() === normalized);
 
-      // 2. Check remote codes (Google Sheets)
-      let remoteValid = false;
-      if (!localValid) {
-        const remote = await getRemoteCodes();
-        remoteValid = remote.includes(normalized);
-      }
+      if (!localValid) return "invalid";
 
-      if (!localValid && !remoteValid) return "invalid";
-
-      // 3. Code is valid — check device lock via Firestore
+      // 2. Code is valid — check device lock via Firestore
       const claim = await checkAndClaimCode(normalized, deviceId);
       if (claim === "taken") return "taken";
 
-      // 4. Unlock!
+      // 3. Unlock!
       localStorage.setItem(STORAGE_KEY, "true");
       localStorage.setItem(PREMIUM_CODE_KEY, normalized);
       setIsPremium(true);
