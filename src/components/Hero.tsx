@@ -327,24 +327,24 @@ export default function Hero() {
         <div style={{
           order: isMobile ? -1 : 2,
           width: "100%",
-          maxWidth: isMobile ? 280 : 420,
+          maxWidth: isMobile ? 240 : 420,
           flex: isMobile ? "0 0 auto" : "1 1 380px",
-          marginBottom: isMobile ? 12 : 0,
+          marginBottom: isMobile ? 8 : 0,
         }}>
           <Reveal delay={isMobile ? 0 : 0.2} y={24}>
-            {/* Height-driven, not aspect-ratio-driven: TacticalPitchScene sizes its
-                own 100:140 pitch internally (maxWidth 360) and centers it within
-                whatever box it's given. Imposing a second aspect-ratio here would
-                fight that and crop the pitch unpredictably. */}
+            {/* Mobile: aspectRatio drives the height so the pitch is never clipped.
+                Desktop: fixed clamp height, pitch self-centers inside. */}
             <div style={{
               position: "relative",
               width: "100%",
-              height: isMobile ? "34vh" : "clamp(380px, 58vh, 560px)",
+              ...(isMobile
+                ? { aspectRatio: "100 / 140" }
+                : { height: "clamp(380px, 58vh, 560px)" }),
               margin: "0 auto",
               borderRadius: 16,
               overflow: "hidden",
             }}>
-              <TacticalPitchScene />
+              <TacticalPitchScene lite={isMobile} />
             </div>
           </Reveal>
         </div>

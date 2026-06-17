@@ -145,10 +145,31 @@ interface MarkerProps {
   size?: number;
   glowing?: boolean;
   celebrating?: boolean;
+  lite?: boolean;
 }
 
-function PlayerMarker({ color, label, size = 10, glowing = false, celebrating }: MarkerProps) {
+function PlayerMarker({ color, label, size = 10, glowing = false, celebrating, lite }: MarkerProps) {
   const fontSize = label.length > 2 ? 4 : label.length > 1 ? 5 : 6;
+  const fill = color === GOLD ? "#1a0e00" : color === RED ? "#1a0508" : "#070e1a";
+
+  if (lite) {
+    return (
+      <svg
+        width={size * 2.8} height={size * 2.8}
+        viewBox={`${-size * 1.4} ${-size * 1.4} ${size * 2.8} ${size * 2.8}`}
+        style={{ overflow: "visible", display: "block" }}
+      >
+        <circle cx="0" cy="0" r={size} fill={fill} />
+        <circle cx="0" cy="0" r={size} fill="none" stroke={color} strokeWidth="1.6" />
+        <text x="0" y="0" textAnchor="middle" dominantBaseline="central"
+          fill="white" fontSize={fontSize} fontWeight="700"
+          fontFamily="Inter, system-ui, sans-serif">
+          {label}
+        </text>
+      </svg>
+    );
+  }
+
   return (
     <motion.svg
       width={size * 2.8} height={size * 2.8}
@@ -160,7 +181,6 @@ function PlayerMarker({ color, label, size = 10, glowing = false, celebrating }:
         : { duration: 2.4, repeat: Infinity, ease: "easeInOut" }
       }
     >
-      {/* Outer glow ring — opacity only, no SVG r animation (causes attr errors) */}
       {glowing && (
         <motion.circle cx="0" cy="0" r={size + 5} fill="none"
           stroke={color} strokeWidth="0.8"
@@ -169,13 +189,9 @@ function PlayerMarker({ color, label, size = 10, glowing = false, celebrating }:
           transition={{ duration: 2, repeat: Infinity, ease: "easeOut" }}
         />
       )}
-      {/* Soft ambient glow */}
       <circle cx="0" cy="0" r={size + 2} fill={color} opacity="0.12" />
-      {/* Dark fill */}
-      <circle cx="0" cy="0" r={size} fill={color === GOLD ? "#1a0e00" : color === RED ? "#1a0508" : "#070e1a"} />
-      {/* Colored ring */}
+      <circle cx="0" cy="0" r={size} fill={fill} />
       <circle cx="0" cy="0" r={size} fill="none" stroke={color} strokeWidth="1.6" />
-      {/* Position label */}
       <text x="0" y="0" textAnchor="middle" dominantBaseline="central"
         fill="white" fontSize={fontSize} fontWeight="700"
         fontFamily="Inter, system-ui, sans-serif">
@@ -226,7 +242,7 @@ const BALL_PATH = [
 const GOAL_INDICES = new Set([3, 11]);
 
 // ── Ball ──────────────────────────────────────────────────────────────────────
-function Ball({ onGoal }: { onGoal: () => void }) {
+function Ball({ onGoal, lite }: { onGoal: () => void; lite?: boolean }) {
   const [bi, setBi] = useState(0);
   const timerRef  = useRef<ReturnType<typeof setInterval> | undefined>(undefined);
   const onGoalRef = useRef(onGoal);
@@ -239,15 +255,18 @@ function Ball({ onGoal }: { onGoal: () => void }) {
         if (GOAL_INDICES.has(next)) setTimeout(() => onGoalRef.current(), 0);
         return next;
       });
-    }, 1800);
+    }, lite ? 2800 : 1800);
     return () => clearInterval(timerRef.current);
-  }, []);
+  }, [lite]);
 
   const [bx, by] = BALL_PATH[bi];
   return (
     <motion.div
       animate={{ left: `${bx}%`, top: `${by}%` }}
-      transition={{ type: "spring", stiffness: 110, damping: 16 }}
+      transition={lite
+        ? { duration: 0.7, ease: "easeOut" }
+        : { type: "spring", stiffness: 110, damping: 16 }
+      }
       style={{
         position: "absolute",
         transform: "translate(-50%, -50%)",
@@ -262,10 +281,26 @@ function Ball({ onGoal }: { onGoal: () => void }) {
 }
 
 // ── Running player ────────────────────────────────────────────────────────────
-function RunningPlayer({ x, y, dx, dy, dur, phase, label, isGK, celebrating, team }:
-  (typeof HOME_PLAYERS)[0] & { celebrating?: boolean; team: "home" | "away" }) {
+function RunningPlayer({ x, y, dx, dy, dur, phase, label, isGK, celebrating, team, lite }:
+  (typeof HOME_PLAYERS)[0] & { celebrating?: boolean; team: "home" | "away"; lite?: boolean }) {
 
   const color = isGK ? GOLD : team === "home" ? NEON : RED;
+
+  if (lite) {
+    return (
+      <div
+        style={{
+          position: "absolute",
+          left: `${x}%`, top: `${y}%`,
+          transform: "translate(-50%, -50%)",
+          zIndex: team === "home" ? 6 : 5,
+        }}
+      >
+        <PlayerMarker color={color} label={label} size={isGK ? 8 : 7} lite />
+      </div>
+    );
+  }
+
   const kx = [x, x + dx, x, x - dx, x];
   const ky = [y, y + dy * 0.5, y - dy * 0.5, y + dy * 0.3, y];
 
@@ -329,7 +364,7 @@ function GolOverlay({ visible }: { visible: boolean }) {
 }
 
 // ── Main export ───────────────────────────────────────────────────────────────
-export function TacticalPitchScene() {
+export function TacticalPitchScene({ lite = false }: { lite?: boolean }) {
   const [celebrating, setCelebrating] = useState(false);
   const celebTimerRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
@@ -340,7 +375,7 @@ export function TacticalPitchScene() {
   }, []);
 
   return (
-    <MotionConfig reducedMotion="never">
+    <MotionConfig reducedMotion={lite ? "user" : "never"}>
       <div style={{
         position: "relative", width: "100%", height: "100%",
         display: "flex", alignItems: "center", justifyContent: "center",
@@ -383,16 +418,16 @@ export function TacticalPitchScene() {
 
           {/* Away team (top half, red) */}
           {AWAY_PLAYERS.map((p, i) => (
-            <RunningPlayer key={`away-${i}`} {...p} celebrating={celebrating} team="away" />
+            <RunningPlayer key={`away-${i}`} {...p} celebrating={celebrating} team="away" lite={lite} />
           ))}
 
           {/* Home team (bottom half, blue) */}
           {HOME_PLAYERS.map((p, i) => (
-            <RunningPlayer key={`home-${i}`} {...p} celebrating={celebrating} team="home" />
+            <RunningPlayer key={`home-${i}`} {...p} celebrating={celebrating} team="home" lite={lite} />
           ))}
 
           {/* Ball */}
-          <Ball onGoal={handleGoal} />
+          <Ball onGoal={handleGoal} lite={lite} />
 
           {/* GOL celebration */}
           <GolOverlay visible={celebrating} />
