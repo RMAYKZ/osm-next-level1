@@ -56,7 +56,10 @@
       "Bash(findstr /C:\"main\" /C:\"engines\")",
       "Bash(git add *)",
       "Bash(git push *)",
-      "Bash(git commit -m ' *)"
+      "Bash(git commit -m ' *)",
+      "mcp__playwright__browser_navigate",
+      "mcp__playwright__browser_take_screenshot",
+      "PowerShell(Get-ChildItem -Path \"C:\\\\Users\\\\RMAYK\\\\Desktop\\\\TOPTOPS\" -Recurse -File | Where-Object { $_.Extension -match '\\\\.\\(png|jpg|jpeg|gif|webp|svg|bmp|ico|pdf|txt|log|tmp|md|json\\)$' } | Select-Object FullName, Length, LastWriteTime | Sort-Object Length -Descending)"
     ]
   }
 }
