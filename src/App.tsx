@@ -13,6 +13,7 @@ import PremiumTactics from "./components/PremiumTactics";
 import AntiTacticFinder from "./components/AntiTacticFinder";
 import WeeklyMeta from "./components/WeeklyMeta";
 import LiveEventBanner from "./components/LiveEventBanner";
+import SocialContactBanner from "./components/SocialContactBanner";
 import PremiumUpdateBanner from "./components/PremiumUpdateBanner";
 import { PwaInstallBanner } from "./components/PwaInstallBanner";
 // Lazy: shader defers Three.js (355 kB) until after first paint
@@ -78,6 +79,7 @@ export default function App() {
             }}>
               <div className="min-h-screen text-white animate-smooth-entry">
                 <LiveEventBanner />
+                <SocialContactBanner />
                 <Navbar />
                 <PremiumUpdateBanner />
                 <Hero />
