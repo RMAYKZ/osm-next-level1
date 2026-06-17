@@ -354,13 +354,15 @@ const PLAY_STYLE_KEY: Record<string, string> = {
   "Kanatları Kullan": "ptv.kanatKullan",
 };
 const FIELD_KEY: Record<string, string> = {
-  "Sadece Hücum":   "ptv.sadeceHucum",
-  "Defans Yardım":  "ptv.defansYardim",
-  "Pozisyon Koru":  "ptv.pozisyonKoru",
-  "Geride Kal":     "ptv.geridKal",
-  "Alan Savunması": "ptv.alanSavunmasi",
-  "Kapalı":         "ptv.kapali",
-  "Kapalı*":        "ptv.kapaliStar",
+  "Sadece Hücum":    "ptv.sadeceHucum",
+  "Defans Yardım":   "ptv.defansYardim",
+  "Orta Saha Yardım":"ptv.ortaSahaYardim",
+  "Pozisyon Koru":   "ptv.pozisyonKoru",
+  "Geride Kal":      "ptv.geridKal",
+  "Alan Savunması":  "ptv.alanSavunmasi",
+  "Alan Markajı":    "ptv.alanMarkaji",
+  "Kapalı":          "ptv.kapali",
+  "Kapalı*":         "ptv.kapaliStar",
 };
 
 export function getLocalizedPremiumTactics(t: TFn): PremiumTactic[] {
@@ -409,6 +411,8 @@ export interface PremiumTactic {
   note: string;
   warning?: string;
   solid?: boolean;
+  isNew?: boolean;
+  addedAt?: string; // "YYYY-MM-DD" — used to show hot colour for first 2 days
 }
 
 export const premiumTactics: PremiumTactic[] = [
@@ -427,7 +431,7 @@ export const premiumTactics: PremiumTactic[] = [
     defenseLine: "Geride Kal",
     defenseShape: "Alan Savunması",
     offside: "Kapalı",
-    winRate: "85",
+    winRate: "90",
     note: "Rakip ne oynarsa oynasın, bu taktik çalışıyor. Haziran 2026'nın en güçlü ev taktiği.",
     warning: "Güncelleme gelirse sayılar değişebilir. Takip et!",
   },
@@ -447,6 +451,7 @@ export const premiumTactics: PremiumTactic[] = [
     defenseShape: "Alan Savunması",
     offside: "Kapalı*",
     effectiveVs: ["4-3-3", "5-2-3"],
+    winRate: "85",
     note: "4-10 rank arası güçlüyken kullan. 4-3-3 ve 5-2-3 oynayan rakiplere karşı son derece etkili.",
     warning: "*Rakip kontra oynuyorsa ofsayt tuzağını aç.",
   },
@@ -466,8 +471,30 @@ export const premiumTactics: PremiumTactic[] = [
     defenseShape: "Alan Savunması",
     offside: "Kapalı*",
     effectiveVs: ["5-2-3"],
+    winRate: "78",
     note: "5-2-3 oynayan rakiplere karşı özel optimize edilmiş taktik. Kanat hücumları cevap vermek zordur.",
     warning: "*Rakip kontra oynuyorsa ofsayt tuzağını aç.",
+  },
+  {
+    id: "june-home-532",
+    location: "home",
+    name: "5-3-2 Kontra Atak",
+    scenario: "Evde · Her rakibe karşı",
+    formation: "5-3-2",
+    playStyle: "Kontra Atak",
+    pressure: 55,
+    style: 25,
+    tempo: 75,
+    forward: "Orta Saha Yardım",
+    midfield: "Pozisyon Koru",
+    defenseLine: "Geride Kal",
+    defenseShape: "Alan Savunması",
+    offside: "Kapalı",
+    winRate: "82",
+    note: "5-3-2 ile güçlü bir orta saha kalkanı kur. Forvet orta sahaya inerek sayısal üstünlük yakala, sonra hızlı kontrayla vur.",
+    warning: "Güncelleme gelirse sayılar değişebilir. Takip et!",
+    isNew: true,
+    addedAt: "2026-06-17",
   },
   {
     id: "june-away-523",
@@ -484,7 +511,30 @@ export const premiumTactics: PremiumTactic[] = [
     defenseLine: "Geride Kal",
     defenseShape: "Alan Savunması",
     offside: "Kapalı",
+    winRate: "75",
     note: "Deplasman taktiği sabittir, değiştirme. Her rakibe karşı, her sıralamada bu taktiği kullan.",
     solid: true,
+  },
+  {
+    id: "june-away-532",
+    location: "away",
+    name: "5-3-2 Kontra Atak",
+    scenario: "Deplasman · Her rakibe karşı",
+    formation: "5-3-2",
+    playStyle: "Kontra Atak",
+    pressure: 35,
+    style: 15,
+    tempo: 65,
+    forward: "Orta Saha Yardım",
+    midfield: "Defans Yardım",
+    defenseLine: "Geride Kal",
+    defenseShape: "Alan Savunması",
+    offside: "Kapalı",
+    winRate: "70",
+    note: "Deplasmanda 5-3-2 ile 3 stoper + 3 orta saha kalkanı kur. Rakip hücumu boğ, forveti orta sahayı desteğe çek ve anında kontraya geç.",
+    warning: "Güncelleme gelirse sayılar değişebilir. Takip et!",
+    solid: true,
+    isNew: true,
+    addedAt: "2026-06-17",
   },
 ];

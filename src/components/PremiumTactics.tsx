@@ -7,6 +7,26 @@ import { analytics } from "../lib/analytics";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 
+// Returns true if tactic was added within the last 2 days
+function isHotNew(addedAt?: string): boolean {
+  if (!addedAt) return false;
+  return Date.now() - new Date(addedAt).getTime() < 2 * 24 * 60 * 60 * 1000;
+}
+
+const HOT_NEW = {
+  bg: "linear-gradient(135deg,rgba(255,100,30,0.22),rgba(255,60,10,0.10))",
+  border: "rgba(255,100,30,0.6)",
+  color: "#ff8040",
+  label: "🔥 NEW",
+} as const;
+
+const COOL_NEW = {
+  bg: "linear-gradient(135deg,rgba(16,217,161,0.18),rgba(16,217,161,0.08))",
+  border: "rgba(16,217,161,0.45)",
+  color: "#4aedc0",
+  label: "✦ NEW",
+} as const;
+
 const isMobileDevice = typeof window !== "undefined" && window.innerWidth < 768;
 
 // Starts at 12 on 2026-06-14, grows 1–2 per day deterministically.
@@ -129,12 +149,6 @@ function TacticCard({ tactic, index }: { tactic: PremiumTactic; index: number })
           style={{ position: "absolute", inset: 0, pointerEvents: "none", background: "linear-gradient(110deg, transparent 30%, rgba(255,255,255,0.03) 50%, transparent 70%)", transform: "skewX(-12deg)" }}
         />
       )}
-      {/* SOLID badge */}
-      {tactic.solid && (
-        <div style={{ position: "absolute", top: 14, right: 14, zIndex: 2, background: "rgba(91,138,247,0.10)", border: "1px solid rgba(91,138,247,0.3)", borderRadius: 6, padding: "4px 10px", fontSize: 9, fontWeight: 900, letterSpacing: "0.2em", textTransform: "uppercase", color: "#7eb8ff" }}>
-          ✦ SOLID
-        </div>
-      )}
       <div style={{ padding: "22px 22px 20px" }}>
         <div style={{ display: "flex", gap: 14, alignItems: "flex-start", marginBottom: 16 }}>
           <div style={{ background: "rgba(255,255,255,0.03)", borderRadius: 12, border: "1px solid rgba(255,255,255,0.08)", padding: "10px 14px" }}>
@@ -153,6 +167,17 @@ function TacticCard({ tactic, index }: { tactic: PremiumTactic; index: number })
                   <span style={{ fontSize: 8.5, fontWeight: 900, letterSpacing: "0.1em", color: "#ffc852" }}>%{tactic.winRate} {t("premium.winRateSuffix")}</span>
                 </motion.div>
               )}
+              {tactic.solid && (
+                <div style={{ display: "inline-flex", alignItems: "center", gap: 4, background: "rgba(91,138,247,0.10)", border: "1px solid rgba(91,138,247,0.3)", borderRadius: 999, padding: "3px 10px", fontSize: 8.5, fontWeight: 900, letterSpacing: "0.18em", textTransform: "uppercase", color: "#7eb8ff" }}>
+                  ✦ SOLID
+                </div>
+              )}
+              {tactic.isNew && (() => { const n = isHotNew(tactic.addedAt) ? HOT_NEW : COOL_NEW; return (
+                <motion.div animate={{ scale: [1, 1.07, 1] }} transition={{ duration: 2, repeat: Infinity }}
+                  style={{ display: "inline-flex", alignItems: "center", gap: 4, background: n.bg, border: `1px solid ${n.border}`, borderRadius: 999, padding: "3px 10px", fontSize: 8.5, fontWeight: 900, letterSpacing: "0.18em", textTransform: "uppercase", color: n.color }}>
+                  {n.label}
+                </motion.div>
+              ); })()}
             </div>
             <h3 style={{ margin: "0 0 3px", fontSize: "clamp(1.05rem,2.5vw,1.35rem)", fontFamily: "'Outfit', sans-serif", fontWeight: 900, letterSpacing: "0.01em", color: "#ffffff", lineHeight: 1.1 }}>
               {tactic.name}
@@ -260,10 +285,16 @@ function TeaserCard({ tactic, index }: { tactic: PremiumTactic; index: number })
                 </div>
               )}
               {tactic.solid && (
-                <div style={{ display: "inline-flex", alignItems: "center", gap: 3, background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.15)", borderRadius: 999, padding: "3px 9px" }}>
-                  <span style={{ fontSize: 8, fontWeight: 900, color: "rgba(255,255,255,0.7)" }}>✦ SOLID</span>
+                <div style={{ display: "inline-flex", alignItems: "center", gap: 3, background: "rgba(91,138,247,0.10)", border: "1px solid rgba(91,138,247,0.3)", borderRadius: 999, padding: "3px 9px", fontSize: 8, fontWeight: 900, letterSpacing: "0.15em", textTransform: "uppercase", color: "#7eb8ff" }}>
+                  ✦ SOLID
                 </div>
               )}
+              {tactic.isNew && (() => { const n = isHotNew(tactic.addedAt) ? HOT_NEW : COOL_NEW; return (
+                <motion.div animate={{ scale: [1, 1.07, 1] }} transition={{ duration: 2, repeat: Infinity }}
+                  style={{ display: "inline-flex", alignItems: "center", gap: 3, background: n.bg, border: `1px solid ${n.border}`, borderRadius: 999, padding: "3px 9px", fontSize: 8, fontWeight: 900, letterSpacing: "0.15em", textTransform: "uppercase", color: n.color }}>
+                  {n.label}
+                </motion.div>
+              ); })()}
             </div>
             <div style={{ fontSize: "clamp(1rem,2vw,1.2rem)", fontWeight: 900, color: "#ffffff", fontFamily: "'Outfit', sans-serif", letterSpacing: "0.02em", lineHeight: 1.1 }}>
               {tactic.formation}
@@ -782,6 +813,125 @@ export default function PremiumTactics() {
                   {t("premium.spamNote")}
                 </span>
               </motion.div>
+            </div>
+          </div>
+        </motion.div>
+
+        {/* ── Owner's Testimony ── */}
+        <motion.div
+          initial={{ opacity: 0, y: 18 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.55, ease: EASE }}
+          style={{ marginBottom: 28, position: "relative", overflow: "hidden" }}
+        >
+          <div style={{
+            position: "relative",
+            background: "linear-gradient(135deg, rgba(245,166,35,0.07) 0%, rgba(91,138,247,0.05) 50%, rgba(245,166,35,0.04) 100%)",
+            borderRadius: 20,
+            padding: 1,
+          }}>
+            {/* Gradient border */}
+            <div style={{
+              position: "absolute", inset: 0, borderRadius: 20,
+              background: "linear-gradient(135deg, rgba(245,166,35,0.7) 0%, rgba(91,138,247,0.5) 50%, rgba(245,166,35,0.5) 100%)",
+              WebkitMask: "linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0)",
+              WebkitMaskComposite: "xor",
+              maskComposite: "exclude",
+              padding: 1,
+              pointerEvents: "none",
+            }} />
+
+            <div style={{
+              background: "rgba(6,6,18,0.94)",
+              borderRadius: 19,
+              padding: "clamp(20px,3.5vw,32px) clamp(20px,3.5vw,36px)",
+              backdropFilter: "blur(24px)", WebkitBackdropFilter: "blur(24px)",
+              position: "relative", overflow: "hidden",
+            }}>
+              {/* Shimmer */}
+              <motion.div
+                animate={{ x: ["-100%", "200%"] }}
+                transition={{ repeat: Infinity, repeatDelay: 8, duration: 1.2, ease: "easeInOut" }}
+                style={{ position: "absolute", inset: 0, pointerEvents: "none", background: "linear-gradient(105deg, transparent 35%, rgba(245,166,35,0.04) 50%, transparent 65%)", transform: "skewX(-15deg)" }}
+              />
+
+              {/* Ambient gold glow top-right */}
+              <div style={{ position: "absolute", top: -30, right: -20, width: 160, height: 120, borderRadius: "50%", background: "radial-gradient(ellipse, rgba(245,166,35,0.09) 0%, transparent 70%)", pointerEvents: "none" }} />
+
+              <div style={{ display: "flex", alignItems: "flex-start", gap: 18 }}>
+                {/* Crown icon column */}
+                <motion.div
+                  animate={{ scale: [1, 1.08, 1], rotate: [0, 3, -3, 0] }}
+                  transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+                  style={{
+                    width: 48, height: 48, borderRadius: 14, flexShrink: 0,
+                    background: "linear-gradient(135deg, rgba(245,166,35,0.18) 0%, rgba(255,200,82,0.08) 100%)",
+                    border: "1px solid rgba(245,166,35,0.45)",
+                    display: "flex", alignItems: "center", justifyContent: "center",
+                    fontSize: 22,
+                    boxShadow: "0 0 24px rgba(245,166,35,0.15)",
+                  }}
+                >👑</motion.div>
+
+                {/* Text */}
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  {/* Label */}
+                  <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10, flexWrap: "wrap" }}>
+                    <div style={{ fontSize: 9, fontWeight: 900, textTransform: "uppercase", letterSpacing: "0.22em", color: "#ffc852" }}>
+                      ÖMER — KİŞİSEL BEYAN
+                    </div>
+                    <div style={{ width: 1, height: 10, background: "rgba(245,166,35,0.3)" }} />
+                    <div style={{ fontSize: 8.5, fontWeight: 700, letterSpacing: "0.14em", textTransform: "uppercase", color: "rgba(255,255,255,0.28)" }}>
+                      OMER — PERSONAL STATEMENT
+                    </div>
+                  </div>
+
+                  {/* Opening quote mark */}
+                  <div style={{ fontSize: 48, lineHeight: 0.6, color: "rgba(245,166,35,0.22)", fontFamily: "Georgia, serif", marginBottom: 10, userSelect: "none" }}>"</div>
+
+                  {/* Statement */}
+                  <p style={{
+                    margin: "0 0 16px",
+                    fontSize: "clamp(13px,2.2vw,15.5px)",
+                    fontWeight: 700,
+                    lineHeight: 1.7,
+                    color: "rgba(255,255,255,0.88)",
+                    letterSpacing: "0.005em",
+                  }}>
+                    {t("premium.ownerStatement")}
+                  </p>
+
+                  {/* Signature row */}
+                  <div style={{ display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
+                    <div style={{ height: 1, flex: 1, maxWidth: 48, background: "linear-gradient(90deg, rgba(245,166,35,0.5), transparent)" }} />
+                    <div style={{
+                      display: "inline-flex", alignItems: "center", gap: 7,
+                      background: "rgba(245,166,35,0.08)",
+                      border: "1px solid rgba(245,166,35,0.28)",
+                      borderRadius: 999, padding: "5px 14px",
+                    }}>
+                      <span style={{ fontSize: 11 }}>✍️</span>
+                      <span style={{ fontSize: 11, fontWeight: 900, letterSpacing: "0.1em", color: "#ffc852", fontFamily: "'Outfit', sans-serif" }}>Ömer</span>
+                    </div>
+                    <div style={{
+                      display: "inline-flex", alignItems: "center", gap: 5,
+                      background: "rgba(16,217,161,0.07)",
+                      border: "1px solid rgba(16,217,161,0.22)",
+                      borderRadius: 999, padding: "5px 12px",
+                    }}>
+                      <motion.span
+                        animate={{ opacity: [1, 0.3, 1] }}
+                        transition={{ duration: 1.8, repeat: Infinity }}
+                        style={{ width: 5, height: 5, borderRadius: "50%", background: "#10d9a1", display: "block", flexShrink: 0 }}
+                      />
+                      <span style={{ fontSize: 9, fontWeight: 900, textTransform: "uppercase", letterSpacing: "0.14em", color: "#4aedc0" }}>
+                        {t("premium.heroLive")}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </motion.div>
