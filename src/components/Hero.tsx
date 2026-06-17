@@ -11,6 +11,7 @@ const BODY_FONT = "'Geist Variable', 'Geist', system-ui, sans-serif";
 // ── Multilingual strings ───────────────────────────────────────────────────────
 const HERO_STRINGS = {
   tr: {
+    followQ:      "Beni takip ettin mi? 👀",
     badge:        "16 Yıllık OSM Deneyimi",
     title1:       "OSM",
     title2:       "NEXT LEVEL",
@@ -31,6 +32,7 @@ const HERO_STRINGS = {
     rotating: ["Anti-Taktik Matrisi", "Haftalık Meta Taktikler", "Slider Hesaplama", "Premium Formasyon Analizi", "16 Yıllık OSM Deneyimi"],
   },
   en: {
+    followQ:      "Did you follow me? 👀",
     badge:        "16 Years of OSM Experience",
     title1:       "OSM",
     title2:       "NEXT LEVEL",
@@ -51,6 +53,7 @@ const HERO_STRINGS = {
     rotating: ["Anti-Tactic Matrix", "Weekly Meta Tactics", "Slider Calculator", "Premium Formation Analysis", "16 Years of OSM Experience"],
   },
   hu: {
+    followQ:      "Követtél már? 👀",
     badge:        "16 Év OSM Tapasztalat",
     title1:       "OSM",
     title2:       "NEXT LEVEL",
@@ -71,6 +74,7 @@ const HERO_STRINGS = {
     rotating: ["Anti-Taktika Mátrix", "Heti Meta Taktikák", "Csúszka Számológép", "Prémium Formáció Analízis", "16 Év OSM Tapasztalat"],
   },
   ar: {
+    followQ:      "هل تابعتني؟ 👀",
     badge:        "16 عاماً من خبرة OSM",
     title1:       "OSM",
     title2:       "NEXT LEVEL",
@@ -91,6 +95,7 @@ const HERO_STRINGS = {
     rotating: ["مصفوفة مكافحة التكتيك", "تكتيكات الميتا الأسبوعية", "آلة حساب المتزلجة", "تحليل التشكيلة بريميوم", "16 عاماً من خبرة OSM"],
   },
   pt: {
+    followQ:      "Você me seguiu? 👀",
     badge:        "16 Anos de Experiência OSM",
     title1:       "OSM",
     title2:       "NEXT LEVEL",
@@ -230,79 +235,147 @@ export default function Hero() {
         }} />
       </div>
 
-      {/* ── Social links top-right ── */}
+      {/* ── Follow card — top-right ── */}
       <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.6, delay: 0.8 }}
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, delay: 0.9, ease: EASE }}
         style={{
           position: "absolute",
-          top: 20,
-          right: "clamp(16px, 4vw, 40px)",
-          display: "flex",
-          gap: 8,
+          top: 16,
+          right: "clamp(12px, 3vw, 36px)",
           zIndex: 10,
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "flex-end",
+          gap: 8,
         }}
       >
-        {[
-          {
-            href: siteMeta.social.youtube,
-            label: "YouTube",
-            bg: "rgba(255,0,0,0.12)",
-            border: "rgba(255,0,0,0.3)",
-            icon: (
-              <svg width="22" height="15" viewBox="0 0 30 21" fill="none">
-                <rect width="30" height="21" rx="4" fill="#FF0000"/>
-                <path d="M12.5 6.5L20.5 10.5L12.5 14.5V6.5Z" fill="white"/>
-              </svg>
-            ),
-          },
-          {
-            href: siteMeta.social.instagram,
-            label: "Instagram",
-            bg: "rgba(225,48,108,0.12)",
-            border: "rgba(225,48,108,0.3)",
-            icon: (
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                <rect x="2" y="2" width="20" height="20" rx="5" stroke="#E1306C" strokeWidth="1.8"/>
-                <circle cx="12" cy="12" r="4" stroke="#E1306C" strokeWidth="1.8"/>
-                <circle cx="17" cy="7" r="1.3" fill="#E1306C"/>
-              </svg>
-            ),
-          },
-          {
-            href: siteMeta.social.facebook,
-            label: "Facebook",
-            bg: "rgba(24,119,242,0.12)",
-            border: "rgba(24,119,242,0.3)",
-            icon: (
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="#1877F2">
-                <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
-              </svg>
-            ),
-          },
-        ].map((s) => (
-          <motion.a
-            key={s.label}
-            href={s.href}
-            target="_blank"
-            rel="noreferrer"
-            aria-label={s.label}
-            whileHover={isMobile ? undefined : { scale: 1.12, y: -2 }}
-            whileTap={{ scale: 0.94 }}
-            style={{
-              width: 40, height: 40,
-              border: `1px solid ${s.border}`,
-              borderRadius: 10,
-              background: s.bg,
-              display: "flex", alignItems: "center", justifyContent: "center",
-              textDecoration: "none",
-              transition: "background 0.2s, border-color 0.2s",
-            }}
-          >
-            {s.icon}
-          </motion.a>
-        ))}
+        {/* "Did you follow me?" card */}
+        <motion.div
+          animate={{ y: [0, -3, 0] }}
+          transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut" }}
+          style={{
+            background: "rgba(8,8,22,0.82)",
+            border: "1px solid rgba(91,138,247,0.28)",
+            borderRadius: 14,
+            padding: "10px 14px",
+            backdropFilter: "blur(16px)",
+            WebkitBackdropFilter: "blur(16px)",
+            boxShadow: "0 8px 32px rgba(0,0,0,0.4), 0 0 0 1px rgba(91,138,247,0.08) inset",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            gap: 10,
+            minWidth: 148,
+          }}
+        >
+          {/* Pulse dot + label */}
+          <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+            <motion.span
+              animate={{ scale: [1, 1.5, 1], opacity: [1, 0.4, 1] }}
+              transition={{ duration: 1.8, repeat: Infinity }}
+              style={{ width: 6, height: 6, borderRadius: "50%", background: "#10d9a1", display: "block", boxShadow: "0 0 6px #10d9a1" }}
+            />
+            <span style={{
+              fontSize: 11, fontWeight: 800, color: "rgba(255,255,255,0.9)",
+              letterSpacing: "0.02em", whiteSpace: "nowrap",
+            }}>
+              {hs.followQ}
+            </span>
+          </div>
+
+          {/* Social buttons */}
+          <div style={{ display: "flex", gap: 7 }}>
+            {[
+              {
+                href: siteMeta.social.youtube,
+                label: "YouTube",
+                color: "#FF0000",
+                bg: "rgba(255,0,0,0.1)",
+                border: "rgba(255,0,0,0.28)",
+                icon: (
+                  <svg width="18" height="13" viewBox="0 0 30 21" fill="none">
+                    <rect width="30" height="21" rx="4" fill="#FF0000"/>
+                    <path d="M12.5 6.5L20.5 10.5L12.5 14.5V6.5Z" fill="white"/>
+                  </svg>
+                ),
+              },
+              {
+                href: siteMeta.social.instagram,
+                label: "Instagram",
+                color: "#E1306C",
+                bg: "rgba(225,48,108,0.1)",
+                border: "rgba(225,48,108,0.28)",
+                icon: (
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                    <rect x="2" y="2" width="20" height="20" rx="5" stroke="#E1306C" strokeWidth="1.8"/>
+                    <circle cx="12" cy="12" r="4" stroke="#E1306C" strokeWidth="1.8"/>
+                    <circle cx="17" cy="7" r="1.3" fill="#E1306C"/>
+                  </svg>
+                ),
+              },
+              {
+                href: siteMeta.social.facebook,
+                label: "Facebook",
+                color: "#1877F2",
+                bg: "rgba(24,119,242,0.1)",
+                border: "rgba(24,119,242,0.28)",
+                icon: (
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="#1877F2">
+                    <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                  </svg>
+                ),
+              },
+            ].map((s) => (
+              <motion.a
+                key={s.label}
+                href={s.href}
+                target="_blank"
+                rel="noreferrer"
+                aria-label={s.label}
+                whileHover={isMobile ? undefined : { scale: 1.14, y: -2 }}
+                whileTap={{ scale: 0.92 }}
+                style={{
+                  width: 38, height: 38,
+                  border: `1px solid ${s.border}`,
+                  borderRadius: 10,
+                  background: s.bg,
+                  display: "flex", alignItems: "center", justifyContent: "center",
+                  textDecoration: "none",
+                  transition: "background 0.18s, box-shadow 0.18s",
+                  boxShadow: `0 2px 10px ${s.bg}`,
+                }}
+                onMouseEnter={isMobile ? undefined : (e) => {
+                  (e.currentTarget as HTMLAnchorElement).style.boxShadow = `0 4px 18px rgba(${s.color === "#FF0000" ? "255,0,0" : s.color === "#E1306C" ? "225,48,108" : "24,119,242"},0.35)`;
+                }}
+                onMouseLeave={isMobile ? undefined : (e) => {
+                  (e.currentTarget as HTMLAnchorElement).style.boxShadow = `0 2px 10px ${s.bg}`;
+                }}
+              >
+                {s.icon}
+              </motion.a>
+            ))}
+          </div>
+
+          {/* Bottom arrow pointer */}
+          <div style={{
+            position: "absolute",
+            bottom: -8, right: 16,
+            width: 0, height: 0,
+            borderLeft: "7px solid transparent",
+            borderRight: "7px solid transparent",
+            borderTop: "8px solid rgba(91,138,247,0.28)",
+          }} />
+          <div style={{
+            position: "absolute",
+            bottom: -7, right: 17,
+            width: 0, height: 0,
+            borderLeft: "6px solid transparent",
+            borderRight: "6px solid transparent",
+            borderTop: "7px solid rgba(8,8,22,0.82)",
+          }} />
+        </motion.div>
       </motion.div>
 
       {/* ── MAIN CONTENT — asymmetric: copy + pitch scene ── */}
