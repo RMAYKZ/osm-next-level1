@@ -7,6 +7,7 @@ import { useLang } from "../contexts/LanguageContext";
 import { useAuth } from "../contexts/AuthContext";
 import { useSavedTactics } from "../contexts/SavedTacticsContext";
 import { OsmLogo } from "./ui/OsmLogo";
+import { getDb } from "../lib/firebase";
 import "./Navbar.css";
 
 const OSMEventsSchedule  = lazy(() => import("./OSMEventsSchedule"));
@@ -25,6 +26,101 @@ const HighRiskEngine     = lazy(() => import("./HighRiskEngine"));
 const SliderCalculator   = lazy(() => import("./SliderCalculator"));
 const MatchAutopsy       = lazy(() => import("./MatchAutopsy"));
 
+
+// ── Email subscription form (drawer) ─────────────────────────────────
+function SubscribeForm() {
+  const { t } = useLang();
+  const [email, setEmail] = useState("");
+  const [done, setDone] = useState(false);
+  const [error, setError] = useState("");
+  const [busy, setBusy] = useState(false);
+
+  const submit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError("");
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
+      setError(t("hub.emailInvalid"));
+      return;
+    }
+    setBusy(true);
+    try {
+      const [{ addDoc, collection, serverTimestamp }, db] = await Promise.all([
+        import("firebase/firestore"),
+        getDb(),
+      ]);
+      await addDoc(collection(db, "emails"), {
+        email: email.trim().toLowerCase(),
+        createdAt: serverTimestamp(),
+      });
+      setDone(true);
+      setEmail("");
+      setTimeout(() => setDone(false), 5000);
+    } catch {
+      setError(t("hub.emailError"));
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  return (
+    <div style={{
+      margin: "4px 0 2px",
+      background: "rgba(16,217,161,0.04)",
+      border: "1px solid rgba(16,217,161,0.12)",
+      borderRadius: 14,
+      padding: "16px 16px 14px",
+    }}>
+      <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 10 }}>
+        <span style={{ fontSize: 14 }}>🔔</span>
+        <span style={{ fontSize: 11, fontWeight: 900, textTransform: "uppercase", letterSpacing: "0.14em", color: "oklch(0.87 0.27 152)" }}>
+          {t("hub.emailBadge")}
+        </span>
+      </div>
+      <p style={{ margin: "0 0 10px", fontSize: 12, color: "rgba(255,255,255,0.38)", lineHeight: 1.5 }}>
+        {t("hub.emailDesc")}
+      </p>
+      {done ? (
+        <p style={{ margin: 0, fontSize: 12, fontWeight: 700, color: "oklch(0.87 0.27 152)", padding: "10px 0" }}>
+          ✓ {t("hub.subscribeSuccess")}
+        </p>
+      ) : (
+        <form onSubmit={submit} style={{ display: "flex", gap: 7 }}>
+          <input
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            type="email"
+            placeholder={t("hub.emailPlaceholder")}
+            disabled={busy}
+            style={{
+              flex: 1, minWidth: 0,
+              background: "rgba(255,255,255,0.05)",
+              border: "1px solid rgba(255,255,255,0.09)",
+              borderRadius: 10, padding: "10px 12px",
+              color: "#fff", fontSize: 13, outline: "none",
+            }}
+          />
+          <button
+            type="submit"
+            disabled={busy}
+            style={{
+              background: "linear-gradient(135deg, oklch(0.87 0.27 152), #5b8af7)",
+              border: "none", borderRadius: 10,
+              padding: "10px 14px",
+              color: "#0a0a12", fontSize: 11, fontWeight: 900,
+              textTransform: "uppercase", letterSpacing: "0.1em",
+              cursor: busy ? "default" : "pointer",
+              opacity: busy ? 0.6 : 1,
+              whiteSpace: "nowrap",
+            }}
+          >
+            {busy ? "…" : t("hub.subscribe")}
+          </button>
+        </form>
+      )}
+      {error && <p style={{ margin: "6px 0 0", fontSize: 11, color: "rgba(255,100,100,0.8)" }}>{error}</p>}
+    </div>
+  );
+}
 
 // Gece (22:00-07:59) → 2-3, Gündüz (08:00-21:59) → 5-15
 function getLiveCount(): number {
@@ -414,6 +510,9 @@ export default function Navbar() {
                 ))}
               </div>
 
+              {/* Subscribe */}
+              <SubscribeForm />
+
             </div>
 
             {/* Footer: donate */}
@@ -507,7 +606,20 @@ export default function Navbar() {
 
                 {/* Scrollable content */}
                 <div style={{ flex: 1, overflowY: "auto", WebkitOverflowScrolling: "touch" } as React.CSSProperties}>
-                  <Suspense fallback={<div style={{ display: "flex", alignItems: "center", justifyContent: "center", height: 200, color: "#475569", fontSize: 13 }}>Yükleniyor…</div>}>
+                  <Suspense fallback={
+                    <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", height: 260, gap: 16 }}>
+                      <div style={{
+                        width: 36, height: 36, borderRadius: "50%",
+                        border: "2.5px solid rgba(255,255,255,0.08)",
+                        borderTopColor: "oklch(0.87 0.27 152)",
+                        animation: "spin 0.75s linear infinite",
+                      }} />
+                      <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", color: "rgba(255,255,255,0.25)" }}>
+                        Loading…
+                      </span>
+                      <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+                    </div>
+                  }>
                     {sheetComponent}
                   </Suspense>
                 </div>

@@ -1297,6 +1297,11 @@ Object.assign(extraTranslations.tr, {
   "premium.statSub3":         "Canlı Takip",
   "premium.secureNote":       "Bu taktikler yalnızca sana özeldir. Paylaşmak taktiği geçersiz kılar — yaygınlaşan taktikler motor tarafından dengelenir.",
   "premium.secureNoteActive": "Bu taktikleri asla başkasıyla paylaşma! Çok kişi kullanınca sistem patlıyor ve taktik geçersiz hale geliyor.",
+  "premium.discTitle":   "Premium Taktikler — Gerçek Savaş, Gerçek Turnuva",
+  "premium.discBullet1": "Her hafta güncelleniyor — Savaşlarda ve Üst Düzey Turnuvalarda test edilmiş taktikler",
+  "premium.discBullet2": "Başka yerde gördüğünüz klasik, eski taktikler değil",
+  "premium.discBullet3": "Hiçbir taktiğin garantisi yoktur — rakibini her maçta iyi analiz et",
+  "premium.spamNote":    "Satın alma sonrası aktivasyon e-postanız spam / gereksiz klasörüne düşebilir — lütfen mutlaka kontrol edin!",
   "premium.vipRequired":      "VIP Erişim Gerekli",
   "premium.winRateSuffix":    "Kazanma",
   "premium.effective":        "Etkili:",
@@ -1357,6 +1362,11 @@ Object.assign(extraTranslations.en, {
   "premium.statSub3":         "Live Tracking",
   "premium.secureNote":       "These tactics are for your eyes only. Sharing them invalidates the tactic — widespread use triggers engine rebalancing.",
   "premium.secureNoteActive": "Never share these tactics with anyone! Overuse crashes the system and renders the tactic invalid.",
+  "premium.discTitle":   "Premium Tactics — Real Wars. Real Tournaments.",
+  "premium.discBullet1": "Updated weekly — battle-tested in Wars & Top-Level Tournaments as the meta shifts",
+  "premium.discBullet2": "Not the recycled classics you find everywhere else",
+  "premium.discBullet3": "No tactic comes with a guarantee — analyze your opponent every single match",
+  "premium.spamNote":    "After purchase, your activation email may land in spam / junk — please check your folder!",
   "premium.vipRequired":      "VIP Access Required",
   "premium.winRateSuffix":    "Win Rate",
   "premium.effective":        "Effective vs:",
@@ -1417,6 +1427,11 @@ Object.assign(extraTranslations.hu, {
   "premium.lineDefense":   "Védelem",
   "premium.locHome":       "HAZAI",
   "premium.locAway":       "VENDÉG",
+  "premium.discTitle":   "Prémium Taktikák — Igazi Háborúk. Igazi Tornák.",
+  "premium.discBullet1": "Hetente frissítve — háborúkban és felsőszintű tornákon tesztelt, a meta változásaival együtt",
+  "premium.discBullet2": "Nem a máshol is látható agyonhasznált klasszikus taktikák",
+  "premium.discBullet3": "Egyetlen taktika sem garantált — minden meccsen elemezd az ellenfeledet",
+  "premium.spamNote":    "Vásárlás után az aktiváló e-mail a spam / levélszemét mappába kerülhet — kérjük, ellenőrizze!",
 });
 
 Object.assign(extraTranslations.ar, {
@@ -1441,6 +1456,11 @@ Object.assign(extraTranslations.ar, {
   "premium.lineDefense":   "الدفاع",
   "premium.locHome":       "ملعبنا",
   "premium.locAway":       "خارجي",
+  "premium.discTitle":   "تكتيكات VIP — حروب حقيقية. بطولات حقيقية.",
+  "premium.discBullet1": "تُحدَّث أسبوعياً — مُختبَرة في الحروب والبطولات العليا مع تطور اللعبة",
+  "premium.discBullet2": "ليست التكتيكات الكلاسيكية المكررة التي تراها في كل مكان",
+  "premium.discBullet3": "لا يوجد ضمان لأي تكتيك — حلّل خصمك جيداً في كل مباراة",
+  "premium.spamNote":    "بعد الشراء، قد تصل رسالة التفعيل إلى مجلد البريد العشوائي — يرجى التحقق منه!",
 });
 
 Object.assign(extraTranslations.pt, {
@@ -1465,6 +1485,11 @@ Object.assign(extraTranslations.pt, {
   "premium.lineDefense":   "Defesa",
   "premium.locHome":       "CASA",
   "premium.locAway":       "FORA",
+  "premium.discTitle":   "Táticas Premium — Guerras Reais. Torneios Reais.",
+  "premium.discBullet1": "Atualizadas semanalmente — testadas em Guerras e Torneios de Alto Nível conforme o meta muda",
+  "premium.discBullet2": "Não são as táticas clássicas recicladas que você encontra em todo lugar",
+  "premium.discBullet3": "Nenhuma tática é garantida — analise seu adversário a cada partida",
+  "premium.spamNote":    "Após a compra, o e-mail de ativação pode ir para spam / lixo eletrônico — verifique sua caixa!",
 });
 
 interface LanguageContextType {

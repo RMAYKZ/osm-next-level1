@@ -674,6 +674,118 @@ export default function PremiumTactics() {
           )}
         </AnimatePresence>
 
+        {/* ── Premium disclaimer banner ── */}
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5, ease: EASE }}
+          style={{ marginBottom: 28, position: "relative", overflow: "hidden" }}
+        >
+          {/* Gradient border container */}
+          <div style={{
+            position: "relative",
+            background: "linear-gradient(135deg, rgba(245,166,35,0.06), rgba(91,138,247,0.06), rgba(16,217,161,0.04))",
+            borderRadius: 18,
+            padding: 1,
+          }}>
+            <div style={{
+              position: "absolute", inset: 0, borderRadius: 18,
+              background: "linear-gradient(135deg, rgba(245,166,35,0.55), rgba(91,138,247,0.4), rgba(16,217,161,0.35))",
+              WebkitMask: "linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0)",
+              WebkitMaskComposite: "xor",
+              maskComposite: "exclude",
+              padding: 1,
+              pointerEvents: "none",
+            }} />
+            <div style={{
+              background: "rgba(8,8,20,0.92)",
+              borderRadius: 17,
+              padding: "clamp(18px,3vw,28px) clamp(18px,3vw,32px)",
+              backdropFilter: "blur(20px)",
+              WebkitBackdropFilter: "blur(20px)",
+            }}>
+              {/* Shimmer sweep */}
+              <motion.div
+                animate={{ x: ["-100%", "200%"] }}
+                transition={{ repeat: Infinity, repeatDelay: 7, duration: 1.1, ease: "easeInOut" }}
+                style={{ position: "absolute", inset: 0, pointerEvents: "none", background: "linear-gradient(105deg, transparent 35%, rgba(255,255,255,0.025) 50%, transparent 65%)", transform: "skewX(-15deg)", borderRadius: 17 }}
+              />
+
+              {/* Title row */}
+              <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 18, flexWrap: "wrap" }}>
+                <motion.div
+                  animate={{ scale: [1, 1.12, 1] }}
+                  transition={{ duration: 2.5, repeat: Infinity }}
+                  style={{
+                    width: 36, height: 36, borderRadius: "50%", flexShrink: 0,
+                    background: "rgba(245,166,35,0.12)",
+                    border: "1px solid rgba(245,166,35,0.4)",
+                    display: "flex", alignItems: "center", justifyContent: "center",
+                    fontSize: 17,
+                  }}
+                >⚡</motion.div>
+                <div>
+                  <div style={{ fontSize: 10, fontWeight: 900, textTransform: "uppercase", letterSpacing: "0.18em", color: "#ffc852", marginBottom: 2 }}>
+                    OSM NEXT LEVEL — VIP
+                  </div>
+                  <div style={{ fontSize: "clamp(13px,2.5vw,16px)", fontWeight: 900, color: "#ffffff", letterSpacing: "-0.01em", lineHeight: 1.2 }}>
+                    {t("premium.discTitle")}
+                  </div>
+                </div>
+              </div>
+
+              {/* Three bullets */}
+              <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+                {([
+                  { icon: "🔄", text: t("premium.discBullet1"), color: "#4aedc0", bg: "rgba(16,217,161,0.07)", border: "rgba(16,217,161,0.2)" },
+                  { icon: "🎯", text: t("premium.discBullet2"), color: "#7eb8ff", bg: "rgba(91,138,247,0.07)", border: "rgba(91,138,247,0.2)" },
+                  { icon: "⚠️", text: t("premium.discBullet3"), color: "#ffc852", bg: "rgba(245,166,35,0.07)", border: "rgba(245,166,35,0.2)" },
+                ] as const).map((b, i) => (
+                  <motion.div
+                    key={i}
+                    initial={{ opacity: 0, x: -10 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: 0.08 + i * 0.07, duration: 0.35, ease: EASE }}
+                    style={{
+                      display: "flex", alignItems: "flex-start", gap: 10,
+                      background: b.bg,
+                      border: `1px solid ${b.border}`,
+                      borderRadius: 12, padding: "10px 14px",
+                    }}
+                  >
+                    <span style={{ fontSize: 14, flexShrink: 0, lineHeight: 1.5 }}>{b.icon}</span>
+                    <span style={{ fontSize: "clamp(11.5px,2vw,13px)", fontWeight: 700, color: "rgba(255,255,255,0.82)", lineHeight: 1.5 }}>
+                      <span style={{ color: b.color }}></span>{b.text}
+                    </span>
+                  </motion.div>
+                ))}
+              </div>
+
+              {/* Spam warning — always visible, high contrast */}
+              <motion.div
+                initial={{ opacity: 0 }}
+                whileInView={{ opacity: 1 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.35, duration: 0.4 }}
+                style={{
+                  marginTop: 12,
+                  display: "flex", alignItems: "center", gap: 10,
+                  background: "rgba(255,80,80,0.07)",
+                  border: "1px solid rgba(255,80,80,0.28)",
+                  borderRadius: 12, padding: "11px 14px",
+                }}
+              >
+                <span style={{ fontSize: 17, flexShrink: 0 }}>📧</span>
+                <span style={{ fontSize: "clamp(11.5px,2vw,13px)", fontWeight: 800, color: "rgba(255,200,200,0.9)", lineHeight: 1.5 }}>
+                  {t("premium.spamNote")}
+                </span>
+              </motion.div>
+            </div>
+          </div>
+        </motion.div>
+
         {/* ── Tactic cards ── */}
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%,280px), 1fr))", gap: 18 }}>
           {tactics.map((tactic, i) =>

@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, useCallback, useEffect, type ReactNode } from "react";
 import { premiumCodes } from "../data/extras";
-import { validcodes } from "../data/validcodes";
+import { validcodeHashes } from "../data/validcodes";
 import { getDb } from "../lib/firebase";
 import { useAuth } from "./AuthContext";
 
@@ -36,6 +36,12 @@ function getDeviceId(): string {
   localStorage.setItem(DEVICE_KEY, id);
   document.cookie = `${DEVICE_COOKIE}=${id}; max-age=${exp}; SameSite=Strict`;
   return id;
+}
+
+// ── Hash helper — Web Crypto (available in all modern browsers) ───────
+async function hashCode(code: string): Promise<string> {
+  const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(code));
+  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, "0")).join("");
 }
 
 // ── Firestore: check + claim code ────────────────────────────────────
@@ -116,9 +122,10 @@ export function PremiumProvider({ children }: { children: ReactNode }) {
       const normalized = code.trim().toUpperCase();
       const deviceId   = getDeviceId();
 
-      // 1. Check local codes (instant)
-      const localAll = [...premiumCodes, ...validcodes];
-      const localValid = localAll.some(c => c.toUpperCase() === normalized);
+      // 1. Check local codes against stored hashes (bundle never exposes plaintext)
+      const inputHash = await hashCode(normalized);
+      const premiumHash = await Promise.all(premiumCodes.map(c => hashCode(c.toUpperCase())));
+      const localValid = validcodeHashes.includes(inputHash) || premiumHash.includes(inputHash);
 
       if (!localValid) return "invalid";
 
