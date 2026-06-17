@@ -235,7 +235,7 @@ export default function Hero() {
         }} />
       </div>
 
-      {/* ── Follow card — top-right ── */}
+      {/* ── Follow card — top-right (desktop only) ── */}
       <motion.div
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
@@ -245,7 +245,7 @@ export default function Hero() {
           top: 16,
           right: "clamp(12px, 3vw, 36px)",
           zIndex: 10,
-          display: "flex",
+          display: isMobile ? "none" : "flex",
           flexDirection: "column",
           alignItems: "flex-end",
           gap: 8,
@@ -536,6 +536,54 @@ export default function Hero() {
               {hs.badge} · {hs.worldRank} · 100+ {hs.tested}
             </p>
           </Reveal>
+
+          {/* Mobile follow strip */}
+          {isMobile && (
+            <Reveal delay={0.6} lite>
+              <div style={{
+                marginTop: 20,
+                display: "flex", alignItems: "center", gap: 10,
+                background: "rgba(8,8,22,0.75)",
+                border: "1px solid rgba(91,138,247,0.22)",
+                borderRadius: 14, padding: "10px 14px",
+                backdropFilter: "blur(12px)",
+                WebkitBackdropFilter: "blur(12px)",
+              }}>
+                <motion.span
+                  animate={{ scale: [1, 1.5, 1], opacity: [1, 0.3, 1] }}
+                  transition={{ duration: 1.8, repeat: Infinity }}
+                  style={{ width: 6, height: 6, borderRadius: "50%", background: "#10d9a1", display: "block", flexShrink: 0, boxShadow: "0 0 6px #10d9a1" }}
+                />
+                <span style={{ fontSize: 11, fontWeight: 800, color: "rgba(255,255,255,0.88)", whiteSpace: "nowrap" }}>
+                  {hs.followQ}
+                </span>
+                <div style={{ display: "flex", gap: 6, marginLeft: 4 }}>
+                  {[
+                    { href: siteMeta.social.youtube,   label: "YouTube",   bg: "rgba(255,0,0,0.12)",     border: "rgba(255,0,0,0.3)",     icon: <svg width="17" height="12" viewBox="0 0 30 21" fill="none"><rect width="30" height="21" rx="4" fill="#FF0000"/><path d="M12.5 6.5L20.5 10.5L12.5 14.5V6.5Z" fill="white"/></svg> },
+                    { href: siteMeta.social.instagram, label: "Instagram", bg: "rgba(225,48,108,0.12)",  border: "rgba(225,48,108,0.3)",  icon: <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><rect x="2" y="2" width="20" height="20" rx="5" stroke="#E1306C" strokeWidth="1.8"/><circle cx="12" cy="12" r="4" stroke="#E1306C" strokeWidth="1.8"/><circle cx="17" cy="7" r="1.3" fill="#E1306C"/></svg> },
+                    { href: siteMeta.social.facebook,  label: "Facebook",  bg: "rgba(24,119,242,0.12)",  border: "rgba(24,119,242,0.3)",  icon: <svg width="15" height="15" viewBox="0 0 24 24" fill="#1877F2"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg> },
+                  ].map((s) => (
+                    <motion.a
+                      key={s.label}
+                      href={s.href}
+                      target="_blank" rel="noreferrer"
+                      aria-label={s.label}
+                      whileTap={{ scale: 0.9 }}
+                      style={{
+                        width: 34, height: 34,
+                        border: `1px solid ${s.border}`,
+                        borderRadius: 9, background: s.bg,
+                        display: "flex", alignItems: "center", justifyContent: "center",
+                        textDecoration: "none", flexShrink: 0,
+                      }}
+                    >
+                      {s.icon}
+                    </motion.a>
+                  ))}
+                </div>
+              </div>
+            </Reveal>
+          )}
         </div>
       </div>
 
