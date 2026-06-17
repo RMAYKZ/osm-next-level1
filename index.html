@@ -127,6 +127,12 @@
           href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&display=swap" />
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&display=swap"
           rel="stylesheet" />
+    <!-- Big Shoulders: Hero display font (scoreboard/stadium-signage character) — preload +
+         synchronous since the Hero H1 is the LCP element. -->
+    <link rel="preload" as="style"
+          href="https://fonts.googleapis.com/css2?family=Big+Shoulders:wght@700;900&display=swap" />
+    <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders:wght@700;900&display=swap"
+          rel="stylesheet" />
     <!-- Cairo + JetBrains Mono + Barlow Condensed + Inter: deferred (non-blocking)
          but still discoverable by the browser's preload scanner immediately,
          unlike the CSS @import this replaced (see AntiTacticFinder.css). -->

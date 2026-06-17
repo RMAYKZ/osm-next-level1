@@ -44,41 +44,46 @@
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  background: rgba(91,138,247,0.08);
-  border: 1px solid rgba(91,138,247,0.28);
+  background: rgba(16,217,161,0.07);
+  border: 1px solid rgba(16,217,161,0.32);
   border-radius: 999px;
-  padding: 6px 18px;
+  padding: 7px 20px;
   font-size: 10px;
   font-weight: 900;
-  letter-spacing: 0.18em;
+  letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: rgba(126,168,255,0.9);
-  margin-bottom: 16px;
+  color: rgba(74,237,192,0.95);
+  margin-bottom: 18px;
+  backdrop-filter: blur(8px);
 }
 
 .atf-head-dot {
   display: inline-block;
-  width: 6px;
-  height: 6px;
+  width: 7px;
+  height: 7px;
   border-radius: 50%;
-  background: #5b8af7;
+  background: #10d9a1;
+  box-shadow: 0 0 8px rgba(16,217,161,0.8);
   flex-shrink: 0;
-  animation: blink 2s infinite;
 }
 
 .atf-head-title {
   font-family: 'Outfit', system-ui, sans-serif;
-  font-size: clamp(2.2rem, 6vw, 4.5rem);
+  font-size: clamp(2.4rem, 7vw, 5rem);
   font-weight: 900;
-  letter-spacing: -0.02em;
-  line-height: 1;
+  letter-spacing: -0.025em;
+  line-height: 0.95;
   color: #fff;
   margin: 0;
   text-wrap: balance;
 }
 
-.atf-head-title span {
-  color: #5b8af7;
+.atf-head-title-accent {
+  background: linear-gradient(135deg, #10d9a1 0%, #5b8af7 60%, #9161f5 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  display: inline;
 }
 
 /* ═══════════════════════════════════════════════
@@ -317,6 +322,7 @@
 
 .tc-eyebrow {
   display: flex; align-items: center; gap: 6px;
+  flex: 1; min-width: 0; flex-wrap: wrap;
   font-size: 9px; font-weight: 900;
   letter-spacing: 0.18em; text-transform: uppercase;
   color: rgba(255,255,255,0.4);
@@ -397,8 +403,12 @@
 .midrow { display: flex; gap: 16px; align-items: flex-start; }
 
 .main-pitch-wrap {
-  border-radius: 11px; overflow: hidden; flex-shrink: 0; width: 310px;
-  box-shadow: 0 0 0 1px rgba(255,255,255,0.08);
+  border-radius: 12px; overflow: hidden; flex-shrink: 0; width: 310px;
+  box-shadow:
+    0 0 0 1px rgba(255,255,255,0.1),
+    0 0 30px rgba(16,217,161,0.06),
+    0 12px 40px rgba(0,0,0,0.5);
+  position: relative;
 }
 
 .statscol { flex: 1; display: flex; flex-direction: column; gap: 8px; }
@@ -639,7 +649,6 @@
 /* ═══════════════════════════════════════════════
    RESULTS + ALT SEPARATOR
 ═══════════════════════════════════════════════ */
-.atf-results    { display: contents; }
 .atf-results-in { animation: fadeUp .45s ease both; }
 
 .alt-sep { display: flex; align-items: center; gap: 10px; margin-top: 4px; }
@@ -749,4 +758,347 @@
   border: 1px solid rgba(255,215,0,.35);
   border-radius: 10px; padding: 9px 12px;
   font-size: 11px; color: rgba(255,215,0,.7); line-height: 1.7; font-style: italic;
+}
+
+/* ═══════════════════════════════════════════════
+   NEW LAYOUT: ATF CARD + TWO-COLUMN GRID
+═══════════════════════════════════════════════ */
+
+/* Card wrapper (replaces .root) */
+.atf-card {
+  background: rgba(7,7,17,0.85);
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid rgba(91,138,247,0.14);
+  width: 100%;
+  max-width: 1400px;
+  box-shadow: 0 40px 100px rgba(0,0,0,0.6), 0 0 0 1px rgba(91,138,247,0.07);
+  position: relative;
+  z-index: 1;
+}
+
+/* Top bar: counter badge + reset */
+.atf-topbar {
+  padding: 12px 20px;
+  background: rgba(255,255,255,0.015);
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+/* Two-column grid: picker | results */
+.atf-layout {
+  display: grid;
+  grid-template-columns: 290px 1fr;
+  min-height: 0;
+}
+
+/* Left picker column */
+.atf-picker {
+  min-width: 0; /* prevent grid overflow */
+  padding: 16px 14px;
+  border-right: 1px solid rgba(255,255,255,0.07);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  overflow: hidden;
+}
+
+/* Right results column */
+.atf-results {
+  min-width: 0; /* prevent grid overflow */
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 16px 18px;
+}
+
+/* Controls row: location + strength */
+.atf-ctrl-row {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.atf-ctrl-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.atf-ctrl-lbl {
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.38);
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.atf-fm-lbl  { margin-bottom: 3px; }
+.atf-results-lbl { margin-bottom: 0; }
+
+/* Segmented toggle buttons (location / strength) */
+.atf-seg { display: flex; gap: 4px; }
+.atf-seg-3 { gap: 3px; }
+
+.atf-seg-btn {
+  flex: 1;
+  min-width: 0;
+  padding: 8px 5px;
+  border-radius: 8px;
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  cursor: pointer;
+  border: 1px solid rgba(255,255,255,0.08);
+  background: rgba(255,255,255,0.03);
+  color: rgba(255,255,255,0.35);
+  transition: background 0.18s, color 0.18s, border-color 0.18s;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.atf-seg-btn:hover {
+  background: rgba(255,255,255,0.07);
+  color: rgba(255,255,255,0.72);
+}
+.atf-seg-btn.on {
+  background: linear-gradient(135deg, #5b8af7, #9161f5);
+  border-color: transparent;
+  color: #fff;
+  box-shadow: 0 3px 12px rgba(91,138,247,0.35);
+}
+
+/* Formation card grid — 2 columns */
+.atf-fm-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+}
+
+.atf-fm-card {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 9px 9px 7px;
+  border-radius: 10px;
+  background: rgba(255,255,255,0.025);
+  border: 1px solid rgba(255,255,255,0.06);
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.15s, border-color 0.15s, box-shadow 0.2s;
+  position: relative;
+  overflow: hidden;
+}
+.atf-fm-card:hover {
+  background: rgba(255,255,255,0.05);
+  border-color: rgba(255,255,255,0.14);
+}
+.atf-fm-card.on {
+  background: rgba(16,217,161,0.08);
+  border-color: rgba(16,217,161,0.38);
+  box-shadow: 0 0 18px rgba(16,217,161,0.08);
+}
+
+.atf-fm-card-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 1px;
+}
+
+.atf-fm-icon { font-size: 14px; line-height: 1; }
+
+.atf-fm-check {
+  font-size: 9px;
+  color: #10d9a1;
+  font-weight: 900;
+  width: 15px; height: 15px;
+  border-radius: 50%;
+  background: rgba(16,217,161,0.14);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+
+.atf-fm-code {
+  font-family: 'Barlow Condensed', system-ui, sans-serif;
+  font-size: 15px;
+  font-weight: 900;
+  color: #fff;
+  line-height: 1.05;
+  letter-spacing: -0.01em;
+}
+
+.atf-fm-style {
+  font-size: 9px;
+  font-weight: 700;
+  color: rgba(255,255,255,0.32);
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.atf-fm-bar-wrap {
+  height: 2px;
+  background: rgba(255,255,255,0.07);
+  border-radius: 2px;
+  overflow: hidden;
+  margin-top: 5px;
+}
+
+.atf-fm-bar-fill {
+  height: 100%;
+  border-radius: 2px;
+  transition: width 0.5s cubic-bezier(0.19,1,0.22,1);
+}
+
+.atf-fm-sr {
+  font-size: 8.5px;
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  margin-top: 1px;
+}
+
+/* Pitch + sliders side-by-side */
+.atf-pitch-stats {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+}
+
+.atf-main-canvas-wrap {
+  border-radius: 10px;
+  overflow: hidden;
+  flex-shrink: 0;
+  width: 255px;
+  box-shadow:
+    0 0 0 1px rgba(255,255,255,0.09),
+    0 0 22px rgba(16,217,161,0.06),
+    0 10px 36px rgba(0,0,0,0.5);
+}
+
+.atf-statscol {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+
+/* Option A/B toggle */
+.atf-ab-toggle {
+  display: flex;
+  gap: 4px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 8px;
+  padding: 3px;
+}
+
+.atf-ab-btn {
+  flex: 1;
+  padding: 6px 4px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  transition: all 0.2s;
+  background: transparent;
+  color: rgba(255,255,255,0.4);
+}
+.atf-ab-btn span { opacity: 0.6; font-size: 9px; }
+.atf-ab-btn.on { background: #ffffff; color: #000000; }
+
+/* "vs 4-3-3" pill beside eyebrow */
+.tc-vs-pill {
+  font-size: 8.5px;
+  font-weight: 900;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 999px;
+  padding: 2px 8px;
+  color: rgba(255,255,255,0.42);
+  margin-left: 4px;
+  white-space: nowrap;
+}
+
+/* alt-sep now outside the card — needs width constraint */
+.atf-wrap > .alt-sep {
+  width: 100%;
+  max-width: 1400px;
+  margin-top: 24px;
+}
+
+/* ═══════════════════════════════════════════════
+   RESPONSIVE — NEW LAYOUT
+═══════════════════════════════════════════════ */
+@media (max-width: 1100px) {
+  .atf-layout            { grid-template-columns: 240px 1fr; }
+  .atf-main-canvas-wrap  { width: 210px; }
+}
+
+@media (max-width: 900px) {
+  .atf-layout            { grid-template-columns: 210px 1fr; }
+  .atf-main-canvas-wrap  { width: 100%; }
+  .atf-pitch-stats       { flex-direction: column; }
+}
+
+@media (max-width: 767px) {
+  /* Prevent card from exceeding viewport */
+  .atf-card {
+    max-width: calc(100vw - 24px);
+    overflow: hidden;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    background: rgba(9,11,33,0.98) !important;
+  }
+  /* Clamp topbar children so they don't blow out the card width */
+  .atf-topbar {
+    overflow: hidden;
+  }
+  .counter-badge {
+    min-width: 0;
+    flex-shrink: 1;
+    overflow: hidden;
+  }
+  .cblbl {
+    display: none; /* hide "tactics today" label on mobile — keeps badge compact */
+  }
+  /* Stack picker on top of results */
+  .atf-layout {
+    grid-template-columns: 1fr;
+    overflow: hidden;
+  }
+  .atf-picker {
+    border-right: none;
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+    padding: 14px 12px;
+    overflow: hidden;
+  }
+  /* Controls stack vertically on mobile */
+  .atf-ctrl-row {
+    flex-direction: column;
+    gap: 10px;
+  }
+  .atf-results {
+    padding: 14px 12px;
+    gap: 12px;
+  }
+  .atf-results-lbl { display: none; }
+  .atf-pitch-stats { flex-direction: column; gap: 10px; }
+  .atf-main-canvas-wrap { width: 100%; }
+  .atf-empty { min-height: 160px; padding: 18px; gap: 12px; }
 }

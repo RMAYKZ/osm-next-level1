@@ -2,8 +2,11 @@ import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useLang } from "../contexts/LanguageContext";
 import { siteMeta } from "../data/tactics";
+import { TacticalPitchScene } from "./ui/tactical-pitch";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
+const DISPLAY_FONT = "'Big Shoulders', 'Outfit', system-ui, sans-serif";
+const BODY_FONT = "'Geist Variable', 'Geist', system-ui, sans-serif";
 
 // ── Multilingual strings ───────────────────────────────────────────────────────
 const HERO_STRINGS = {
@@ -211,6 +214,22 @@ export default function Hero() {
       {/* ── Thin top rule ── */}
       <div style={{ height: 1, background: "linear-gradient(90deg, transparent, rgba(91,138,247,0.3) 35%, rgba(145,97,245,0.3) 65%, transparent)", flexShrink: 0 }} />
 
+      {/* ── Floodlight atmosphere — two angled beams, stadium-at-night feel.
+          Contained to this section so it doesn't ripple into the shared
+          background other sections rely on. ── */}
+      <div aria-hidden style={{ position: "absolute", inset: 0, overflow: "hidden", pointerEvents: "none", zIndex: 0 }}>
+        <div style={{
+          position: "absolute", top: "-15%", left: "8%", width: "55%", height: "75%",
+          background: "radial-gradient(ellipse at 50% 0%, rgba(91,138,247,0.16) 0%, transparent 65%)",
+          filter: "blur(10px)",
+        }} />
+        <div style={{
+          position: "absolute", top: "-10%", right: "-5%", width: "60%", height: "70%",
+          background: "radial-gradient(ellipse at 50% 0%, rgba(145,97,245,0.14) 0%, transparent 60%)",
+          filter: "blur(10px)",
+        }} />
+      </div>
+
       {/* ── Social links top-right ── */}
       <motion.div
         initial={{ opacity: 0 }}
@@ -286,43 +305,60 @@ export default function Hero() {
         ))}
       </motion.div>
 
-      {/* ── MAIN CONTENT — centred single column ── */}
+      {/* ── MAIN CONTENT — asymmetric: copy + pitch scene ── */}
       <div style={{
         flex: 1,
         display: "flex",
-        flexDirection: "column",
+        flexDirection: isMobile ? "column" : "row",
         alignItems: "center",
-        maxWidth: 860,
+        justifyContent: "center",
+        gap: isMobile ? 8 : "clamp(32px, 5vw, 72px)",
+        maxWidth: 1280,
         margin: "0 auto",
         width: "100%",
-        padding: `clamp(80px, 12vw, 120px) clamp(16px, 4vw, 48px) clamp(32px, 5vw, 60px)`,
+        padding: isMobile
+          ? "clamp(64px, 14vw, 96px) clamp(16px, 4vw, 48px) clamp(20px, 4vw, 32px)"
+          : "clamp(64px, 10vw, 110px) clamp(24px, 4vw, 48px) clamp(32px, 5vw, 60px)",
         position: "relative",
         zIndex: 2,
       }}>
 
-        {/* ── Content ── */}
-        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", width: "100%" }}>
-
-          {/* Badge */}
-          <Reveal delay={0.05} lite>
-            <div style={{ marginBottom: 20 }}>
-              <div style={{
-                display: "inline-flex", alignItems: "center", gap: 8,
-                border: "1px solid rgba(91,138,247,0.3)",
-                borderRadius: 999, padding: "6px 16px",
-                background: "rgba(91,138,247,0.08)",
-              }}>
-                <motion.span
-                  animate={{ opacity: [1, 0.3, 1] }}
-                  transition={{ duration: 2.2, repeat: Infinity }}
-                  style={{ width: 5, height: 5, borderRadius: "50%", background: "#5b8af7", display: "block", flexShrink: 0 }}
-                />
-                <span style={{ fontSize: 10, fontWeight: 700, color: "rgba(91,138,247,0.9)", letterSpacing: "0.14em", textTransform: "uppercase" }}>
-                  {hs.badge}
-                </span>
-              </div>
+        {/* ── Pitch scene anchor — shows first on mobile (imagery before copy) ── */}
+        <div style={{
+          order: isMobile ? -1 : 2,
+          width: "100%",
+          maxWidth: isMobile ? 280 : 420,
+          flex: isMobile ? "0 0 auto" : "1 1 380px",
+          marginBottom: isMobile ? 12 : 0,
+        }}>
+          <Reveal delay={isMobile ? 0 : 0.2} y={24}>
+            {/* Height-driven, not aspect-ratio-driven: TacticalPitchScene sizes its
+                own 100:140 pitch internally (maxWidth 360) and centers it within
+                whatever box it's given. Imposing a second aspect-ratio here would
+                fight that and crop the pitch unpredictably. */}
+            <div style={{
+              position: "relative",
+              width: "100%",
+              height: isMobile ? "34vh" : "clamp(380px, 58vh, 560px)",
+              margin: "0 auto",
+              borderRadius: 16,
+              overflow: "hidden",
+            }}>
+              <TacticalPitchScene />
             </div>
           </Reveal>
+        </div>
+
+        {/* ── Copy column ── */}
+        <div style={{
+          order: isMobile ? 2 : 1,
+          flex: isMobile ? "1 1 auto" : "1 1 480px",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: isMobile ? "center" : "flex-start",
+          width: "100%",
+          textAlign: isMobile ? "center" : "start",
+        }}>
 
           {/* Rotating tag */}
           <Reveal delay={0.1} lite>
@@ -333,34 +369,34 @@ export default function Hero() {
           <Reveal delay={0.15}>
             <h1 style={{
               margin: "0 0 20px",
-              fontFamily: "'Outfit', system-ui, sans-serif",
+              fontFamily: DISPLAY_FONT,
               fontWeight: 900,
-              lineHeight: 0.88,
-              letterSpacing: "-0.03em",
-              textAlign: "center",
+              lineHeight: 0.86,
+              letterSpacing: "-0.01em",
             }}>
               <span style={{
                 display: "block",
-                fontSize: "clamp(3.5rem, 10vw, 6rem)",
+                fontSize: "clamp(3.8rem, 11vw, 6rem)",
                 color: "#5b8af7",
               }}>
                 {hs.title1}
               </span>
               <span style={{
                 display: "block",
-                fontSize: "clamp(2.8rem, 8.5vw, 6rem)",
+                fontSize: "clamp(3rem, 9vw, 6rem)",
                 color: "#ffffff",
-                lineHeight: 0.92,
+                lineHeight: 0.94,
               }}>
                 {hs.title2}
               </span>
               <span style={{
                 display: "block",
-                fontSize: "clamp(0.55rem, 1.4vw, 0.72rem)",
+                fontFamily: BODY_FONT,
+                fontSize: "clamp(0.6rem, 1.4vw, 0.72rem)",
                 fontWeight: 600,
-                letterSpacing: "0.28em",
-                color: "rgba(255,255,255,0.25)",
-                marginTop: 14,
+                letterSpacing: "0.26em",
+                color: "rgba(255,255,255,0.42)",
+                marginTop: 16,
                 textTransform: "uppercase",
               }}>
                 {hs.sub}
@@ -372,28 +408,19 @@ export default function Hero() {
           <Reveal delay={0.3} lite>
             <p style={{
               margin: "0 0 28px",
-              fontSize: "clamp(13px, 1.5vw, 16px)",
-              color: "rgba(255,255,255,0.55)",
+              fontFamily: BODY_FONT,
+              fontSize: "clamp(14px, 1.5vw, 16px)",
+              color: "rgba(255,255,255,0.6)",
               lineHeight: 1.7,
-              maxWidth: 560,
-              textAlign: "center",
+              maxWidth: 480,
             }}>
               {hs.subtitle}
             </p>
           </Reveal>
 
-          {/* Feature pills */}
-          <Reveal delay={0.35} lite>
-            <div style={{ display: "flex", gap: 8, flexWrap: "wrap", justifyContent: "center", marginBottom: 28 }}>
-              <span className="g-badge g-badge-blue">⚡ {hs.pill1}</span>
-              <span className="g-badge g-badge-emerald">📊 {hs.pill2}</span>
-              <span className="g-badge g-badge-gold">👑 {hs.pill3}</span>
-            </div>
-          </Reveal>
-
           {/* CTA buttons */}
-          <Reveal delay={0.42} lite>
-            <div style={{ display: "flex", gap: 10, flexWrap: "wrap", justifyContent: "center", marginBottom: 36 }}>
+          <Reveal delay={0.4} lite>
+            <div style={{ display: "flex", gap: 10, flexWrap: "wrap", justifyContent: isMobile ? "center" : "flex-start", marginBottom: 28 }}>
               <motion.a
                 href="#anti-taktik"
                 className="g-btn-primary"
@@ -418,51 +445,23 @@ export default function Hero() {
                 whileHover={isMobile ? undefined : { scale: 1.04, y: -2 }}
                 whileTap={{ scale: 0.96 }}
               >
-                ☕ Support
+                ☕ {t("hero.support")}
               </motion.a>
             </div>
           </Reveal>
 
-          {/* Stats */}
-          <Reveal delay={0.52} lite>
-            <div style={{
-              display: "flex",
-              gap: "clamp(20px, 4vw, 40px)",
-              justifyContent: "center",
-              flexWrap: "wrap",
-              paddingTop: 20,
-              borderTop: "1px solid rgba(255,255,255,0.07)",
+          {/* Trust line — plain text, no card/grid/badge scaffolding */}
+          <Reveal delay={0.5} lite>
+            <p style={{
+              margin: 0,
+              fontFamily: BODY_FONT,
+              fontSize: 12,
+              fontWeight: 500,
+              color: "rgba(255,255,255,0.55)",
+              letterSpacing: "0.01em",
             }}>
-              {[
-                { val: "16+", lbl: hs.years, color: "#5b8af7" },
-                { val: "#1",  lbl: hs.worldRank, color: "#f5a623" },
-                { val: "100+", lbl: hs.tested, color: "#10d9a1" },
-                { val: "26/27", lbl: hs.season, color: "#9161f5" },
-              ].map((s) => (
-                <div key={s.lbl} style={{ textAlign: "center" }}>
-                  <div style={{
-                    fontSize: "clamp(1.3rem, 3.5vw, 2rem)",
-                    fontWeight: 900,
-                    color: s.color,
-                    letterSpacing: "-0.03em",
-                    lineHeight: 1,
-                    fontFamily: "'Outfit', system-ui, sans-serif",
-                  }}>
-                    {s.val}
-                  </div>
-                  <div style={{
-                    fontSize: 9,
-                    fontWeight: 700,
-                    color: "rgba(255,255,255,0.28)",
-                    textTransform: "uppercase",
-                    letterSpacing: "0.14em",
-                    marginTop: 5,
-                  }}>
-                    {s.lbl}
-                  </div>
-                </div>
-              ))}
-            </div>
+              {hs.badge} · {hs.worldRank} · 100+ {hs.tested}
+            </p>
           </Reveal>
         </div>
       </div>
@@ -496,10 +495,10 @@ export default function Hero() {
           fontSize: 15, background: "rgba(245,166,35,0.08)",
         }}>🛡️</div>
         <div>
-          <div style={{ fontSize: 9, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.22em", color: "rgba(245,166,35,0.6)", marginBottom: 4 }}>
+          <div style={{ fontSize: 9, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.22em", color: "rgba(245,166,35,0.85)", marginBottom: 4 }}>
             {hs.alert}
           </div>
-          <p style={{ margin: 0, fontSize: 12.5, lineHeight: 1.6, color: "rgba(255,255,255,0.38)" }}>
+          <p style={{ margin: 0, fontFamily: BODY_FONT, fontSize: 12.5, lineHeight: 1.6, color: "rgba(255,255,255,0.55)" }}>
             {t("disclaimer.text")}
           </p>
         </div>

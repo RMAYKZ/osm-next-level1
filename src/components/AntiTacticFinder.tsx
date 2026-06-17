@@ -320,35 +320,81 @@ function toXY(nx: number, ny: number, cw: number, ch: number, pad: number) {
   return { x: pl + nx * (pr - pl), y: pb - ny * (pb - pt) };
 }
 
+// ─── OPP → FM KEY MAP ─────────────────────────────────────────────────────────
+const OPP_FM_MAP: Record<string, string> = {
+  '433ab': '4-3-3-A', '442ab': '4-4-2-A', '4231': '4-2-3-1',
+  '451': '4-5-1',     '523ab': '5-2-3-A', '532': '5-3-2',
+  '5311': '5-3-1-1',  '541ab': '5-4-1-A', '631ab': '6-3-1-A', '442b': '4-4-2-B',
+};
+
 function drawBg(ctx: CanvasRenderingContext2D, cw: number, ch: number, pad: number) {
   const pl = pad, pr = cw - pad, pt = pad, pb = ch - pad, pw = pr - pl, ph = pb - pt;
-  const ns = 8;
-  // Green grass base
-  ctx.fillStyle = '#0f4a20';
+  const ns = 14;
+
+  // Rich gradient grass
+  const grassGrad = ctx.createLinearGradient(cw / 2, pt, cw / 2, pb);
+  grassGrad.addColorStop(0, '#062810');
+  grassGrad.addColorStop(0.45, '#0c431a');
+  grassGrad.addColorStop(0.55, '#0c431a');
+  grassGrad.addColorStop(1, '#062810');
+  ctx.fillStyle = grassGrad;
   ctx.fillRect(pl, pt, pw, ph);
-  // Alternating stripes
+
+  // Alternating mow stripes
   for (let i = 0; i < ns; i++) {
-    ctx.fillStyle = i % 2 === 0 ? 'rgba(255,255,255,0.04)' : 'rgba(0,0,0,0.06)';
+    ctx.fillStyle = i % 2 === 0 ? 'rgba(255,255,255,0.026)' : 'rgba(0,0,0,0.09)';
     ctx.fillRect(pl, pt + i * (ph / ns), pw, ph / ns);
   }
-  // Bright field markings
-  ctx.strokeStyle = 'rgba(255,255,255,0.82)'; ctx.lineWidth = 1; ctx.strokeRect(pl, pt, pw, ph);
+
+  // Stadium floodlight from center-top
+  const fl = ctx.createRadialGradient(cw / 2, pt, 0, cw / 2, pt, ch * 1.1);
+  fl.addColorStop(0, 'rgba(255,255,255,0.06)');
+  fl.addColorStop(0.35, 'rgba(255,255,255,0.02)');
+  fl.addColorStop(1, 'rgba(0,0,0,0)');
+  ctx.fillStyle = fl; ctx.fillRect(pl, pt, pw, ph);
+
+  // White markings with glow
+  ctx.save();
+  ctx.shadowColor = 'rgba(255,255,255,0.25)'; ctx.shadowBlur = 3;
+  ctx.strokeStyle = 'rgba(255,255,255,0.88)'; ctx.lineWidth = 1.3;
+
+  ctx.strokeRect(pl, pt, pw, ph);
   ctx.beginPath(); ctx.moveTo(pl, pt + ph / 2); ctx.lineTo(pr, pt + ph / 2); ctx.stroke();
   ctx.beginPath(); ctx.arc(pl + pw / 2, pt + ph / 2, ph * .12, 0, Math.PI * 2); ctx.stroke();
-  ctx.fillStyle = 'rgba(255,255,255,0.9)'; ctx.beginPath(); ctx.arc(pl + pw / 2, pt + ph / 2, 2, 0, Math.PI * 2); ctx.fill();
-  ctx.strokeStyle = 'rgba(255,255,255,0.7)'; ctx.lineWidth = 0.8;
+
+  ctx.shadowBlur = 6;
+  ctx.fillStyle = 'rgba(255,255,255,0.95)';
+  ctx.beginPath(); ctx.arc(pl + pw / 2, pt + ph / 2, 2.5, 0, Math.PI * 2); ctx.fill();
+
+  ctx.shadowBlur = 2; ctx.lineWidth = 0.95;
   ctx.strokeRect(pl + pw * .22, pb - ph * .26, pw * .56, ph * .26);
   ctx.strokeRect(pl + pw * .35, pb - ph * .11, pw * .30, ph * .11);
   ctx.strokeRect(pl + pw * .22, pt, pw * .56, ph * .26);
   ctx.strokeRect(pl + pw * .35, pt, pw * .30, ph * .11);
-  ctx.strokeStyle = 'rgba(255,255,255,0.75)'; ctx.lineWidth = 1.4;
-  ctx.strokeRect(pl + pw * .36, pb, pw * .28, 6);
-  ctx.strokeRect(pl + pw * .36, pt - 6, pw * .28, 6);
-  ctx.fillStyle = 'rgba(255,255,255,0.85)';
-  ctx.beginPath(); ctx.arc(pl + pw * .5, pt + ph * .18, 1.5, 0, Math.PI * 2); ctx.fill();
-  ctx.beginPath(); ctx.arc(pl + pw * .5, pb - ph * .18, 1.5, 0, Math.PI * 2); ctx.fill();
-  const vg = ctx.createRadialGradient(cw / 2, ch / 2, ch * .2, cw / 2, ch / 2, ch * .75);
-  vg.addColorStop(0, 'rgba(0,0,0,0)'); vg.addColorStop(1, 'rgba(0,0,0,0.3)');
+
+  ctx.fillStyle = 'rgba(255,255,255,0.9)';
+  ctx.beginPath(); ctx.arc(pl + pw * .5, pt + ph * .18, 2, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.arc(pl + pw * .5, pb - ph * .18, 2, 0, Math.PI * 2); ctx.fill();
+
+  ctx.lineWidth = 0.8;
+  ctx.beginPath(); ctx.arc(pl + pw * .5, pb - ph * .18, ph * .115, -Math.PI * 0.72, -Math.PI * 0.28); ctx.stroke();
+  ctx.beginPath(); ctx.arc(pl + pw * .5, pt + ph * .18, ph * .115, Math.PI * 0.28, Math.PI * 0.72); ctx.stroke();
+
+  ctx.lineWidth = 0.65;
+  ctx.beginPath(); ctx.arc(pl, pt, ph * .032, 0, Math.PI / 2); ctx.stroke();
+  ctx.beginPath(); ctx.arc(pr, pt, ph * .032, Math.PI / 2, Math.PI); ctx.stroke();
+  ctx.beginPath(); ctx.arc(pl, pb, ph * .032, -Math.PI / 2, 0); ctx.stroke();
+  ctx.beginPath(); ctx.arc(pr, pb, ph * .032, Math.PI, 3 * Math.PI / 2); ctx.stroke();
+
+  ctx.strokeStyle = 'rgba(255,255,255,0.65)'; ctx.lineWidth = 1.5;
+  ctx.strokeRect(pl + pw * .36, pb, pw * .28, 7);
+  ctx.strokeRect(pl + pw * .36, pt - 7, pw * .28, 7);
+
+  ctx.restore();
+
+  // Deep vignette
+  const vg = ctx.createRadialGradient(cw / 2, ch / 2, ch * .16, cw / 2, ch / 2, ch * .78);
+  vg.addColorStop(0, 'rgba(0,0,0,0)'); vg.addColorStop(1, 'rgba(0,0,0,0.4)');
   ctx.fillStyle = vg; ctx.fillRect(0, 0, cw, ch);
 }
 
@@ -403,14 +449,17 @@ function drawDot(
 function drawPlayer(
   ctx: CanvasRenderingContext2D,
   x: number, y: number, role: string, _col: string, size: string,
-  entranceProgress: number, pulsePhase: number
+  entranceProgress: number, pulsePhase: number,
+  isOpponent = false
 ) {
-  // monochrome: GK = white, DEF = rgba(255,255,255,0.6), MID = rgba(255,255,255,0.5), FWD = #ffffff
-  const col =
-    size === 'gk'  ? '#f5a623' :
-    size === 'fwd' ? '#5b8af7' :
-    size === 'mid' ? 'rgba(91,138,247,0.85)' :
-    'rgba(16,217,161,0.85)';
+  const col = isOpponent
+    ? (size === 'gk'  ? '#f5a623'
+    :  size === 'fwd' ? '#f43f5e'
+    :                   'rgba(244,63,94,0.8)')
+    : (size === 'gk'  ? '#f5a623'
+    :  size === 'fwd' ? '#5b8af7'
+    :  size === 'mid' ? 'rgba(91,138,247,0.85)'
+    :                   'rgba(16,217,161,0.85)');
   const r = size === 'fwd' ? 9 : size === 'gk' ? 9 : 8;
   const lw = size === 'fwd' ? 2.3 : size === 'gk' ? 2 : 1.8;
   if (size === 'fwd' || size === 'gk') {
@@ -418,11 +467,12 @@ function drawPlayer(
     ctx.shadowColor = col; ctx.shadowBlur = 8;
     ctx.beginPath(); ctx.arc(x, y, r + pulsePhase * 9, 0, Math.PI * 2); ctx.stroke(); ctx.restore();
   }
-  ctx.save(); ctx.globalAlpha = entranceProgress;
+  ctx.save(); ctx.globalAlpha = isOpponent ? entranceProgress * 0.82 : entranceProgress;
   const sc2 = 0.1 + 0.9 * entranceProgress;
   ctx.translate(x, y); ctx.scale(sc2, sc2); ctx.translate(-x, -y);
-  ctx.shadowColor = col; ctx.shadowBlur = 10;
-  ctx.fillStyle = '#071a10'; ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI * 2); ctx.fill();
+  ctx.shadowColor = col; ctx.shadowBlur = isOpponent ? 7 : 10;
+  ctx.fillStyle = isOpponent ? '#1a0508' : '#071a10';
+  ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI * 2); ctx.fill();
   ctx.strokeStyle = col; ctx.lineWidth = lw; ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI * 2); ctx.stroke();
   ctx.shadowBlur = 0;
   const fs = role.length > 3 ? 4.5 : role.length > 2 ? 5 : 6;
@@ -673,25 +723,56 @@ export default function AntiTacticFinder() {
   }, []);
 
   useEffect(() => {
-    function renderMain(fmKey: string) {
+    function renderMain(fmKey: string, oppKey: string) {
       if (mainRAFRef.current) { cancelAnimationFrame(mainRAFRef.current); mainRAFRef.current = null; }
       mainStartRef.current = null;
       const canvas = mainCanvasRef.current;
       if (!canvas) return;
       const ctx = canvas.getContext('2d')!;
       const cw = canvas.width, ch = canvas.height, pad = 9;
+
+      // Our counter formation
       const players = FM[fmKey] || FM['4-4-2-A'];
       const arrows  = AR[fmKey] || AR['4-4-2-A'];
+
+      // Opponent formation — mirrored to top half of pitch
+      const oppFmKey = OPP_FM_MAP[oppKey] || '4-4-2-A';
+      const rawOppPlayers = FM[oppFmKey] || FM['4-4-2-A'];
+      const oppPlayers = rawOppPlayers.map(p => ({ ...p, x: 1 - p.x, y: 1 - p.y }));
+
       const ARROW_START = 0.55, ARROW_STAGGER = 0.1, ARROW_DUR = 0.5;
       const PLAYER_STAGGER = 0.07;
-
-      // Stop the loop after all animations complete (~3s) to prevent infinite CPU drain on mobile
       const MAIN_MAX = 3.2;
+
       function frame(ts: number) {
         if (!mainStartRef.current) mainStartRef.current = ts;
         const el = (ts - mainStartRef.current) / 1000;
         ctx.clearRect(0, 0, cw, ch);
         drawBg(ctx, cw, ch, pad);
+
+        // Draw opponent team label (top half)
+        ctx.save();
+        const oppLabelAlpha = Math.min(el / 0.6, 1) * 0.55;
+        ctx.globalAlpha = oppLabelAlpha;
+        ctx.fillStyle = '#f43f5e';
+        ctx.font = '600 9px Inter,sans-serif';
+        ctx.textAlign = 'left';
+        ctx.textBaseline = 'top';
+        ctx.fillText('OPP', pad + 4, pad + 4);
+        ctx.restore();
+
+        // Draw our team label (bottom half)
+        ctx.save();
+        const ourLabelAlpha = Math.min(el / 0.6, 1) * 0.55;
+        ctx.globalAlpha = ourLabelAlpha;
+        ctx.fillStyle = '#5b8af7';
+        ctx.font = '600 9px Inter,sans-serif';
+        ctx.textAlign = 'left';
+        ctx.textBaseline = 'bottom';
+        ctx.fillText('YOU', pad + 4, ch - pad - 4);
+        ctx.restore();
+
+        // Arrows (our team)
         arrows.forEach((a, i) => {
           const delay = ARROW_START + i * ARROW_STAGGER;
           const prog  = Math.min(Math.max((el - delay) / ARROW_DUR, 0), 1);
@@ -704,14 +785,27 @@ export default function AntiTacticFinder() {
             drawDot(ctx, p1.x, p1.y, cp.x, cp.y, p2.x, p2.y, a.c, Math.max(0, dotT));
           }
         });
+
+        // Opponent players first (behind)
+        oppPlayers.forEach((p, i) => {
+          const delay = 0.12 + i * PLAYER_STAGGER * 0.8;
+          const prog  = Math.min(Math.max((el - delay) / 0.3, 0), 1);
+          if (prog <= 0) return;
+          const { x, y } = toXY(p.x, p.y, cw, ch, pad);
+          const pulse = (el * 0.55 + i * 0.22) % 1;
+          drawPlayer(ctx, x, y, p.r, p.c, p.s, prog, pulse, true);
+        });
+
+        // Our counter players on top
         players.forEach((p, i) => {
           const delay = i * PLAYER_STAGGER;
           const prog  = Math.min(Math.max((el - delay) / 0.3, 0), 1);
           if (prog <= 0) return;
           const { x, y } = toXY(p.x, p.y, cw, ch, pad);
           const pulse = (el * 0.55 + i * 0.22) % 1;
-          drawPlayer(ctx, x, y, p.r, p.c, p.s, prog, pulse);
+          drawPlayer(ctx, x, y, p.r, p.c, p.s, prog, pulse, false);
         });
+
         if (el < MAIN_MAX) {
           mainRAFRef.current = requestAnimationFrame(frame);
         } else {
@@ -807,7 +901,7 @@ export default function AntiTacticFinder() {
     }
 
     const entry = pick();
-    renderMain(entry.fm);
+    renderMain(entry.fm, selectedOppKey);
     renderLT(entry.f, entry.m);
 
     return () => {
@@ -852,480 +946,303 @@ export default function AntiTacticFinder() {
         viewport={{ once: true }}
         transition={{ duration: 0.55 }}
       >
-        <div className="atf-head-badge">
-          <span className="atf-head-dot" />
+        {/* Live engine badge */}
+        <motion.div
+          className="atf-head-badge"
+          animate={isMobile ? {} : { boxShadow: ['0 0 0 0 rgba(16,217,161,0)', '0 0 0 6px rgba(16,217,161,0.08)', '0 0 0 0 rgba(16,217,161,0)'] }}
+          transition={{ duration: 3, repeat: Infinity }}
+        >
+          <motion.span
+            className="atf-head-dot"
+            animate={{ opacity: [1, 0.2, 1], scale: [1, 1.4, 1] }}
+            transition={{ duration: 1.8, repeat: Infinity }}
+          />
           {t("anti.badge")}
-        </div>
-        <h2 className="atf-head-title">{t("anti.title")} <span>{t("anti.title2")}</span></h2>
-        <p style={{ color: 'rgba(255,255,255,0.42)', fontSize: 'clamp(13px,2vw,15px)', lineHeight: 1.7, maxWidth: 640, margin: '14px auto 20px', textAlign: 'center' }}>
+        </motion.div>
+
+        {/* Main title with gradient treatment */}
+        <h2 className="atf-head-title">
+          {t("anti.title")}{' '}
+          <span className="atf-head-title-accent">{t("anti.title2")}</span>
+        </h2>
+
+        {/* Thin accent line */}
+        <div style={{ width: 'clamp(60px,12vw,120px)', height: 2, background: 'linear-gradient(90deg, transparent, #10d9a1, transparent)', margin: '10px auto 18px', borderRadius: 2 }} />
+
+        <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: 'clamp(13px,2vw,15px)', lineHeight: 1.75, maxWidth: 600, margin: '0 auto 22px', textAlign: 'center', fontStyle: 'normal' }}>
           {ATF_DESC[lang] ?? ATF_DESC.en}
         </p>
-        <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '6px 14px', borderRadius: 99, background: 'rgba(16,217,161,0.08)', border: '1px solid rgba(16,217,161,0.28)' }}>
-          <motion.span
-            animate={{ opacity: [1, 0.35, 1] }} transition={{ duration: 2, repeat: Infinity }}
-            style={{ width: 6, height: 6, borderRadius: '50%', background: '#10d9a1', display: 'inline-block' }}
-          />
-          <span style={{ color: '#4aedc0', fontSize: 11, fontWeight: 700, letterSpacing: '0.06em' }}>
-            {ATF_LIVE[lang] ?? ATF_LIVE.en}
-          </span>
+
+        {/* Live indicator row */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap', justifyContent: 'center' }}>
+          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '7px 16px', borderRadius: 99, background: 'rgba(16,217,161,0.08)', border: '1px solid rgba(16,217,161,0.3)', backdropFilter: 'blur(8px)' }}>
+            <motion.span
+              animate={{ opacity: [1, 0.3, 1] }} transition={{ duration: 1.5, repeat: Infinity }}
+              style={{ width: 7, height: 7, borderRadius: '50%', background: '#10d9a1', display: 'inline-block', boxShadow: '0 0 6px rgba(16,217,161,0.7)' }}
+            />
+            <span style={{ color: '#4aedc0', fontSize: 11.5, fontWeight: 700, letterSpacing: '0.07em' }}>
+              {ATF_LIVE[lang] ?? ATF_LIVE.en}
+            </span>
+          </div>
+          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '7px 14px', borderRadius: 99, background: 'rgba(244,63,94,0.07)', border: '1px solid rgba(244,63,94,0.25)' }}>
+            <span style={{ fontSize: 10, color: 'rgba(244,63,94,0.9)', fontWeight: 700, letterSpacing: '0.06em' }}>OPP</span>
+            <span style={{ width: 1, height: 10, background: 'rgba(255,255,255,0.15)' }} />
+            <span style={{ fontSize: 10, color: 'rgba(91,138,247,0.9)', fontWeight: 700, letterSpacing: '0.06em' }}>YOU</span>
+            <span style={{ fontSize: 10, color: 'rgba(255,255,255,0.35)', fontWeight: 600, letterSpacing: '0.05em', marginLeft: 2 }}>on pitch</span>
+          </div>
         </div>
       </motion.div>
 
-      <div className="root">
-        <div className="page-hdr">
-          <motion.div
-            className="counter-badge"
-            initial={{ opacity: 0, scale: 0.88 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.5, delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
-          >
-            <span className="cbdot"></span>
-            <span className="cbnum">{counterDisplay.toLocaleString()}</span>
+      {/* ── MAIN CARD ── */}
+      <div className="atf-card">
+        <div className="atf-topbar">
+          <motion.div className="counter-badge" initial={{ opacity:0, scale:.88 }} animate={{ opacity:1, scale:1 }} transition={{ duration:.5, delay:.4, ease:[.16,1,.3,1] }}>
+            <span className="cbdot" /><span className="cbnum">{counterDisplay.toLocaleString()}</span>
             <span className="cblbl">{t("anti.tacticsToday")}</span>
           </motion.div>
           <button className="reset-btn" onClick={doReset}>{t("anti.reset")}</button>
         </div>
 
-        <div className="body">
-          {/* ── LEFT PANEL ── */}
-          <div className="left">
-            <div>
-              <div className="slbl"><span className="snum">1</span> {t("tactical.step1")}</div>
-              <div className="seg">
-                <button className={`sbtn${locActive === 'HOME MATCH' ? ' on' : ''}`} onClick={() => handleLocChange('HOME MATCH')}>{t("tactical.home")}</button>
-                <button className={`sbtn${locActive === 'AWAY' ? ' on' : ''}`}       onClick={() => handleLocChange('AWAY')}>{t("tactical.away")}</button>
+        {/* ── MAIN LAYOUT: picker left, results right ── */}
+        <div className="atf-layout">
+
+          {/* ── PICKER COLUMN ── */}
+          <div className="atf-picker">
+
+            {/* Controls: location + strength compact row */}
+            <div className="atf-ctrl-row">
+              <div className="atf-ctrl-group">
+                <span className="atf-ctrl-lbl"><span className="snum">1</span> {t("tactical.step1")}</span>
+                <div className="atf-seg">
+                  <button className={`atf-seg-btn${locActive === 'HOME MATCH' ? ' on' : ''}`} onClick={() => handleLocChange('HOME MATCH')}>🏠 {t("tactical.home")}</button>
+                  <button className={`atf-seg-btn${locActive === 'AWAY' ? ' on' : ''}`} onClick={() => handleLocChange('AWAY')}>✈️ {t("tactical.away")}</button>
+                </div>
+              </div>
+              <div className="atf-ctrl-group">
+                <span className="atf-ctrl-lbl"><span className="snum">2</span> {t("tactical.step3")}</span>
+                <div className="atf-seg atf-seg-3">
+                  <button className={`atf-seg-btn${strActive === 'STRONGER' ? ' on' : ''}`} onClick={() => { setStrActive('STRONGER'); setActiveOption('A'); }}>{t("tactical.stronger")}</button>
+                  <button className={`atf-seg-btn${strActive === 'EQUAL' ? ' on' : ''}`} onClick={() => { setStrActive('EQUAL'); setActiveOption('A'); }}>{t("tactical.equal")}</button>
+                  <button className={`atf-seg-btn${strActive === 'WEAKER' ? ' on' : ''}`} onClick={() => { setStrActive('WEAKER'); setActiveOption('A'); }}>{t("tactical.weaker")}</button>
+                </div>
               </div>
             </div>
 
+            {/* Formation grid */}
             <div>
-              <div className="slbl"><span className="snum">2</span> {t("tactical.step2")}</div>
-              <div className="tlist">
+              <span className="atf-ctrl-lbl atf-fm-lbl"><span className="snum">3</span> {t("tactical.step2")}</span>
+              <div className="atf-fm-grid">
                 {visibleOpps.map((opp) => {
                   const entry = getEntry(locActive, strActive, opp.key);
                   const sr = entry?.sr ?? 0;
                   const isOn = selectedOppKey === opp.key;
+                  const spaceIdx = opp.label.indexOf(' ');
+                  const fmCode = spaceIdx > -1 ? opp.label.slice(0, spaceIdx) : opp.label;
+                  const fmStyle = spaceIdx > -1 ? opp.label.slice(spaceIdx + 1) : '';
+                  const srCol = sr >= 90 ? '#10d9a1' : sr >= 80 ? '#5b8af7' : sr >= 70 ? '#f5a623' : '#f43f5e';
                   return (
-                    <motion.div
+                    <motion.button
                       key={opp.key}
-                      className={`ti${isOn ? ' on' : ''}`}
-                      style={{ animationDelay: (visibleOpps.indexOf(opp) * 0.04) + 's', position: 'relative', overflow: 'hidden' }}
-                      whileHover={{ scale: 1.015 }}
-                      whileTap={{ scale: 0.97 }}
-                      transition={{ type: 'spring', stiffness: 400, damping: 28 }}
+                      className={`atf-fm-card${isOn ? ' on' : ''}`}
                       onClick={() => { setSelectedOppKey(opp.key); setActiveOption('A'); setHasSelected(true); }}
+                      whileHover={{ scale: 1.04 }}
+                      whileTap={{ scale: 0.95 }}
+                      transition={{ type: 'spring', stiffness: 420, damping: 26 }}
                     >
-                      <AnimatePresence>
-                        {isOn && (
-                          <motion.div
-                            key="ring"
-                            initial={{ opacity: 0, scale: 0.85 }}
-                            animate={{ opacity: 1, scale: 1 }}
-                            exit={{ opacity: 0 }}
-                            transition={{ duration: 0.22 }}
-                            style={{
-                              position: 'absolute', inset: 0, borderRadius: 12,
-                              border: '1.5px solid rgba(255,255,255,0.35)',
-                              boxShadow: '0 0 14px rgba(255,255,255,0.08), inset 0 0 10px rgba(255,255,255,0.03)',
-                              pointerEvents: 'none',
-                            }}
-                          />
-                        )}
-                      </AnimatePresence>
-                      <div className="tirow">
-                        <motion.div
-                          className="tico"
-                          animate={isOn ? { scale: [1, 1.12, 1] } : { scale: 1 }}
-                          transition={{ duration: 1.6, repeat: isOn ? Infinity : 0, ease: 'easeInOut' }}
-                        >{opp.icon}</motion.div>
-                        <div className="tiname">{translateOppLabel(opp.label, t)}</div>
+                      <div className="atf-fm-card-top">
+                        <span className="atf-fm-icon">{opp.icon}</span>
+                        {isOn && <span className="atf-fm-check">✓</span>}
                       </div>
-                      <div className="barrow">
-                        <div className="barbg"><div className="barfill" style={{ width: sr + '%' }}></div></div>
-                        <div className="barpct">{sr}%</div>
+                      <div className="atf-fm-code">{fmCode}</div>
+                      {fmStyle && <div className="atf-fm-style">{fmStyle}</div>}
+                      <div className="atf-fm-bar-wrap">
+                        <div className="atf-fm-bar-fill" style={{ width: `${sr}%`, background: srCol }} />
                       </div>
-                    </motion.div>
+                      <div className="atf-fm-sr" style={{ color: srCol }}>{sr}%</div>
+                    </motion.button>
                   );
                 })}
               </div>
             </div>
-
-            <div>
-              <div className="slbl"><span className="snum">3</span> {t("tactical.step3")}</div>
-              <div className="seg strseg">
-                <button className={`sbtn${strActive === 'STRONGER' ? ' on' : ''}`} onClick={() => { setStrActive('STRONGER'); setActiveOption('A'); }}>{t("tactical.stronger")}</button>
-                <button className={`sbtn${strActive === 'EQUAL'    ? ' on' : ''}`} onClick={() => { setStrActive('EQUAL');    setActiveOption('A'); }}>{t("tactical.equal")}</button>
-                <button className={`sbtn${strActive === 'WEAKER'   ? ' on' : ''}`} onClick={() => { setStrActive('WEAKER');   setActiveOption('A'); }}>{t("tactical.weaker")}</button>
-              </div>
-            </div>
           </div>
 
-          {/* ── RIGHT PANEL ── */}
-          <div className="right">
-            <div className="rsteplbl"><span className="snum">4</span> {t("anti.recommended")}</div>
+          {/* ── RESULTS COLUMN ── */}
+          <div className="atf-results">
+            <span className="atf-ctrl-lbl atf-results-lbl"><span className="snum">4</span> {t("anti.recommended")}</span>
 
-            {/* ── EMPTY / RESULTS — Framer Motion crossfade ── */}
             <AnimatePresence mode="wait">
               {!hasSelected ? (
-                <motion.div
-                  key="empty"
-                  className="atf-empty"
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -10 }}
-                  transition={{ duration: 0.35, ease: 'easeInOut' }}
-                >
-                  <div style={{ position: 'relative', width: 68, height: 68, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                    <motion.div
-                      animate={{ rotate: 360 }}
-                      transition={{ duration: 1.4, repeat: Infinity, ease: 'linear' }}
-                      style={{
-                        position: 'absolute', inset: 0, borderRadius: '50%',
-                        border: '2.5px solid rgba(255,255,255,.1)',
-                        borderTopColor: 'rgba(255,255,255,.85)',
-                        filter: 'drop-shadow(0 0 7px rgba(255,255,255,.4)) drop-shadow(0 0 18px rgba(255,255,255,.15))',
-                      }}
-                    />
-                    <motion.div
-                      animate={{ opacity: [0.3, 1, 0.3], scale: [0.8, 1.25, 0.8] }}
-                      transition={{ duration: 2.2, repeat: Infinity, ease: 'easeInOut' }}
-                      style={{
-                        width: 10, height: 10, borderRadius: '50%',
-                        background: 'rgba(255,255,255,.6)',
-                        boxShadow: '0 0 14px rgba(255,255,255,.7), 0 0 30px rgba(255,255,255,.3)',
-                      }}
-                    />
+                <motion.div key="empty" className="atf-empty" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.35, ease: 'easeInOut' }}>
+                  <div style={{ position: 'relative', width: 60, height: 60, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                    <motion.div animate={{ rotate: 360 }} transition={{ duration: 1.4, repeat: Infinity, ease: 'linear' }} style={{ position: 'absolute', inset: 0, borderRadius: '50%', border: '2px solid rgba(16,217,161,.12)', borderTopColor: 'rgba(16,217,161,.8)' }} />
+                    <span style={{ fontSize: 22 }}>⚽</span>
                   </div>
                   <div className="atf-empty-title">{t("anti.waitingTitle")}</div>
                   <div className="atf-empty-sub">{t("anti.waitingText")}</div>
                 </motion.div>
               ) : (
-                <motion.div
-                  key="results"
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -10 }}
-                  transition={{ duration: 0.35, ease: 'easeInOut' }}
-                  style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}
-                >
+                <motion.div key="results" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.35, ease: 'easeInOut' }} style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
 
-            {/* ── COUNTER TACTIC HERO REVEAL ── */}
-            <div className="tc-hero">
-              {/* Shimmer sweep */}
-              <motion.div
-                animate={{ x: ['-140%', '280%'] }}
-                transition={{ repeat: Infinity, repeatDelay: 4.5, duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
-                style={{
-                  position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: 1,
-                  background: 'linear-gradient(105deg, transparent 30%, rgba(255,255,255,0.05) 50%, transparent 70%)',
-                  transform: 'skewX(-12deg)',
-                }}
-              />
-              {/* Top row: eyebrow + field tested badge + save */}
-              <div className="tc-top">
-                <div className="tc-eyebrow">
-                  <span className="tc-dot" />
-                  {t("anti.yourCounter")}
-                </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                  <div className="ftbadge">★ {t("anti.fieldTested")}</div>
-                  <motion.button
-                    whileHover={{ scale: 1.12 }}
-                    whileTap={{ scale: 0.85 }}
-                    onClick={async () => {
-                      if (!user) { setShowAuthPrompt(v => !v); return; }
-                      const id = savedId(comboKey);
-                      if (id) { deleteTactic(id); return; }
-                      setSaving(true);
-                      setSaveError(false);
-                      const dispP = activeOption === 'B' && d.optionB ? d.optionB.p : d.p;
-                      const dispS = activeOption === 'B' && d.optionB ? d.optionB.s : d.s;
-                      const dispT = activeOption === 'B' && d.optionB ? d.optionB.t : d.t;
-                      try {
-                        await saveTactic({
-                          comboKey, location: d.location, strength: d.strength,
-                          opponentKey: d.oppKey, opponentLabel: d.oppLabel || d.label,
-                          counterFormation: d.counter, gamePlan: d.gp.text, gamePlanIcon: d.gp.icon,
-                          pressure: dispP, style: dispS, tempo: dispT,
-                          forwards: d.f, midfield: d.m, defence: d.d,
-                          offside: d.offOn, marking: d.mrk,
-                          badge: d.badge, successRate: d.sr, option: activeOption,
-                        });
-                      } catch (err) {
-                        console.error('[Garage] saveTactic failed:', err);
-                        setSaveError(true);
-                        setTimeout(() => setSaveError(false), 4000);
-                      } finally {
-                        setSaving(false);
-                      }
-                    }}
-                    disabled={saving}
-                    aria-label={tacticSaved ? 'Garajdan kaldır' : 'Garaja kaydet'}
-                    style={{
-                      width: 28, height: 28, borderRadius: 8, flexShrink: 0,
-                      border: saveError
-                        ? '1px solid rgba(255,255,255,0.3)'
-                        : tacticSaved ? '1px solid rgba(255,255,255,0.35)' : '1px solid rgba(255,255,255,0.12)',
-                      background: saveError
-                        ? 'rgba(255,255,255,0.08)'
-                        : tacticSaved ? 'rgba(255,255,255,0.1)' : 'rgba(255,255,255,0.04)',
-                      color: saveError
-                        ? '#ffffff'
-                        : tacticSaved ? '#ffffff' : 'rgba(255,255,255,0.38)',
-                      fontSize: 15, cursor: saving ? 'default' : 'pointer', display: 'flex', alignItems: 'center',
-                      justifyContent: 'center', transition: 'all 0.2s ease',
-                      opacity: saving ? 0.5 : 1,
-                    }}
-                  >
-                    {saving ? '⏳' : saveError ? '✕' : tacticSaved ? '★' : '☆'}
-                  </motion.button>
-                </div>
-              </div>
-              {/* Giant counter tactic name — animates on change */}
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key={d.counter}
-                  className="tc-name"
-                  initial={{ opacity: 0, y: 10, filter: 'blur(6px)' }}
-                  animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
-                  exit={{ opacity: 0, y: -8, filter: 'blur(4px)' }}
-                  transition={{ duration: 0.32, ease: [0.16, 1, 0.3, 1] }}
-                >
-                  {d.counter}
-                </motion.div>
-              </AnimatePresence>
-              {/* Bottom: game plan + badges + opponent context */}
-              <div className="tc-bottom">
-                <div className="tc-gp">
-                  <div className="gplbl">{t("anti.gamePlan")}</div>
-                  <div className="gpico">{d.gp.icon}</div>
-                  <div className="gptxt">{styleLabel(d.gp.text)}</div>
-                </div>
-                <div className="tc-meta">
-                  <span style={{
-                    fontSize: '8px', fontWeight: 900, letterSpacing: '0.08em', textTransform: 'uppercase',
-                    background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.18)',
-                    color: 'rgba(255,255,255,0.75)', borderRadius: '6px', padding: '3px 10px',
-                    display: 'inline-flex', alignItems: 'center', gap: '3px',
-                  }}>
-                    {locActive === 'HOME MATCH' ? '🏠' : '✈️'}&nbsp;{locActive === 'HOME MATCH' ? t("anti.masterHome") : t("anti.masterAway")}
-                  </span>
-                  <span style={{
-                    fontSize: '8px', fontWeight: 900, letterSpacing: '0.08em', textTransform: 'uppercase',
-                    background: 'rgba(255,255,255,0.06)',
-                    border: '1px solid rgba(255,255,255,0.18)',
-                    color: 'rgba(255,255,255,0.8)',
-                    borderRadius: '6px', padding: '3px 10px', display: 'inline-flex', alignItems: 'center',
-                  }}>
-                    {d.badge === 'STRONG' ? t("anti.badgeElite") : d.badge === 'SOLID' ? t("anti.badgeSolid") : t("anti.badgeSit")}
-                  </span>
-                  <div className="tc-vs">
-                    <span className="tc-vs-lbl">{t("anti.oppPlays")}</span>
-                    <span className="tc-vs-sep">|</span>
+                  {/* Counter tactic hero */}
+                  <div className="tc-hero">
+                    <motion.div animate={{ x: ['-140%', '280%'] }} transition={{ repeat: Infinity, repeatDelay: 4.5, duration: 0.9, ease: [0.16, 1, 0.3, 1] }} style={{ position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: 1, background: 'linear-gradient(105deg, transparent 30%, rgba(255,255,255,0.05) 50%, transparent 70%)', transform: 'skewX(-12deg)' }} />
+                    <div className="tc-top">
+                      <div className="tc-eyebrow">
+                        <span className="tc-dot" />
+                        {t("anti.yourCounter")}
+                        <AnimatePresence mode="wait">
+                          <motion.span key={d.label} className="tc-vs-pill" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.2 }}>vs {d.label}</motion.span>
+                        </AnimatePresence>
+                      </div>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                        <div className="ftbadge">★ {t("anti.fieldTested")}</div>
+                        <motion.button whileHover={{ scale: 1.12 }} whileTap={{ scale: 0.85 }}
+                          onClick={async () => {
+                            if (!user) { setShowAuthPrompt(v => !v); return; }
+                            const id = savedId(comboKey);
+                            if (id) { deleteTactic(id); return; }
+                            setSaving(true); setSaveError(false);
+                            const dispP = activeOption === 'B' && d.optionB ? d.optionB.p : d.p;
+                            const dispS = activeOption === 'B' && d.optionB ? d.optionB.s : d.s;
+                            const dispT = activeOption === 'B' && d.optionB ? d.optionB.t : d.t;
+                            try {
+                              await saveTactic({ comboKey, location: d.location, strength: d.strength, opponentKey: d.oppKey, opponentLabel: d.oppLabel || d.label, counterFormation: d.counter, gamePlan: d.gp.text, gamePlanIcon: d.gp.icon, pressure: dispP, style: dispS, tempo: dispT, forwards: d.f, midfield: d.m, defence: d.d, offside: d.offOn, marking: d.mrk, badge: d.badge, successRate: d.sr, option: activeOption });
+                            } catch (err) {
+                              console.error('[Garage] saveTactic failed:', err);
+                              setSaveError(true); setTimeout(() => setSaveError(false), 4000);
+                            } finally { setSaving(false); }
+                          }}
+                          disabled={saving}
+                          aria-label={tacticSaved ? 'Garajdan kaldır' : 'Garaja kaydet'}
+                          style={{ width: 28, height: 28, borderRadius: 8, flexShrink: 0, border: saveError ? '1px solid rgba(255,255,255,0.3)' : tacticSaved ? '1px solid rgba(255,255,255,0.35)' : '1px solid rgba(255,255,255,0.12)', background: saveError ? 'rgba(255,255,255,0.08)' : tacticSaved ? 'rgba(255,255,255,0.1)' : 'rgba(255,255,255,0.04)', color: saveError ? '#ffffff' : tacticSaved ? '#ffffff' : 'rgba(255,255,255,0.38)', fontSize: 15, cursor: saving ? 'default' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.2s ease', opacity: saving ? 0.5 : 1 }}>
+                          {saving ? '⏳' : saveError ? '✕' : tacticSaved ? '★' : '☆'}
+                        </motion.button>
+                      </div>
+                    </div>
                     <AnimatePresence mode="wait">
-                      <motion.span
-                        key={d.label}
-                        className="tc-vs-val"
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        transition={{ duration: 0.2 }}
-                      >{d.label}</motion.span>
+                      <motion.div key={d.counter} className="tc-name" initial={{ opacity: 0, y: 10, filter: 'blur(6px)' }} animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }} exit={{ opacity: 0, y: -8, filter: 'blur(4px)' }} transition={{ duration: 0.32, ease: [0.16, 1, 0.3, 1] }}>{d.counter}</motion.div>
                     </AnimatePresence>
+                    <div className="tc-bottom">
+                      <div className="tc-gp">
+                        <div className="gplbl">{t("anti.gamePlan")}</div>
+                        <div className="gpico">{d.gp.icon}</div>
+                        <div className="gptxt">{styleLabel(d.gp.text)}</div>
+                      </div>
+                      <div className="tc-meta">
+                        <span style={{ fontSize: '8px', fontWeight: 900, letterSpacing: '0.08em', textTransform: 'uppercase', background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.18)', color: 'rgba(255,255,255,0.75)', borderRadius: '6px', padding: '3px 10px', display: 'inline-flex', alignItems: 'center', gap: '3px' }}>
+                          {locActive === 'HOME MATCH' ? '🏠' : '✈️'}&nbsp;{locActive === 'HOME MATCH' ? t("anti.masterHome") : t("anti.masterAway")}
+                        </span>
+                        <span style={{ fontSize: '8px', fontWeight: 900, letterSpacing: '0.08em', textTransform: 'uppercase', background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.18)', color: 'rgba(255,255,255,0.8)', borderRadius: '6px', padding: '3px 10px', display: 'inline-flex', alignItems: 'center' }}>
+                          {d.badge === 'STRONG' ? t("anti.badgeElite") : d.badge === 'SOLID' ? t("anti.badgeSolid") : t("anti.badgeSit")}
+                        </span>
+                      </div>
+                    </div>
                   </div>
-                </div>
-              </div>
-            </div>
 
-            {/* ── SAVE ERROR (Firestore write failed) ── */}
-            <AnimatePresence>
-              {saveError && (
-                <motion.div
-                  initial={{ opacity: 0, y: -6 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0 }}
-                  transition={{ duration: 0.22 }}
-                  style={{
-                    background: 'rgba(239,68,68,0.1)', backdropFilter: 'blur(12px)',
-                    border: '1px solid rgba(239,68,68,0.3)', borderRadius: 10,
-                    padding: '10px 14px', marginBottom: 8,
-                    fontSize: 11.5, color: '#fca5a5', lineHeight: 1.5, textAlign: 'center',
-                  }}
-                >
-                  {lang === 'tr'
-                    ? '⚠️ Garaja kaydedilemedi. Giriş yaptığından emin ol ve tekrar dene.'
-                    : '⚠️ Could not save to garage. Make sure you\'re signed in and try again.'}
-                </motion.div>
-              )}
-            </AnimatePresence>
-
-            {/* ── AUTH PROMPT (save button → not logged in) ── */}
-            <AnimatePresence>
-              {showAuthPrompt && !user && (
-                <motion.div
-                  initial={{ opacity: 0, y: -8, scale: 0.97 }}
-                  animate={{ opacity: 1, y: 0, scale: 1 }}
-                  exit={{ opacity: 0, y: -8, scale: 0.97 }}
-                  transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
-                  style={{
-                    background: 'rgba(0,0,0,0.95)', backdropFilter: 'blur(16px)',
-                    border: '1px solid rgba(255,255,255,0.08)', borderRadius: 12,
-                    padding: '14px 18px', display: 'flex', flexDirection: 'column',
-                    gap: 12, alignItems: 'center',
-                  }}
-                >
-                  <p style={{ margin: 0, fontSize: 12, color: 'rgba(255,255,255,0.62)', textAlign: 'center', lineHeight: 1.5 }}>
-                    {ATF_SAVE_AUTH[lang] ?? ATF_SAVE_AUTH.en}
-                  </p>
-                  <motion.button
-                    whileHover={{ scale: 1.03 }}
-                    whileTap={{ scale: 0.97 }}
-                    onClick={() => { signInWithGoogle().catch(console.error); setShowAuthPrompt(false); }}
-                    style={{
-                      display: 'flex', alignItems: 'center', gap: 8,
-                      padding: '9px 20px', borderRadius: 9,
-                      border: '1px solid rgba(255,255,255,0.14)',
-                      background: 'rgba(255,255,255,0.07)',
-                      color: '#fff', fontSize: 12, fontWeight: 700, cursor: 'pointer',
-                    }}
-                  >
-                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none">
-                      <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
-                      <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
-                      <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/>
-                      <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
-                    </svg>
-                    Google ile Giriş Yap
-                  </motion.button>
-                </motion.div>
-              )}
-            </AnimatePresence>
-
-            <div className="midrow">
-              <div className="main-pitch-wrap">
-                <canvas ref={mainCanvasRef} id="mainCanvas" width="320" height="430" style={{ display: 'block', borderRadius: '10px' }} />
-              </div>
-
-              <div className="statscol">
-                {/* ── OPTION A / B TOGGLE ── */}
-                {d.optionB && (
-                  <div style={{
-                    display:'flex',gap:'4px',
-                    background:'rgba(255,255,255,0.04)',
-                    border:'1px solid rgba(255,255,255,0.1)',
-                    borderRadius:'8px',padding:'3px',
-                    marginBottom:'10px',
-                  }}>
-                    <button onClick={() => setActiveOption('A')} style={{
-                      flex:1,padding:'5px 0',borderRadius:'6px',border:'none',
-                      cursor:'pointer',fontSize:'11px',fontWeight:700,
-                      letterSpacing:'0.05em',transition:'all 0.2s',
-                      background: activeOption === 'A' ? '#ffffff' : 'transparent',
-                      color: activeOption === 'A' ? '#000000' : 'rgba(255,255,255,0.4)',
-                      boxShadow: 'none',
-                    }}>
-                      {t("anti.optA")} <span style={{opacity:0.7,fontSize:'9px'}}>({t("anti.optADefault")})</span>
-                    </button>
-                    <button onClick={() => setActiveOption('B')} style={{
-                      flex:1,padding:'5px 0',borderRadius:'6px',border:'none',
-                      cursor:'pointer',fontSize:'11px',fontWeight:700,
-                      letterSpacing:'0.05em',transition:'all 0.2s',
-                      background: activeOption === 'B' ? '#ffffff' : 'transparent',
-                      color: activeOption === 'B' ? '#000000' : 'rgba(255,255,255,0.4)',
-                      boxShadow: 'none',
-                    }}>
-                      {t("anti.optB")} <span style={{opacity:0.7,fontSize:'9px'}}>({t("anti.optBAlt")})</span>
-                    </button>
-                  </div>
-                )}
-                {(() => {
-                    const dispP = activeOption === 'B' && d.optionB ? d.optionB.p : d.p;
-                    const dispS = activeOption === 'B' && d.optionB ? d.optionB.s : d.s;
-                    const dispT = activeOption === 'B' && d.optionB ? d.optionB.t : d.t;
-                    const sliderKey = `${locActive}-${strActive}-${selectedOppKey}-${activeOption}`;
-                    return (
-                      <motion.div
-                        key={sliderKey}
-                        initial={{ opacity: 0, y: 12 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-                        style={{
-                          background: 'rgba(255,255,255,0.03)', backdropFilter: 'blur(20px)',
-                          border: '1px solid rgba(255,255,255,0.08)', borderRadius: 16,
-                          padding: '20px 18px',
-                          boxShadow: '0 20px 60px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.05)',
-                        }}
-                      >
-                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20, flexWrap: 'wrap', gap: 8 }}>
-                          <span style={{ color: '#ffffff', fontWeight: 800, fontSize: 13, letterSpacing: '0.04em' }}>{ATF_SLIDERS[lang] ?? ATF_SLIDERS.en}</span>
-                          <span style={{ fontSize: 10, color: 'rgba(255,255,255,0.22)', letterSpacing: '0.04em' }}>{ATF_LIVE[lang] ?? ATF_LIVE.en}</span>
-                        </div>
-                        <ATFSliderBar label={t("anti.pressure")} value={dispP} gradient={_pGrad(dispP)} delay={0} />
-                        <ATFSliderBar label={t("anti.style")}    value={dispS} gradient={_sGrad(dispS)} delay={0.12} />
-                        <ATFSliderBar label={t("anti.tempo")}    value={dispT} gradient={_tGrad(dispT)} delay={0.24} />
+                  {/* Save error */}
+                  <AnimatePresence>
+                    {saveError && (
+                      <motion.div initial={{ opacity: 0, y: -6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ duration: 0.22 }} style={{ background: 'rgba(239,68,68,0.1)', backdropFilter: 'blur(12px)', border: '1px solid rgba(239,68,68,0.3)', borderRadius: 10, padding: '10px 14px', fontSize: 11.5, color: '#fca5a5', lineHeight: 1.5, textAlign: 'center' }}>
+                        {lang === 'tr' ? '⚠️ Garaja kaydedilemedi. Giriş yaptığından emin ol ve tekrar dene.' : '⚠️ Could not save to garage. Make sure you\'re signed in and try again.'}
                       </motion.div>
-                    );
-                  })()}
+                    )}
+                  </AnimatePresence>
 
-                <div className="sucbox">
-                  <div className="suctop">
-                    <div className="suclbl">{t("anti.successRate")}</div>
-                    <div className="sucval">
-                      <span className="sucbadge">{d.badge === 'STRONG' ? t("anti.badgeElite") : d.badge === 'SOLID' ? t("anti.badgeSolid") : t("anti.badgeSit")}</span>
-                      <span>{d.sr}%</span>
-                    </div>
-                  </div>
-                  <div className="sucbar">
-                    <div className="sucfill" style={{ width: d.sr + '%' }}></div>
-                  </div>
-                </div>
+                  {/* Auth prompt */}
+                  <AnimatePresence>
+                    {showAuthPrompt && !user && (
+                      <motion.div initial={{ opacity: 0, y: -8, scale: 0.97 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: -8, scale: 0.97 }} transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }} style={{ background: 'rgba(0,0,0,0.95)', backdropFilter: 'blur(16px)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 12, padding: '14px 18px', display: 'flex', flexDirection: 'column', gap: 12, alignItems: 'center' }}>
+                        <p style={{ margin: 0, fontSize: 12, color: 'rgba(255,255,255,0.62)', textAlign: 'center', lineHeight: 1.5 }}>{ATF_SAVE_AUTH[lang] ?? ATF_SAVE_AUTH.en}</p>
+                        <motion.button whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }} onClick={() => { signInWithGoogle().catch(console.error); setShowAuthPrompt(false); }} style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '9px 20px', borderRadius: 9, border: '1px solid rgba(255,255,255,0.14)', background: 'rgba(255,255,255,0.07)', color: '#fff', fontSize: 12, fontWeight: 700, cursor: 'pointer' }}>
+                          <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+                          Google ile Giriş Yap
+                        </motion.button>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
 
-                <div>
-                  <div className="lt-header">{t("pitch.lineTactics")}</div>
-                  <div className="lt-main">
-                    <div className="lt-pitch-wrap">
-                      <canvas ref={ltCanvasRef} id="ltCanvas" width="160" height="210" style={{ display: 'block' }} />
+                  {/* Option A/B toggle */}
+                  {d.optionB && (
+                    <div className="atf-ab-toggle">
+                      <button className={`atf-ab-btn${activeOption === 'A' ? ' on' : ''}`} onClick={() => setActiveOption('A')}>{t("anti.optA")} <span>({t("anti.optADefault")})</span></button>
+                      <button className={`atf-ab-btn${activeOption === 'B' ? ' on' : ''}`} onClick={() => setActiveOption('B')}>{t("anti.optB")} <span>({t("anti.optBAlt")})</span></button>
                     </div>
-                    <div style={{ flex: 1, paddingTop: 4 }}>
-                      <ATFLineTacticRow label={t("lt.forwards")} rawVal={d.f} displayVal={pitchVal(d.f, t)} />
-                      <ATFLineTacticRow label={t("lt.midfield")} rawVal={d.m} displayVal={pitchVal(d.m, t)} />
-                      <ATFLineTacticRow label={t("lt.defence")}  rawVal={d.d} displayVal={pitchVal(d.d, t)} />
-                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '7px 0 4px', borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
-                        <span style={{ color: 'rgba(255,255,255,0.42)', fontSize: 11.5, fontWeight: 600, letterSpacing: '0.04em' }}>{t("lt.offsides")}</span>
-                        <span style={{
-                          fontSize: 10.5, fontWeight: 700, padding: '3px 10px', borderRadius: 99,
-                          background: 'rgba(255,255,255,0.06)',
-                          border: '1px solid rgba(255,255,255,0.12)',
-                          color: 'rgba(255,255,255,0.8)',
-                        }}>{d.offOn ? t("pitch.offsideYes") : t("pitch.offsideNo")}</span>
+                  )}
+
+                  {/* Pitch + sliders side by side on wide, stacked on mobile */}
+                  <div className="atf-pitch-stats">
+                    <div className="atf-main-canvas-wrap">
+                      <canvas ref={mainCanvasRef} id="mainCanvas" width="320" height="430" style={{ display: 'block', width: '100%', height: 'auto', borderRadius: 10 }} />
+                    </div>
+                    <div className="atf-statscol">
+                      {(() => {
+                        const dispP = activeOption === 'B' && d.optionB ? d.optionB.p : d.p;
+                        const dispS = activeOption === 'B' && d.optionB ? d.optionB.s : d.s;
+                        const dispT = activeOption === 'B' && d.optionB ? d.optionB.t : d.t;
+                        const sliderKey = `${locActive}-${strActive}-${selectedOppKey}-${activeOption}`;
+                        return (
+                          <motion.div key={sliderKey} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }} style={{ background: 'rgba(255,255,255,0.03)', backdropFilter: 'blur(20px)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 16, padding: '18px 16px', boxShadow: '0 20px 60px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.05)' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 18, flexWrap: 'wrap', gap: 8 }}>
+                              <span style={{ color: '#ffffff', fontWeight: 800, fontSize: 13, letterSpacing: '0.04em' }}>{ATF_SLIDERS[lang] ?? ATF_SLIDERS.en}</span>
+                              <span style={{ fontSize: 10, color: 'rgba(255,255,255,0.22)', letterSpacing: '0.04em' }}>{ATF_LIVE[lang] ?? ATF_LIVE.en}</span>
+                            </div>
+                            <ATFSliderBar label={t("anti.pressure")} value={dispP} gradient={_pGrad(dispP)} delay={0} />
+                            <ATFSliderBar label={t("anti.style")}    value={dispS} gradient={_sGrad(dispS)} delay={0.12} />
+                            <ATFSliderBar label={t("anti.tempo")}    value={dispT} gradient={_tGrad(dispT)} delay={0.24} />
+                          </motion.div>
+                        );
+                      })()}
+
+                      <div className="sucbox">
+                        <div className="suctop">
+                          <div className="suclbl">{t("anti.successRate")}</div>
+                          <div className="sucval">
+                            <span className="sucbadge">{d.badge === 'STRONG' ? t("anti.badgeElite") : d.badge === 'SOLID' ? t("anti.badgeSolid") : t("anti.badgeSit")}</span>
+                            <span>{d.sr}%</span>
+                          </div>
+                        </div>
+                        <div className="sucbar"><div className="sucfill" style={{ width: d.sr + '%' }} /></div>
                       </div>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: 7 }}>
-                        <span style={{ color: 'rgba(255,255,255,0.42)', fontSize: 11.5, fontWeight: 600, letterSpacing: '0.04em' }}>{t("lt.marking")}</span>
-                        <span style={{
-                          fontSize: 10.5, fontWeight: 700, padding: '3px 10px', borderRadius: 99,
-                          background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.12)', color: 'rgba(255,255,255,0.8)',
-                        }}>{pitchVal(d.mrk, t)}</span>
+
+                      <div>
+                        <div className="lt-header">{t("pitch.lineTactics")}</div>
+                        <div className="lt-main">
+                          <div className="lt-pitch-wrap">
+                            <canvas ref={ltCanvasRef} id="ltCanvas" width="160" height="210" style={{ display: 'block' }} />
+                          </div>
+                          <div style={{ flex: 1, paddingTop: 4 }}>
+                            <ATFLineTacticRow label={t("lt.forwards")} rawVal={d.f} displayVal={pitchVal(d.f, t)} />
+                            <ATFLineTacticRow label={t("lt.midfield")} rawVal={d.m} displayVal={pitchVal(d.m, t)} />
+                            <ATFLineTacticRow label={t("lt.defence")}  rawVal={d.d} displayVal={pitchVal(d.d, t)} />
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '7px 0 4px', borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
+                              <span style={{ color: 'rgba(255,255,255,0.42)', fontSize: 11.5, fontWeight: 600, letterSpacing: '0.04em' }}>{t("lt.offsides")}</span>
+                              <span style={{ fontSize: 10.5, fontWeight: 700, padding: '3px 10px', borderRadius: 99, background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.12)', color: 'rgba(255,255,255,0.8)' }}>{d.offOn ? t("pitch.offsideYes") : t("pitch.offsideNo")}</span>
+                            </div>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: 7 }}>
+                              <span style={{ color: 'rgba(255,255,255,0.42)', fontSize: 11.5, fontWeight: 600, letterSpacing: '0.04em' }}>{t("lt.marking")}</span>
+                              <span style={{ fontSize: 10.5, fontWeight: 700, padding: '3px 10px', borderRadius: 99, background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.12)', color: 'rgba(255,255,255,0.8)' }}>{pitchVal(d.mrk, t)}</span>
+                            </div>
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              </div>
-            </div>
 
-            <div className="coach">{`${locActive === 'HOME MATCH' ? t('anti.locHome') : t('anti.locAway')} + ${strActive === 'STRONGER' ? t('anti.strStronger') : strActive === 'EQUAL' ? t('anti.strEqual') : t('anti.strWeaker')}: ${d.counter} — ${t('anti.pressure')} ${activeOption === 'B' && d.optionB ? d.optionB.p : d.p} / ${t('anti.style')} ${activeOption === 'B' && d.optionB ? d.optionB.s : d.s} / ${t('anti.tempo')} ${activeOption === 'B' && d.optionB ? d.optionB.t : d.t}`}</div>
+                  <div className="coach">{`${locActive === 'HOME MATCH' ? t('anti.locHome') : t('anti.locAway')} + ${strActive === 'STRONGER' ? t('anti.strStronger') : strActive === 'EQUAL' ? t('anti.strEqual') : t('anti.strWeaker')}: ${d.counter} — ${t('anti.pressure')} ${activeOption === 'B' && d.optionB ? d.optionB.p : d.p} / ${t('anti.style')} ${activeOption === 'B' && d.optionB ? d.optionB.s : d.s} / ${t('anti.tempo')} ${activeOption === 'B' && d.optionB ? d.optionB.t : d.t}`}</div>
 
                 </motion.div>
               )}
             </AnimatePresence>
-
-            <div className="alt-sep">
-              <div className="alt-sep-line" />
-              <div className="alt-sep-lbl">{t("anti.highValueAlt")}</div>
-              <div className="alt-sep-line" />
-            </div>
-            <HomeTacticHero />
           </div>
         </div>
       </div>
+
+      <div className="alt-sep">
+        <div className="alt-sep-line" />
+        <div className="alt-sep-lbl">{t("anti.highValueAlt")}</div>
+        <div className="alt-sep-line" />
+      </div>
+      <HomeTacticHero />
     </section>
   );
 }
