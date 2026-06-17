@@ -187,6 +187,19 @@ export default function Footer() {
                   ☕ Buy me a coffee
                 </a>
               </li>
+              <li style={{ marginTop: 8 }}>
+                <div style={{
+                  display: "flex", alignItems: "flex-start", gap: 9,
+                  background: "rgba(91,138,247,0.07)",
+                  border: "1px solid rgba(91,138,247,0.22)",
+                  borderRadius: 10, padding: "10px 12px",
+                }}>
+                  <span style={{ fontSize: 15, flexShrink: 0, lineHeight: 1.4 }}>💬</span>
+                  <span style={{ fontSize: 12, fontWeight: 700, color: "rgba(255,255,255,0.72)", lineHeight: 1.55 }}>
+                    {t("footer.contactNote")}
+                  </span>
+                </div>
+              </li>
             </ul>
           </motion.div>
         </div>
