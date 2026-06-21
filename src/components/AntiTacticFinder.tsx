@@ -7,6 +7,7 @@ import { analytics } from '../lib/analytics';
 import './AntiTacticFinder.css';
 import HomeTacticHero from './HomeTacticHero';
 import { TacticEntry, OPP_LIST, TD } from '../data/tacticDatabase';
+// tacticEngine weekly engine runs inside tacticDatabase.ts — no extra imports needed
 
 interface PlayerDef { r: string; x: number; y: number; c: string; s: string; }
 interface ArrowDef  { x1: number; y1: number; x2: number; y2: number; cx: number; cy: number; c: string; w: number; }
@@ -663,6 +664,9 @@ export default function AntiTacticFinder() {
   const { t, lang } = useLang();
   const { user, signInWithGoogle } = useAuth();
   const { saveTactic, deleteTactic, isSaved, savedId } = useSavedTactics();
+
+  // Reset to Option A whenever the matchup changes
+  useEffect(() => { setActiveOption('A'); }, [locActive, strActive, selectedOppKey]);
   const styleLabel = (gpt: string) => {
     if (gpt === 'Wing Play')      return t('mentality.wingPlay');
     if (gpt === 'Counter Attack') return t('mentality.counterAttack');
@@ -702,6 +706,12 @@ export default function AntiTacticFinder() {
   });
 
   const d = pick();
+  // DB weekly engine (tacticDatabase.ts) already rotated d.p/s/t per matchup — use directly.
+  const _baseFm = d.fm.replace(/-[A-Z]$/, '');
+  const evoA = { p: d.p, s: d.s, t: d.t };
+  const evoB = d.optionB ? { p: d.optionB.p, s: d.optionB.s, t: d.optionB.t } : undefined;
+  // 5-2-3 defence line is always "Stay in position" (Geride Kal) per spec.
+  const _defVal = _baseFm === '5-2-3' ? 'Stay in position' : d.d;
   const comboKey = `${locActive}-${strActive}-${selectedOppKey}-${activeOption}`;
   const tacticSaved = isSaved(comboKey);
 
@@ -1068,7 +1078,13 @@ export default function AntiTacticFinder() {
 
           {/* ── RESULTS COLUMN ── */}
           <div className="atf-results">
-            <span className="atf-ctrl-lbl atf-results-lbl"><span className="snum">4</span> {t("anti.recommended")}</span>
+            <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', flexWrap:'wrap', gap:6 }}>
+              <span className="atf-ctrl-lbl atf-results-lbl"><span className="snum">4</span> {t("anti.recommended")}</span>
+              <span style={{ display:'inline-flex', alignItems:'center', gap:5, fontSize:10, fontWeight:700, letterSpacing:'0.07em', textTransform:'uppercase', color:'oklch(0.87 0.27 152)', background:'oklch(0.87 0.27 152 / 0.10)', border:'1px solid oklch(0.87 0.27 152 / 0.30)', borderRadius:20, padding:'3px 10px', whiteSpace:'nowrap' }}>
+                <span style={{ width:6, height:6, borderRadius:'50%', background:'oklch(0.87 0.27 152)', boxShadow:'0 0 6px oklch(0.87 0.27 152)', display:'inline-block', animation:'pulse 2s ease-in-out infinite' }} />
+                {new Date().toLocaleDateString(lang === 'tr' ? 'tr-TR' : 'en-GB', { day:'numeric', month:'long', year:'numeric' })} &mdash; {lang === 'tr' ? 'Taktikler Güncellendi' : 'Tactics Updated'}
+              </span>
+            </div>
 
             <AnimatePresence mode="wait">
               {!hasSelected ? (
@@ -1083,18 +1099,30 @@ export default function AntiTacticFinder() {
               ) : (
                 <motion.div key="results" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.35, ease: 'easeInOut' }} style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
 
-                  {/* Counter tactic hero */}
+                  {/* Counter tactic hero — professional redesign */}
+                  {(() => {
+                    const winColor = d.sr >= 90 ? 'oklch(0.87 0.27 152)' : d.sr >= 75 ? '#f59e0b' : '#f97316';
+                    const winGlow  = d.sr >= 90 ? 'oklch(0.87 0.27 152 / 0.4)' : d.sr >= 75 ? 'rgba(245,158,11,0.4)' : 'rgba(249,115,22,0.4)';
+                    const circ = 2 * Math.PI * 30;
+                    const dash = (d.sr / 100) * circ;
+                    const dispP = activeOption === 'B' && evoB ? evoB.p : evoA.p;
+                    const dispS = activeOption === 'B' && evoB ? evoB.s : evoA.s;
+                    const dispT = activeOption === 'B' && evoB ? evoB.t : evoA.t;
+                    return (
                   <div className="tc-hero">
-                    <motion.div animate={{ x: ['-140%', '280%'] }} transition={{ repeat: Infinity, repeatDelay: 4.5, duration: 0.9, ease: [0.16, 1, 0.3, 1] }} style={{ position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: 1, background: 'linear-gradient(105deg, transparent 30%, rgba(255,255,255,0.05) 50%, transparent 70%)', transform: 'skewX(-12deg)' }} />
+                    <motion.div animate={{ x: ['-140%', '280%'] }} transition={{ repeat: Infinity, repeatDelay: 5, duration: 1.1, ease: [0.16, 1, 0.3, 1] }} style={{ position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: 1, background: 'linear-gradient(105deg, transparent 30%, rgba(255,255,255,0.04) 50%, transparent 70%)', transform: 'skewX(-12deg)' }} />
+                    <div className="tc-accent-bar" style={{ background: winColor, boxShadow: `0 0 16px ${winGlow}` }} />
+
+                    {/* Row 1: eyebrow + save */}
                     <div className="tc-top">
                       <div className="tc-eyebrow">
-                        <span className="tc-dot" />
+                        <span className="tc-dot" style={{ background: winColor, boxShadow: `0 0 6px ${winColor}` }} />
                         {t("anti.yourCounter")}
                         <AnimatePresence mode="wait">
                           <motion.span key={d.label} className="tc-vs-pill" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.2 }}>vs {d.label}</motion.span>
                         </AnimatePresence>
                       </div>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
                         <div className="ftbadge">★ {t("anti.fieldTested")}</div>
                         <motion.button whileHover={{ scale: 1.12 }} whileTap={{ scale: 0.85 }}
                           onClick={async () => {
@@ -1102,11 +1130,8 @@ export default function AntiTacticFinder() {
                             const id = savedId(comboKey);
                             if (id) { deleteTactic(id); return; }
                             setSaving(true); setSaveError(false);
-                            const dispP = activeOption === 'B' && d.optionB ? d.optionB.p : d.p;
-                            const dispS = activeOption === 'B' && d.optionB ? d.optionB.s : d.s;
-                            const dispT = activeOption === 'B' && d.optionB ? d.optionB.t : d.t;
                             try {
-                              await saveTactic({ comboKey, location: d.location, strength: d.strength, opponentKey: d.oppKey, opponentLabel: d.oppLabel || d.label, counterFormation: d.counter, gamePlan: d.gp.text, gamePlanIcon: d.gp.icon, pressure: dispP, style: dispS, tempo: dispT, forwards: d.f, midfield: d.m, defence: d.d, offside: d.offOn, marking: d.mrk, badge: d.badge, successRate: d.sr, option: activeOption });
+                              await saveTactic({ comboKey, location: d.location, strength: d.strength, opponentKey: d.oppKey, opponentLabel: d.oppLabel || d.label, counterFormation: d.counter, gamePlan: d.gp.text, gamePlanIcon: d.gp.icon, pressure: dispP, style: dispS, tempo: dispT, forwards: d.f, midfield: d.m, defence: _defVal, offside: d.offOn, marking: d.mrk, badge: d.badge, successRate: d.sr, option: activeOption });
                             } catch (err) {
                               console.error('[Garage] saveTactic failed:', err);
                               setSaveError(true); setTimeout(() => setSaveError(false), 4000);
@@ -1114,30 +1139,66 @@ export default function AntiTacticFinder() {
                           }}
                           disabled={saving}
                           aria-label={tacticSaved ? 'Garajdan kaldır' : 'Garaja kaydet'}
-                          style={{ width: 28, height: 28, borderRadius: 8, flexShrink: 0, border: saveError ? '1px solid rgba(255,255,255,0.3)' : tacticSaved ? '1px solid rgba(255,255,255,0.35)' : '1px solid rgba(255,255,255,0.12)', background: saveError ? 'rgba(255,255,255,0.08)' : tacticSaved ? 'rgba(255,255,255,0.1)' : 'rgba(255,255,255,0.04)', color: saveError ? '#ffffff' : tacticSaved ? '#ffffff' : 'rgba(255,255,255,0.38)', fontSize: 15, cursor: saving ? 'default' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.2s ease', opacity: saving ? 0.5 : 1 }}>
+                          style={{ width: 28, height: 28, borderRadius: 8, flexShrink: 0, border: saveError ? '1px solid rgba(255,255,255,0.3)' : tacticSaved ? `1px solid ${winColor}` : '1px solid rgba(255,255,255,0.12)', background: saveError ? 'rgba(255,255,255,0.08)' : tacticSaved ? `${winColor}22` : 'rgba(255,255,255,0.04)', color: saveError ? '#ffffff' : tacticSaved ? winColor : 'rgba(255,255,255,0.38)', fontSize: 15, cursor: saving ? 'default' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.2s ease', opacity: saving ? 0.5 : 1 }}>
                           {saving ? '⏳' : saveError ? '✕' : tacticSaved ? '★' : '☆'}
                         </motion.button>
                       </div>
                     </div>
-                    <AnimatePresence mode="wait">
-                      <motion.div key={d.counter} className="tc-name" initial={{ opacity: 0, y: 10, filter: 'blur(6px)' }} animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }} exit={{ opacity: 0, y: -8, filter: 'blur(4px)' }} transition={{ duration: 0.32, ease: [0.16, 1, 0.3, 1] }}>{d.counter}</motion.div>
-                    </AnimatePresence>
-                    <div className="tc-bottom">
-                      <div className="tc-gp">
-                        <div className="gplbl">{t("anti.gamePlan")}</div>
-                        <div className="gpico">{d.gp.icon}</div>
-                        <div className="gptxt">{styleLabel(d.gp.text)}</div>
+
+                    {/* Row 2: formation name + win ring */}
+                    <div className="tc-main-row">
+                      <div className="tc-main-left">
+                        <AnimatePresence mode="wait">
+                          <motion.div key={d.counter} className="tc-name" initial={{ opacity: 0, y: 10, filter: 'blur(6px)' }} animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }} exit={{ opacity: 0, y: -8, filter: 'blur(4px)' }} transition={{ duration: 0.32, ease: [0.16, 1, 0.3, 1] }}>{d.counter}</motion.div>
+                        </AnimatePresence>
+                        <div className="tc-gp-inline">
+                          <span className="gpico">{d.gp.icon}</span>
+                          <span className="gptxt">{styleLabel(d.gp.text)}</span>
+                        </div>
+                        {/* Mini P/S/T inline summary */}
+                        <div className="tc-pst-row">
+                          <span className="tc-pst-item"><span className="tc-pst-lbl">{t("anti.pressure")}</span><span className="tc-pst-val" style={{ color: winColor }}>{dispP}</span></span>
+                          <span className="tc-pst-sep">·</span>
+                          <span className="tc-pst-item"><span className="tc-pst-lbl">{t("anti.style")}</span><span className="tc-pst-val" style={{ color: winColor }}>{dispS}</span></span>
+                          <span className="tc-pst-sep">·</span>
+                          <span className="tc-pst-item"><span className="tc-pst-lbl">{t("anti.tempo")}</span><span className="tc-pst-val" style={{ color: winColor }}>{dispT}</span></span>
+                        </div>
                       </div>
-                      <div className="tc-meta">
-                        <span style={{ fontSize: '8px', fontWeight: 900, letterSpacing: '0.08em', textTransform: 'uppercase', background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.18)', color: 'rgba(255,255,255,0.75)', borderRadius: '6px', padding: '3px 10px', display: 'inline-flex', alignItems: 'center', gap: '3px' }}>
-                          {locActive === 'HOME MATCH' ? '🏠' : '✈️'}&nbsp;{locActive === 'HOME MATCH' ? t("anti.masterHome") : t("anti.masterAway")}
-                        </span>
-                        <span style={{ fontSize: '8px', fontWeight: 900, letterSpacing: '0.08em', textTransform: 'uppercase', background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.18)', color: 'rgba(255,255,255,0.8)', borderRadius: '6px', padding: '3px 10px', display: 'inline-flex', alignItems: 'center' }}>
-                          {d.badge === 'STRONG' ? t("anti.badgeElite") : d.badge === 'SOLID' ? t("anti.badgeSolid") : t("anti.badgeSit")}
-                        </span>
+                      {/* Win rate ring */}
+                      <div className="tc-win-ring">
+                        <svg width="84" height="84" viewBox="0 0 84 84" style={{ overflow: 'visible' }}>
+                          <circle cx="42" cy="42" r="30" fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="7" />
+                          <motion.circle
+                            cx="42" cy="42" r="30" fill="none"
+                            stroke={winColor} strokeWidth="7" strokeLinecap="round"
+                            strokeDasharray={`${dash} ${circ}`}
+                            transform="rotate(-90 42 42)"
+                            style={{ filter: `drop-shadow(0 0 8px ${winGlow})` }}
+                            initial={{ strokeDasharray: `0 ${circ}` }}
+                            animate={{ strokeDasharray: `${dash} ${circ}` }}
+                            transition={{ duration: 1, ease: [0.16, 1, 0.3, 1], delay: 0.2 }}
+                          />
+                          <text x="42" y="39" textAnchor="middle" fill="#ffffff" fontSize="18" fontWeight="900" fontFamily="Inter,system-ui,sans-serif">{d.sr}</text>
+                          <text x="42" y="53" textAnchor="middle" fill="rgba(255,255,255,0.4)" fontSize="8.5" fontWeight="700" fontFamily="Inter,system-ui,sans-serif">KAZANMA%</text>
+                        </svg>
                       </div>
                     </div>
+
+                    {/* Row 3: badges */}
+                    <div className="tc-bottom">
+                      <span className="tc-badge-pill" style={{ borderColor: `${winColor}55`, color: winColor, background: `${winColor}11` }}>
+                        {locActive === 'HOME MATCH' ? '🏠' : '✈️'}&nbsp;{locActive === 'HOME MATCH' ? t("anti.masterHome") : t("anti.masterAway")}
+                      </span>
+                      <span className="tc-badge-pill" style={{ borderColor: `${winColor}55`, color: winColor, background: `${winColor}11` }}>
+                        {d.badge === 'STRONG' ? '⚡ ' + t("anti.badgeElite") : d.badge === 'SOLID' ? '✓ ' + t("anti.badgeSolid") : '📊 ' + t("anti.badgeSit")}
+                      </span>
+                      <span className="tc-badge-pill" style={{ borderColor: 'rgba(255,255,255,0.12)', color: 'rgba(255,255,255,0.5)', marginLeft: 'auto' }}>
+                        {strActive === 'STRONGER' ? `💪 ${t("anti.strStronger")}` : strActive === 'EQUAL' ? `⚖️ ${t("anti.strEqual")}` : `📉 ${t("anti.strWeaker")}`}
+                      </span>
+                    </div>
                   </div>
+                    );
+                  })()}
 
                   {/* Save error */}
                   <AnimatePresence>
@@ -1176,9 +1237,9 @@ export default function AntiTacticFinder() {
                     </div>
                     <div className="atf-statscol">
                       {(() => {
-                        const dispP = activeOption === 'B' && d.optionB ? d.optionB.p : d.p;
-                        const dispS = activeOption === 'B' && d.optionB ? d.optionB.s : d.s;
-                        const dispT = activeOption === 'B' && d.optionB ? d.optionB.t : d.t;
+                        const dispP = activeOption === 'B' && evoB ? evoB.p : evoA.p;
+                        const dispS = activeOption === 'B' && evoB ? evoB.s : evoA.s;
+                        const dispT = activeOption === 'B' && evoB ? evoB.t : evoA.t;
                         const sliderKey = `${locActive}-${strActive}-${selectedOppKey}-${activeOption}`;
                         return (
                           <motion.div key={sliderKey} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }} style={{ background: 'rgba(255,255,255,0.03)', backdropFilter: 'blur(20px)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 16, padding: '18px 16px', boxShadow: '0 20px 60px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.05)' }}>
@@ -1213,7 +1274,7 @@ export default function AntiTacticFinder() {
                           <div style={{ flex: 1, paddingTop: 4 }}>
                             <ATFLineTacticRow label={t("lt.forwards")} rawVal={d.f} displayVal={pitchVal(d.f, t)} />
                             <ATFLineTacticRow label={t("lt.midfield")} rawVal={d.m} displayVal={pitchVal(d.m, t)} />
-                            <ATFLineTacticRow label={t("lt.defence")}  rawVal={d.d} displayVal={pitchVal(d.d, t)} />
+                            <ATFLineTacticRow label={t("lt.defence")}  rawVal={_defVal} displayVal={pitchVal(_defVal, t)} />
                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '7px 0 4px', borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
                               <span style={{ color: 'rgba(255,255,255,0.42)', fontSize: 11.5, fontWeight: 600, letterSpacing: '0.04em' }}>{t("lt.offsides")}</span>
                               <span style={{ fontSize: 10.5, fontWeight: 700, padding: '3px 10px', borderRadius: 99, background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.12)', color: 'rgba(255,255,255,0.8)' }}>{d.offOn ? t("pitch.offsideYes") : t("pitch.offsideNo")}</span>
@@ -1228,7 +1289,7 @@ export default function AntiTacticFinder() {
                     </div>
                   </div>
 
-                  <div className="coach">{`${locActive === 'HOME MATCH' ? t('anti.locHome') : t('anti.locAway')} + ${strActive === 'STRONGER' ? t('anti.strStronger') : strActive === 'EQUAL' ? t('anti.strEqual') : t('anti.strWeaker')}: ${d.counter} — ${t('anti.pressure')} ${activeOption === 'B' && d.optionB ? d.optionB.p : d.p} / ${t('anti.style')} ${activeOption === 'B' && d.optionB ? d.optionB.s : d.s} / ${t('anti.tempo')} ${activeOption === 'B' && d.optionB ? d.optionB.t : d.t}`}</div>
+                  <div className="coach">{`${locActive === 'HOME MATCH' ? t('anti.locHome') : t('anti.locAway')} + ${strActive === 'STRONGER' ? t('anti.strStronger') : strActive === 'EQUAL' ? t('anti.strEqual') : t('anti.strWeaker')}: ${d.counter} — ${t('anti.pressure')} ${activeOption === 'B' && evoB ? evoB.p : evoA.p} / ${t('anti.style')} ${activeOption === 'B' && evoB ? evoB.s : evoA.s} / ${t('anti.tempo')} ${activeOption === 'B' && evoB ? evoB.t : evoA.t}`}</div>
 
                 </motion.div>
               )}

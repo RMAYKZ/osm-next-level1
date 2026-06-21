@@ -296,6 +296,45 @@ export function getWeeklyMetaSliders(
   };
 }
 
+// ── TacticDatabase Bridge ─────────────────────────────────────────────────────
+
+/**
+ * Evolves p/s/t slider values for a TacticEntry (tacticDatabase.ts shape).
+ * Same Deterministic Stability Loop as getEvolvedTactic, but adapted for
+ * TacticEntry field names (p/s/t → pressure/style/tempo internally).
+ *
+ * @param fm       Formation string, optionally variant-suffixed: "4-3-3-A" → "4-3-3"
+ * @param oppKey   Opponent key from TacticEntry, used as matchup discriminator
+ * @param location "home" | "away"
+ * @param strength "stronger" | "equal" | "weaker"
+ * @param base     Raw {p, s, t} from TacticEntry (or TacticEntry.optionB)
+ * @param ywKey    Optional year-week override (default: current week)
+ */
+export function evolveTDSliders(
+  fm: string,
+  oppKey: string,
+  location: string,
+  strength: string,
+  base: { p: number; s: number; t: number },
+  ywKey = getYearWeekKey(),
+): { p: number; s: number; t: number } {
+  const formation = fm.replace(/-[A-Z]$/, '');  // "4-3-3-A" → "4-3-3"
+  const fc = getFormationConstraint(formation);
+  const matchupKey = `${oppKey}|${location}|${strength}`;
+
+  const evolveVal = (baseVal: number, field: 'pressure' | 'style' | 'tempo'): number => {
+    const bounds = fc[field] ?? { min: 20, max: 80 };
+    const offset = deterministicOffset(`${matchupKey}|${ywKey}|${field}`, fc.weeklyDelta);
+    return Math.min(bounds.max, Math.max(bounds.min, baseVal + offset));
+  };
+
+  return {
+    p: evolveVal(base.p, 'pressure'),
+    s: evolveVal(base.s, 'style'),
+    t: evolveVal(base.t, 'tempo'),
+  };
+}
+
 // ── React Hook ────────────────────────────────────────────────────────────────
 
 /**

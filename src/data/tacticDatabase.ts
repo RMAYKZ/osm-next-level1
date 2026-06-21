@@ -487,6 +487,8 @@ export const TD: TacticEntry[] = [
 ];
 
 // ─── WEEKLY SLIDER ENGINE ─────────────────────────────────────────────
+// Each matchup rotates ±4 from its own base values — per-entry salt keeps every
+// matchup unique; Option B uses a different salt offset so A ≠ B.
 const _WEEK_SEED: number = (() => {
   const now = new Date();
   const d   = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()));
@@ -504,39 +506,18 @@ function _si(seed: number, salt: number, mn: number, mx: number): number {
   return mn + (h % (mx - mn + 1));
 }
 
-type _SR = { pMn: number; pMx: number; sMn: number; sMx: number; tMn: number; tMx: number };
-
-const _AWAY_523: Record<string, _SR> = {
-  stronger: { pMn: 10, pMx: 19, sMn: 20, sMx: 29, tMn: 60, tMx: 69 },
-  equal:    { pMn:  5, pMx: 19, sMn: 20, sMx: 25, tMn: 60, tMx: 75 },
-  weaker:   { pMn:  5, pMx: 10, sMn: 20, sMx: 23, tMn: 60, tMx: 69 },
-};
-const _HOME_523: Record<string, _SR> = {
-  stronger: { pMn: 20, pMx: 35, sMn: 20, sMx: 25, tMn: 60, tMx: 69 },
-  equal:    { pMn: 20, pMx: 25, sMn: 20, sMx: 29, tMn: 60, tMx: 75 },
-  weaker:   { pMn: 10, pMx: 25, sMn: 20, sMx: 25, tMn: 60, tMx: 69 },
-};
-const _HOME_433: Record<string, _SR> = {
-  stronger: { pMn: 60, pMx: 79, sMn: 50, sMx: 70, tMn: 50, tMx: 79 },
-  equal:    { pMn: 50, pMx: 65, sMn: 50, sMx: 60, tMn: 50, tMx: 65 },
-};
+const _DELTA = 4;
 
 TD.forEach((e, i) => {
-  const is523 = e.fm === '5-2-3-A' || e.fm === '5-2-3-B';
-  const is433 = e.fm === '4-3-3-A' || e.fm === '4-3-3-B';
-  let r: _SR | undefined;
-  if      (is523 && e.location === 'away')  r = _AWAY_523[e.strength];
-  else if (is523 && e.location === 'home')  r = _HOME_523[e.strength];
-  else if (is433 && e.location === 'home' && (e.strength === 'stronger' || e.strength === 'equal'))
-                                             r = _HOME_433[e.strength];
-  if (!r) return;
-  const b = i * 3;
-  e.p = _si(_WEEK_SEED, b + 1, r.pMn, r.pMx);
-  e.s = _si(_WEEK_SEED, b + 2, r.sMn, r.sMx);
-  e.t = _si(_WEEK_SEED, b + 3, r.tMn, r.tMx);
+  const b = i * 7;
+  const baseP = e.p, baseS = e.s, baseT = e.t;
+  e.p = _si(_WEEK_SEED, b + 1, Math.max(0, baseP - _DELTA), Math.min(100, baseP + _DELTA));
+  e.s = _si(_WEEK_SEED, b + 2, Math.max(0, baseS - _DELTA), Math.min(100, baseS + _DELTA));
+  e.t = _si(_WEEK_SEED, b + 3, Math.max(0, baseT - _DELTA), Math.min(100, baseT + _DELTA));
   if (e.optionB) {
-    e.optionB.p = _si(_WEEK_SEED, b + 1001, r.pMn, r.pMx);
-    e.optionB.s = _si(_WEEK_SEED, b + 1002, r.sMn, r.sMx);
-    e.optionB.t = _si(_WEEK_SEED, b + 1003, r.tMn, r.tMx);
+    const bP = e.optionB.p, bS = e.optionB.s, bT = e.optionB.t;
+    e.optionB.p = _si(_WEEK_SEED, b + 4, Math.max(0, bP - _DELTA), Math.min(100, bP + _DELTA));
+    e.optionB.s = _si(_WEEK_SEED, b + 5, Math.max(0, bS - _DELTA), Math.min(100, bS + _DELTA));
+    e.optionB.t = _si(_WEEK_SEED, b + 6, Math.max(0, bT - _DELTA), Math.min(100, bT + _DELTA));
   }
 });

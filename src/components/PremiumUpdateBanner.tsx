@@ -12,41 +12,45 @@ const MONTH_NAMES: Record<string, string[]> = {
   pt: ["Janeiro","Fevereiro","Março","Abril","Maio","Junho","Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"],
 };
 
+// ── Specific update date ──────────────────────────────────────────────
+const UPDATE_DATE = { day: 17, month: 5 /* 0-indexed = Haziran */, year: 2026 };
+
 // ── Banner copy per language ──────────────────────────────────────────
-const COPY: Record<string, { badge: string; title: (month: string, year: number) => string; sub: string; cta: string }> = {
+const COPY: Record<string, { badge: string; title: (day: number, month: string, year: number) => string; sub: string; cta: string }> = {
   tr: {
     badge: "YENİ GÜNCELLEME",
-    title: (m, y) => `${m} ${y} Premium Taktikleri Güncellendi`,
+    title: (d, m, y) => `${d} ${m} ${y} — Premium Taktikler Güncellendi`,
     sub:   "Bu ayın en güncel counter taktik kombinasyonlarına sahip ol — rakibini her formasyonda say.",
     cta:   "Hemen İncele 👑",
   },
   en: {
     badge: "NEW UPDATE",
-    title: (m, y) => `${m} ${y} Premium Tactics Updated`,
+    title: (d, m, y) => `Premium Tactics Updated — ${m} ${d}, ${y}`,
     sub:   "Get this month's freshest counter tactic combinations — dominate every formation.",
     cta:   "Get Access 👑",
   },
   hu: {
     badge: "ÚJ FRISSÍTÉS",
-    title: (m, y) => `${m} ${y} Prémium Taktikák Frissítve`,
+    title: (d, m, y) => `Prémium Taktikák Frissítve — ${y}. ${m} ${d}.`,
     sub:   "Szerezd meg a hónap legfrissebb ellen-taktika kombinációit — dominálj minden felállás ellen.",
     cta:   "Hozzáférés 👑",
   },
   ar: {
     badge: "تحديث جديد",
-    title: (m, y) => `تكتيكات ${m} ${y} المميزة محدّثة`,
+    title: (d, m, y) => `تكتيكات ${m} ${d} ${y} المميزة محدّثة`,
     sub:   "احصل على أحدث مجموعات التكتيكات المضادة لهذا الشهر — سيطر على كل تشكيلة.",
     cta:   "احصل الآن 👑",
   },
   pt: {
     badge: "NOVA ATUALIZAÇÃO",
-    title: (m, y) => `Táticas Premium de ${m} ${y} Atualizadas`,
+    title: (d, m, y) => `Táticas Premium Atualizadas — ${d} de ${m} de ${y}`,
     sub:   "Obtenha as combinações táticas contra mais recentes do mês — domine qualquer formação.",
     cta:   "Acessar Agora 👑",
   },
 };
 
-const DISMISS_KEY = "osm-premium-banner-dismissed";
+// Versioned key — bump suffix to force re-show after each update
+const DISMISS_KEY = "osm-premium-banner-dismissed-20260617";
 
 function isDismissed(): boolean {
   try {
@@ -71,9 +75,8 @@ export default function PremiumUpdateBanner() {
   const [entered, setEntered] = useState(false);
 
   const isRTL = lang === "ar";
-  const now = new Date();
-  const month = (MONTH_NAMES[lang] ?? MONTH_NAMES.en)[now.getMonth()];
-  const year  = now.getFullYear();
+  const month = (MONTH_NAMES[lang] ?? MONTH_NAMES.en)[UPDATE_DATE.month];
+  const { day, year } = UPDATE_DATE;
   const copy  = COPY[lang] ?? COPY.en;
 
   function dismiss() {
@@ -166,7 +169,7 @@ export default function PremiumUpdateBanner() {
                   letterSpacing: "-0.01em",
                   marginTop: 4,
                 }}>
-                  {copy.title(month, year)}
+                  {copy.title(day, month, year)}
                 </div>
                 <div style={{
                   fontSize: "clamp(11px, 1.6vw, 13px)",

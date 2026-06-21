@@ -19,6 +19,7 @@ import { PwaInstallBanner } from "./components/PwaInstallBanner";
 // Lazy: shader defers Three.js (355 kB) until after first paint
 const AnimatedShaderBackground = lazy(() => import("./components/ui/animated-shader-background"));
 // Lazy: below-fold sections — downloaded only when main bundle parses
+const ScreenshotAnalyzer = lazy(() => import("./components/ScreenshotAnalyzer"));
 const MetaShareCard = lazy(() => import("./components/MetaShareCard"));
 const MetaVote = lazy(() => import("./components/MetaVote"));
 const CommunityHub = lazy(() => import("./components/CommunityHub"));
@@ -86,6 +87,7 @@ export default function App() {
                 <PremiumTactics />
                 <AntiTacticFinder />
                 <WeeklyMeta />
+                <Suspense fallback={null}><ScreenshotAnalyzer /></Suspense>
                 <Suspense fallback={null}><MetaShareCard /></Suspense>
                 <Suspense fallback={null}><MetaVote /></Suspense>
                 <Suspense fallback={null}><CommunityHub /></Suspense>

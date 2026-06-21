@@ -122,17 +122,21 @@ function SubscribeForm() {
   );
 }
 
-// Gece (22:00-07:59) → 2-3, Gündüz (08:00-21:59) → 5-15
+// Gece (22:00-07:59) → 0-5, Gündüz (08:00-21:59) → 2-25
 function getLiveCount(): number {
   const h = new Date().getHours();
   const d = new Date().getDay();
   const isNight = h >= 22 || h < 8;
-  //                      0  1  2  3  4  5  6  7   8   9  10  11  12  13  14  15  16  17  18  19  20  21  22  23
-  const BASE = [2, 2, 2, 2, 2, 2, 2, 3,  5,  6,  7,  8,  9, 10, 10, 12, 13, 13, 12, 10,  8,  7,  3,  2];
-  const base = BASE[h] * (d === 0 || d === 6 ? 1.1 : 1);
-  const seed = (((h + 1) * (d + 1) * 2654435761) >>> 0) % (isNight ? 2 : 4);
-  if (isNight) return Math.min(3, Math.max(2, Math.round(base + seed)));
-  return Math.min(15, Math.max(5, Math.round(base + seed)));
+  const isWeekend = d === 0 || d === 6;
+  //              0  1  2  3  4  5  6  7   8   9  10  11  12  13  14  15  16  17  18  19  20  21  22  23
+  const BASE = [  2, 1, 0, 0, 0, 1, 1, 2,  4,  7, 11, 15, 17, 16, 14, 15, 18, 21, 23, 20, 15, 10,  5,  3];
+  const base = BASE[h] * (isWeekend ? 1.15 : 1);
+  // Pseudo-random jitter: changes every 3 minutes, deterministic per slot
+  const slot = Math.floor(Date.now() / (3 * 60 * 1000));
+  const jitter = (((slot * 2654435761) >>> 0) % 7) - 3; // -3..+3
+  const raw = Math.round(base + jitter);
+  if (isNight) return Math.min(5, Math.max(0, raw));
+  return Math.min(25, Math.max(2, raw));
 }
 
 function LiveUserBadge() {
@@ -146,7 +150,7 @@ function LiveUserBadge() {
       setCount(prev => {
         const h = new Date().getHours();
         const isNight = h >= 22 || h < 8;
-        const [lo, hi] = isNight ? [2, 3] : [5, 15];
+        const [lo, hi] = isNight ? [0, 5] : [2, 25];
         const delta = Math.random() > 0.5 ? 1 : -1;
         return Math.min(hi, Math.max(lo, prev + delta));
       });
