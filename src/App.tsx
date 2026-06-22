@@ -15,6 +15,7 @@ import WeeklyMeta from "./components/WeeklyMeta";
 import LiveEventBanner from "./components/LiveEventBanner";
 import SocialContactBanner from "./components/SocialContactBanner";
 import PremiumUpdateBanner from "./components/PremiumUpdateBanner";
+import PremiumExpiryBanner from "./components/PremiumExpiryBanner";
 import { PwaInstallBanner } from "./components/PwaInstallBanner";
 // Lazy: shader defers Three.js (355 kB) until after first paint
 const AnimatedShaderBackground = lazy(() => import("./components/ui/animated-shader-background"));
@@ -82,6 +83,7 @@ export default function App() {
                 <LiveEventBanner />
                 <SocialContactBanner />
                 <Navbar />
+                <PremiumExpiryBanner />
                 <PremiumUpdateBanner />
                 <Hero />
                 <PremiumTactics />

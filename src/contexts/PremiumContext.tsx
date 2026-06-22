@@ -78,18 +78,19 @@ async function checkAndClaimCode(code: string, deviceId: string): Promise<ClaimR
 }
 
 // ── Firestore: check if a claimed code has been revoked or expired ────────
-async function checkRevocation(code: string): Promise<boolean> {
+async function checkRevocation(code: string): Promise<{ revoked: boolean; expiresAt: Date | null }> {
   try {
     const db = await getDb();
     const { doc, getDoc } = await import("firebase/firestore");
     const snap = await getDoc(doc(db, "usedCodes", code));
-    if (!snap.exists()) return false;
+    if (!snap.exists()) return { revoked: false, expiresAt: null };
     const data = snap.data() as { revoked?: boolean; expiresAt?: { toDate: () => Date } };
-    if (data.revoked === true) return true;
-    if (data.expiresAt && data.expiresAt.toDate() < new Date()) return true;
-    return false;
+    const expiresAt = data.expiresAt ? data.expiresAt.toDate() : null;
+    if (data.revoked === true) return { revoked: true, expiresAt };
+    if (expiresAt && expiresAt < new Date()) return { revoked: true, expiresAt };
+    return { revoked: false, expiresAt };
   } catch {
-    return false;
+    return { revoked: false, expiresAt: null };
   }
 }
 
@@ -101,6 +102,8 @@ interface PremiumContextType {
   unlocking: boolean;
   unlock: (code: string) => Promise<UnlockResult>;
   lock: () => void;
+  expiresAt: Date | null;
+  expiringSoon: boolean;
 }
 
 const PremiumContext = createContext<PremiumContextType | null>(null);
@@ -115,6 +118,13 @@ export function PremiumProvider({ children }: { children: ReactNode }) {
   });
   const isPremium = isOwner || unlockedByCode;
   const [unlocking, setUnlocking] = useState(false);
+  const [expiresAt, setExpiresAt] = useState<Date | null>(null);
+
+  // expiringSoon: true when expiry is within 24 hours but hasn't passed yet
+  const expiringSoon =
+    expiresAt !== null &&
+    expiresAt.getTime() - Date.now() <= 24 * 60 * 60 * 1000 &&
+    expiresAt > new Date();
 
   const unlock = useCallback(async (code: string): Promise<UnlockResult> => {
     setUnlocking(true);
@@ -153,17 +163,18 @@ export function PremiumProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     const storedCode = localStorage.getItem(PREMIUM_CODE_KEY);
     if (!storedCode || localStorage.getItem(STORAGE_KEY) !== "true") return;
-    checkRevocation(storedCode).then(revoked => {
+    checkRevocation(storedCode).then(({ revoked, expiresAt: exp }) => {
       if (revoked) {
         localStorage.removeItem(STORAGE_KEY);
         localStorage.removeItem(PREMIUM_CODE_KEY);
         setIsPremium(false);
       }
+      if (exp) setExpiresAt(exp);
     });
   }, []);
 
   return (
-    <PremiumContext.Provider value={{ isPremium, unlocking, unlock, lock }}>
+    <PremiumContext.Provider value={{ isPremium, unlocking, unlock, lock, expiresAt, expiringSoon }}>
       {children}
     </PremiumContext.Provider>
   );

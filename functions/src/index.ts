@@ -113,6 +113,51 @@ export const bmcWebhook = onRequest(
   }
 );
 
+// ── Premium expiry tarihi set etme (tek seferlik admin çağrısı) ──────────────
+export const setCodeExpiry = onRequest(
+  { region: "europe-west1" },
+  async (req, res) => {
+    if (req.query.secret !== "OSM-ADMIN-EXPIRY-2026") { res.status(403).send("forbidden"); return; }
+    const { code, expiresAt } = (req.body ?? {}) as { code?: string; expiresAt?: string };
+    if (!code || !expiresAt) { res.status(400).send("code ve expiresAt gerekli"); return; }
+
+    const expDate = new Date(expiresAt);
+    if (isNaN(expDate.getTime())) { res.status(400).send("geçersiz tarih formatı"); return; }
+
+    await db.collection("usedCodes").doc(code).set(
+      { expiresAt: admin.firestore.Timestamp.fromDate(expDate) },
+      { merge: true }
+    );
+    res.status(200).json({ ok: true, code, expiresAt: expDate.toISOString() });
+  }
+);
+
+// Bilinen 3 aktif aboneliğin expiry tarihlerini tek seferde set eder
+export const seedActiveExpiries = onRequest(
+  { region: "europe-west1" },
+  async (req, res) => {
+    if (req.query.secret !== "OSM-ADMIN-EXPIRY-2026") { res.status(403).send("forbidden"); return; }
+
+    const subscriptions = [
+      { code: "OSM-H4W1-RPROX", expiresAt: new Date("2026-07-15T23:59:59+03:00") }, // DENIZ 1 ay
+      { code: "OSM-D1P6-WGOLD", expiresAt: new Date("2026-07-15T23:59:59+03:00") }, // OGUZHAN 1 ay
+      { code: "OSM-F8T7-ELITE", expiresAt: new Date("2026-09-16T23:59:59+03:00") }, // 3 ay
+    ];
+
+    const batch = db.batch();
+    for (const sub of subscriptions) {
+      const ref = db.collection("usedCodes").doc(sub.code);
+      batch.set(ref, { expiresAt: admin.firestore.Timestamp.fromDate(sub.expiresAt) }, { merge: true });
+    }
+    await batch.commit();
+
+    res.status(200).json({
+      ok: true,
+      seeded: subscriptions.map(s => ({ code: s.code, expiresAt: s.expiresAt.toISOString() })),
+    });
+  }
+);
+
 // ── Dîvan Kurulu — admin-only 3-model LLM council ────────────────────────────
 
 export const divanKurulu = onCall(
