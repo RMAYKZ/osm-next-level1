@@ -27,6 +27,13 @@ const COOL_NEW = {
   label: "✦ NEW",
 } as const;
 
+const BATTLE = {
+  bg: "linear-gradient(135deg,rgba(255,80,40,0.22),rgba(255,140,0,0.12))",
+  border: "rgba(255,100,30,0.65)",
+  color: "#ff7040",
+  label: "⚔️ BATTLE TACTIC",
+} as const;
+
 const isMobileDevice = typeof window !== "undefined" && window.innerWidth < 768;
 
 // Starts at 12 on 2026-06-14, grows 1–2 per day deterministically.
@@ -127,6 +134,7 @@ function LineCell({ role, value, icon }: { role: string; value: string; icon: st
 function TacticCard({ tactic, index }: { tactic: PremiumTactic; index: number }) {
   const { t } = useLang();
   const loc = LOC_STYLE[tactic.location];
+  const isBattle = !!tactic.battleTactic;
   return (
     <motion.div
       initial={{ opacity: 0, y: 28 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-30px" }}
@@ -134,8 +142,12 @@ function TacticCard({ tactic, index }: { tactic: PremiumTactic; index: number })
       whileHover={{ y: -5, transition: { duration: 0.2 } }}
       style={{
         position: "relative", overflow: "hidden",
-        background: "rgba(91,138,247,0.04)",
-        border: "1px solid rgba(91,138,247,0.14)", borderRadius: 16,
+        background: isBattle
+          ? "linear-gradient(135deg,rgba(255,80,30,0.08) 0%,rgba(0,0,0,0.04) 55%,rgba(255,140,0,0.05) 100%)"
+          : "rgba(91,138,247,0.04)",
+        border: isBattle ? "1.5px solid rgba(255,100,30,0.45)" : "1px solid rgba(91,138,247,0.14)",
+        borderRadius: 16,
+        boxShadow: isBattle ? "0 0 32px rgba(255,80,30,0.12), inset 0 0 24px rgba(255,80,30,0.04)" : "none",
         ...(isMobileDevice ? {} : { backdropFilter: "blur(24px)", WebkitBackdropFilter: "blur(24px)" }),
       }}
     >
@@ -178,8 +190,16 @@ function TacticCard({ tactic, index }: { tactic: PremiumTactic; index: number })
                   {n.label}
                 </motion.div>
               ); })()}
+              {tactic.battleTactic && (
+                <motion.div
+                  animate={{ scale: [1, 1.08, 1], boxShadow: ["0 0 0px rgba(255,100,30,0)", "0 0 14px rgba(255,100,30,0.5)", "0 0 0px rgba(255,100,30,0)"] }}
+                  transition={{ duration: 1.6, repeat: Infinity }}
+                  style={{ display: "inline-flex", alignItems: "center", gap: 4, background: BATTLE.bg, border: `1px solid ${BATTLE.border}`, borderRadius: 999, padding: "3px 12px", fontSize: 8.5, fontWeight: 900, letterSpacing: "0.16em", textTransform: "uppercase", color: BATTLE.color }}>
+                  {BATTLE.label}
+                </motion.div>
+              )}
             </div>
-            <h3 style={{ margin: "0 0 3px", fontSize: "clamp(1.05rem,2.5vw,1.35rem)", fontFamily: "'Outfit', sans-serif", fontWeight: 900, letterSpacing: "0.01em", color: "#ffffff", lineHeight: 1.1 }}>
+            <h3 style={{ margin: "0 0 3px", fontSize: "clamp(1.05rem,2.5vw,1.35rem)", fontFamily: "'Outfit', sans-serif", fontWeight: 900, letterSpacing: "0.01em", color: isBattle ? "#ff9060" : "#ffffff", lineHeight: 1.1 }}>
               {tactic.name}
             </h3>
             <div style={{ fontSize: 11, color: "rgba(255,255,255,0.42)", fontWeight: 600 }}>{tactic.scenario}</div>
@@ -236,6 +256,7 @@ function TacticCard({ tactic, index }: { tactic: PremiumTactic; index: number })
 function TeaserCard({ tactic, index }: { tactic: PremiumTactic; index: number }) {
   const { t } = useLang();
   const loc = LOC_STYLE[tactic.location];
+  const isBattle = !!tactic.battleTactic;
   return (
     <motion.div
       initial={{ opacity: 0, y: 24 }}
@@ -244,8 +265,12 @@ function TeaserCard({ tactic, index }: { tactic: PremiumTactic; index: number })
       transition={{ duration: 0.45, delay: index * 0.08, ease: EASE }}
       style={{
         position: "relative", overflow: "hidden",
-        background: "rgba(91,138,247,0.04)",
-        border: "1px solid rgba(91,138,247,0.14)", borderRadius: 18,
+        background: isBattle
+          ? "linear-gradient(135deg,rgba(255,80,30,0.08) 0%,rgba(0,0,0,0.04) 55%,rgba(255,140,0,0.05) 100%)"
+          : "rgba(91,138,247,0.04)",
+        border: isBattle ? "1.5px solid rgba(255,100,30,0.45)" : "1px solid rgba(91,138,247,0.14)",
+        borderRadius: 18,
+        boxShadow: isBattle ? "0 0 32px rgba(255,80,30,0.12)" : "none",
         backdropFilter: "blur(24px)", WebkitBackdropFilter: "blur(24px)",
       }}
     >
@@ -295,8 +320,16 @@ function TeaserCard({ tactic, index }: { tactic: PremiumTactic; index: number })
                   {n.label}
                 </motion.div>
               ); })()}
+              {tactic.battleTactic && (
+                <motion.div
+                  animate={{ scale: [1, 1.08, 1], boxShadow: ["0 0 0px rgba(255,100,30,0)", "0 0 12px rgba(255,100,30,0.5)", "0 0 0px rgba(255,100,30,0)"] }}
+                  transition={{ duration: 1.6, repeat: Infinity }}
+                  style={{ display: "inline-flex", alignItems: "center", gap: 3, background: BATTLE.bg, border: `1px solid ${BATTLE.border}`, borderRadius: 999, padding: "3px 10px", fontSize: 8, fontWeight: 900, letterSpacing: "0.15em", textTransform: "uppercase", color: BATTLE.color }}>
+                  {BATTLE.label}
+                </motion.div>
+              )}
             </div>
-            <div style={{ fontSize: "clamp(1rem,2vw,1.2rem)", fontWeight: 900, color: "#ffffff", fontFamily: "'Outfit', sans-serif", letterSpacing: "0.02em", lineHeight: 1.1 }}>
+            <div style={{ fontSize: "clamp(1rem,2vw,1.2rem)", fontWeight: 900, color: isBattle ? "#ff9060" : "#ffffff", fontFamily: "'Outfit', sans-serif", letterSpacing: "0.02em", lineHeight: 1.1 }}>
               {tactic.formation}
             </div>
             <div style={{ fontSize: 10, color: "rgba(255,255,255,0.35)", fontWeight: 600, marginTop: 2 }}>{tactic.scenario}</div>
@@ -354,6 +387,259 @@ function TeaserCard({ tactic, index }: { tactic: PremiumTactic; index: number })
           <p style={{ margin: 0, fontSize: 12, lineHeight: 1.6, color: "rgba(255,255,255,0.5)" }}>
             {tactic.note.slice(0, 60)}...
           </p>
+        </div>
+      </div>
+    </motion.div>
+  );
+}
+
+// ── Highlight theme helper ───────────────────────────────────────────
+function getHTheme(tactic: PremiumTactic) {
+  if (tactic.fireTactic) return {
+    bg: "linear-gradient(135deg,rgba(255,20,0,0.14) 0%,rgba(5,2,0,0.97) 45%,rgba(255,100,0,0.09) 100%)",
+    border: "rgba(255,60,0,0.58)", shadow: "0 0 50px rgba(255,40,0,0.22),0 0 0 1px rgba(255,80,0,0.14),inset 0 0 30px rgba(255,40,0,0.05)",
+    bar: "linear-gradient(90deg,#ff0000,#ff6600,#ffcc00,#ff6600,#ff0000)",
+    dot: "#ff6600", accent: "#ffaa30",
+    efBg: "rgba(255,100,0,0.08)", efBorder: "rgba(255,100,0,0.28)", efColor: "#ffaa30",
+    badgeKey: "fire.bestHomeBadge", badgeBg: "linear-gradient(135deg,rgba(255,30,0,0.22),rgba(255,140,0,0.15))", badgeBorder: "rgba(255,80,0,0.7)", badgeColor: "#ffaa30",
+    extraBadgeKey: "fire.vsAny",
+    lockBg: "rgba(255,80,0,0.13)", lockBorder: "rgba(255,80,0,0.4)",
+    vipBg: "linear-gradient(135deg,rgba(255,100,0,0.22),rgba(255,60,0,0.08))", vipBorder: "rgba(255,100,0,0.42)", vipColor: "#ffaa30", vipLabel: "🔥 VIP",
+    titleFire: true,
+  };
+  return {
+    bg: "linear-gradient(135deg,rgba(255,80,30,0.10) 0%,rgba(8,8,24,0.97) 40%,rgba(255,140,0,0.07) 100%)",
+    border: "rgba(255,100,30,0.52)", shadow: "0 0 40px rgba(255,80,30,0.15),0 0 0 1px rgba(255,80,30,0.12),inset 0 0 24px rgba(255,80,30,0.04)",
+    bar: "linear-gradient(90deg,#ff4500,#ff8c00,#ff4500)",
+    dot: "#ff7040", accent: "#ff9060",
+    efBg: "rgba(255,100,30,0.08)", efBorder: "rgba(255,100,30,0.28)", efColor: "#ff9060",
+    badgeKey: null as null, badgeBg: BATTLE.bg, badgeBorder: BATTLE.border, badgeColor: BATTLE.color,
+    extraBadgeKey: null as null,
+    lockBg: "rgba(245,166,35,0.12)", lockBorder: "rgba(245,166,35,0.35)",
+    vipBg: "linear-gradient(135deg,rgba(245,166,35,0.18),rgba(255,200,82,0.08))", vipBorder: "rgba(245,166,35,0.32)", vipColor: "#ffc852", vipLabel: "👑 VIP",
+    titleFire: false,
+  };
+}
+
+// ── Highlight card (unlocked) — for top 3 new tactics ────────────────
+function HighlightCard({ tactic, index }: { tactic: PremiumTactic; index: number }) {
+  const { t } = useLang();
+  const loc = LOC_STYLE[tactic.location];
+  const th = getHTheme(tactic);
+  const n = isHotNew(tactic.addedAt) ? HOT_NEW : COOL_NEW;
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 28 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-30px" }}
+      transition={{ duration: 0.5, delay: index * 0.09, ease: EASE }}
+      whileHover={{ y: -5, transition: { duration: 0.2 } }}
+      style={{ position: "relative", overflow: "hidden", background: th.bg, border: `1.5px solid ${th.border}`, borderRadius: 18, boxShadow: th.shadow }}
+    >
+      <div style={{ height: 3, background: th.bar, flexShrink: 0 }} />
+      {!isMobileDevice && (
+        <motion.div animate={{ x: ["-110%","210%"] }} transition={{ repeat: Infinity, repeatDelay: 7+index*1.5, duration: 1.1, ease: "easeInOut" }}
+          style={{ position: "absolute", inset: 0, pointerEvents: "none", background: "linear-gradient(110deg,transparent 30%,rgba(255,255,255,0.03) 50%,transparent 70%)", transform: "skewX(-12deg)" }} />
+      )}
+
+      <div style={{ padding: "18px 20px 18px" }}>
+        {/* Badge strip */}
+        <div style={{ display: "flex", flexWrap: "wrap", gap: 5, marginBottom: 12 }}>
+          {tactic.isNew && (
+            <motion.div animate={{ scale:[1,1.07,1] }} transition={{ duration:2, repeat:Infinity }}
+              style={{ display:"inline-flex", alignItems:"center", gap:4, background:n.bg, border:`1px solid ${n.border}`, borderRadius:999, padding:"2px 9px", fontSize:8, fontWeight:900, letterSpacing:"0.18em", textTransform:"uppercase", color:n.color }}>
+              {n.label}
+            </motion.div>
+          )}
+          <motion.div
+            animate={{ scale:[1,1.08,1], boxShadow:[`0 0 0px ${th.badgeColor}00`,`0 0 12px ${th.badgeColor}88`,`0 0 0px ${th.badgeColor}00`] }}
+            transition={{ duration:1.6, repeat:Infinity }}
+            style={{ display:"inline-flex", alignItems:"center", gap:4, background:th.badgeBg, border:`1px solid ${th.badgeBorder}`, borderRadius:999, padding:"2px 10px", fontSize:8, fontWeight:900, letterSpacing:"0.16em", textTransform:"uppercase", color:th.badgeColor }}>
+            {th.badgeKey ? t(th.badgeKey) : BATTLE.label}
+          </motion.div>
+          {th.extraBadgeKey && (
+            <div style={{ display:"inline-flex", alignItems:"center", gap:4, background:th.efBg, border:`1px solid ${th.efBorder}`, borderRadius:999, padding:"2px 9px", fontSize:8, fontWeight:900, letterSpacing:"0.14em", textTransform:"uppercase", color:th.efColor }}>
+              {t(th.extraBadgeKey)}
+            </div>
+          )}
+          {tactic.solid && (
+            <div style={{ display:"inline-flex", alignItems:"center", gap:3, background:"rgba(91,138,247,0.10)", border:"1px solid rgba(91,138,247,0.3)", borderRadius:999, padding:"2px 9px", fontSize:8, fontWeight:900, letterSpacing:"0.15em", textTransform:"uppercase", color:"#7eb8ff" }}>
+              ✦ SOLID
+            </div>
+          )}
+          <div style={{ display:"inline-flex", alignItems:"center", gap:3, background:loc.dim, border:`1px solid ${loc.border}`, borderRadius:999, padding:"2px 9px" }}>
+            <span style={{ fontSize:9 }}>{loc.icon}</span>
+            <span style={{ fontSize:8, fontWeight:900, textTransform:"uppercase", letterSpacing:"0.13em", color:loc.primary }}>{tactic.location==="home"?t("premium.locHome"):t("premium.locAway")}</span>
+          </div>
+          {tactic.winRate && (
+            <motion.div animate={{ scale:[1,1.06,1] }} transition={{ duration:2.4, repeat:Infinity }}
+              style={{ display:"inline-flex", alignItems:"center", gap:3, background:"rgba(245,166,35,0.08)", border:"1px solid rgba(245,166,35,0.28)", borderRadius:999, padding:"2px 9px" }}>
+              <span style={{ fontSize:9 }}>🏆</span>
+              <span style={{ fontSize:8, fontWeight:900, letterSpacing:"0.1em", color:"#ffc852" }}>%{tactic.winRate} {t("premium.winRateSuffix")}</span>
+            </motion.div>
+          )}
+        </div>
+
+        {/* Formation + title row */}
+        <div style={{ display:"flex", gap:12, alignItems:"flex-start", marginBottom:14 }}>
+          <div style={{ background:"rgba(255,255,255,0.03)", borderRadius:10, border:`1px solid ${th.border.replace("0.58","0.18").replace("0.52","0.15")}`, padding:"8px 10px", flexShrink:0 }}>
+            <FormationDots formation={tactic.formation} color={th.dot} size={7} />
+          </div>
+          <div style={{ flex:1, minWidth:0 }}>
+            <h3 style={{ margin:"0 0 3px", fontSize:"clamp(1rem,2.2vw,1.25rem)", fontFamily:"'Outfit',sans-serif", fontWeight:900, lineHeight:1.1,
+              ...(th.titleFire ? { background:"linear-gradient(90deg,#ff6600,#ffcc00)", WebkitBackgroundClip:"text", WebkitTextFillColor:"transparent", backgroundClip:"text", filter:"drop-shadow(0 0 8px rgba(255,100,0,0.45))" } : { color:th.accent }) }}>
+              {tactic.name}
+            </h3>
+            <div style={{ fontSize:10.5, color:"rgba(255,255,255,0.4)", fontWeight:600 }}>{tactic.scenario}</div>
+          </div>
+        </div>
+
+        {/* Formation badge */}
+        <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:14 }}>
+          <div style={{ display:"inline-flex", alignItems:"center", background:`${th.efBg}`, border:`1px solid ${th.efBorder}`, borderRadius:7, padding:"4px 12px" }}>
+            <span style={{ fontSize:13, fontWeight:900, color:th.accent, fontFamily:"'Outfit',sans-serif", letterSpacing:"0.05em" }}>{tactic.formation}</span>
+          </div>
+          <span style={{ fontSize:11, fontWeight:600, color:"rgba(255,255,255,0.32)" }}>· {tactic.playStyle}</span>
+        </div>
+
+        {/* Sliders */}
+        <div style={{ display:"flex", flexDirection:"column", gap:10, marginBottom:14 }}>
+          <Slider label={t("premium.pressure")} value={tactic.pressure} color="#ffffff" />
+          <Slider label={t("premium.style")} value={tactic.style} color="#ffffff" />
+          <Slider label={t("premium.tempo")} value={tactic.tempo} color="#ffffff" />
+        </div>
+
+        <div style={{ height:1, background:"rgba(255,255,255,0.06)", marginBottom:12 }} />
+
+        {/* Line tactics */}
+        <div style={{ display:"flex", gap:5, marginBottom:8 }}>
+          <LineCell role={t("premium.lineForward")} value={tactic.forward} icon="⚡" />
+          <LineCell role={t("premium.lineMidfield")} value={tactic.midfield} icon="⚙️" />
+          <LineCell role={t("premium.lineDefense")} value={tactic.defenseLine} icon="🛡️" />
+        </div>
+        <div style={{ display:"flex", gap:5, marginBottom: tactic.effectiveVs||tactic.note ? 12 : 0 }}>
+          <div style={{ flex:1, display:"flex", alignItems:"center", gap:5, background:"rgba(255,255,255,0.03)", border:"1px solid rgba(255,255,255,0.06)", borderRadius:8, padding:"5px 8px" }}>
+            <span style={{ fontSize:10 }}>🔷</span>
+            <span style={{ fontSize:9.5, fontWeight:700, color:"rgba(255,255,255,0.5)" }}>{tactic.defenseShape}</span>
+          </div>
+          <div style={{ flex:1, display:"flex", alignItems:"center", gap:5, background:"rgba(255,255,255,0.03)", border:"1px solid rgba(255,255,255,0.06)", borderRadius:8, padding:"5px 8px" }}>
+            <span style={{ fontSize:10 }}>🚩</span>
+            <span style={{ fontSize:9.5, fontWeight:700, color:"rgba(255,255,255,0.5)" }}>{t("premium.offside")} {tactic.offside}</span>
+          </div>
+        </div>
+
+        {/* Effective vs */}
+        {tactic.effectiveVs && (
+          <div style={{ display:"flex", alignItems:"center", gap:5, flexWrap:"wrap", marginBottom:12 }}>
+            <span style={{ fontSize:8, fontWeight:800, textTransform:"uppercase", letterSpacing:"0.12em", color:"rgba(255,255,255,0.3)" }}>{t("premium.effective")}</span>
+            {tactic.effectiveVs.map(f => (
+              <div key={f} style={{ fontSize:10, fontWeight:900, background:th.efBg, border:`1px solid ${th.efBorder}`, borderRadius:6, padding:"2px 9px", color:th.efColor }}>{f}</div>
+            ))}
+          </div>
+        )}
+
+        {/* Note */}
+        <p style={{ margin:0, fontSize:12, lineHeight:1.65, color:"rgba(255,255,255,0.42)" }}>{tactic.note}</p>
+        {tactic.warning && (
+          <div style={{ marginTop:10, display:"flex", alignItems:"flex-start", gap:6, background:"rgba(255,255,255,0.03)", border:"1px solid rgba(255,255,255,0.09)", borderRadius:9, padding:"8px 10px" }}>
+            <span style={{ fontSize:12, flexShrink:0 }}>⚠️</span>
+            <span style={{ fontSize:11, color:"rgba(255,255,255,0.52)", lineHeight:1.5, fontWeight:600 }}>{tactic.warning}</span>
+          </div>
+        )}
+      </div>
+    </motion.div>
+  );
+}
+
+// ── Highlight teaser card (locked) ───────────────────────────────────
+function HighlightTeaserCard({ tactic, index }: { tactic: PremiumTactic; index: number }) {
+  const { t } = useLang();
+  const loc = LOC_STYLE[tactic.location];
+  const th = getHTheme(tactic);
+  const n = isHotNew(tactic.addedAt) ? HOT_NEW : COOL_NEW;
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
+      transition={{ duration: 0.45, delay: index * 0.09, ease: EASE }}
+      style={{ position:"relative", overflow:"hidden", background:th.bg, border:`1.5px solid ${th.border}`, borderRadius:18, boxShadow:th.shadow }}
+    >
+      <div style={{ height: 3, background: th.bar }} />
+
+      {/* VIP ribbon */}
+      <div style={{ position:"absolute", top:3, right:0, background:th.vipBg, border:`1px solid ${th.vipBorder}`, padding:"4px 16px 4px 20px", borderBottomLeftRadius:12,
+        fontSize:8.5, fontWeight:900, letterSpacing:"0.18em", color:th.vipColor, textTransform:"uppercase", zIndex:3, clipPath:"polygon(12px 0,100% 0,100% 100%,0 100%)" }}>
+        {th.vipLabel} EXCLUSIVE
+      </div>
+
+      <div style={{ padding:"18px 20px 18px" }}>
+        {/* Badge strip */}
+        <div style={{ display:"flex", flexWrap:"wrap", gap:5, marginBottom:12 }}>
+          {tactic.isNew && (
+            <motion.div animate={{ scale:[1,1.07,1] }} transition={{ duration:2, repeat:Infinity }}
+              style={{ display:"inline-flex", alignItems:"center", gap:4, background:n.bg, border:`1px solid ${n.border}`, borderRadius:999, padding:"2px 9px", fontSize:8, fontWeight:900, letterSpacing:"0.18em", textTransform:"uppercase", color:n.color }}>
+              {n.label}
+            </motion.div>
+          )}
+          <motion.div
+            animate={{ scale:[1,1.08,1], boxShadow:[`0 0 0px ${th.badgeColor}00`,`0 0 12px ${th.badgeColor}88`,`0 0 0px ${th.badgeColor}00`] }}
+            transition={{ duration:1.6, repeat:Infinity }}
+            style={{ display:"inline-flex", alignItems:"center", gap:4, background:th.badgeBg, border:`1px solid ${th.badgeBorder}`, borderRadius:999, padding:"2px 10px", fontSize:8, fontWeight:900, letterSpacing:"0.16em", textTransform:"uppercase", color:th.badgeColor }}>
+            {th.badgeKey ? t(th.badgeKey) : BATTLE.label}
+          </motion.div>
+          {th.extraBadgeKey && (
+            <div style={{ display:"inline-flex", alignItems:"center", gap:4, background:th.efBg, border:`1px solid ${th.efBorder}`, borderRadius:999, padding:"2px 9px", fontSize:8, fontWeight:900, letterSpacing:"0.14em", textTransform:"uppercase", color:th.efColor }}>
+              {t(th.extraBadgeKey)}
+            </div>
+          )}
+          <div style={{ display:"inline-flex", alignItems:"center", gap:3, background:loc.dim, border:`1px solid ${loc.border}`, borderRadius:999, padding:"2px 9px" }}>
+            <span style={{ fontSize:9 }}>{loc.icon}</span>
+            <span style={{ fontSize:8, fontWeight:900, textTransform:"uppercase", letterSpacing:"0.13em", color:loc.primary }}>{tactic.location==="home"?t("premium.locHome"):t("premium.locAway")}</span>
+          </div>
+          {tactic.winRate && (
+            <div style={{ display:"inline-flex", alignItems:"center", gap:3, background:"rgba(255,255,255,0.05)", border:"1px solid rgba(255,255,255,0.15)", borderRadius:999, padding:"2px 9px" }}>
+              <span style={{ fontSize:9 }}>🏆</span>
+              <span style={{ fontSize:8, fontWeight:900, color:"rgba(255,255,255,0.7)" }}>%{tactic.winRate}</span>
+            </div>
+          )}
+        </div>
+
+        {/* Formation + title */}
+        <div style={{ display:"flex", gap:12, alignItems:"flex-start", marginBottom:14 }}>
+          <div style={{ background:"rgba(255,255,255,0.03)", borderRadius:10, border:`1px solid ${th.border.replace("0.58","0.15").replace("0.52","0.12")}`, padding:"8px 10px", flexShrink:0 }}>
+            <FormationDots formation={tactic.formation} color={th.dot} size={7} />
+          </div>
+          <div style={{ flex:1, minWidth:0 }}>
+            <div style={{ fontSize:"clamp(1rem,2vw,1.2rem)", fontWeight:900, fontFamily:"'Outfit',sans-serif", lineHeight:1.1, marginBottom:3,
+              ...(th.titleFire ? { background:"linear-gradient(90deg,#ff6600,#ffcc00)", WebkitBackgroundClip:"text", WebkitTextFillColor:"transparent", backgroundClip:"text" } : { color:th.accent }) }}>
+              {tactic.formation}
+            </div>
+            <div style={{ fontSize:10, color:"rgba(255,255,255,0.35)", fontWeight:600 }}>{tactic.scenario}</div>
+          </div>
+        </div>
+
+        {/* Blurred sliders + lock */}
+        <div style={{ position:"relative", marginBottom:12 }}>
+          <div style={{ filter:"blur(6px)", userSelect:"none", pointerEvents:"none", opacity:0.5 }}>
+            {[t("premium.pressure"),t("premium.style"),t("premium.tempo")].map((lbl,si) => (
+              <div key={si} style={{ marginBottom:9 }}>
+                <div style={{ display:"flex", justifyContent:"space-between", marginBottom:4 }}>
+                  <span style={{ fontSize:9, fontWeight:800, textTransform:"uppercase", letterSpacing:"0.14em", color:"rgba(255,255,255,0.38)" }}>{lbl}</span>
+                  <span style={{ fontSize:22, fontWeight:900, color:"rgba(255,255,255,0.6)", fontFamily:"'Outfit',sans-serif" }}>??</span>
+                </div>
+                <div style={{ height:4, borderRadius:99, background:"rgba(255,255,255,0.08)" }} />
+              </div>
+            ))}
+          </div>
+          <div style={{ position:"absolute", inset:0, display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", gap:5 }}>
+            <motion.div animate={{ scale:[1,1.1,1] }} transition={{ duration:2.8, repeat:Infinity }}
+              style={{ width:42, height:42, borderRadius:"50%", background:th.lockBg, border:`1px solid ${th.lockBorder}`, display:"flex", alignItems:"center", justifyContent:"center", fontSize:18 }}>
+              🔒
+            </motion.div>
+            <span style={{ fontSize:8.5, fontWeight:900, textTransform:"uppercase", letterSpacing:"0.16em", color:"rgba(255,255,255,0.55)" }}>{t("premium.vipRequired")}</span>
+          </div>
+        </div>
+
+        {/* Blurred note */}
+        <div style={{ filter:"blur(5px)", userSelect:"none", pointerEvents:"none", opacity:0.4 }}>
+          <p style={{ margin:0, fontSize:11.5, lineHeight:1.6, color:"rgba(255,255,255,0.5)" }}>{tactic.note.slice(0,60)}...</p>
         </div>
       </div>
     </motion.div>
@@ -937,13 +1223,60 @@ export default function PremiumTactics() {
         </motion.div>
 
         {/* ── Tactic cards ── */}
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%,280px), 1fr))", gap: 18 }}>
-          {tactics.map((tactic, i) =>
-            isPremium
-              ? <TacticCard key={tactic.id} tactic={tactic} index={i} />
-              : <TeaserCard key={tactic.id} tactic={tactic} index={i} />
-          )}
-        </div>
+        {(() => {
+          const highlights = tactics.filter(t => t.fireTactic || t.battleTactic);
+          const classics   = tactics.filter(t => !t.fireTactic && !t.battleTactic);
+          return (
+            <>
+              {highlights.length > 0 && (
+                <>
+                  <motion.div
+                    initial={{ opacity:0, y:12 }} whileInView={{ opacity:1, y:0 }} viewport={{ once:true }}
+                    transition={{ duration:0.4, ease:EASE }}
+                    style={{ display:'flex', alignItems:'center', gap:12, marginBottom:16 }}
+                  >
+                    <div style={{ height:1, flex:1, background:'linear-gradient(90deg,rgba(255,80,0,0.5),transparent)' }} />
+                    <div style={{ display:'inline-flex', alignItems:'center', gap:8, background:'rgba(255,60,0,0.08)', border:'1px solid rgba(255,60,0,0.3)', borderRadius:999, padding:'6px 16px' }}>
+                      <motion.span animate={{ opacity:[1,0.4,1] }} transition={{ duration:1.4, repeat:Infinity }}
+                        style={{ width:6, height:6, borderRadius:'50%', background:'#ff5500', display:'block', flexShrink:0, boxShadow:'0 0 8px #ff5500' }} />
+                      <span style={{ fontSize:9, fontWeight:900, textTransform:'uppercase', letterSpacing:'0.18em', color:'#ff8844' }}>{t('premium.newTacticsTitle')}</span>
+                    </div>
+                    <div style={{ height:1, flex:1, background:'linear-gradient(90deg,transparent,rgba(255,80,0,0.5))' }} />
+                  </motion.div>
+                  <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(min(100%,300px),1fr))', gap:18, marginBottom:32 }}>
+                    {highlights.map((tactic,i) =>
+                      isPremium
+                        ? <HighlightCard key={tactic.id} tactic={tactic} index={i} />
+                        : <HighlightTeaserCard key={tactic.id} tactic={tactic} index={i} />
+                    )}
+                  </div>
+                </>
+              )}
+              {classics.length > 0 && (
+                <>
+                  <motion.div
+                    initial={{ opacity:0, y:12 }} whileInView={{ opacity:1, y:0 }} viewport={{ once:true }}
+                    transition={{ duration:0.4, ease:EASE }}
+                    style={{ display:'flex', alignItems:'center', gap:12, marginBottom:16 }}
+                  >
+                    <div style={{ height:1, flex:1, background:'linear-gradient(90deg,rgba(91,138,247,0.4),transparent)' }} />
+                    <div style={{ display:'inline-flex', alignItems:'center', gap:8, background:'rgba(91,138,247,0.07)', border:'1px solid rgba(91,138,247,0.25)', borderRadius:999, padding:'6px 16px' }}>
+                      <span style={{ fontSize:9, fontWeight:900, textTransform:'uppercase', letterSpacing:'0.18em', color:'rgba(91,138,247,0.85)' }}>{t('premium.classicTacticsTitle')}</span>
+                    </div>
+                    <div style={{ height:1, flex:1, background:'linear-gradient(90deg,transparent,rgba(91,138,247,0.4))' }} />
+                  </motion.div>
+                  <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(min(100%,280px),1fr))', gap:18 }}>
+                    {classics.map((tactic,i) =>
+                      isPremium
+                        ? <TacticCard key={tactic.id} tactic={tactic} index={i} />
+                        : <TeaserCard key={tactic.id} tactic={tactic} index={i} />
+                    )}
+                  </div>
+                </>
+              )}
+            </>
+          );
+        })()}
       </div>
     </section>
   );
