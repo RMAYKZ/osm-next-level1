@@ -458,9 +458,9 @@ function drawPlayer(
     :  size === 'fwd' ? '#f43f5e'
     :                   'rgba(244,63,94,0.8)')
     : (size === 'gk'  ? '#f5a623'
-    :  size === 'fwd' ? '#5b8af7'
-    :  size === 'mid' ? 'rgba(91,138,247,0.85)'
-    :                   'rgba(16,217,161,0.85)');
+    :  size === 'fwd' ? '#ef4444'
+    :  size === 'mid' ? 'rgba(239,68,68,0.85)'
+    :                   'rgba(249,115,22,0.85)');
   const r = size === 'fwd' ? 9 : size === 'gk' ? 9 : 8;
   const lw = size === 'fwd' ? 2.3 : size === 'gk' ? 2 : 1.8;
   if (size === 'fwd' || size === 'gk') {
@@ -557,20 +557,20 @@ const ATF_SAVE_AUTH: Record<string, string> = {
 
 // ─── GRADIENT HELPERS ─────────────────────────────────────────────────
 function _pGrad(v: number): string {
-  if (v >= 70) return 'linear-gradient(90deg,#f43f5e,#9161f5)';
-  if (v >= 45) return 'linear-gradient(90deg,#f5a623,#f43f5e)';
-  if (v >= 25) return 'linear-gradient(90deg,#10d9a1,#5b8af7)';
-  return 'linear-gradient(90deg,#5b8af7,#9161f5)';
+  if (v >= 70) return 'linear-gradient(90deg,#dc2626,#f97316)';
+  if (v >= 45) return 'linear-gradient(90deg,#f5a623,#ef4444)';
+  if (v >= 25) return 'linear-gradient(90deg,#ef4444,#f97316)';
+  return 'linear-gradient(90deg,#ef4444,#f97316)';
 }
 function _sGrad(v: number): string {
-  if (v >= 70) return 'linear-gradient(90deg,#f43f5e,#9161f5)';
-  if (v >= 45) return 'linear-gradient(90deg,#10d9a1,#5b8af7)';
-  return 'linear-gradient(90deg,#5b8af7,#9161f5)';
+  if (v >= 70) return 'linear-gradient(90deg,#dc2626,#f97316)';
+  if (v >= 45) return 'linear-gradient(90deg,#ef4444,#f97316)';
+  return 'linear-gradient(90deg,#ef4444,#f97316)';
 }
 function _tGrad(v: number): string {
-  if (v >= 70) return 'linear-gradient(90deg,#f5a623,#f43f5e)';
-  if (v >= 45) return 'linear-gradient(90deg,#10d9a1,#5b8af7)';
-  return 'linear-gradient(90deg,#5b8af7,#9161f5)';
+  if (v >= 70) return 'linear-gradient(90deg,#f5a623,#ef4444)';
+  if (v >= 45) return 'linear-gradient(90deg,#ef4444,#f97316)';
+  return 'linear-gradient(90deg,#ef4444,#f97316)';
 }
 
 // ─── SUB-COMPONENTS ───────────────────────────────────────────────────
@@ -623,8 +623,8 @@ function ATFLineTacticRow({ label, rawVal: _rawVal, displayVal, isLast }: {
       <span style={{ color: 'rgba(255,255,255,0.42)', fontSize: 11.5, fontWeight: 600, letterSpacing: '0.04em' }}>{label}</span>
       <span style={{
         fontSize: 11, fontWeight: 700, letterSpacing: '0.06em',
-        color: '#7eb8ff', padding: '3px 10px', borderRadius: 99,
-        background: 'rgba(91,138,247,0.08)', border: '1px solid rgba(91,138,247,0.22)',
+        color: '#f87171', padding: '3px 10px', borderRadius: 99,
+        background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.22)',
       }}>{displayVal}</span>
     </div>
   );
@@ -775,7 +775,7 @@ export default function AntiTacticFinder() {
         ctx.save();
         const ourLabelAlpha = Math.min(el / 0.6, 1) * 0.55;
         ctx.globalAlpha = ourLabelAlpha;
-        ctx.fillStyle = '#5b8af7';
+        ctx.fillStyle = '#ef4444';
         ctx.font = '600 9px Inter,sans-serif';
         ctx.textAlign = 'left';
         ctx.textBaseline = 'bottom';
@@ -944,9 +944,9 @@ export default function AntiTacticFinder() {
         aria-hidden="true"
         animate={isMobile ? { opacity: 0.22 } : { opacity: [0.14, 0.38, 0.14] }}
         transition={isMobile ? {} : { duration: 7, repeat: Infinity }}
-        style={{ position:'absolute', top:'4%', right:'-10%', width:'48%', height:'58%', borderRadius:'50%', background:'radial-gradient(ellipse, rgba(91,138,247,0.08) 0%, transparent 70%)', filter:'blur(90px)', pointerEvents:'none', zIndex:0 }}
+        style={{ position:'absolute', top:'4%', right:'-10%', width:'48%', height:'58%', borderRadius:'50%', background:'radial-gradient(ellipse, rgba(239,68,68,0.07) 0%, transparent 70%)', filter:'blur(90px)', pointerEvents:'none', zIndex:0 }}
       />
-      <div aria-hidden="true" style={{ position:'absolute', bottom:'8%', left:'-8%', width:'40%', height:'50%', borderRadius:'50%', background:'radial-gradient(ellipse, rgba(16,217,161,0.07) 0%, transparent 70%)', filter:'blur(80px)', pointerEvents:'none', zIndex:0 }} />
+      <div aria-hidden="true" style={{ position:'absolute', bottom:'8%', left:'-8%', width:'40%', height:'50%', borderRadius:'50%', background:'radial-gradient(ellipse, rgba(249,115,22,0.06) 0%, transparent 70%)', filter:'blur(80px)', pointerEvents:'none', zIndex:0 }} />
 
       {/* ── Section heading (outside card) ── */}
       <motion.div
@@ -977,7 +977,7 @@ export default function AntiTacticFinder() {
         </h2>
 
         {/* Thin accent line */}
-        <div style={{ width: 'clamp(60px,12vw,120px)', height: 2, background: 'linear-gradient(90deg, transparent, #10d9a1, transparent)', margin: '10px auto 18px', borderRadius: 2 }} />
+        <div style={{ width: 'clamp(60px,12vw,120px)', height: 2, background: 'linear-gradient(90deg, transparent, #ef4444, transparent)', margin: '10px auto 18px', borderRadius: 2 }} />
 
         <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: 'clamp(13px,2vw,15px)', lineHeight: 1.75, maxWidth: 600, margin: '0 auto 22px', textAlign: 'center', fontStyle: 'normal' }}>
           {ATF_DESC[lang] ?? ATF_DESC.en}
@@ -985,19 +985,19 @@ export default function AntiTacticFinder() {
 
         {/* Live indicator row */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap', justifyContent: 'center' }}>
-          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '7px 16px', borderRadius: 99, background: 'rgba(16,217,161,0.08)', border: '1px solid rgba(16,217,161,0.3)', backdropFilter: 'blur(8px)' }}>
+          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '7px 16px', borderRadius: 99, background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.3)', backdropFilter: 'blur(8px)' }}>
             <motion.span
               animate={{ opacity: [1, 0.3, 1] }} transition={{ duration: 1.5, repeat: Infinity }}
-              style={{ width: 7, height: 7, borderRadius: '50%', background: '#10d9a1', display: 'inline-block', boxShadow: '0 0 6px rgba(16,217,161,0.7)' }}
+              style={{ width: 7, height: 7, borderRadius: '50%', background: '#ef4444', display: 'inline-block', boxShadow: '0 0 6px rgba(239,68,68,0.7)' }}
             />
-            <span style={{ color: '#4aedc0', fontSize: 11.5, fontWeight: 700, letterSpacing: '0.07em' }}>
+            <span style={{ color: '#f87171', fontSize: 11.5, fontWeight: 700, letterSpacing: '0.07em' }}>
               {ATF_LIVE[lang] ?? ATF_LIVE.en}
             </span>
           </div>
           <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '7px 14px', borderRadius: 99, background: 'rgba(244,63,94,0.07)', border: '1px solid rgba(244,63,94,0.25)' }}>
             <span style={{ fontSize: 10, color: 'rgba(244,63,94,0.9)', fontWeight: 700, letterSpacing: '0.06em' }}>OPP</span>
             <span style={{ width: 1, height: 10, background: 'rgba(255,255,255,0.15)' }} />
-            <span style={{ fontSize: 10, color: 'rgba(91,138,247,0.9)', fontWeight: 700, letterSpacing: '0.06em' }}>YOU</span>
+            <span style={{ fontSize: 10, color: 'rgba(239,68,68,0.9)', fontWeight: 700, letterSpacing: '0.06em' }}>YOU</span>
             <span style={{ fontSize: 10, color: 'rgba(255,255,255,0.35)', fontWeight: 600, letterSpacing: '0.05em', marginLeft: 2 }}>on pitch</span>
           </div>
         </div>
@@ -1049,7 +1049,7 @@ export default function AntiTacticFinder() {
                   const spaceIdx = opp.label.indexOf(' ');
                   const fmCode = spaceIdx > -1 ? opp.label.slice(0, spaceIdx) : opp.label;
                   const fmStyle = spaceIdx > -1 ? opp.label.slice(spaceIdx + 1) : '';
-                  const srCol = sr >= 90 ? '#10d9a1' : sr >= 80 ? '#5b8af7' : sr >= 70 ? '#f5a623' : '#f43f5e';
+                  const srCol = sr >= 90 ? '#ef4444' : sr >= 80 ? '#f97316' : sr >= 70 ? '#f5a623' : '#f43f5e';
                   return (
                     <motion.button
                       key={opp.key}

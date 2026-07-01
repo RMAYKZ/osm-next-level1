@@ -90,9 +90,9 @@ export default function AnimatedShaderBackground() {
                   + vec2(sin(iTime * 3.0 + i) * 0.003, cos(iTime * 3.5 - i) * 0.003);
             float tailNoise = fbm(v + vec2(iTime * 0.5, i)) * 0.3 * (1.0 - (i / 35.0));
             vec4 col = vec4(
-              0.1 + 0.3 * sin(i * 0.2 + iTime * 0.4),
-              0.3 + 0.5 * cos(i * 0.3 + iTime * 0.5),
-              0.7 + 0.3 * sin(i * 0.4 + iTime * 0.3),
+              0.88 + 0.12 * sin(i * 0.2 + iTime * 0.4),
+              0.08 + 0.10 * cos(i * 0.3 + iTime * 0.5),
+              0.02 + 0.03 * sin(i * 0.4 + iTime * 0.3),
               1.0
             );
             vec4 contrib = col
@@ -171,8 +171,8 @@ export default function AnimatedShaderBackground() {
         // the same colour mood as the shader, zero ongoing CPU/GPU cost.
         // Desktop: fallback colour shown only until WebGL paints over it.
         background: IS_MOBILE
-          ? 'radial-gradient(ellipse 80% 60% at 75% 15%, rgba(52,211,153,0.10) 0%, transparent 60%), #070711'
-          : '#070711',
+          ? 'radial-gradient(ellipse 80% 60% at 50% 10%, rgba(239,68,68,0.14) 0%, transparent 65%), #050506'
+          : '#050506',
       }}
     />
   );

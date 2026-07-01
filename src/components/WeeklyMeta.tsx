@@ -19,25 +19,25 @@ const tCat = (v: number): TempoCat =>
   v < 55 ? "slow" : v < 63 ? "controlled" : v < 72 ? "medium" : v < 80 ? "fast" : "sprint";
 
 const PRESSURE_GRAD: Record<PressureCat, string> = {
-  ultra_low: "linear-gradient(90deg,#5b8af7,#9161f5)",
-  low:        "linear-gradient(90deg,#5b8af7,#9161f5)",
-  moderate:   "linear-gradient(90deg,#10d9a1,#5b8af7)",
+  ultra_low: "linear-gradient(90deg,#ef4444,#f97316)",
+  low:        "linear-gradient(90deg,#ef4444,#f97316)",
+  moderate:   "linear-gradient(90deg,#f97316,#f59e0b)",
   high:       "linear-gradient(90deg,#f5a623,#f43f5e)",
-  very_high:  "linear-gradient(90deg,#f43f5e,#9161f5)",
+  very_high:  "linear-gradient(90deg,#dc2626,#f97316)",
 };
 const STYLE_GRAD: Record<StyleCat, string> = {
-  ultra_def:   "linear-gradient(90deg,#5b8af7,#9161f5)",
-  defensive:   "linear-gradient(90deg,#5b8af7,#9161f5)",
-  balanced:    "linear-gradient(90deg,#10d9a1,#5b8af7)",
+  ultra_def:   "linear-gradient(90deg,#ef4444,#f97316)",
+  defensive:   "linear-gradient(90deg,#ef4444,#f97316)",
+  balanced:    "linear-gradient(90deg,#f97316,#f59e0b)",
   attacking:   "linear-gradient(90deg,#f5a623,#f43f5e)",
-  full_attack: "linear-gradient(90deg,#f43f5e,#9161f5)",
+  full_attack: "linear-gradient(90deg,#dc2626,#f97316)",
 };
 const TEMPO_GRAD: Record<TempoCat, string> = {
-  slow:       "linear-gradient(90deg,#5b8af7,#9161f5)",
-  controlled: "linear-gradient(90deg,#5b8af7,#9161f5)",
-  medium:     "linear-gradient(90deg,#10d9a1,#5b8af7)",
+  slow:       "linear-gradient(90deg,#ef4444,#f97316)",
+  controlled: "linear-gradient(90deg,#ef4444,#f97316)",
+  medium:     "linear-gradient(90deg,#f97316,#f59e0b)",
   fast:       "linear-gradient(90deg,#f5a623,#f43f5e)",
-  sprint:     "linear-gradient(90deg,#f43f5e,#9161f5)",
+  sprint:     "linear-gradient(90deg,#dc2626,#f97316)",
 };
 
 // ─── i18n ─────────────────────────────────────────────────────────────────────
@@ -281,8 +281,8 @@ function WMExplainRow({ icon, title, value, text }: { icon: string; title: strin
 
 // ─── Card style constant ──────────────────────────────────────────────────────
 const CARD: React.CSSProperties = {
-  background: "rgba(91,138,247,0.04)",
-  border: "1px solid rgba(91,138,247,0.14)", borderRadius: 16,
+  background: "rgba(239,68,68,0.04)",
+  border: "1px solid rgba(239,68,68,0.14)", borderRadius: 16,
   boxShadow: "0 20px 60px rgba(0,0,0,0.5)",
 };
 
@@ -385,9 +385,9 @@ export default function WeeklyMeta() {
       >
         <span style={{
           display: "inline-block", fontSize: 11, fontWeight: 700, letterSpacing: "0.14em",
-          textTransform: "uppercase", color: "rgba(126,168,255,0.9)",
+          textTransform: "uppercase", color: "rgba(248,113,113,0.95)",
           padding: "6px 14px", borderRadius: 99,
-          background: "rgba(91,138,247,0.08)", border: "1px solid rgba(91,138,247,0.28)",
+          background: "rgba(239,68,68,0.08)", border: "1px solid rgba(239,68,68,0.28)",
           marginBottom: 20,
         }}>{t("meta.badge")}</span>
 
@@ -417,12 +417,12 @@ export default function WeeklyMeta() {
         </div>
 
         {/* Live week badge */}
-        <div style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "6px 14px", borderRadius: 99, background: "rgba(16,217,161,0.07)", border: "1px solid rgba(16,217,161,0.22)" }}>
+        <div style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "6px 14px", borderRadius: 99, background: "rgba(239,68,68,0.07)", border: "1px solid rgba(239,68,68,0.25)" }}>
           <motion.span
             animate={{ opacity: [1, 0.3, 1] }} transition={{ duration: 2, repeat: Infinity }}
-            style={{ width: 6, height: 6, borderRadius: "50%", background: "#10d9a1", display: "inline-block" }}
+            style={{ width: 6, height: 6, borderRadius: "50%", background: "#ef4444", display: "inline-block" }}
           />
-          <span style={{ color: "#10d9a1", fontSize: 11, fontWeight: 700, letterSpacing: "0.06em" }}>
+          <span style={{ color: "#f87171", fontSize: 11, fontWeight: 700, letterSpacing: "0.06em" }}>
             {w.weekLabel} · Week {ukWeek}
           </span>
           <span style={{ color: "rgba(255,255,255,0.22)", fontSize: 10 }}>·</span>
@@ -581,11 +581,11 @@ export default function WeeklyMeta() {
           whileTap={{ scale: 0.97 }}
           style={{
             width: "100%", padding: "17px 24px", borderRadius: 999,
-            background: "linear-gradient(135deg,#5b8af7,#9161f5)",
+            background: "linear-gradient(135deg,#ef4444,#f97316)",
             border: "none", cursor: "pointer",
             color: "#fff", fontWeight: 900, fontSize: 13,
             letterSpacing: "0.1em", textTransform: "uppercase",
-            boxShadow: "0 8px 32px rgba(91,138,247,0.38)",
+            boxShadow: "0 8px 32px rgba(239,68,68,0.38)",
             WebkitTapHighlightColor: "transparent",
           }}
         >

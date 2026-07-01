@@ -2,11 +2,11 @@ import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useLang } from "../contexts/LanguageContext";
 import { siteMeta } from "../data/tactics";
-import { TacticalPitchScene } from "./ui/tactical-pitch";
+import HeroPanel from "./HeroPanel";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
-const DISPLAY_FONT = "'Big Shoulders', 'Outfit', system-ui, sans-serif";
-const BODY_FONT = "'Geist Variable', 'Geist', system-ui, sans-serif";
+const DISPLAY_FONT = "'Bebas Neue', 'Big Shoulders', 'Barlow Condensed', system-ui, sans-serif";
+const BODY_FONT = "'Outfit', system-ui, sans-serif";
 
 // ── Multilingual strings ───────────────────────────────────────────────────────
 const HERO_STRINGS = {
@@ -148,7 +148,7 @@ function RotatingTag({ lang }: { lang: keyof typeof HERO_STRINGS }) {
 
   return (
     <div style={{ height: 22, display: "flex", alignItems: "center", gap: 8, marginBottom: 20 }}>
-      <span style={{ color: "rgba(91,138,247,0.5)", fontSize: 11 }}>›</span>
+      <span style={{ color: "rgba(239,68,68,0.6)", fontSize: 11 }}>›</span>
       <AnimatePresence mode="wait">
         {visible && (
           <motion.span
@@ -157,7 +157,7 @@ function RotatingTag({ lang }: { lang: keyof typeof HERO_STRINGS }) {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -5 }}
             transition={{ duration: 0.22, ease: EASE }}
-            style={{ color: "rgba(91,138,247,0.7)", fontSize: 12, fontWeight: 600, letterSpacing: "0.06em" }}
+            style={{ color: "rgba(249,115,22,0.9)", fontSize: 12, fontWeight: 600, letterSpacing: "0.06em" }}
           >
             {tags[idx]}
           </motion.span>
@@ -217,7 +217,7 @@ export default function Hero() {
       }}
     >
       {/* ── Thin top rule ── */}
-      <div style={{ height: 1, background: "linear-gradient(90deg, transparent, rgba(91,138,247,0.3) 35%, rgba(145,97,245,0.3) 65%, transparent)", flexShrink: 0 }} />
+      <div style={{ height: 1, background: "linear-gradient(90deg, transparent, rgba(239,68,68,0.4) 35%, rgba(249,115,22,0.3) 65%, transparent)", flexShrink: 0 }} />
 
       {/* ── Floodlight atmosphere — two angled beams, stadium-at-night feel.
           Contained to this section so it doesn't ripple into the shared
@@ -225,12 +225,12 @@ export default function Hero() {
       <div aria-hidden style={{ position: "absolute", inset: 0, overflow: "hidden", pointerEvents: "none", zIndex: 0 }}>
         <div style={{
           position: "absolute", top: "-15%", left: "8%", width: "55%", height: "75%",
-          background: "radial-gradient(ellipse at 50% 0%, rgba(91,138,247,0.16) 0%, transparent 65%)",
+          background: "radial-gradient(ellipse at 50% 0%, rgba(239,68,68,0.13) 0%, transparent 65%)",
           filter: "blur(10px)",
         }} />
         <div style={{
           position: "absolute", top: "-10%", right: "-5%", width: "60%", height: "70%",
-          background: "radial-gradient(ellipse at 50% 0%, rgba(145,97,245,0.14) 0%, transparent 60%)",
+          background: "radial-gradient(ellipse at 50% 0%, rgba(249,115,22,0.10) 0%, transparent 60%)",
           filter: "blur(10px)",
         }} />
       </div>
@@ -256,13 +256,13 @@ export default function Hero() {
           animate={{ y: [0, -3, 0] }}
           transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut" }}
           style={{
-            background: "rgba(8,8,22,0.82)",
-            border: "1px solid rgba(91,138,247,0.28)",
+            background: "rgba(5,3,3,0.86)",
+            border: "1px solid rgba(239,68,68,0.28)",
             borderRadius: 14,
             padding: "10px 14px",
             backdropFilter: "blur(16px)",
             WebkitBackdropFilter: "blur(16px)",
-            boxShadow: "0 8px 32px rgba(0,0,0,0.4), 0 0 0 1px rgba(91,138,247,0.08) inset",
+            boxShadow: "0 8px 32px rgba(0,0,0,0.4), 0 0 0 1px rgba(239,68,68,0.08) inset",
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
@@ -275,7 +275,7 @@ export default function Hero() {
             <motion.span
               animate={{ scale: [1, 1.5, 1], opacity: [1, 0.4, 1] }}
               transition={{ duration: 1.8, repeat: Infinity }}
-              style={{ width: 6, height: 6, borderRadius: "50%", background: "#10d9a1", display: "block", boxShadow: "0 0 6px #10d9a1" }}
+              style={{ width: 6, height: 6, borderRadius: "50%", background: "#ef4444", display: "block", boxShadow: "0 0 6px #ef4444" }}
             />
             <span style={{
               fontSize: 11, fontWeight: 800, color: "rgba(255,255,255,0.9)",
@@ -365,7 +365,7 @@ export default function Hero() {
             width: 0, height: 0,
             borderLeft: "7px solid transparent",
             borderRight: "7px solid transparent",
-            borderTop: "8px solid rgba(91,138,247,0.28)",
+            borderTop: "8px solid rgba(239,68,68,0.28)",
           }} />
           <div style={{
             position: "absolute",
@@ -373,7 +373,7 @@ export default function Hero() {
             width: 0, height: 0,
             borderLeft: "6px solid transparent",
             borderRight: "6px solid transparent",
-            borderTop: "7px solid rgba(8,8,22,0.82)",
+            borderTop: "7px solid rgba(5,3,3,0.86)",
           }} />
         </motion.div>
       </motion.div>
@@ -396,29 +396,16 @@ export default function Hero() {
         zIndex: 2,
       }}>
 
-        {/* ── Pitch scene anchor — shows first on mobile (imagery before copy) ── */}
+        {/* ── Live counter panel ── */}
         <div style={{
           order: isMobile ? -1 : 2,
           width: "100%",
-          maxWidth: isMobile ? 240 : 420,
-          flex: isMobile ? "0 0 auto" : "1 1 380px",
+          maxWidth: isMobile ? 340 : 400,
+          flex: isMobile ? "0 0 auto" : "1 1 360px",
           marginBottom: isMobile ? 8 : 0,
         }}>
-          <Reveal delay={isMobile ? 0 : 0.2} y={24}>
-            {/* Mobile: aspectRatio drives the height so the pitch is never clipped.
-                Desktop: fixed clamp height, pitch self-centers inside. */}
-            <div style={{
-              position: "relative",
-              width: "100%",
-              ...(isMobile
-                ? { aspectRatio: "100 / 140" }
-                : { height: "clamp(380px, 58vh, 560px)" }),
-              margin: "0 auto",
-              borderRadius: 16,
-              overflow: "hidden",
-            }}>
-              <TacticalPitchScene lite={isMobile} />
-            </div>
+          <Reveal delay={isMobile ? 0 : 0.25} y={28}>
+            <HeroPanel lite={isMobile} />
           </Reveal>
         </div>
 
@@ -450,7 +437,8 @@ export default function Hero() {
               <span style={{
                 display: "block",
                 fontSize: "clamp(3.8rem, 11vw, 6rem)",
-                color: "#5b8af7",
+                color: "#ef4444",
+                textShadow: "0 0 40px rgba(239,68,68,0.35)",
               }}>
                 {hs.title1}
               </span>
@@ -543,8 +531,8 @@ export default function Hero() {
               <div style={{
                 marginTop: 20,
                 display: "flex", alignItems: "center", gap: 10,
-                background: "rgba(8,8,22,0.75)",
-                border: "1px solid rgba(91,138,247,0.22)",
+                background: "rgba(5,3,3,0.82)",
+                border: "1px solid rgba(239,68,68,0.22)",
                 borderRadius: 14, padding: "10px 14px",
                 backdropFilter: "blur(12px)",
                 WebkitBackdropFilter: "blur(12px)",
@@ -552,7 +540,7 @@ export default function Hero() {
                 <motion.span
                   animate={{ scale: [1, 1.5, 1], opacity: [1, 0.3, 1] }}
                   transition={{ duration: 1.8, repeat: Infinity }}
-                  style={{ width: 6, height: 6, borderRadius: "50%", background: "#10d9a1", display: "block", flexShrink: 0, boxShadow: "0 0 6px #10d9a1" }}
+                  style={{ width: 6, height: 6, borderRadius: "50%", background: "#ef4444", display: "block", flexShrink: 0, boxShadow: "0 0 6px #ef4444" }}
                 />
                 <span style={{ fontSize: 11, fontWeight: 800, color: "rgba(255,255,255,0.88)", whiteSpace: "nowrap" }}>
                   {hs.followQ}
@@ -646,28 +634,28 @@ export default function Hero() {
         }}
       >
         <span>{hs.scrollLabel}</span>
-        <div style={{ flex: "0 0 clamp(40px, 8vw, 100px)", height: 1, background: "linear-gradient(90deg, transparent, rgba(91,138,247,0.3))" }} />
+        <div style={{ flex: "0 0 clamp(40px, 8vw, 100px)", height: 1, background: "linear-gradient(90deg, transparent, rgba(239,68,68,0.35))" }} />
         <div style={{
           width: 20, height: 30,
-          border: "1px solid rgba(91,138,247,0.28)",
+          border: "1px solid rgba(239,68,68,0.3)",
           borderRadius: 10,
           display: "flex", justifyContent: "center",
           paddingTop: 5, flexShrink: 0,
         }}>
           <motion.div
-            style={{ width: 2, height: 6, background: "rgba(91,138,247,0.6)", borderRadius: 2 }}
+            style={{ width: 2, height: 6, background: "rgba(239,68,68,0.6)", borderRadius: 2 }}
             animate={{ y: [0, 8, 0], opacity: [0.8, 0.2, 0.8] }}
             transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}
           />
         </div>
-        <div style={{ flex: "0 0 clamp(40px, 8vw, 100px)", height: 1, background: "linear-gradient(90deg, rgba(145,97,245,0.3), transparent)" }} />
+        <div style={{ flex: "0 0 clamp(40px, 8vw, 100px)", height: 1, background: "linear-gradient(90deg, rgba(249,115,22,0.3), transparent)" }} />
         <span>{hs.scrollTarget}</span>
       </motion.div>
 
       {/* ── Bottom fade ── */}
       <div style={{
         position: "absolute", bottom: 0, left: 0, right: 0, height: "18%",
-        background: "linear-gradient(0deg, rgba(7,7,17,0.6), transparent)",
+        background: "linear-gradient(0deg, rgba(5,2,2,0.65), transparent)",
         pointerEvents: "none", zIndex: 1,
       }} />
     </section>

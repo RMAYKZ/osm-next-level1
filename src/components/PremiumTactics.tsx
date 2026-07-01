@@ -21,9 +21,9 @@ const HOT_NEW = {
 } as const;
 
 const COOL_NEW = {
-  bg: "linear-gradient(135deg,rgba(16,217,161,0.18),rgba(16,217,161,0.08))",
-  border: "rgba(16,217,161,0.45)",
-  color: "#4aedc0",
+  bg: "linear-gradient(135deg,rgba(245,166,35,0.18),rgba(251,191,36,0.10))",
+  border: "rgba(245,166,35,0.45)",
+  color: "#fbbf24",
   label: "✦ NEW",
 } as const;
 
@@ -57,14 +57,14 @@ const TAKEN_MSG: Record<string, string> = {
 
 const LOC_STYLE = {
   home: {
-    primary: "#5b8af7", secondary: "rgba(91,138,247,0.7)",
-    dim: "rgba(91,138,247,0.10)", border: "rgba(91,138,247,0.28)",
-    glow: "rgba(91,138,247,0.08)", label: "EV", icon: "🏠", styleColor: "rgba(91,138,247,0.7)",
+    primary: "#f5a623", secondary: "rgba(245,166,35,0.75)",
+    dim: "rgba(245,166,35,0.10)", border: "rgba(245,166,35,0.28)",
+    glow: "rgba(245,166,35,0.08)", label: "EV", icon: "🏠", styleColor: "rgba(245,166,35,0.75)",
   },
   away: {
-    primary: "#10d9a1", secondary: "rgba(16,217,161,0.7)",
-    dim: "rgba(16,217,161,0.08)", border: "rgba(16,217,161,0.25)",
-    glow: "rgba(16,217,161,0.06)", label: "DEPLASMAN", icon: "✈️", styleColor: "rgba(16,217,161,0.65)",
+    primary: "#a855f7", secondary: "rgba(168,85,247,0.75)",
+    dim: "rgba(168,85,247,0.08)", border: "rgba(168,85,247,0.28)",
+    glow: "rgba(168,85,247,0.06)", label: "DEPLASMAN", icon: "✈️", styleColor: "rgba(168,85,247,0.70)",
   },
 };
 
@@ -110,7 +110,7 @@ function Slider({ label, value, color: _color }: { label: string; value: number;
       </div>
       <div style={{ height: 4, borderRadius: 99, background: "rgba(255,255,255,0.08)", overflow: "hidden" }}>
         <div
-          style={{ width: `${value}%`, height: "100%", borderRadius: 99, background: "linear-gradient(90deg,#5b8af7,#9161f5)" }}
+          style={{ width: `${value}%`, height: "100%", borderRadius: 99, background: "linear-gradient(90deg,#f5a623,#fbbf24)" }}
         />
       </div>
     </div>
@@ -120,7 +120,7 @@ function Slider({ label, value, color: _color }: { label: string; value: number;
 // ── Line cell ────────────────────────────────────────────────────────
 function LineCell({ role, value, icon }: { role: string; value: string; icon: string }) {
   return (
-    <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: 3, background: "rgba(91,138,247,0.05)", border: "1px solid rgba(91,138,247,0.14)", borderRadius: 10, padding: "8px 10px" }}>
+    <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: 3, background: "rgba(245,166,35,0.05)", border: "1px solid rgba(245,166,35,0.14)", borderRadius: 10, padding: "8px 10px" }}>
       <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
         <span style={{ fontSize: 10 }}>{icon}</span>
         <span style={{ fontSize: 8, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.13em", color: "rgba(255,255,255,0.3)" }}>{role}</span>
@@ -144,15 +144,15 @@ function TacticCard({ tactic, index }: { tactic: PremiumTactic; index: number })
         position: "relative", overflow: "hidden",
         background: isBattle
           ? "linear-gradient(135deg,rgba(255,80,30,0.08) 0%,rgba(0,0,0,0.04) 55%,rgba(255,140,0,0.05) 100%)"
-          : "rgba(91,138,247,0.04)",
-        border: isBattle ? "1.5px solid rgba(255,100,30,0.45)" : "1px solid rgba(91,138,247,0.14)",
+          : "rgba(245,166,35,0.04)",
+        border: isBattle ? "1.5px solid rgba(255,100,30,0.45)" : "1px solid rgba(245,166,35,0.14)",
         borderRadius: 16,
         boxShadow: isBattle ? "0 0 32px rgba(255,80,30,0.12), inset 0 0 24px rgba(255,80,30,0.04)" : "none",
         ...(isMobileDevice ? {} : { backdropFilter: "blur(24px)", WebkitBackdropFilter: "blur(24px)" }),
       }}
     >
       {/* Corner glow */}
-      <div style={{ position: "absolute", top: -40, right: -40, width: 140, height: 140, borderRadius: "50%", background: "radial-gradient(circle, rgba(91,138,247,0.1) 0%, transparent 70%)", pointerEvents: "none" }} />
+      <div style={{ position: "absolute", top: -40, right: -40, width: 140, height: 140, borderRadius: "50%", background: "radial-gradient(circle, rgba(245,166,35,0.08) 0%, transparent 70%)", pointerEvents: "none" }} />
       {/* Shimmer — disabled on mobile to prevent infinite RAF overhead */}
       {!isMobileDevice && (
         <motion.div
@@ -180,7 +180,7 @@ function TacticCard({ tactic, index }: { tactic: PremiumTactic; index: number })
                 </motion.div>
               )}
               {tactic.solid && (
-                <div style={{ display: "inline-flex", alignItems: "center", gap: 4, background: "rgba(91,138,247,0.10)", border: "1px solid rgba(91,138,247,0.3)", borderRadius: 999, padding: "3px 10px", fontSize: 8.5, fontWeight: 900, letterSpacing: "0.18em", textTransform: "uppercase", color: "#7eb8ff" }}>
+                <div style={{ display: "inline-flex", alignItems: "center", gap: 4, background: "rgba(245,166,35,0.10)", border: "1px solid rgba(245,166,35,0.3)", borderRadius: 999, padding: "3px 10px", fontSize: 8.5, fontWeight: 900, letterSpacing: "0.18em", textTransform: "uppercase", color: "#fbbf24" }}>
                   ✦ SOLID
                 </div>
               )}
@@ -206,8 +206,8 @@ function TacticCard({ tactic, index }: { tactic: PremiumTactic; index: number })
           </div>
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 18 }}>
-          <div style={{ display: "inline-flex", alignItems: "center", background: "rgba(91,138,247,0.08)", border: "1px solid rgba(91,138,247,0.25)", borderRadius: 8, padding: "5px 12px" }}>
-            <span style={{ fontSize: 13, fontWeight: 900, color: "#7eb8ff", letterSpacing: "0.06em", fontFamily: "'Outfit', sans-serif" }}>{tactic.formation}</span>
+          <div style={{ display: "inline-flex", alignItems: "center", background: "rgba(245,166,35,0.08)", border: "1px solid rgba(245,166,35,0.25)", borderRadius: 8, padding: "5px 12px" }}>
+            <span style={{ fontSize: 13, fontWeight: 900, color: "#fbbf24", letterSpacing: "0.06em", fontFamily: "'Outfit', sans-serif" }}>{tactic.formation}</span>
           </div>
           <span style={{ fontSize: 11, fontWeight: 600, color: "rgba(255,255,255,0.35)", letterSpacing: "0.04em" }}>· {tactic.playStyle}</span>
         </div>
@@ -267,15 +267,15 @@ function TeaserCard({ tactic, index }: { tactic: PremiumTactic; index: number })
         position: "relative", overflow: "hidden",
         background: isBattle
           ? "linear-gradient(135deg,rgba(255,80,30,0.08) 0%,rgba(0,0,0,0.04) 55%,rgba(255,140,0,0.05) 100%)"
-          : "rgba(91,138,247,0.04)",
-        border: isBattle ? "1.5px solid rgba(255,100,30,0.45)" : "1px solid rgba(91,138,247,0.14)",
+          : "rgba(245,166,35,0.04)",
+        border: isBattle ? "1.5px solid rgba(255,100,30,0.45)" : "1px solid rgba(245,166,35,0.14)",
         borderRadius: 18,
         boxShadow: isBattle ? "0 0 32px rgba(255,80,30,0.12)" : "none",
         backdropFilter: "blur(24px)", WebkitBackdropFilter: "blur(24px)",
       }}
     >
       {/* Subtle top glow */}
-      <div style={{ position: "absolute", top: -30, left: "50%", transform: "translateX(-50%)", width: 180, height: 60, borderRadius: "50%", background: "radial-gradient(ellipse, rgba(91,138,247,0.12) 0%, transparent 70%)", pointerEvents: "none" }} />
+      <div style={{ position: "absolute", top: -30, left: "50%", transform: "translateX(-50%)", width: 180, height: 60, borderRadius: "50%", background: "radial-gradient(ellipse, rgba(245,166,35,0.10) 0%, transparent 70%)", pointerEvents: "none" }} />
 
       {/* VIP ribbon top-right */}
       <div style={{
@@ -310,7 +310,7 @@ function TeaserCard({ tactic, index }: { tactic: PremiumTactic; index: number })
                 </div>
               )}
               {tactic.solid && (
-                <div style={{ display: "inline-flex", alignItems: "center", gap: 3, background: "rgba(91,138,247,0.10)", border: "1px solid rgba(91,138,247,0.3)", borderRadius: 999, padding: "3px 9px", fontSize: 8, fontWeight: 900, letterSpacing: "0.15em", textTransform: "uppercase", color: "#7eb8ff" }}>
+                <div style={{ display: "inline-flex", alignItems: "center", gap: 3, background: "rgba(245,166,35,0.10)", border: "1px solid rgba(245,166,35,0.3)", borderRadius: 999, padding: "3px 9px", fontSize: 8, fontWeight: 900, letterSpacing: "0.15em", textTransform: "uppercase", color: "#fbbf24" }}>
                   ✦ SOLID
                 </div>
               )}
@@ -674,10 +674,10 @@ export default function PremiumTactics() {
       {/* Ambient glows */}
       <div className="pointer-events-none absolute inset-0 -z-10" aria-hidden="true">
         <motion.div animate={{ opacity: [0.2, 0.4, 0.2] }} transition={{ duration: 9, repeat: Infinity }}
-          style={{ position: "absolute", top: "5%", right: "-8%", width: "45%", height: "60%", borderRadius: "50%", background: "radial-gradient(ellipse, rgba(145,97,245,0.12) 0%, transparent 70%)", filter: "blur(90px)" }} />
+          style={{ position: "absolute", top: "5%", right: "-8%", width: "45%", height: "60%", borderRadius: "50%", background: "radial-gradient(ellipse, rgba(168,85,247,0.12) 0%, transparent 70%)", filter: "blur(90px)" }} />
         <motion.div animate={{ opacity: [0.1, 0.25, 0.1] }} transition={{ duration: 11, repeat: Infinity, delay: 3 }}
-          style={{ position: "absolute", bottom: "10%", left: "-5%", width: "35%", height: "50%", borderRadius: "50%", background: "radial-gradient(ellipse, rgba(91,138,247,0.10) 0%, transparent 70%)", filter: "blur(80px)" }} />
-        <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 1, background: "linear-gradient(90deg, transparent, rgba(91,138,247,0.25) 35%, rgba(145,97,245,0.25) 65%, transparent)" }} />
+          style={{ position: "absolute", bottom: "10%", left: "-5%", width: "35%", height: "50%", borderRadius: "50%", background: "radial-gradient(ellipse, rgba(245,166,35,0.09) 0%, transparent 70%)", filter: "blur(80px)" }} />
+        <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 1, background: "linear-gradient(90deg, transparent, rgba(245,166,35,0.35) 35%, rgba(168,85,247,0.3) 65%, transparent)" }} />
       </div>
 
       <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 clamp(16px,4vw,40px)" }}>
@@ -699,10 +699,10 @@ export default function PremiumTactics() {
               </h2>
             </div>
             <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-              <div style={{ display: "inline-flex", alignItems: "center", gap: 7, background: "rgba(16,217,161,0.08)", border: "1px solid rgba(16,217,161,0.25)", borderRadius: 999, padding: "7px 16px" }}>
+              <div style={{ display: "inline-flex", alignItems: "center", gap: 7, background: "rgba(16,185,129,0.08)", border: "1px solid rgba(16,185,129,0.28)", borderRadius: 999, padding: "7px 16px" }}>
                 <motion.span animate={{ opacity: [1, 0.3, 1] }} transition={{ duration: 2, repeat: Infinity }}
-                  style={{ width: 7, height: 7, borderRadius: "50%", background: "#10d9a1", display: "block" }} />
-                <span style={{ fontSize: 11, fontWeight: 900, textTransform: "uppercase", letterSpacing: "0.14em", color: "#4aedc0" }}>{t("premium.active")}</span>
+                  style={{ width: 7, height: 7, borderRadius: "50%", background: "#10b981", display: "block" }} />
+                <span style={{ fontSize: 11, fontWeight: 900, textTransform: "uppercase", letterSpacing: "0.14em", color: "#34d399" }}>{t("premium.active")}</span>
               </div>
               <motion.button onClick={lock} whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.96 }}
                 style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 10, padding: "7px 16px", color: "rgba(255,255,255,0.45)", cursor: "pointer", fontSize: 12, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em" }}>
@@ -729,7 +729,7 @@ export default function PremiumTactics() {
                 backdropFilter: "blur(20px)", WebkitBackdropFilter: "blur(20px)",
               }}>
                 {/* Top bar */}
-                <div style={{ height: 3, background: "linear-gradient(90deg,#5b8af7,#9161f5,#f5a623)" }} />
+                <div style={{ height: 3, background: "linear-gradient(90deg,#f5a623,#a855f7,#06b6d4)" }} />
 
                 {/* Shimmer sweep */}
                 <motion.div
@@ -748,10 +748,10 @@ export default function PremiumTactics() {
                         <span style={{ fontSize: 13 }}>👑</span>
                         <span style={{ fontSize: 10, fontWeight: 900, textTransform: "uppercase", letterSpacing: "0.18em", color: "#ffc852" }}>{t("premium.heroBadge")}</span>
                       </div>
-                      <div style={{ display: "inline-flex", alignItems: "center", gap: 6, background: "rgba(16,217,161,0.07)", border: "1px solid rgba(16,217,161,0.22)", borderRadius: 999, padding: "5px 14px" }}>
+                      <div style={{ display: "inline-flex", alignItems: "center", gap: 6, background: "rgba(16,185,129,0.07)", border: "1px solid rgba(16,185,129,0.25)", borderRadius: 999, padding: "5px 14px" }}>
                         <motion.span animate={{ opacity: [1, 0.3, 1] }} transition={{ duration: 1.8, repeat: Infinity }}
-                          style={{ width: 6, height: 6, borderRadius: "50%", background: "#10d9a1", display: "block" }} />
-                        <span style={{ fontSize: 10, fontWeight: 900, textTransform: "uppercase", letterSpacing: "0.14em", color: "#4aedc0" }}>{t("premium.heroLive")}</span>
+                          style={{ width: 6, height: 6, borderRadius: "50%", background: "#10b981", display: "block" }} />
+                        <span style={{ fontSize: 10, fontWeight: 900, textTransform: "uppercase", letterSpacing: "0.14em", color: "#34d399" }}>{t("premium.heroLive")}</span>
                       </div>
                     </div>
 
@@ -784,8 +784,8 @@ export default function PremiumTactics() {
                         >
                           <div style={{
                             width: 22, height: 22, borderRadius: "50%", flexShrink: 0,
-                            background: "rgba(91,138,247,0.1)",
-                            border: "1px solid rgba(91,138,247,0.28)",
+                            background: "rgba(245,166,35,0.08)",
+                            border: "1px solid rgba(245,166,35,0.22)",
                             display: "flex", alignItems: "center", justifyContent: "center",
                             fontSize: 11,
                           }}>
@@ -801,15 +801,15 @@ export default function PremiumTactics() {
                       <motion.a
                         href={siteConfig.premiumUrl}
                         target="_blank" rel="noreferrer"
-                        whileHover={{ scale: 1.04, boxShadow: "0 14px 40px rgba(91,138,247,0.5)" }}
+                        whileHover={{ scale: 1.04, boxShadow: "0 14px 40px rgba(245,166,35,0.5)" }}
                         whileTap={{ scale: 0.97 }}
                         style={{
                           display: "inline-flex", alignItems: "center", gap: 9,
-                          background: "linear-gradient(135deg,#5b8af7,#9161f5)",
+                          background: "linear-gradient(135deg,#f5a623,#fbbf24)",
                           borderRadius: 999, padding: "14px 28px",
-                          color: "#ffffff", fontSize: 14, fontWeight: 900,
+                          color: "#0a0a0a", fontSize: 14, fontWeight: 900,
                           textDecoration: "none", textTransform: "uppercase", letterSpacing: "0.1em",
-                          boxShadow: "0 8px 32px rgba(91,138,247,0.38)",
+                          boxShadow: "0 8px 32px rgba(245,166,35,0.38)",
                         }}
                       >
                         {t("premium.becomePremium")}
@@ -890,9 +890,9 @@ export default function PremiumTactics() {
                               whileTap={unlocking ? {} : { scale: 0.97 }}
                               style={{
                                 marginTop: 10, width: "100%",
-                                background: unlocking ? "rgba(91,138,247,0.4)" : "linear-gradient(135deg,#5b8af7,#9161f5)",
+                                background: unlocking ? "rgba(245,166,35,0.4)" : "linear-gradient(135deg,#f5a623,#fbbf24)",
                                 borderRadius: 999, padding: "11px 0",
-                                color: "#ffffff", fontSize: 13, fontWeight: 900,
+                                color: "#0a0a0a", fontSize: 13, fontWeight: 900,
                                 textTransform: "uppercase", letterSpacing: "0.1em",
                                 cursor: unlocking ? "default" : "pointer", border: "none",
                                 display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
@@ -940,13 +940,13 @@ export default function PremiumTactics() {
                             initial={{ opacity: 0, x: 16 }} animate={{ opacity: 1, x: 0 }}
                             transition={{ delay: 0.2 + i * 0.08, ease: EASE }}
                             style={{
-                              background: i === 0 ? "rgba(91,138,247,0.06)" : i === 1 ? "rgba(245,166,35,0.06)" : "rgba(16,217,161,0.06)",
-                              border: `1px solid ${i === 0 ? "rgba(91,138,247,0.2)" : i === 1 ? "rgba(245,166,35,0.2)" : "rgba(16,217,161,0.2)"}`,
+                              background: i === 0 ? "rgba(16,185,129,0.06)" : i === 1 ? "rgba(245,166,35,0.06)" : "rgba(168,85,247,0.06)",
+                              border: `1px solid ${i === 0 ? "rgba(16,185,129,0.2)" : i === 1 ? "rgba(245,166,35,0.2)" : "rgba(168,85,247,0.2)"}`,
                               borderRadius: 14, padding: "14px 18px",
                             }}
                           >
                             <div style={{ fontSize: 9, fontWeight: 900, textTransform: "uppercase", letterSpacing: "0.16em", color: "rgba(255,255,255,0.35)", marginBottom: 4 }}>{s.label}</div>
-                            <div style={{ fontSize: 22, fontWeight: 900, color: i === 0 ? "#7eb8ff" : i === 1 ? "#ffc852" : "#4aedc0", fontFamily: "'Outfit', sans-serif", letterSpacing: "-0.01em", lineHeight: 1 }}>{s.value}</div>
+                            <div style={{ fontSize: 22, fontWeight: 900, color: i === 0 ? "#34d399" : i === 1 ? "#fbbf24" : "#c084fc", fontFamily: "'Outfit', sans-serif", letterSpacing: "-0.01em", lineHeight: 1 }}>{s.value}</div>
                             <div style={{ fontSize: 10, color: "rgba(255,255,255,0.3)", fontWeight: 600, marginTop: 2 }}>{s.sub}</div>
                           </motion.div>
                         ))}
@@ -1002,13 +1002,13 @@ export default function PremiumTactics() {
           {/* Gradient border container */}
           <div style={{
             position: "relative",
-            background: "linear-gradient(135deg, rgba(245,166,35,0.06), rgba(91,138,247,0.06), rgba(16,217,161,0.04))",
+            background: "linear-gradient(135deg, rgba(245,166,35,0.06), rgba(239,68,68,0.06), rgba(249,115,22,0.04))",
             borderRadius: 18,
             padding: 1,
           }}>
             <div style={{
               position: "absolute", inset: 0, borderRadius: 18,
-              background: "linear-gradient(135deg, rgba(245,166,35,0.55), rgba(91,138,247,0.4), rgba(16,217,161,0.35))",
+              background: "linear-gradient(135deg, rgba(245,166,35,0.55), rgba(239,68,68,0.45), rgba(249,115,22,0.40))",
               WebkitMask: "linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0)",
               WebkitMaskComposite: "xor",
               maskComposite: "exclude",
@@ -1055,8 +1055,8 @@ export default function PremiumTactics() {
               {/* Three bullets */}
               <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
                 {([
-                  { icon: "🔄", text: t("premium.discBullet1"), color: "#4aedc0", bg: "rgba(16,217,161,0.07)", border: "rgba(16,217,161,0.2)" },
-                  { icon: "🎯", text: t("premium.discBullet2"), color: "#7eb8ff", bg: "rgba(91,138,247,0.07)", border: "rgba(91,138,247,0.2)" },
+                  { icon: "🔄", text: t("premium.discBullet1"), color: "#fbbf24", bg: "rgba(245,166,35,0.07)", border: "rgba(245,166,35,0.2)" },
+                  { icon: "🎯", text: t("premium.discBullet2"), color: "#c084fc", bg: "rgba(168,85,247,0.07)", border: "rgba(168,85,247,0.2)" },
                   { icon: "⚠️", text: t("premium.discBullet3"), color: "#ffc852", bg: "rgba(245,166,35,0.07)", border: "rgba(245,166,35,0.2)" },
                 ] as const).map((b, i) => (
                   <motion.div
@@ -1113,14 +1113,14 @@ export default function PremiumTactics() {
         >
           <div style={{
             position: "relative",
-            background: "linear-gradient(135deg, rgba(245,166,35,0.07) 0%, rgba(91,138,247,0.05) 50%, rgba(245,166,35,0.04) 100%)",
+            background: "linear-gradient(135deg, rgba(245,166,35,0.07) 0%, rgba(239,68,68,0.05) 50%, rgba(245,166,35,0.04) 100%)",
             borderRadius: 20,
             padding: 1,
           }}>
             {/* Gradient border */}
             <div style={{
               position: "absolute", inset: 0, borderRadius: 20,
-              background: "linear-gradient(135deg, rgba(245,166,35,0.7) 0%, rgba(91,138,247,0.5) 50%, rgba(245,166,35,0.5) 100%)",
+              background: "linear-gradient(135deg, rgba(245,166,35,0.7) 0%, rgba(239,68,68,0.5) 50%, rgba(245,166,35,0.5) 100%)",
               WebkitMask: "linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0)",
               WebkitMaskComposite: "xor",
               maskComposite: "exclude",
@@ -1202,16 +1202,16 @@ export default function PremiumTactics() {
                     </div>
                     <div style={{
                       display: "inline-flex", alignItems: "center", gap: 5,
-                      background: "rgba(16,217,161,0.07)",
-                      border: "1px solid rgba(16,217,161,0.22)",
+                      background: "rgba(16,185,129,0.07)",
+                      border: "1px solid rgba(16,185,129,0.22)",
                       borderRadius: 999, padding: "5px 12px",
                     }}>
                       <motion.span
                         animate={{ opacity: [1, 0.3, 1] }}
                         transition={{ duration: 1.8, repeat: Infinity }}
-                        style={{ width: 5, height: 5, borderRadius: "50%", background: "#10d9a1", display: "block", flexShrink: 0 }}
+                        style={{ width: 5, height: 5, borderRadius: "50%", background: "#10b981", display: "block", flexShrink: 0 }}
                       />
-                      <span style={{ fontSize: 9, fontWeight: 900, textTransform: "uppercase", letterSpacing: "0.14em", color: "#4aedc0" }}>
+                      <span style={{ fontSize: 9, fontWeight: 900, textTransform: "uppercase", letterSpacing: "0.14em", color: "#34d399" }}>
                         {t("premium.heroLive")}
                       </span>
                     </div>
@@ -1259,11 +1259,11 @@ export default function PremiumTactics() {
                     transition={{ duration:0.4, ease:EASE }}
                     style={{ display:'flex', alignItems:'center', gap:12, marginBottom:16 }}
                   >
-                    <div style={{ height:1, flex:1, background:'linear-gradient(90deg,rgba(91,138,247,0.4),transparent)' }} />
-                    <div style={{ display:'inline-flex', alignItems:'center', gap:8, background:'rgba(91,138,247,0.07)', border:'1px solid rgba(91,138,247,0.25)', borderRadius:999, padding:'6px 16px' }}>
-                      <span style={{ fontSize:9, fontWeight:900, textTransform:'uppercase', letterSpacing:'0.18em', color:'rgba(91,138,247,0.85)' }}>{t('premium.classicTacticsTitle')}</span>
+                    <div style={{ height:1, flex:1, background:'linear-gradient(90deg,rgba(245,166,35,0.35),transparent)' }} />
+                    <div style={{ display:'inline-flex', alignItems:'center', gap:8, background:'rgba(245,166,35,0.07)', border:'1px solid rgba(245,166,35,0.25)', borderRadius:999, padding:'6px 16px' }}>
+                      <span style={{ fontSize:9, fontWeight:900, textTransform:'uppercase', letterSpacing:'0.18em', color:'rgba(245,166,35,0.9)' }}>{t('premium.classicTacticsTitle')}</span>
                     </div>
-                    <div style={{ height:1, flex:1, background:'linear-gradient(90deg,transparent,rgba(91,138,247,0.4))' }} />
+                    <div style={{ height:1, flex:1, background:'linear-gradient(90deg,transparent,rgba(245,166,35,0.35))' }} />
                   </motion.div>
                   <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(min(100%,280px),1fr))', gap:18 }}>
                     {classics.map((tactic,i) =>

@@ -1,4 +1,4 @@
-﻿/* Barlow Condensed + Inter are loaded via <link> in index.html, not a CSS
+/* Barlow Condensed + Inter are loaded via <link> in index.html, not a CSS
    @import here â€” @import is render-blocking and invisible to the browser's
    preload scanner (it can only be discovered after the main CSS bundle is
    fetched and parsed), unlike a <link> tag in the raw HTML. */
@@ -310,7 +310,7 @@
   overflow: hidden;
   border-radius: 16px;
   border: 1px solid rgba(255,255,255,0.10);
-  background: linear-gradient(135deg, oklch(0.13 0.02 250 / 0.95) 0%, oklch(0.10 0.03 250) 100%);
+  background: linear-gradient(135deg, rgba(12,3,3,0.95) 0%, rgba(8,2,2,1) 100%);
   padding: 16px 18px 14px 22px;
   display: flex;
   flex-direction: column;
@@ -1035,8 +1035,8 @@
 .atf-ab-toggle {
   display: flex;
   gap: 3px;
-  background: oklch(0.13 0.02 250 / 0.8);
-  border: 1px solid oklch(0.87 0.27 152 / 0.25);
+  background: rgba(10,3,3,0.88);
+  border: 1px solid rgba(239,68,68,0.25);
   border-radius: 10px;
   padding: 3px;
   position: relative;
@@ -1050,7 +1050,7 @@
   font-size: 7px;
   font-weight: 900;
   letter-spacing: 0.12em;
-  color: oklch(0.87 0.27 152 / 0.6);
+  color: rgba(239,68,68,0.6);
   white-space: nowrap;
 }
 
@@ -1078,16 +1078,16 @@
   letter-spacing: 0.04em;
 }
 .atf-ab-btn.on {
-  background: oklch(0.87 0.27 152);
-  color: oklch(0.13 0.02 250);
-  border-color: oklch(0.87 0.27 152 / 0.6);
-  box-shadow: 0 0 14px oklch(0.87 0.27 152 / 0.35), inset 0 1px 0 rgba(255,255,255,0.2);
+  background: linear-gradient(135deg, #ef4444, #f97316);
+  color: #ffffff;
+  border-color: rgba(239,68,68,0.6);
+  box-shadow: 0 0 14px rgba(239,68,68,0.35), inset 0 1px 0 rgba(255,255,255,0.2);
 }
-.atf-ab-btn.on span { opacity: 0.7; color: oklch(0.13 0.02 250); }
+.atf-ab-btn.on span { opacity: 0.7; color: #ffffff; }
 .atf-ab-btn:not(.on):hover {
-  background: oklch(0.87 0.27 152 / 0.08);
+  background: rgba(239,68,68,0.08);
   color: rgba(255,255,255,0.7);
-  border-color: oklch(0.87 0.27 152 / 0.2);
+  border-color: rgba(239,68,68,0.2);
 }
 
 /* "vs 4-3-3" pill beside eyebrow */
