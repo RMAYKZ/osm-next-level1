@@ -24,22 +24,23 @@ interface ScheduleEvent {
 
 const SCHEDULE_EVENTS: ScheduleEvent[] = [
   // ─── Paste new month's events here ─────────────────────────────────────────
-  { days: [3],      name: "Extreme Training",          mechanic: "Faster training: 2H normal, 1:30H Universal",          icon: "⚡" },
-  { days: [6, 7],   name: "Transfer Madness",          mechanic: "6 players on list, 2H Scout",                          icon: "🔄" },
-  { days: [10],     name: "Guaranteed Training Boost", mechanic: "No normal trainings — Faster training: 4H / 3H",       icon: "📈" },
-  { days: [13, 14], name: "Golden Oldies × Legends",   mechanic: "Old players progression, Legends on list",             icon: "⭐" },
-  { days: [17],     name: "Booming Stadium",           mechanic: "4H Stadium timers",                                    icon: "🏟️" },
-  { days: [20, 21], name: "Training Talents",          mechanic: "Younger players progression",                          icon: "🌱" },
-  { days: [22, 23], name: "Legends",                   mechanic: "Legends on Transfer List",                             icon: "👑" },
-  { days: [24],     name: "Superfast Trainer",         mechanic: "2H normal trainers, 1H Universal Trainer",             icon: "🚀" },
-  { days: [27, 28], name: "Intense Friendlies",        mechanic: "Extra progression with Friendlies",                    icon: "⚽" },
+  { days: [1, 2],   name: "Golden Oldies × Legends",   mechanic: "Old players progression, 2H normal / 1:30H Universal, Legends on list", icon: "⭐" },
+  { days: [4, 5],   name: "Transfer Madness",           mechanic: "6 players on list, Faster Scout: 2H",                                   icon: "🔄" },
+  { days: [8],      name: "Extreme Training",           mechanic: "Extreme progression — 3H normal / 2H Universal",                         icon: "⚡" },
+  { days: [11],     name: "Friendly Frenzy",            mechanic: "Extra Training Progression with every Friendly",                          icon: "⚽" },
+  { days: [15],     name: "Superfast Trainer",          mechanic: "2H normal trainers, 1H Universal Trainer",                               icon: "🚀" },
+  { days: [18, 19], name: "Intense Friendlies",         mechanic: "Extra Friendly progression + higher sale chance",                         icon: "🔥" },
+  { days: [22],     name: "Training Madness",           mechanic: "Extra progression with every Training",                                   icon: "💪" },
+  { days: [25],     name: "Guaranteed Training Boost",  mechanic: "Rare+ boost guaranteed — Faster: 4H normal / 3H Universal",              icon: "📈" },
+  { days: [25, 26], name: "Legends",                   mechanic: "Legend players on Transfer List",                                         icon: "👑" },
+  { days: [29],     name: "Stadium Blitz",              mechanic: "4H Stadium upgrades — 5H regular / 4H Universal trainers",               icon: "🏟️" },
   // ───────────────────────────────────────────────────────────────────────────
 ];
 
 const SCHEDULE_META = {
   year: 2026,
-  month: 5,            // 0-indexed: 5 = June
-  monthLabel: "June 2026",
+  month: 6,            // 0-indexed: 6 = July
+  monthLabel: "July 2026",
 };
 
 // ═══════════════════════════════════════════════════════════════════════════════

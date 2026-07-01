@@ -21,18 +21,19 @@ export interface OsmEventsConfig {
 
 export const OSM_EVENTS_CONFIG: OsmEventsConfig = {
   year: 2026,
-  month: 5, // June
-  monthLabel: "June 2026",
+  month: 6, // July
+  monthLabel: "July 2026",
   events: [
-    { days: [3],      name: "Extreme Training",          details: "Training 2× more effective — all positions benefit" },
-    { days: [6, 7],   name: "Transfer Madness",          details: "Transfer fees reduced — market values shift faster" },
-    { days: [10],     name: "Guaranteed Training Boost", details: "All training sessions guaranteed to improve stats" },
-    { days: [13, 14], name: "Golden Oldies × Legends",   details: "Legendary & veteran players show extra match impact" },
-    { days: [17],     name: "Booming Stadium",           details: "Stadium revenue doubled — upgrade bonuses active" },
-    { days: [20, 21], name: "Training Talents",          details: "Youth academy talents develop 2× faster this weekend" },
-    { days: [22, 23], name: "Legends",                   details: "Special legendary player signings available in market" },
-    { days: [24],     name: "Superfast Trainer",         details: "Faster training: 2H normal trainers active today" },
-    { days: [27, 28], name: "Intense Friendlies",        details: "Extra XP from friendly matches — test tactics faster" },
+    { days: [1, 2],   name: "Golden Oldies × Legends",  details: "Old player progression boosted — Legends on transfer list" },
+    { days: [4, 5],   name: "Transfer Madness",          details: "6 players on list, higher sale chance, Scout in 2H" },
+    { days: [8],      name: "Extreme Training",          details: "Extreme progression — 3H normal / 2H Universal trainers" },
+    { days: [11],     name: "Friendly Frenzy",           details: "Extra training progression with every Friendly match" },
+    { days: [15],     name: "Superfast Trainer",         details: "Faster training: 2H normal trainers, 1H Universal" },
+    { days: [18, 19], name: "Intense Friendlies",        details: "Extra Friendly progression + higher sale chance" },
+    { days: [22],     name: "Training Madness",          details: "Extra progression with every Training session" },
+    { days: [25],     name: "Guaranteed Training Boost", details: "Rare+ boost guaranteed — 4H normal / 3H Universal" },
+    { days: [25, 26], name: "Legends",                   details: "Legend players available on Transfer List" },
+    { days: [29],     name: "Stadium Blitz",             details: "4H Stadium upgrades — 5H regular / 4H Universal trainers" },
   ],
 };
 
