@@ -85,7 +85,7 @@ export default function HomeTacticHero() {
             <span className="hth-special-newdot" />
             NEW
           </span>
-          <span className="hth-special-date">22 June 2026</span>
+          <span className="hth-special-date">1 July 2026</span>
           <span className="hth-special-vsall">{t('special.vsAll')}</span>
         </div>
 

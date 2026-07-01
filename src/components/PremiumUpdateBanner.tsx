@@ -11,7 +11,7 @@ const MONTH_NAMES: Record<string, string[]> = {
   pt: ["Janeiro","Fevereiro","Março","Abril","Maio","Junho","Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"],
 };
 
-const UPDATE_DATE = { day: 22, month: 5 /* 0-indexed = Haziran/June */, year: 2026 };
+const UPDATE_DATE = { day: 1, month: 6 /* 0-indexed = Temmuz/July */, year: 2026 };
 
 const COPY: Record<string, { badge: string; title: (day: number, month: string, year: number) => string; sub: string; cta: string }> = {
   tr: {
@@ -47,7 +47,7 @@ const COPY: Record<string, { badge: string; title: (day: number, month: string, 
 };
 
 // Bump suffix to force re-show after each update
-const DISMISS_KEY = "osm-premium-banner-dismissed-20260622";
+const DISMISS_KEY = "osm-premium-banner-dismissed-20260701";
 
 function isDismissed(): boolean {
   try {
