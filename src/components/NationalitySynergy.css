@@ -1,4 +1,4 @@
-/* ── Section ── */
+﻿/* â”€â”€ Section â”€â”€ */
 .ns-section {
   position: relative;
   padding: 80px 20px;
@@ -24,7 +24,7 @@
 .ns-glow-l {
   top: 10%; left: -12%;
   width: 38%; height: 38%;
-  background: radial-gradient(ellipse, rgba(34, 197, 94, 0.06) 0%, transparent 70%);
+  background: radial-gradient(ellipse, rgba(239,68,68,0.06) 0%, transparent 70%);
 }
 
 .ns-glow-r {
@@ -33,7 +33,7 @@
   background: radial-gradient(ellipse, rgba(255, 215, 0, 0.05) 0%, transparent 70%);
 }
 
-/* ── Header ── */
+/* â”€â”€ Header â”€â”€ */
 .ns-header {
   text-align: center;
   margin-bottom: 40px;
@@ -47,9 +47,9 @@
   font-weight: 800;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: rgba(34, 197, 94, 0.9);
-  background: rgba(34, 197, 94, 0.1);
-  border: 1px solid rgba(34, 197, 94, 0.22);
+  color: rgba(248,113,113,0.95);
+  background: rgba(239,68,68,0.1);
+  border: 1px solid rgba(239,68,68,0.22);
   border-radius: 999px;
   padding: 5px 14px;
   margin-bottom: 16px;
@@ -58,7 +58,7 @@
 .ns-badge-dot {
   width: 5px; height: 5px;
   border-radius: 50%;
-  background: rgba(34, 197, 94, 0.9);
+  background: rgba(248,113,113,0.95);
   animation: ns-pulse 2s infinite ease-in-out;
 }
 
@@ -85,7 +85,7 @@
   margin: 0 auto;
 }
 
-/* ── Input Card ── */
+/* â”€â”€ Input Card â”€â”€ */
 .ns-card {
   background: rgba(9, 11, 33, 0.88);
   border: 1px solid rgba(34, 211, 238, 0.12);
@@ -95,7 +95,7 @@
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.04);
 }
 
-/* ── 11-slot grid ── */
+/* â”€â”€ 11-slot grid â”€â”€ */
 .ns-slots-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -140,7 +140,7 @@
 }
 
 .ns-slot-input::placeholder { color: rgba(255, 255, 255, 0.18); font-size: 10px; }
-.ns-slot-input:focus { border-color: rgba(34, 197, 94, 0.35); background: rgba(34, 197, 94, 0.04); }
+.ns-slot-input:focus { border-color: rgba(239,68,68, 0.35); background: rgba(239,68,68, 0.04); }
 .ns-slot.filled .ns-slot-input { border-color: rgba(255, 255, 255, 0.12); color: rgba(255, 255, 255, 0.9); }
 
 .ns-slot-actions {
@@ -175,7 +175,7 @@
   background: rgba(255, 71, 87, 0.06);
 }
 
-/* ── Distribution Card ── */
+/* â”€â”€ Distribution Card â”€â”€ */
 .ns-dist-card {
   background: rgba(9, 11, 33, 0.82);
   border: 1px solid rgba(255, 255, 255, 0.07);
@@ -193,7 +193,7 @@
   margin-bottom: 14px;
 }
 
-/* ── Nationality Bar Row ── */
+/* â”€â”€ Nationality Bar Row â”€â”€ */
 .ns-nat-row {
   margin-bottom: 10px;
 }
@@ -221,9 +221,9 @@
   text-transform: uppercase;
   padding: 2px 7px;
   border-radius: 999px;
-  background: rgba(34, 197, 94, 0.15);
-  border: 1px solid rgba(34, 197, 94, 0.35);
-  color: #22c55e;
+  background: rgba(239,68,68, 0.15);
+  border: 1px solid rgba(239,68,68, 0.35);
+  color: #ef4444;
 }
 
 .ns-need-chip {
@@ -273,7 +273,7 @@
   transition: color 0.25s;
 }
 
-/* ── Status Cards ── */
+/* â”€â”€ Status Cards â”€â”€ */
 .ns-status-hint {
   display: flex;
   align-items: center;
@@ -295,7 +295,7 @@
   overflow: hidden;
 }
 
-/* ─ Locked ─ */
+/* â”€ Locked â”€ */
 .ns-status-locked {
   background: rgba(9, 11, 33, 0.88);
   border: 1px solid rgba(255, 215, 0, 0.15);
@@ -356,18 +356,18 @@
   margin: 0;
 }
 
-/* ─ Active ─ */
+/* â”€ Active â”€ */
 .ns-status-active {
   background: rgba(9, 11, 33, 0.92);
-  border: 1px solid rgba(34, 197, 94, 0.35);
-  box-shadow: 0 0 40px rgba(34, 197, 94, 0.1), 0 8px 32px rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(239,68,68, 0.35);
+  box-shadow: 0 0 40px rgba(239,68,68,0.1), 0 8px 32px rgba(0, 0, 0, 0.4);
 }
 
 .ns-active-pulse {
   position: absolute;
   inset: 0;
   border-radius: 16px;
-  background: radial-gradient(ellipse at center, rgba(34, 197, 94, 0.08) 0%, transparent 70%);
+  background: radial-gradient(ellipse at center, rgba(239,68,68, 0.08) 0%, transparent 70%);
   pointer-events: none;
 }
 
@@ -375,7 +375,7 @@
   position: absolute;
   inset: 0;
   pointer-events: none;
-  background: linear-gradient(105deg, transparent 25%, rgba(34, 197, 94, 0.1) 50%, transparent 75%);
+  background: linear-gradient(105deg, transparent 25%, rgba(239,68,68,0.1) 50%, transparent 75%);
   transform: skewX(-12deg);
 }
 
@@ -391,8 +391,8 @@
 .ns-active-dot {
   width: 7px; height: 7px;
   border-radius: 50%;
-  background: #22c55e;
-  box-shadow: 0 0 10px rgba(34, 197, 94, 0.8);
+  background: #ef4444;
+  box-shadow: 0 0 10px rgba(239,68,68, 0.8);
   display: inline-block;
 }
 
@@ -402,7 +402,7 @@
   font-weight: 900;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: #22c55e;
+  color: #ef4444;
 }
 
 .ns-active-msg {
@@ -424,16 +424,16 @@
 
 .ns-active-nat {
   font-weight: 800;
-  color: rgba(34, 197, 94, 0.75);
+  color: rgba(239,68,68, 0.75);
 }
 
 .ns-plus3 {
   font-family: 'Barlow Condensed', sans-serif;
   font-size: 20px;
   font-weight: 900;
-  color: #22c55e;
+  color: #ef4444;
   letter-spacing: 0;
-  text-shadow: 0 0 16px rgba(34, 197, 94, 0.6);
+  text-shadow: 0 0 16px rgba(239,68,68, 0.6);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -447,6 +447,7 @@
 }
 
 @media (max-width: 768px) {
-  /* Remove large blur filters — very expensive on mobile GPU */
+  /* Remove large blur filters â€” very expensive on mobile GPU */
   .ns-glow { filter: none !important; display: none; }
 }
+

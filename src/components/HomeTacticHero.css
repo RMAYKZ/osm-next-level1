@@ -1,13 +1,13 @@
 :root {
-  --neon: oklch(0.87 0.27 152);
-  --neon-mid: oklch(0.87 0.27 152 / 0.38);
-  --neon-dim: oklch(0.87 0.27 152 / 0.14);
-  --neon-bg:  oklch(0.87 0.27 152 / 0.06);
+  --neon: #ef4444;
+  --neon-mid: rgba(239,68,68,0.38);
+  --neon-dim: rgba(239,68,68,0.14);
+  --neon-bg:  rgba(239,68,68,0.06);
 }
 
 @keyframes hthGlow {
   0%,100% { box-shadow: 0 0 0 1px var(--neon-mid), 0 0 20px var(--neon-dim); }
-  50%      { box-shadow: 0 0 0 1.5px var(--neon), 0 0 36px oklch(0.87 0.27 152 / 0.22); }
+  50%      { box-shadow: 0 0 0 1.5px var(--neon), 0 0 36px rgba(239,68,68,0.22); }
 }
 @keyframes hthShine {
   0%        { transform: translateX(-120%); }
@@ -27,9 +27,9 @@
   overflow: hidden;
   background: linear-gradient(
     125deg,
-    oklch(0.87 0.27 152 / 0.07) 0%,
-    oklch(0.10 0.02 250 / 0.96) 55%,
-    oklch(0.87 0.27 152 / 0.04) 100%
+    rgba(239,68,68,0.07) 0%,
+    oklch(0.06 0.005 20 / 0.97) 55%,
+    rgba(249,115,22,0.04) 100%
   );
   border: 1px solid var(--neon-mid);
   border-radius: 14px;
@@ -42,7 +42,7 @@
   position: absolute;
   top: -60%; left: -40%;
   width: 55%; height: 220%;
-  background: linear-gradient(105deg, transparent 38%, oklch(0.87 0.27 152 / 0.06) 50%, transparent 62%);
+  background: linear-gradient(105deg, transparent 38%, rgba(239,68,68,0.06) 50%, transparent 62%);
   animation: hthShine 5.5s ease infinite;
   pointer-events: none;
 }
@@ -303,7 +303,7 @@
   background: linear-gradient(
     125deg,
     rgba(245,197,24,0.10) 0%,
-    oklch(0.10 0.02 250 / 0.97) 50%,
+    oklch(0.06 0.005 20 / 0.97) 50%,
     rgba(245,197,24,0.06) 100%
   );
   border: 1.5px solid var(--gold-mid);

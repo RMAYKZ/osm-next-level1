@@ -1,5 +1,5 @@
-/* Barlow Condensed + Inter are loaded via <link> in index.html, not a CSS
-   @import here — @import is render-blocking and invisible to the browser's
+﻿/* Barlow Condensed + Inter are loaded via <link> in index.html, not a CSS
+   @import here â€” @import is render-blocking and invisible to the browser's
    preload scanner (it can only be discovered after the main CSS bundle is
    fetched and parsed), unlike a <link> tag in the raw HTML. */
 
@@ -8,9 +8,9 @@
   50% { opacity: 0.5; transform: scale(0.85); }
 }
 
-/* ═══════════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    SECTION WRAPPER
-═══════════════════════════════════════════════ */
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .atf-wrap {
   display: flex;
   flex-direction: column;
@@ -25,13 +25,13 @@
   position: absolute;
   top: 0; left: 0; right: 0;
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(91,138,247,0.25) 35%, rgba(145,97,245,0.25) 65%, transparent);
+  background: linear-gradient(90deg, transparent, rgba(239,68,68,0.28) 35%, rgba(249,115,22,0.28) 65%, transparent);
   pointer-events: none;
 }
 
-/* ═══════════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    SECTION HEADING (outside the card)
-═══════════════════════════════════════════════ */
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .atf-head {
   width: 100%;
   max-width: 1400px;
@@ -49,15 +49,15 @@
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  background: rgba(16,217,161,0.07);
-  border: 1px solid rgba(16,217,161,0.32);
+  background: rgba(239,68,68,0.07);
+  border: 1px solid rgba(239,68,68,0.32);
   border-radius: 999px;
   padding: 7px 20px;
   font-size: 10px;
   font-weight: 900;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: rgba(74,237,192,0.95);
+  color: rgba(248,113,113,0.95);
   margin-bottom: 18px;
   backdrop-filter: blur(8px);
 }
@@ -67,8 +67,8 @@
   width: 7px;
   height: 7px;
   border-radius: 50%;
-  background: #10d9a1;
-  box-shadow: 0 0 8px rgba(16,217,161,0.8);
+  background: #ef4444;
+  box-shadow: 0 0 8px rgba(239,68,68,0.8);
   flex-shrink: 0;
 }
 
@@ -84,31 +84,28 @@
 }
 
 .atf-head-title-accent {
-  background: linear-gradient(135deg, #10d9a1 0%, #5b8af7 60%, #9161f5 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: #ef4444;
   display: inline;
 }
 
-/* ═══════════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    ROOT CARD
-═══════════════════════════════════════════════ */
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .root {
-  background: rgba(7,7,17,0.85);
-  border-radius: 16px;
+  background: rgba(5,5,6,0.9);
+  border-radius: 12px;
   overflow: hidden;
-  border: 1px solid rgba(91,138,247,0.14);
+  border: 1px solid rgba(239,68,68,0.14);
   width: 100%;
   max-width: 1400px;
-  box-shadow: 0 40px 100px rgba(0,0,0,0.6), 0 0 0 1px rgba(91,138,247,0.07);
+  box-shadow: 0 40px 100px rgba(0,0,0,0.75), 0 0 0 1px rgba(239,68,68,0.07);
   position: relative;
   z-index: 1;
 }
 
-/* ═══════════════════════════════════════════════
-   CARD HEADER — counter badge + reset only
-═══════════════════════════════════════════════ */
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   CARD HEADER â€” counter badge + reset only
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .page-hdr {
   padding: 14px 24px;
   background: rgba(255,255,255,0.015);
@@ -167,17 +164,17 @@
 }
 .reset-btn:hover { color: #fff; border-color: rgba(255,255,255,0.28); }
 
-/* ═══════════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    BODY GRID
-═══════════════════════════════════════════════ */
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .body {
   display: grid;
   grid-template-columns: 320px 1fr;
 }
 
-/* ═══════════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    LEFT PANEL
-═══════════════════════════════════════════════ */
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .left {
   padding: 18px 16px;
   border-right: 1px solid rgba(255,255,255,0.07);
@@ -222,19 +219,19 @@
   transform: translateY(-1px);
 }
 .sbtn.on {
-  background: linear-gradient(135deg, #5b8af7, #9161f5);
+  background: linear-gradient(135deg, #ef4444, #f97316);
   border-color: transparent;
   color: #fff;
-  box-shadow: 0 4px 16px rgba(91,138,247,0.35);
+  box-shadow: 0 4px 16px rgba(239,68,68,0.35);
 }
 .strseg .sbtn.on {
-  background: linear-gradient(135deg, #5b8af7, #9161f5);
+  background: linear-gradient(135deg, #ef4444, #f97316);
   border-color: transparent;
   color: #fff;
-  box-shadow: 0 4px 16px rgba(91,138,247,0.35);
+  box-shadow: 0 4px 16px rgba(239,68,68,0.35);
 }
 
-/* ─ Opponent list ─ */
+/* â”€ Opponent list â”€ */
 .tlist {
   display: flex; flex-direction: column; gap: 5px;
   max-height: 360px; overflow-y: auto; padding-right: 3px;
@@ -252,8 +249,8 @@
 }
 .ti:hover { background: rgba(255,255,255,0.05); }
 .ti.on {
-  background: rgba(91,138,247,0.10);
-  border-color: rgba(91,138,247,0.35);
+  background: rgba(239,68,68,0.10);
+  border-color: rgba(239,68,68,0.35);
 }
 
 .tirow { display: flex; align-items: center; gap: 8px; margin-bottom: 5px; }
@@ -290,9 +287,9 @@
   min-width: 22px; text-align: right;
 }
 
-/* ═══════════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    RIGHT PANEL
-═══════════════════════════════════════════════ */
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .right {
   padding: 20px 22px;
   display: flex; flex-direction: column; gap: 12px;
@@ -305,9 +302,9 @@
   display: flex; align-items: center; gap: 7px;
 }
 
-/* ═══════════════════════════════════════════════
-   COUNTER TACTIC HERO REVEAL — redesigned
-═══════════════════════════════════════════════ */
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   COUNTER TACTIC HERO REVEAL â€” redesigned
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .tc-hero {
   position: relative;
   overflow: hidden;
@@ -435,23 +432,23 @@
   color: rgba(255,255,255,0.7); white-space: nowrap; flex-shrink: 0;
 }
 
-/* ═══════════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    MID ROW: PITCH + STATS
-═══════════════════════════════════════════════ */
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .midrow { display: flex; gap: 16px; align-items: flex-start; }
 
 .main-pitch-wrap {
   border-radius: 12px; overflow: hidden; flex-shrink: 0; width: 310px;
   box-shadow:
     0 0 0 1px rgba(255,255,255,0.1),
-    0 0 30px rgba(16,217,161,0.06),
+    0 0 30px rgba(239,68,68,0.06),
     0 12px 40px rgba(0,0,0,0.5);
   position: relative;
 }
 
 .statscol { flex: 1; display: flex; flex-direction: column; gap: 8px; }
 
-/* ─ Success rate bar (compact, complements the ring in tc-hero) ─ */
+/* â”€ Success rate bar (compact, complements the ring in tc-hero) â”€ */
 .sucbox {
   background: rgba(255,255,255,0.02);
   border: 1px solid rgba(255,255,255,0.07);
@@ -482,13 +479,13 @@
 
 .sucfill {
   height: 100%; border-radius: 4px;
-  background: linear-gradient(90deg, oklch(0.87 0.27 152), #5b8af7);
+  background: linear-gradient(90deg, #ef4444, #f97316);
   transition: width 0.8s cubic-bezier(0.19, 1, 0.22, 1);
 }
 
-/* ═══════════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    LINE TACTICS
-═══════════════════════════════════════════════ */
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .lt-header {
   font-size: 10px; font-weight: 900;
   letter-spacing: 0.14em; text-transform: uppercase;
@@ -525,9 +522,9 @@
 
 
 
-/* ═══════════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    COACH NOTE
-═══════════════════════════════════════════════ */
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .coach {
   background: rgba(255,255,255,0.02);
   border: 1px solid rgba(255,255,255,0.06);
@@ -536,9 +533,9 @@
   line-height: 1.75; font-style: italic;
 }
 
-/* ═══════════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    KEYFRAMES
-═══════════════════════════════════════════════ */
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 @keyframes blink {
   0%, 100% { opacity: 1; }
   50%       { opacity: .22; }
@@ -560,11 +557,11 @@
 .ltrow:nth-child(3) { animation-delay: .12s; }
 .ti { animation: fadeUp .28s ease both; }
 
-/* ═══════════════════════════════════════════════
-   MOBILE PERFORMANCE — stop GPU-intensive animations
-═══════════════════════════════════════════════ */
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   MOBILE PERFORMANCE â€” stop GPU-intensive animations
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 @media (max-width: 768px) {
-  /* Remove continuous box-shadow animations — biggest GPU drain */
+  /* Remove continuous box-shadow animations â€” biggest GPU drain */
   .hth-card,
   .hero-card {
     animation: none !important;
@@ -578,20 +575,20 @@
     display: none;
   }
 
-  /* Remove backdrop-filter blur — very expensive on mobile GPU */
+  /* Remove backdrop-filter blur â€” very expensive on mobile GPU */
   .root {
     backdrop-filter: none !important;
     -webkit-backdrop-filter: none !important;
     background: rgba(9,11,33,0.98) !important;
   }
 
-  /* Simplify pulsing dots — keep opacity change but remove box-shadow animation */
+  /* Simplify pulsing dots â€” keep opacity change but remove box-shadow animation */
   .cbdot {
     animation: none !important;
     box-shadow: 0 0 6px rgba(167,139,250,0.8);
   }
 
-  /* Stop spinner box-shadow pulse — only keep rotation */
+  /* Stop spinner box-shadow pulse â€” only keep rotation */
   .atf-spinner {
     animation: atfSpin 1.5s linear infinite !important;
   }
@@ -603,16 +600,16 @@
     animation: none !important;
   }
 
-  /* Remove filter from spinner dot — drop-shadow is GPU expensive */
+  /* Remove filter from spinner dot â€” drop-shadow is GPU expensive */
   .atf-spinner {
     filter: none !important;
     box-shadow: none !important;
   }
 }
 
-/* ═══════════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    RESPONSIVE
-═══════════════════════════════════════════════ */
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 @media (max-width: 1023px) {
   .body            { grid-template-columns: 260px 1fr; }
   .main-pitch-wrap { width: 240px; }
@@ -641,9 +638,9 @@
   .statval         { font-size: 26px; }
 }
 
-/* ═══════════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    EMPTY STATE
-═══════════════════════════════════════════════ */
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 @keyframes atfSpin  { to { transform: rotate(360deg); } }
 @keyframes atfPulse {
   0%, 100% { box-shadow: 0 0 16px rgba(0,229,255,.25); }
@@ -686,9 +683,9 @@
   max-width: 280px; line-height: 1.8; font-style: italic;
 }
 
-/* ═══════════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    RESULTS + ALT SEPARATOR
-═══════════════════════════════════════════════ */
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .atf-results-in { animation: fadeUp .45s ease both; }
 
 .alt-sep { display: flex; align-items: center; gap: 10px; margin-top: 4px; }
@@ -699,9 +696,9 @@
   color: rgba(255,255,255,0.3); white-space: nowrap;
 }
 
-/* ═══════════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    HOME DOMINATION HERO CARD
-═══════════════════════════════════════════════ */
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 @keyframes heroGlow {
   0%, 100% {
     box-shadow: 0 0 0 1px rgba(255,255,255,0.12);
@@ -800,19 +797,19 @@
   font-size: 11px; color: rgba(255,215,0,.7); line-height: 1.7; font-style: italic;
 }
 
-/* ═══════════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    NEW LAYOUT: ATF CARD + TWO-COLUMN GRID
-═══════════════════════════════════════════════ */
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 
 /* Card wrapper (replaces .root) */
 .atf-card {
-  background: rgba(7,7,17,0.85);
-  border-radius: 16px;
+  background: rgba(5,5,6,0.9);
+  border-radius: 12px;
   overflow: hidden;
-  border: 1px solid rgba(91,138,247,0.14);
+  border: 1px solid rgba(239,68,68,0.14);
   width: 100%;
   max-width: 1400px;
-  box-shadow: 0 40px 100px rgba(0,0,0,0.6), 0 0 0 1px rgba(91,138,247,0.07);
+  box-shadow: 0 40px 100px rgba(0,0,0,0.75), 0 0 0 1px rgba(239,68,68,0.07);
   position: relative;
   z-index: 1;
 }
@@ -911,13 +908,13 @@
   color: rgba(255,255,255,0.72);
 }
 .atf-seg-btn.on {
-  background: linear-gradient(135deg, #5b8af7, #9161f5);
+  background: linear-gradient(135deg, #ef4444, #f97316);
   border-color: transparent;
   color: #fff;
-  box-shadow: 0 3px 12px rgba(91,138,247,0.35);
+  box-shadow: 0 3px 12px rgba(239,68,68,0.35);
 }
 
-/* Formation card grid — 2 columns */
+/* Formation card grid â€” 2 columns */
 .atf-fm-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -943,9 +940,9 @@
   border-color: rgba(255,255,255,0.14);
 }
 .atf-fm-card.on {
-  background: rgba(16,217,161,0.08);
-  border-color: rgba(16,217,161,0.38);
-  box-shadow: 0 0 18px rgba(16,217,161,0.08);
+  background: rgba(239,68,68,0.08);
+  border-color: rgba(239,68,68,0.38);
+  box-shadow: 0 0 18px rgba(239,68,68,0.08);
 }
 
 .atf-fm-card-top {
@@ -959,11 +956,11 @@
 
 .atf-fm-check {
   font-size: 9px;
-  color: #10d9a1;
+  color: #ef4444;
   font-weight: 900;
   width: 15px; height: 15px;
   border-radius: 50%;
-  background: rgba(16,217,161,0.14);
+  background: rgba(239,68,68,0.14);
   display: flex; align-items: center; justify-content: center;
   flex-shrink: 0;
 }
@@ -1022,7 +1019,7 @@
   width: 255px;
   box-shadow:
     0 0 0 1px rgba(255,255,255,0.09),
-    0 0 22px rgba(16,217,161,0.06),
+    0 0 22px rgba(239,68,68,0.06),
     0 10px 36px rgba(0,0,0,0.5);
 }
 
@@ -1045,7 +1042,7 @@
   position: relative;
 }
 .atf-ab-toggle::before {
-  content: 'TAKTİK VERSİYONU';
+  content: 'TAKTÄ°K VERSÄ°YONU';
   position: absolute;
   top: -9px;
   left: 50%;
@@ -1108,16 +1105,16 @@
   white-space: nowrap;
 }
 
-/* alt-sep now outside the card — needs width constraint */
+/* alt-sep now outside the card â€” needs width constraint */
 .atf-wrap > .alt-sep {
   width: 100%;
   max-width: 1400px;
   margin-top: 24px;
 }
 
-/* ═══════════════════════════════════════════════
-   RESPONSIVE — NEW LAYOUT
-═══════════════════════════════════════════════ */
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   RESPONSIVE â€” NEW LAYOUT
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 @media (max-width: 1100px) {
   .atf-layout            { grid-template-columns: 240px 1fr; }
   .atf-main-canvas-wrap  { width: 210px; }
@@ -1148,7 +1145,7 @@
     overflow: hidden;
   }
   .cblbl {
-    display: none; /* hide "tactics today" label on mobile — keeps badge compact */
+    display: none; /* hide "tactics today" label on mobile â€” keeps badge compact */
   }
   /* Stack picker on top of results */
   .atf-layout {
@@ -1175,3 +1172,4 @@
   .atf-main-canvas-wrap { width: 100%; }
   .atf-empty { min-height: 160px; padding: 18px; gap: 12px; }
 }
+

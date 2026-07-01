@@ -6,7 +6,7 @@
   position: absolute;
   top: 0; left: 0; right: 0;
   height: 2px;
-  background: linear-gradient(90deg, transparent, oklch(0.87 0.27 152 / 0.55), transparent);
+  background: linear-gradient(90deg, transparent, rgba(239,68,68,0.55), transparent);
   z-index: 1;
 }
 
@@ -17,7 +17,7 @@
   height: 100%;
   width: 82%;
   max-width: 360px;
-  background: linear-gradient(170deg, oklch(0.135 0.025 255) 0%, oklch(0.10 0.018 250) 100%);
+  background: linear-gradient(170deg, oklch(0.07 0.008 25) 0%, oklch(0.05 0.005 20) 100%);
   display: flex;
   flex-direction: column;
   z-index: 9999;
@@ -47,9 +47,9 @@
   height: 38px;
   border-radius: 10px;
   overflow: hidden;
-  border: 1px solid rgba(91,138,247,0.35);
+  border: 1px solid rgba(239,68,68,0.35);
   flex-shrink: 0;
-  box-shadow: 0 0 14px rgba(91,138,247,0.18);
+  box-shadow: 0 0 14px rgba(239,68,68,0.18);
 }
 
 .nav-drawer-brand-text {
@@ -69,7 +69,7 @@
   font-size: 13px;
   font-weight: 900;
   letter-spacing: 0.04em;
-  color: #6b96f8;
+  color: #f87171;
 }
 
 .nav-drawer-brand-nl {
@@ -168,9 +168,9 @@
 }
 .nav-drawer-nav-card:hover,
 .nav-drawer-nav-card:active {
-  background: oklch(0.87 0.27 152 / 0.09);
-  border-color: oklch(0.87 0.27 152 / 0.3);
-  box-shadow: 0 0 14px oklch(0.87 0.27 152 / 0.08);
+  background: rgba(239,68,68,0.09);
+  border-color: rgba(239,68,68,0.3);
+  box-shadow: 0 0 14px rgba(239,68,68,0.08);
 }
 
 .nav-drawer-nav-icon {
@@ -203,7 +203,7 @@
   padding: 12px 8px 10px;
   border-radius: 10px;
   background: rgba(255,255,255,0.025);
-  border: 1px solid oklch(0.87 0.27 152 / 0.13);
+  border: 1px solid rgba(239,68,68,0.13);
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
   transition: background 0.15s, border-color 0.15s, box-shadow 0.15s;
@@ -213,9 +213,9 @@
 }
 .nav-drawer-tool-card:hover,
 .nav-drawer-tool-card:active {
-  background: oklch(0.87 0.27 152 / 0.09);
-  border-color: oklch(0.87 0.27 152 / 0.32);
-  box-shadow: 0 2px 14px oklch(0.87 0.27 152 / 0.07);
+  background: rgba(239,68,68,0.09);
+  border-color: rgba(239,68,68,0.32);
+  box-shadow: 0 2px 14px rgba(239,68,68,0.07);
 }
 
 .nav-drawer-tool-icon {
@@ -299,15 +299,15 @@
   white-space: nowrap;
 }
 .nav-link-pill:hover {
-  color: oklch(0.87 0.27 152);
-  background: oklch(0.87 0.27 152 / 0.08);
+  color: #ef4444;
+  background: rgba(239,68,68,0.08);
 }
 .nav-link-pill::after {
   content: '';
   position: absolute;
   bottom: 2px; left: 10px; right: 10px;
   height: 1.5px;
-  background: oklch(0.87 0.27 152);
+  background: #ef4444;
   border-radius: 2px;
   transform: scaleX(0);
   transition: transform 0.25s cubic-bezier(0.16,1,0.3,1);

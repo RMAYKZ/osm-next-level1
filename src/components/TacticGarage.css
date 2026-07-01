@@ -1,4 +1,4 @@
-/* ── Garage Root ── */
+﻿/* â”€â”€ Garage Root â”€â”€ */
 .garage-root {
   padding: 24px 16px 32px;
   min-height: 200px;
@@ -36,32 +36,32 @@
   font-family: 'Barlow Condensed', sans-serif;
   font-size: 28px;
   font-weight: 900;
-  color: #00e5ff;
+  color: #ef4444;
   line-height: 1;
 }
 
 .garage-count span {
   font-size: 11px;
   font-weight: 600;
-  color: rgba(0, 229, 255, 0.55);
+  color: rgba(239,68,68,0.55);
   font-family: inherit;
   text-transform: uppercase;
   letter-spacing: 0.06em;
 }
 
-/* ── Card Grid ── */
+/* â”€â”€ Card Grid â”€â”€ */
 .garage-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
   gap: 12px;
 }
 
-/* ── Garage Card ── */
+/* â”€â”€ Garage Card â”€â”€ */
 .garage-card {
   position: relative;
-  background: rgba(9, 11, 33, 0.88);
+  background: rgba(5,5,6,0.92);
   backdrop-filter: blur(20px);
-  border: 1px solid rgba(34, 211, 238, 0.14);
+  border: 1px solid rgba(239,68,68,0.14);
   border-radius: 14px;
   padding: 14px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.04);
@@ -90,9 +90,9 @@
 }
 
 .garage-opt-badge {
-  background: rgba(0, 229, 255, 0.12);
-  border: 1px solid rgba(0, 229, 255, 0.28);
-  color: #00e5ff;
+  background: rgba(239,68,68, 0.12);
+  border: 1px solid rgba(239,68,68, 0.28);
+  color: #ef4444;
   padding: 1px 6px;
   border-radius: 999px;
   font-size: 8px;
@@ -157,7 +157,7 @@
   color: rgba(255, 255, 255, 0.45);
 }
 
-/* ── Chips ── */
+/* â”€â”€ Chips â”€â”€ */
 .garage-chips {
   display: flex;
   flex-wrap: wrap;
@@ -186,7 +186,7 @@
   color: rgba(255, 255, 255, 0.4);
 }
 
-/* ── Mini bars ── */
+/* â”€â”€ Mini bars â”€â”€ */
 .garage-bars {
   display: flex;
   flex-direction: column;
@@ -248,7 +248,7 @@
   flex-shrink: 0;
 }
 
-/* ── Line pills ── */
+/* â”€â”€ Line pills â”€â”€ */
 .garage-line-pills {
   display: flex;
   flex-wrap: wrap;
@@ -265,7 +265,7 @@
   border: 1px solid transparent;
 }
 
-/* ── Card footer ── */
+/* â”€â”€ Card footer â”€â”€ */
 .garage-card-foot {
   display: flex;
   align-items: center;
@@ -289,7 +289,7 @@
   color: rgba(255, 255, 255, 0.2);
 }
 
-/* ── Delete overlay ── */
+/* â”€â”€ Delete overlay â”€â”€ */
 .garage-delete-overlay {
   position: absolute;
   inset: 0;
@@ -351,7 +351,7 @@
   background: rgba(255, 255, 255, 0.1);
 }
 
-/* ── Empty state ── */
+/* â”€â”€ Empty state â”€â”€ */
 .garage-empty {
   display: flex;
   flex-direction: column;
@@ -389,9 +389,9 @@
   align-items: center;
   padding: 9px 22px;
   border-radius: 10px;
-  background: rgba(0, 229, 255, 0.1);
-  border: 1px solid rgba(0, 229, 255, 0.28);
-  color: #00e5ff;
+  background: rgba(239,68,68, 0.1);
+  border: 1px solid rgba(239,68,68, 0.28);
+  color: #ef4444;
   font-size: 12px;
   font-weight: 800;
   letter-spacing: 0.05em;
@@ -400,10 +400,10 @@
 }
 
 .garage-empty-cta:hover {
-  background: rgba(0, 229, 255, 0.16);
+  background: rgba(239,68,68, 0.16);
 }
 
-/* ── Skeleton ── */
+/* â”€â”€ Skeleton â”€â”€ */
 .garage-skeleton {
   animation: garage-pulse 1.6s ease-in-out infinite;
 }
@@ -432,7 +432,7 @@
 }
 
 @media (max-width: 768px) {
-  /* Remove backdrop-filter — very expensive on mobile GPU */
+  /* Remove backdrop-filter â€” very expensive on mobile GPU */
   .garage-card {
     backdrop-filter: none !important;
     background: rgba(9, 11, 33, 0.97) !important;
@@ -442,3 +442,4 @@
     filter: none !important;
   }
 }
+

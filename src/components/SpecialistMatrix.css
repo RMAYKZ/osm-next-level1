@@ -1,4 +1,4 @@
-/* ── Section ── */
+﻿/* â”€â”€ Section â”€â”€ */
 .sm-section {
   position: relative;
   padding: 80px 20px;
@@ -24,16 +24,16 @@
 .sm-glow-tl {
   top: 0; left: -10%;
   width: 40%; height: 40%;
-  background: radial-gradient(ellipse, rgba(139, 92, 246, 0.07) 0%, transparent 70%);
+  background: radial-gradient(ellipse, rgba(249,115,22,0.07) 0%, transparent 70%);
 }
 
 .sm-glow-br {
   bottom: 0; right: -10%;
   width: 45%; height: 45%;
-  background: radial-gradient(ellipse, rgba(0, 229, 255, 0.06) 0%, transparent 70%);
+  background: radial-gradient(ellipse, rgba(239,68,68,0.06) 0%, transparent 70%);
 }
 
-/* ── Header ── */
+/* â”€â”€ Header â”€â”€ */
 .sm-header {
   text-align: center;
   margin-bottom: 40px;
@@ -47,9 +47,9 @@
   font-weight: 800;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: rgba(167, 139, 250, 0.9);
-  background: rgba(139, 92, 246, 0.1);
-  border: 1px solid rgba(139, 92, 246, 0.22);
+  color: rgba(251,146,60,0.95);
+  background: rgba(249,115,22,0.1);
+  border: 1px solid rgba(249,115,22,0.22);
   border-radius: 999px;
   padding: 5px 14px;
   margin-bottom: 16px;
@@ -58,7 +58,7 @@
 .sm-badge-dot {
   width: 5px; height: 5px;
   border-radius: 50%;
-  background: rgba(167, 139, 250, 0.9);
+  background: rgba(251,146,60,0.95);
   animation: sm-pulse 2s infinite ease-in-out;
 }
 
@@ -85,7 +85,7 @@
   margin: 0 auto;
 }
 
-/* ── Player Grid ── */
+/* â”€â”€ Player Grid â”€â”€ */
 .sm-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -97,7 +97,7 @@
   .sm-grid { grid-template-columns: 1fr; }
 }
 
-/* ── Player Card ── */
+/* â”€â”€ Player Card â”€â”€ */
 .sm-player-card {
   background: rgba(9, 11, 33, 0.82);
   border: 1px solid rgba(255, 255, 255, 0.07);
@@ -176,9 +176,9 @@
 }
 
 .sm-name-input::placeholder { color: rgba(255, 255, 255, 0.2); }
-.sm-name-input:focus { border-color: rgba(167, 139, 250, 0.4); }
+.sm-name-input:focus { border-color: rgba(251,146,60, 0.4); }
 
-/* ── Stat row ── */
+/* â”€â”€ Stat row â”€â”€ */
 .sm-stat-row {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -218,9 +218,9 @@
 .sm-stat-input::-webkit-outer-spin-button,
 .sm-stat-input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
 .sm-stat-input::placeholder { color: rgba(255, 255, 255, 0.15); font-size: 11px; }
-.sm-stat-input:focus { border-color: rgba(167, 139, 250, 0.38); }
+.sm-stat-input:focus { border-color: rgba(251,146,60, 0.38); }
 
-/* ── Actions ── */
+/* â”€â”€ Actions â”€â”€ */
 .sm-actions {
   display: flex;
   justify-content: flex-end;
@@ -246,11 +246,11 @@
   background: rgba(255, 71, 87, 0.07);
 }
 
-/* ── Result Card ── */
+/* â”€â”€ Result Card â”€â”€ */
 .sm-result-card {
   position: relative;
   background: rgba(9, 11, 33, 0.92);
-  border: 1px solid rgba(167, 139, 250, 0.2);
+  border: 1px solid rgba(251,146,60, 0.2);
   border-radius: 16px;
   padding: 22px 22px 8px;
   box-shadow: 0 16px 48px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.04);
@@ -261,7 +261,7 @@
   position: absolute;
   inset: 0;
   pointer-events: none;
-  background: linear-gradient(105deg, transparent 30%, rgba(167, 139, 250, 0.08) 50%, transparent 70%);
+  background: linear-gradient(105deg, transparent 30%, rgba(251,146,60, 0.08) 50%, transparent 70%);
   transform: skewX(-12deg);
   z-index: 0;
 }
@@ -293,11 +293,11 @@
   font-size: 10px;
   font-weight: 600;
   letter-spacing: 0.06em;
-  color: rgba(167, 139, 250, 0.6);
+  color: rgba(251,146,60, 0.6);
   text-transform: uppercase;
 }
 
-/* ── Role Rows ── */
+/* â”€â”€ Role Rows â”€â”€ */
 .sm-roles {
   position: relative;
   z-index: 1;
@@ -386,7 +386,7 @@
   font-style: italic;
 }
 
-/* ── Empty result state ── */
+/* â”€â”€ Empty result state â”€â”€ */
 .sm-result-empty {
   display: flex;
   align-items: center;
@@ -418,3 +418,4 @@
 @media (max-width: 768px) {
   .sm-glow { filter: none !important; display: none; }
 }
+
