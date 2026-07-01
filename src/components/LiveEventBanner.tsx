@@ -199,6 +199,7 @@ export default function LiveEventBanner() {
           {state.mode === "live"
             ? <LiveContent event={state.event} isMobile={isMobile} />
             : <UpcomingContent events={state.events} startsToday={state.startsToday} isMobile={isMobile} />}
+          <JulyBadge />
         </div>
       </div>
     </>
@@ -273,6 +274,71 @@ function LiveContent({ event, isMobile }: { event: OsmEvent; isMobile: boolean }
         </div>
       </div>
     </>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// JULY BADGE
+// ─────────────────────────────────────────────────────────────────────────────
+
+function JulyBadge() {
+  return (
+    <motion.div
+      animate={{ opacity: [0.82, 1, 0.82] }}
+      transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut" }}
+      style={{
+        flexShrink: 0,
+        display: "flex",
+        alignItems: "center",
+        gap: 7,
+        background: "linear-gradient(135deg, rgba(251,146,60,0.14) 0%, rgba(251,191,36,0.09) 100%)",
+        border: "1px solid rgba(251,146,60,0.32)",
+        borderRadius: 9,
+        padding: "3px 11px 3px 9px",
+      }}
+    >
+      {/* Sun SVG — crisp at small size */}
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" style={{ flexShrink: 0 }}>
+        <circle cx="12" cy="12" r="4.5" fill="#fb923c" opacity="0.95" />
+        {[0,45,90,135,180,225,270,315].map((deg, i) => (
+          <line
+            key={i}
+            x1={12 + Math.cos(deg * Math.PI / 180) * 7}
+            y1={12 + Math.sin(deg * Math.PI / 180) * 7}
+            x2={12 + Math.cos(deg * Math.PI / 180) * 10}
+            y2={12 + Math.sin(deg * Math.PI / 180) * 10}
+            stroke="#fbbf24"
+            strokeWidth="1.6"
+            strokeLinecap="round"
+            opacity="0.85"
+          />
+        ))}
+      </svg>
+
+      <div style={{ display: "flex", flexDirection: "column", lineHeight: 1, gap: 1 }}>
+        <span style={{
+          fontSize: 8,
+          fontWeight: 900,
+          letterSpacing: "0.22em",
+          color: "rgba(251,191,36,0.55)",
+          textTransform: "uppercase" as const,
+        }}>
+          EVENTS
+        </span>
+        <span style={{
+          fontSize: 12,
+          fontWeight: 900,
+          letterSpacing: "0.06em",
+          background: "linear-gradient(90deg, #fb923c 0%, #fbbf24 100%)",
+          WebkitBackgroundClip: "text",
+          WebkitTextFillColor: "transparent",
+          textTransform: "uppercase" as const,
+          whiteSpace: "nowrap" as const,
+        }}>
+          JULY 2026
+        </span>
+      </div>
+    </motion.div>
   );
 }
 
