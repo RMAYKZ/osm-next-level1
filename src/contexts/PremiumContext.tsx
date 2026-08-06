@@ -95,7 +95,7 @@ async function checkRevocation(code: string): Promise<{ revoked: boolean; expire
 }
 
 // ── Context types ─────────────────────────────────────────────────────
-export type UnlockResult = "ok" | "invalid" | "taken";
+export type UnlockResult = "ok" | "invalid" | "taken" | "expired";
 
 interface PremiumContextType {
   isPremium: boolean;
@@ -120,10 +120,10 @@ export function PremiumProvider({ children }: { children: ReactNode }) {
   const [unlocking, setUnlocking] = useState(false);
   const [expiresAt, setExpiresAt] = useState<Date | null>(null);
 
-  // expiringSoon: true when expiry is within 24 hours but hasn't passed yet
+  // expiringSoon: true when expiry is within 3 days but hasn't passed yet
   const expiringSoon =
     expiresAt !== null &&
-    expiresAt.getTime() - Date.now() <= 24 * 60 * 60 * 1000 &&
+    expiresAt.getTime() - Date.now() <= 3 * 24 * 60 * 60 * 1000 &&
     expiresAt > new Date();
 
   const unlock = useCallback(async (code: string): Promise<UnlockResult> => {
@@ -139,14 +139,21 @@ export function PremiumProvider({ children }: { children: ReactNode }) {
 
       if (!localValid) return "invalid";
 
-      // 2. Code is valid — check device lock via Firestore
+      // 2. Reject codes that have already expired or been revoked — checked
+      // before claiming the device so an expired code never steals the
+      // device lock from its original owner.
+      const { revoked, expiresAt: exp } = await checkRevocation(normalized);
+      if (revoked) return "expired";
+
+      // 3. Code is valid and current — check device lock via Firestore
       const claim = await checkAndClaimCode(normalized, deviceId);
       if (claim === "taken") return "taken";
 
-      // 3. Unlock!
+      // 4. Unlock!
       localStorage.setItem(STORAGE_KEY, "true");
       localStorage.setItem(PREMIUM_CODE_KEY, normalized);
       setIsPremium(true);
+      if (exp) setExpiresAt(exp);
       return "ok";
     } finally {
       setUnlocking(false);

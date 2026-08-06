@@ -86,6 +86,14 @@ const TAKEN_MSG: Record<string, string> = {
   pt: "Este código já está ativo em outro dispositivo.",
 };
 
+const EXPIRED_MSG: Record<string, string> = {
+  tr: "Bu kodun süresi doldu. Yenilemek için satın alma sayfasına git.",
+  en: "This code has expired. Visit the purchase page to renew.",
+  hu: "Ennek a kódnak lejárt az érvényessége. Az újításhoz látogass el a vásárlási oldalra.",
+  ar: "انتهت صلاحية هذا الرمز. قم بزيارة صفحة الشراء للتجديد.",
+  pt: "Este código expirou. Acesse a página de compra para renovar.",
+};
+
 const LOC_STYLE = {
   home: {
     primary: "#f5a623", secondary: "rgba(245,166,35,0.75)",
@@ -684,7 +692,7 @@ export default function PremiumTactics() {
   const tactics = getLocalizedPremiumTactics(t);
   const latestBatchLabel = getLatestBatchLabel(tactics, t);
   const [code, setCode] = useState("");
-  const [error, setError] = useState<"invalid" | "taken" | null>(null);
+  const [error, setError] = useState<"invalid" | "taken" | "expired" | null>(null);
   const [showCode, setShowCode] = useState(false);
   const [discountCopied, setDiscountCopied] = useState(false);
   const [mobileLocFilter, setMobileLocFilter] = useState<"home" | "away">("home");
@@ -1010,7 +1018,11 @@ export default function PremiumTactics() {
                                   transition={{ duration: 0.4 }}
                                   style={{ margin: "10px 0 0", textAlign: "center", fontSize: 13, color: "rgba(255,255,255,0.6)" }}
                                 >
-                                  {error === "taken" ? (TAKEN_MSG[lang] ?? TAKEN_MSG.en) : t("premium.wrongCode")}
+                                  {error === "taken"
+                                    ? (TAKEN_MSG[lang] ?? TAKEN_MSG.en)
+                                    : error === "expired"
+                                    ? (EXPIRED_MSG[lang] ?? EXPIRED_MSG.en)
+                                    : t("premium.wrongCode")}
                                 </motion.p>
                               )}
                             </AnimatePresence>
