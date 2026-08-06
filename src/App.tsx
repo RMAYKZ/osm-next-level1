@@ -16,9 +16,10 @@ import LiveEventBanner from "./components/LiveEventBanner";
 import SocialContactBanner from "./components/SocialContactBanner";
 import PremiumUpdateBanner from "./components/PremiumUpdateBanner";
 import PremiumExpiryBanner from "./components/PremiumExpiryBanner";
+import DiscountAnnouncementBanner from "./components/DiscountAnnouncementBanner";
 import { PwaInstallBanner } from "./components/PwaInstallBanner";
-// Lazy: shader defers Three.js (355 kB) until after first paint
-const AnimatedShaderBackground = lazy(() => import("./components/ui/animated-shader-background"));
+// Lazy: sparkles background defers its own chunk (tsParticles) until after first paint
+const SparklesCore = lazy(() => import("./components/ui/sparkles").then(m => ({ default: m.SparklesCore })));
 // Lazy: below-fold sections — downloaded only when main bundle parses
 const ScreenshotAnalyzer = lazy(() => import("./components/ScreenshotAnalyzer"));
 const MetaShareCard = lazy(() => import("./components/MetaShareCard"));
@@ -43,21 +44,36 @@ export default function App() {
         <SavedTacticsProvider>
 
           {/* ── Background ──
-              Mobile: a plain static gradient div, no Three.js involved at
-              all — `<AnimatedShaderBackground />` is never rendered, so its
-              lazy import (and the ~500kB three.js chunk inside it) is never
-              even requested. Desktop: full animated WebGL shader. */}
+              Mobile: a plain static gradient div, cheap to paint, no extra
+              chunk requested — canvas particle rendering is a real per-frame
+              CPU cost that isn't worth risking on weaker/battery-constrained
+              devices. Desktop: a sparse gold sparkle field (tsParticles),
+              lazy-loaded so it never blocks first paint. Density is tuned
+              low (30, scaled internally per 400x400px) — enough for ambient
+              texture without hundreds of moving particles on a full-viewport
+              canvas. */}
           {IS_MOBILE ? (
             <div style={{
               position: "fixed", top: 0, left: 0, width: "100vw", height: "100vh", zIndex: 0,
-              background: "radial-gradient(ellipse 80% 60% at 75% 15%, rgba(52,211,153,0.10) 0%, transparent 60%), #070711",
+              background: "radial-gradient(ellipse 80% 60% at 75% 15%, rgba(239,68,68,0.10) 0%, transparent 60%), #050506",
             }} />
           ) : (
-            <Suspense fallback={
-              <div style={{ position: "fixed", top: 0, left: 0, width: "100vw", height: "100vh", background: "#070711", zIndex: 0 }} />
-            }>
-              <AnimatedShaderBackground />
-            </Suspense>
+            <div style={{
+              position: "fixed", top: 0, left: 0, width: "100vw", height: "100vh", zIndex: 0,
+              background: "radial-gradient(ellipse 70% 55% at 25% 10%, rgba(239,68,68,0.10) 0%, transparent 60%), radial-gradient(ellipse 55% 45% at 85% 80%, rgba(34,211,238,0.05) 0%, transparent 65%), #050506",
+            }}>
+              <Suspense fallback={null}>
+                <SparklesCore
+                  background="transparent"
+                  minSize={0.6}
+                  maxSize={1.3}
+                  speed={0.6}
+                  particleDensity={30}
+                  particleColor="#fbbf24"
+                  className="h-full w-full"
+                />
+              </Suspense>
+            </div>
           )}
 
           {/* ── Scrollable content layer ── */}
@@ -80,6 +96,7 @@ export default function App() {
               overflowX: "hidden",
             }}>
               <div className="min-h-screen text-white animate-smooth-entry">
+                <DiscountAnnouncementBanner />
                 <LiveEventBanner />
                 <SocialContactBanner />
                 <Navbar />

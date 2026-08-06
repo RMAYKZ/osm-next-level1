@@ -4,6 +4,8 @@ import { getLocalizedPremiumTactics, siteConfig, type PremiumTactic } from "../d
 import { usePremium } from "../contexts/PremiumContext";
 import { useLang } from "../contexts/LanguageContext";
 import { analytics } from "../lib/analytics";
+import DiscountPricingCard from "./DiscountPricingCard";
+import { DISCOUNT_CODE, DISCOUNT_CHECKOUT_URL, DISCOUNT_DATE_LABEL, DISCOUNT_OLD_PRICE, DISCOUNT_NEW_PRICE, DISCOUNT_PERCENT, isDiscountExpired } from "../data/discount";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 
@@ -33,6 +35,35 @@ const BATTLE = {
   color: "#ff7040",
   label: "⚔️ BATTLE TACTIC",
 } as const;
+
+// Matches the always-English style of NEW / BATTLE TACTIC badges elsewhere
+// on this card (a deliberate site convention, not a translation gap).
+const SPOTLIGHT = {
+  label: "✨ LATEST",
+} as const;
+
+// Badge shown on a highlight card's theme strip: fire → flagship badge,
+// battle → BATTLE TACTIC, otherwise a neutral "current" badge (used for
+// plain spotlight tactics that aren't flagged fire/battle but still get
+// the eye-catching highlight card treatment).
+function highlightBadgeLabel(tactic: PremiumTactic, th: ReturnType<typeof getHTheme>, t: (key: string) => string): string {
+  if (tactic.fireTactic && th.badgeKey) return t(th.badgeKey);
+  if (tactic.battleTactic) return BATTLE.label;
+  return SPOTLIGHT.label;
+}
+
+const MONTH_KEYS = ["january","february","march","april","may","june","july","august","september","october","november","december"];
+
+// Derives "<Month> <Year>" from the newest addedAt across all tactics, so
+// every "updated this month" badge on the page tracks the actual latest
+// content batch automatically — no manual month edit needed when a new
+// batch is added next month.
+function getLatestBatchLabel(tactics: PremiumTactic[], t: (key: string) => string): string {
+  const latestAddedAt = tactics.reduce<string | null>((max, tc) => (tc.addedAt && (!max || tc.addedAt > max)) ? tc.addedAt : max, null);
+  if (!latestAddedAt) return "";
+  const [yy, mm] = latestAddedAt.slice(0, 7).split("-").map(Number);
+  return `${t(`months.${MONTH_KEYS[mm - 1]}`)} ${yy}`;
+}
 
 const isMobileDevice = typeof window !== "undefined" && window.innerWidth < 768;
 
@@ -453,7 +484,7 @@ function HighlightCard({ tactic, index }: { tactic: PremiumTactic; index: number
             animate={{ scale:[1,1.08,1], boxShadow:[`0 0 0px ${th.badgeColor}00`,`0 0 12px ${th.badgeColor}88`,`0 0 0px ${th.badgeColor}00`] }}
             transition={{ duration:1.6, repeat:Infinity }}
             style={{ display:"inline-flex", alignItems:"center", gap:4, background:th.badgeBg, border:`1px solid ${th.badgeBorder}`, borderRadius:999, padding:"2px 10px", fontSize:8, fontWeight:900, letterSpacing:"0.16em", textTransform:"uppercase", color:th.badgeColor }}>
-            {th.badgeKey ? t(th.badgeKey) : BATTLE.label}
+            {highlightBadgeLabel(tactic, th, t)}
           </motion.div>
           {th.extraBadgeKey && (
             <div style={{ display:"inline-flex", alignItems:"center", gap:4, background:th.efBg, border:`1px solid ${th.efBorder}`, borderRadius:999, padding:"2px 9px", fontSize:8, fontWeight:900, letterSpacing:"0.14em", textTransform:"uppercase", color:th.efColor }}>
@@ -582,7 +613,7 @@ function HighlightTeaserCard({ tactic, index }: { tactic: PremiumTactic; index: 
             animate={{ scale:[1,1.08,1], boxShadow:[`0 0 0px ${th.badgeColor}00`,`0 0 12px ${th.badgeColor}88`,`0 0 0px ${th.badgeColor}00`] }}
             transition={{ duration:1.6, repeat:Infinity }}
             style={{ display:"inline-flex", alignItems:"center", gap:4, background:th.badgeBg, border:`1px solid ${th.badgeBorder}`, borderRadius:999, padding:"2px 10px", fontSize:8, fontWeight:900, letterSpacing:"0.16em", textTransform:"uppercase", color:th.badgeColor }}>
-            {th.badgeKey ? t(th.badgeKey) : BATTLE.label}
+            {highlightBadgeLabel(tactic, th, t)}
           </motion.div>
           {th.extraBadgeKey && (
             <div style={{ display:"inline-flex", alignItems:"center", gap:4, background:th.efBg, border:`1px solid ${th.efBorder}`, borderRadius:999, padding:"2px 9px", fontSize:8, fontWeight:900, letterSpacing:"0.14em", textTransform:"uppercase", color:th.efColor }}>
@@ -651,9 +682,17 @@ export default function PremiumTactics() {
   const { isPremium, unlock, lock, unlocking } = usePremium();
   const { t, lang } = useLang();
   const tactics = getLocalizedPremiumTactics(t);
+  const latestBatchLabel = getLatestBatchLabel(tactics, t);
   const [code, setCode] = useState("");
   const [error, setError] = useState<"invalid" | "taken" | null>(null);
   const [showCode, setShowCode] = useState(false);
+  const [discountCopied, setDiscountCopied] = useState(false);
+
+  async function copyDiscountCode() {
+    try { await navigator.clipboard.writeText(DISCOUNT_CODE); } catch { /* code stays visible to copy by hand */ }
+    setDiscountCopied(true);
+    setTimeout(() => setDiscountCopied(false), 2000);
+  }
 
   const handleUnlock = async () => {
     analytics.premiumClick("code_input");
@@ -751,7 +790,7 @@ export default function PremiumTactics() {
                       <div style={{ display: "inline-flex", alignItems: "center", gap: 6, background: "rgba(16,185,129,0.07)", border: "1px solid rgba(16,185,129,0.25)", borderRadius: 999, padding: "5px 14px" }}>
                         <motion.span animate={{ opacity: [1, 0.3, 1] }} transition={{ duration: 1.8, repeat: Infinity }}
                           style={{ width: 6, height: 6, borderRadius: "50%", background: "#10b981", display: "block" }} />
-                        <span style={{ fontSize: 10, fontWeight: 900, textTransform: "uppercase", letterSpacing: "0.14em", color: "#34d399" }}>{t("premium.heroLive")}</span>
+                        <span style={{ fontSize: 10, fontWeight: 900, textTransform: "uppercase", letterSpacing: "0.14em", color: "#34d399" }}>{latestBatchLabel} {t("premium.heroLive")}</span>
                       </div>
                     </div>
 
@@ -769,7 +808,7 @@ export default function PremiumTactics() {
                     </p>
 
                     {/* Feature list */}
-                    <div style={{ display: "flex", flexDirection: "column", gap: 10, marginBottom: 24 }}>
+                    <div style={{ display: "flex", flexDirection: "column", gap: 10, marginBottom: 20 }}>
                       {[
                         { icon: "🏠", text: t("premium.feat1") },
                         { icon: "🏠", text: t("premium.feat2") },
@@ -783,25 +822,78 @@ export default function PremiumTactics() {
                           style={{ display: "flex", alignItems: "center", gap: 10 }}
                         >
                           <div style={{
-                            width: 22, height: 22, borderRadius: "50%", flexShrink: 0,
-                            background: "rgba(245,166,35,0.08)",
-                            border: "1px solid rgba(245,166,35,0.22)",
+                            width: 24, height: 24, borderRadius: 8, flexShrink: 0,
+                            background: "linear-gradient(135deg,rgba(245,166,35,0.18),rgba(255,200,82,0.06))",
+                            border: "1px solid rgba(245,166,35,0.3)",
                             display: "flex", alignItems: "center", justifyContent: "center",
-                            fontSize: 11,
+                            fontSize: 12,
                           }}>
                             {f.icon}
                           </div>
-                          <span style={{ fontSize: 13, color: "rgba(255,255,255,0.75)", fontWeight: 600, lineHeight: 1.4 }}>{f.text}</span>
+                          <span style={{ fontSize: 13.5, color: "rgba(255,255,255,0.82)", fontWeight: 600, lineHeight: 1.4 }}>{f.text}</span>
                         </motion.div>
                       ))}
                     </div>
 
+                    {/* Discount strip — the offer sits right where the decision gets made */}
+                    {!isDiscountExpired() && (
+                      <motion.div
+                        initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.45, duration: 0.4, ease: EASE }}
+                        style={{
+                          display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap",
+                          background: "linear-gradient(135deg, rgba(239,68,68,0.14), rgba(249,115,22,0.06))",
+                          border: "1px solid rgba(239,68,68,0.4)",
+                          borderRadius: 14, padding: "12px 16px", marginBottom: 20,
+                        }}
+                      >
+                        <motion.span
+                          animate={{ scale: [1, 1.08, 1] }} transition={{ duration: 1.8, repeat: Infinity }}
+                          style={{
+                            fontSize: 10, fontWeight: 900, letterSpacing: "0.1em", textTransform: "uppercase",
+                            color: "#fca5a5", background: "rgba(239,68,68,0.18)", border: "1px solid rgba(239,68,68,0.55)",
+                            borderRadius: 999, padding: "3px 10px", flexShrink: 0,
+                          }}
+                        >
+                          🔥 {t("premium.discountStripBadge").replace("{pct}", String(DISCOUNT_PERCENT))}
+                        </motion.span>
+                        <span style={{ display: "inline-flex", alignItems: "baseline", gap: 6, flexShrink: 0 }}>
+                          <span style={{ fontSize: 13, color: "rgba(255,255,255,0.4)", textDecoration: "line-through" }}>{DISCOUNT_OLD_PRICE}</span>
+                          <span style={{ fontSize: 18, fontWeight: 900, color: "#fbbf24" }}>{DISCOUNT_NEW_PRICE}</span>
+                        </span>
+                        <button
+                          onClick={copyDiscountCode}
+                          style={{
+                            display: "inline-flex", alignItems: "center", gap: 5,
+                            background: discountCopied ? "rgba(34,197,94,0.14)" : "rgba(255,255,255,0.05)",
+                            border: `1px dashed ${discountCopied ? "rgba(34,197,94,0.55)" : "rgba(255,255,255,0.28)"}`,
+                            borderRadius: 7, padding: "4px 9px", cursor: "pointer",
+                            transition: "background 0.2s, border-color 0.2s",
+                          }}
+                        >
+                          <span style={{ fontFamily: "'JetBrains Mono','Consolas',monospace", fontSize: 11.5, fontWeight: 700, color: "#ffffff" }}>{DISCOUNT_CODE}</span>
+                          <span style={{ fontSize: 9.5, fontWeight: 700, color: discountCopied ? "#4ade80" : "rgba(255,255,255,0.4)" }}>
+                            {discountCopied ? "✓" : t("premium.discountStripCode")}
+                          </span>
+                        </button>
+                        <span style={{ fontSize: 10.5, fontWeight: 600, color: "rgba(255,180,150,0.65)", flexShrink: 0 }}>
+                          {t("premium.discountStripUntil").replace("{date}", DISCOUNT_DATE_LABEL[lang] ?? DISCOUNT_DATE_LABEL.en)}
+                        </span>
+                      </motion.div>
+                    )}
+
                     {/* CTAs */}
                     <div style={{ display: "flex", gap: 10, flexWrap: "wrap", alignItems: "center" }}>
                       <motion.a
-                        href={siteConfig.premiumUrl}
+                        href={isDiscountExpired() ? siteConfig.premiumUrl : DISCOUNT_CHECKOUT_URL}
                         target="_blank" rel="noreferrer"
-                        whileHover={{ scale: 1.04, boxShadow: "0 14px 40px rgba(245,166,35,0.5)" }}
+                        animate={{ boxShadow: [
+                          "0 8px 32px rgba(245,166,35,0.38)",
+                          "0 8px 40px rgba(245,166,35,0.62)",
+                          "0 8px 32px rgba(245,166,35,0.38)",
+                        ] }}
+                        transition={{ duration: 2.2, repeat: Infinity }}
+                        whileHover={{ scale: 1.04 }}
                         whileTap={{ scale: 0.97 }}
                         style={{
                           display: "inline-flex", alignItems: "center", gap: 9,
@@ -809,7 +901,6 @@ export default function PremiumTactics() {
                           borderRadius: 999, padding: "14px 28px",
                           color: "#0a0a0a", fontSize: 14, fontWeight: 900,
                           textDecoration: "none", textTransform: "uppercase", letterSpacing: "0.1em",
-                          boxShadow: "0 8px 32px rgba(245,166,35,0.38)",
                         }}
                       >
                         {t("premium.becomePremium")}
@@ -828,6 +919,9 @@ export default function PremiumTactics() {
                       >
                         {t("premium.codeHave")}
                       </motion.button>
+                    </div>
+                    <div style={{ marginTop: 10, fontSize: 11, fontWeight: 600, color: "rgba(255,255,255,0.32)" }}>
+                      {t("premium.ctaMicrocopy")}
                     </div>
 
                     {/* Social proof */}
@@ -931,7 +1025,7 @@ export default function PremiumTactics() {
                         style={{ display: "flex", flexDirection: "column", gap: 12 }}
                       >
                         {[
-                          { label: t("premium.statLabel1"), value: "4",     sub: t("premium.statSub1") },
+                          { label: t("premium.statLabel1"), value: String(tactics.length), sub: t("premium.statSub1") },
                           { label: t("premium.statLabel2"), value: "%85+",  sub: t("premium.statSub2") },
                           { label: t("premium.statLabel3"), value: t("premium.statSub3"), sub: "" },
                         ].map((s, i) => (
@@ -972,6 +1066,9 @@ export default function PremiumTactics() {
             </motion.div>
           )}
         </AnimatePresence>
+
+        {/* ── Limited-time discount — only pitched to visitors who haven't unlocked yet ── */}
+        {!isPremium && <DiscountPricingCard />}
 
         {/* ── Unlocked secret banner ── */}
         <AnimatePresence>
@@ -1212,7 +1309,7 @@ export default function PremiumTactics() {
                         style={{ width: 5, height: 5, borderRadius: "50%", background: "#10b981", display: "block", flexShrink: 0 }}
                       />
                       <span style={{ fontSize: 9, fontWeight: 900, textTransform: "uppercase", letterSpacing: "0.14em", color: "#34d399" }}>
-                        {t("premium.heroLive")}
+                        {latestBatchLabel} {t("premium.heroLive")}
                       </span>
                     </div>
                   </div>
@@ -1224,10 +1321,70 @@ export default function PremiumTactics() {
 
         {/* ── Tactic cards ── */}
         {(() => {
-          const highlights = tactics.filter(t => t.fireTactic || t.battleTactic);
-          const classics   = tactics.filter(t => !t.fireTactic && !t.battleTactic);
+          // Spotlight = every tactic from the most-recently-added batch (by addedAt's
+          // year-month). Adding next month's drop with a newer addedAt automatically
+          // promotes it here and retires this batch — no manual "is this still current"
+          // flag to maintain.
+          const latestAddedAt = tactics.reduce<string | null>((max, tc) => (tc.addedAt && (!max || tc.addedAt > max)) ? tc.addedAt : max, null);
+          const latestMonthKey = latestAddedAt ? latestAddedAt.slice(0, 7) : null; // "YYYY-MM"
+          const spotlight = latestMonthKey ? tactics.filter(tc => tc.addedAt?.startsWith(latestMonthKey)) : [];
+          const spotlightIds = new Set(spotlight.map(tc => tc.id));
+          const rest = tactics.filter(tc => !spotlightIds.has(tc.id));
+          const highlights = rest.filter(t => t.fireTactic || t.battleTactic);
+          const classics   = rest.filter(t => !t.fireTactic && !t.battleTactic);
+
           return (
             <>
+              {spotlight.length > 0 && (
+                <>
+                  <motion.div
+                    initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
+                    transition={{ duration: 0.5, ease: EASE }}
+                    style={{
+                      position: "relative", overflow: "hidden", marginBottom: 22,
+                      background: "linear-gradient(135deg,rgba(255,20,0,0.18) 0%,rgba(10,4,0,0.97) 45%,rgba(255,110,0,0.13) 100%)",
+                      border: "1.5px solid rgba(255,70,0,0.6)",
+                      borderRadius: 20,
+                      boxShadow: "0 0 60px rgba(255,50,0,0.25), inset 0 0 30px rgba(255,50,0,0.06)",
+                      padding: "20px 24px",
+                    }}
+                  >
+                    {!isMobileDevice && (
+                      <motion.div animate={{ x: ["-110%", "210%"] }} transition={{ repeat: Infinity, repeatDelay: 5, duration: 1.2, ease: "easeInOut" }}
+                        style={{ position: "absolute", inset: 0, pointerEvents: "none", background: "linear-gradient(110deg,transparent 30%,rgba(255,255,255,0.05) 50%,transparent 70%)", transform: "skewX(-12deg)" }} />
+                    )}
+                    <div style={{ position: "relative", display: "flex", alignItems: "center", gap: 14, flexWrap: "wrap" }}>
+                      <motion.div animate={{ scale: [1, 1.12, 1] }} transition={{ duration: 1.8, repeat: Infinity }}
+                        style={{ width: 44, height: 44, borderRadius: 13, flexShrink: 0, background: "linear-gradient(135deg,rgba(255,60,0,0.25),rgba(255,140,0,0.12))", border: "1px solid rgba(255,90,0,0.5)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22 }}>
+                        🔥
+                      </motion.div>
+                      <div style={{ flex: 1, minWidth: 200 }}>
+                        <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 4, flexWrap: "wrap" }}>
+                          <motion.span animate={{ opacity: [1, 0.3, 1] }} transition={{ duration: 1.4, repeat: Infinity }}
+                            style={{ width: 7, height: 7, borderRadius: "50%", background: "#ff4400", boxShadow: "0 0 8px #ff4400", flexShrink: 0 }} />
+                          <span style={{
+                            fontSize: 12, fontWeight: 900, letterSpacing: "0.14em", textTransform: "uppercase",
+                            background: "linear-gradient(90deg,#ffcc99,#ff8844)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent",
+                          }}>
+                            {latestBatchLabel} · {t("premium.spotlightTitle")}
+                          </span>
+                        </div>
+                        <div style={{ fontSize: 12.5, color: "rgba(255,180,130,0.75)", fontWeight: 600 }}>{t("premium.spotlightSubtitle")}</div>
+                      </div>
+                      <div style={{ flexShrink: 0, background: "rgba(255,80,0,0.14)", border: "1px solid rgba(255,90,0,0.42)", borderRadius: 999, padding: "6px 14px", fontSize: 11, fontWeight: 900, color: "#ffaa60", whiteSpace: "nowrap" }}>
+                        {spotlight.length} {t("premium.spotlightCount")}
+                      </div>
+                    </div>
+                  </motion.div>
+                  <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,300px),1fr))", gap: 18, marginBottom: 32 }}>
+                    {spotlight.map((tactic, i) =>
+                      isPremium
+                        ? <HighlightCard key={tactic.id} tactic={tactic} index={i} />
+                        : <HighlightTeaserCard key={tactic.id} tactic={tactic} index={i} />
+                    )}
+                  </div>
+                </>
+              )}
               {highlights.length > 0 && (
                 <>
                   <motion.div

@@ -59,6 +59,18 @@
   /* Borders */
   --c-border:    rgba(255,255,255,0.08);
   --c-border-12: rgba(255,255,255,0.12);
+
+  /* Electric accent — reserved for live/real-time telemetry moments only
+     (live counters, data readouts). Cool complement to the warm red/orange
+     brand drench; carries the "energetic/electric" brand trait as an actual
+     hue, not just saturation. Not for general UI chrome. */
+  --c-electric:    #22d3ee;
+  --c-electric-l:  #67e8f9;
+  --c-electric-d:  #0891b2;
+  --c-electric-08: rgba(34,211,238,0.08);
+  --c-electric-15: rgba(34,211,238,0.15);
+  --c-electric-25: rgba(34,211,238,0.25);
+  --c-electric-35: rgba(34,211,238,0.35);
 }
 
 /* ══════════════════════════════════════════════════════════

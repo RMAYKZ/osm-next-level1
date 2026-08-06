@@ -5,8 +5,16 @@ import { siteMeta } from "../data/tactics";
 import HeroPanel from "./HeroPanel";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
-const DISPLAY_FONT = "'Bebas Neue', 'Big Shoulders', 'Barlow Condensed', system-ui, sans-serif";
+// Hero wordmark gets its own distinct display face — Big Shoulders is already
+// preloaded synchronously in index.html (no extra network cost), and its
+// blockier, heavier letterforms read differently from the Bebas Neue used
+// for stat numbers and section headers elsewhere on the site.
+const DISPLAY_FONT = "'Big Shoulders', 'Bebas Neue', 'Barlow Condensed', system-ui, sans-serif";
 const BODY_FONT = "'Outfit', system-ui, sans-serif";
+// Technical/mono face for the HUD-style eyebrow tag — contrast axis against
+// the heavy display face, reinforces the "tactical instrument" brand voice.
+// JetBrains Mono is already loaded site-wide (deferred, non-blocking).
+const MONO_FONT = "'JetBrains Mono', 'Consolas', monospace";
 
 // ── Multilingual strings ───────────────────────────────────────────────────────
 const HERO_STRINGS = {
@@ -219,9 +227,11 @@ export default function Hero() {
       {/* ── Thin top rule ── */}
       <div style={{ height: 1, background: "linear-gradient(90deg, transparent, rgba(239,68,68,0.4) 35%, rgba(249,115,22,0.3) 65%, transparent)", flexShrink: 0 }} />
 
-      {/* ── Floodlight atmosphere — two angled beams, stadium-at-night feel.
-          Contained to this section so it doesn't ripple into the shared
-          background other sections rely on. ── */}
+      {/* ── Floodlight atmosphere — three angled beams, stadium-at-night feel.
+          Two warm rig lights (brand red/orange) + one cool broadcast beam
+          (electric accent) for real dual-temperature stadium lighting, not
+          a flat single-hue wash. Contained to this section so it doesn't
+          ripple into the shared background other sections rely on. ── */}
       <div aria-hidden style={{ position: "absolute", inset: 0, overflow: "hidden", pointerEvents: "none", zIndex: 0 }}>
         <div style={{
           position: "absolute", top: "-15%", left: "8%", width: "55%", height: "75%",
@@ -233,7 +243,25 @@ export default function Hero() {
           background: "radial-gradient(ellipse at 50% 0%, rgba(249,115,22,0.10) 0%, transparent 60%)",
           filter: "blur(10px)",
         }} />
+        <div style={{
+          position: "absolute", bottom: "-20%", right: "6%", width: "38%", height: "55%",
+          background: "radial-gradient(ellipse at 50% 100%, rgba(34,211,238,0.055) 0%, transparent 68%)",
+          filter: "blur(10px)",
+        }} />
       </div>
+
+      {/* ── Readability scrim ──
+          The site-wide animated bubble background sits behind this section
+          too; its reds/oranges can otherwise land right under the "OSM"
+          heading and eat its contrast. A flat, static darkening layer on the
+          copy column's side (logical start — flips correctly for Arabic RTL)
+          keeps text legible no matter where the blobs drift, without hiding
+          the background elsewhere. Static gradient, zero animation cost. ── */}
+      <div aria-hidden style={{
+        position: "absolute", top: 0, bottom: 0, insetInlineStart: 0, width: "60%",
+        background: "linear-gradient(90deg, rgba(4,2,2,0.5) 0%, rgba(4,2,2,0.26) 55%, transparent 100%)",
+        zIndex: 1, pointerEvents: "none",
+      }} />
 
       {/* ── Follow card — top-right (desktop only) ── */}
       <motion.div
@@ -400,7 +428,7 @@ export default function Hero() {
         <div style={{
           order: isMobile ? -1 : 2,
           width: "100%",
-          maxWidth: isMobile ? 340 : 400,
+          maxWidth: isMobile ? 300 : 400,
           flex: isMobile ? "0 0 auto" : "1 1 360px",
           marginBottom: isMobile ? 8 : 0,
         }}>
@@ -430,9 +458,9 @@ export default function Hero() {
             <h1 style={{
               margin: "0 0 20px",
               fontFamily: DISPLAY_FONT,
-              fontWeight: 900,
-              lineHeight: 0.86,
-              letterSpacing: "-0.01em",
+              fontWeight: 800,
+              lineHeight: 0.84,
+              letterSpacing: "-0.015em",
             }}>
               <span style={{
                 display: "block",
@@ -451,16 +479,22 @@ export default function Hero() {
                 {hs.title2}
               </span>
               <span style={{
-                display: "block",
-                fontFamily: BODY_FONT,
-                fontSize: "clamp(0.6rem, 1.4vw, 0.72rem)",
-                fontWeight: 600,
-                letterSpacing: "0.26em",
-                color: "rgba(255,255,255,0.42)",
-                marginTop: 16,
-                textTransform: "uppercase",
+                display: "flex",
+                alignItems: "center",
+                gap: 10,
+                marginTop: 18,
               }}>
-                {hs.sub}
+                <span aria-hidden style={{ width: 22, height: 1, background: "linear-gradient(90deg,#ef4444,#22d3ee)", flexShrink: 0 }} />
+                <span style={{
+                  fontFamily: MONO_FONT,
+                  fontSize: "clamp(0.62rem, 1.3vw, 0.72rem)",
+                  fontWeight: 500,
+                  letterSpacing: "0.2em",
+                  color: "rgba(103,232,249,0.75)",
+                  textTransform: "uppercase",
+                }}>
+                  {hs.sub}
+                </span>
               </span>
             </h1>
           </Reveal>

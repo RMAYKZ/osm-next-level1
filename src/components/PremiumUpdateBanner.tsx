@@ -15,39 +15,39 @@ const UPDATE_DATE = { day: 6, month: 7 /* 0-indexed = Ağustos/August */, year: 
 
 const COPY: Record<string, { badge: string; title: (day: number, month: string, year: number) => string; sub: string; cta: string }> = {
   tr: {
-    badge: "🔥 CANLI GÜNCELLEME",
+    badge: "VIP GÜNCELLEME",
     title: (d, m, y) => `${d} ${m} ${y} — Premium Taktikler Güncellendi`,
     sub:   "En güncel ev ve deplasman taktikleri eklendi — rakibini her formasyonda geç!",
-    cta:   "Hemen Gör 🔥",
+    cta:   "Hemen Gör",
   },
   en: {
-    badge: "🔥 LIVE UPDATE",
+    badge: "VIP UPDATE",
     title: (d, m, y) => `Premium Tactics Updated — ${m} ${d}, ${y}`,
     sub:   "New home & away tactics just added — dominate every formation starting now!",
-    cta:   "View Now 🔥",
+    cta:   "View Now",
   },
   hu: {
-    badge: "🔥 ÉLSŐ FRISSÍTÉS",
+    badge: "VIP FRISSÍTÉS",
     title: (d, m, y) => `Prémium Taktikák Frissítve — ${y}. ${m} ${d}.`,
     sub:   "Új hazai és vendég taktikák hozzáadva — dominálj minden felállás ellen!",
-    cta:   "Megnéz 🔥",
+    cta:   "Megnéz",
   },
   ar: {
-    badge: "🔥 تحديث مباشر",
+    badge: "تحديث VIP",
     title: (d, m, y) => `تكتيكات ${m} ${d} ${y} المميزة محدّثة`,
     sub:   "تكتيكات جديدة في الملعب وخارجه — سيطر على كل تشكيلة الآن!",
-    cta:   "شاهد الآن 🔥",
+    cta:   "شاهد الآن",
   },
   pt: {
-    badge: "🔥 ATUALIZAÇÃO AO VIVO",
+    badge: "ATUALIZAÇÃO VIP",
     title: (d, m, y) => `Táticas Premium Atualizadas — ${d} de ${m} de ${y}`,
     sub:   "Novas táticas para casa e fora adicionadas — domine qualquer formação!",
-    cta:   "Ver Agora 🔥",
+    cta:   "Ver Agora",
   },
 };
 
 // Bump suffix to force re-show after each update
-const DISMISS_KEY = "osm-premium-banner-dismissed-20260806";
+const DISMISS_KEY = "osm-premium-banner-dismissed-20260806-v2";
 
 function isDismissed(): boolean {
   try {
@@ -88,40 +88,33 @@ export default function PremiumUpdateBanner() {
             dir={isRTL ? "rtl" : "ltr"}
             style={{
               position: "relative",
-              background: "linear-gradient(90deg,#0e0200 0%,#140300 40%,#0e0200 100%)",
-              borderBottom: "1px solid rgba(255,60,0,0.3)",
+              background: "linear-gradient(90deg,#0a0805 0%,#120e08 45%,#0a0805 100%)",
+              borderBottom: "1px solid rgba(245,166,35,0.28)",
               overflow: "hidden",
               fontFamily: "var(--font-display, 'Outfit'), 'Segoe UI', system-ui, sans-serif",
             }}
           >
-            {/* Fire top bar */}
-            <div style={{ position:"absolute", top:0, left:0, right:0, height:2, background:"linear-gradient(90deg,#ff0000,#ff6600,#ffcc00,#ff6600,#ff0000)" }} />
+            {/* Gold → electric hairline */}
+            <div style={{ position:"absolute", top:0, left:0, right:0, height:2, background:"linear-gradient(90deg,#f5a623 0%,#fbbf24 35%,#fbbf24 55%,#22d3ee 100%)" }} />
 
-            {/* Ambient fire glow left */}
+            {/* Ambient gold glow, single source — cheap, static */}
             <div aria-hidden style={{
-              position:"absolute", top:"-60%", insetInlineStart:"5%",
-              width:280, height:280, borderRadius:"50%",
-              background:"radial-gradient(circle,rgba(255,60,0,0.22) 0%,transparent 70%)",
+              position:"absolute", top:"-70%", insetInlineStart:"6%",
+              width:260, height:260, borderRadius:"50%",
+              background:"radial-gradient(circle,rgba(245,166,35,0.16) 0%,transparent 70%)",
               pointerEvents:"none",
             }} />
 
-            {/* Ambient glow right */}
-            <div aria-hidden style={{
-              position:"absolute", top:"-40%", insetInlineEnd:"8%",
-              width:200, height:200, borderRadius:"50%",
-              background:"radial-gradient(circle,rgba(255,120,0,0.14) 0%,transparent 70%)",
-              pointerEvents:"none",
-            }} />
-
-            {/* One-time shimmer sweep */}
+            {/* One-time shimmer sweep on mount — transform-only, cheap */}
             <motion.div
               initial={{ x:"-120%" }}
               animate={{ x:"220%" }}
               transition={{ duration:1.4, ease:[0.16,1,0.3,1], delay:0.3 }}
               style={{
                 position:"absolute", inset:0, pointerEvents:"none",
-                background:"linear-gradient(105deg,transparent 35%,rgba(255,100,0,0.10) 50%,transparent 65%)",
+                background:"linear-gradient(105deg,transparent 35%,rgba(245,166,35,0.09) 50%,transparent 65%)",
                 transform:"skewX(-15deg)",
+                willChange:"transform",
               }}
             />
 
@@ -132,69 +125,68 @@ export default function PremiumUpdateBanner() {
               display:"flex", alignItems:"center", gap:16, flexWrap:"wrap" as const,
             }}>
 
-              {/* Fire icon */}
-              <motion.div
-                animate={{ scale:[1,1.12,1], filter:["drop-shadow(0 0 4px #ff6600)","drop-shadow(0 0 12px #ff3300)","drop-shadow(0 0 4px #ff6600)"] }}
-                transition={{ duration:1.6, repeat:Infinity }}
-                style={{
-                  width:38, height:38, borderRadius:11, flexShrink:0,
-                  background:"linear-gradient(135deg,rgba(255,60,0,0.22),rgba(255,120,0,0.10))",
-                  border:"1px solid rgba(255,80,0,0.45)",
-                  display:"flex", alignItems:"center", justifyContent:"center",
-                  fontSize:18,
-                }}
-              >
-                🔥
-              </motion.div>
+              {/* Icon — diagonal-notched VIP chip, no filter animation (cheaper than drop-shadow pulse) */}
+              <div style={{
+                position: "relative",
+                width:38, height:38, flexShrink:0,
+                background:"linear-gradient(135deg,rgba(245,166,35,0.24),rgba(251,191,36,0.10))",
+                border:"1px solid rgba(245,166,35,0.5)",
+                borderRadius:10,
+                clipPath:"polygon(0 0, 100% 0, 100% 100%, 22% 100%)",
+                display:"flex", alignItems:"center", justifyContent:"center",
+                fontSize:16,
+              }}>
+                ✦
+              </div>
 
               {/* Text group */}
               <div style={{ flex:1, minWidth:220 }}>
-                {/* Live badge */}
+                {/* VIP badge */}
                 <div style={{ display:"inline-flex", alignItems:"center", gap:6, marginBottom:5,
-                  background:"linear-gradient(135deg,rgba(255,30,0,0.22),rgba(255,100,0,0.12))",
-                  border:"1px solid rgba(255,60,0,0.5)",
+                  background:"linear-gradient(135deg,rgba(245,166,35,0.18),rgba(251,191,36,0.08))",
+                  border:"1px solid rgba(245,166,35,0.45)",
                   borderRadius:999, padding:"2px 10px" }}>
                   <motion.span
-                    animate={{ opacity:[1,0.2,1] }}
-                    transition={{ duration:1.0, repeat:Infinity }}
-                    style={{ width:5, height:5, borderRadius:"50%", background:"#ff4400", display:"inline-block", flexShrink:0, boxShadow:"0 0 6px #ff4400" }}
+                    animate={{ opacity:[1,0.25,1] }}
+                    transition={{ duration:1.6, repeat:Infinity }}
+                    style={{ width:5, height:5, borderRadius:"50%", background:"#22d3ee", display:"inline-block", flexShrink:0, boxShadow:"0 0 6px #22d3ee" }}
                   />
-                  <span style={{ fontSize:8.5, fontWeight:900, letterSpacing:"0.18em", textTransform:"uppercase", color:"#ff8844" }}>{copy.badge}</span>
+                  <span style={{ fontSize:8.5, fontWeight:900, letterSpacing:"0.18em", textTransform:"uppercase", color:"#fbbf24" }}>{copy.badge}</span>
                 </div>
 
-                {/* Title */}
+                {/* Title — solid color, no decorative gradient-clip */}
                 <div style={{
                   fontSize:"clamp(14px,2.2vw,17px)", fontWeight:800, lineHeight:1.2,
                   letterSpacing:"-0.01em", marginTop:3,
-                  background:"linear-gradient(90deg,#ffddcc,#ff9966)", WebkitBackgroundClip:"text", WebkitTextFillColor:"transparent", backgroundClip:"text",
+                  color:"#fdf3e0",
                 }}>
                   {copy.title(day, month, year)}
                 </div>
 
                 {/* Sub */}
-                <div style={{ fontSize:"clamp(10.5px,1.5vw,12.5px)", color:"rgba(255,160,80,0.85)", fontWeight:500, lineHeight:1.45, marginTop:2 }}>
+                <div style={{ fontSize:"clamp(10.5px,1.5vw,12.5px)", color:"rgba(245,196,120,0.8)", fontWeight:500, lineHeight:1.45, marginTop:2 }}>
                   {copy.sub}
                 </div>
               </div>
 
               {/* Divider */}
-              <div aria-hidden style={{ width:1, height:34, background:"rgba(255,60,0,0.22)", flexShrink:0 }} className="hidden sm:block" />
+              <div aria-hidden style={{ width:1, height:34, background:"rgba(245,166,35,0.25)", flexShrink:0 }} className="hidden sm:block" />
 
               {/* CTA */}
               <motion.a
                 href={siteConfig.premiumUrl}
                 target="_blank"
                 rel="noreferrer"
-                whileHover={{ y:-1, boxShadow:"0 10px 28px -4px rgba(255,60,0,0.55)" }}
+                whileHover={{ y:-1, boxShadow:"0 8px 20px -6px rgba(245,166,35,0.6)" }}
                 whileTap={{ scale:0.97 }}
                 transition={{ duration:0.18, ease:[0.16,1,0.3,1] }}
                 style={{
                   display:"inline-flex", alignItems:"center", flexShrink:0,
-                  background:"linear-gradient(135deg,#ff3300,#ff8800)",
+                  background:"linear-gradient(135deg,#f5a623,#fbbf24)",
                   borderRadius:10, padding:"10px 20px",
-                  color:"#fff8f0", fontSize:"clamp(11px,1.7vw,12px)", fontWeight:900,
+                  color:"#1a1000", fontSize:"clamp(11px,1.7vw,12px)", fontWeight:900,
                   textDecoration:"none", textTransform:"uppercase" as const,
-                  letterSpacing:"0.07em", boxShadow:"0 6px 20px -4px rgba(255,60,0,0.5)",
+                  letterSpacing:"0.07em", boxShadow:"0 4px 14px -4px rgba(245,166,35,0.45)",
                   whiteSpace:"nowrap" as const,
                 }}
               >
@@ -208,11 +200,11 @@ export default function PremiumUpdateBanner() {
                 style={{
                   flexShrink:0, background:"transparent", border:"none", borderRadius:"50%",
                   width:28, height:28, display:"flex", alignItems:"center", justifyContent:"center",
-                  color:"rgba(255,120,60,0.45)", cursor:"pointer", fontSize:13,
+                  color:"rgba(245,196,120,0.5)", cursor:"pointer", fontSize:13,
                   transition:"color 0.15s, background 0.15s",
                 }}
-                onMouseEnter={(e) => { e.currentTarget.style.color="rgba(255,255,255,0.8)"; e.currentTarget.style.background="rgba(255,60,0,0.12)"; }}
-                onMouseLeave={(e) => { e.currentTarget.style.color="rgba(255,120,60,0.45)"; e.currentTarget.style.background="transparent"; }}
+                onMouseEnter={(e) => { e.currentTarget.style.color="rgba(255,255,255,0.85)"; e.currentTarget.style.background="rgba(245,166,35,0.14)"; }}
+                onMouseLeave={(e) => { e.currentTarget.style.color="rgba(245,196,120,0.5)"; e.currentTarget.style.background="transparent"; }}
               >
                 ✕
               </button>
