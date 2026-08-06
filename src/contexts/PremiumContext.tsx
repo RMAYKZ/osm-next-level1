@@ -166,18 +166,33 @@ export function PremiumProvider({ children }: { children: ReactNode }) {
     setIsPremium(false);
   }, []);
 
-  // On mount: check if the stored code has been revoked or expired in Firestore
+  // Check if the stored code has been revoked or expired in Firestore.
+  // Runs on mount, every 5 minutes while the tab is open, and whenever the
+  // tab regains focus — so a session left open through its expiry moment
+  // gets logged out without needing a manual page reload.
   useEffect(() => {
-    const storedCode = localStorage.getItem(PREMIUM_CODE_KEY);
-    if (!storedCode || localStorage.getItem(STORAGE_KEY) !== "true") return;
-    checkRevocation(storedCode).then(({ revoked, expiresAt: exp }) => {
-      if (revoked) {
-        localStorage.removeItem(STORAGE_KEY);
-        localStorage.removeItem(PREMIUM_CODE_KEY);
-        setIsPremium(false);
-      }
-      if (exp) setExpiresAt(exp);
-    });
+    const recheck = () => {
+      const storedCode = localStorage.getItem(PREMIUM_CODE_KEY);
+      if (!storedCode || localStorage.getItem(STORAGE_KEY) !== "true") return;
+      checkRevocation(storedCode).then(({ revoked, expiresAt: exp }) => {
+        if (revoked) {
+          localStorage.removeItem(STORAGE_KEY);
+          localStorage.removeItem(PREMIUM_CODE_KEY);
+          setIsPremium(false);
+        }
+        if (exp) setExpiresAt(exp);
+      });
+    };
+
+    recheck();
+    const intervalId = setInterval(recheck, 5 * 60 * 1000);
+    const onVisible = () => { if (document.visibilityState === "visible") recheck(); };
+    document.addEventListener("visibilitychange", onVisible);
+
+    return () => {
+      clearInterval(intervalId);
+      document.removeEventListener("visibilitychange", onVisible);
+    };
   }, []);
 
   return (
