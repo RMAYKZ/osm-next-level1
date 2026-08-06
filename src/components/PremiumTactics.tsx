@@ -687,6 +687,7 @@ export default function PremiumTactics() {
   const [error, setError] = useState<"invalid" | "taken" | null>(null);
   const [showCode, setShowCode] = useState(false);
   const [discountCopied, setDiscountCopied] = useState(false);
+  const [mobileLocFilter, setMobileLocFilter] = useState<"home" | "away">("home");
 
   async function copyDiscountCode() {
     try { await navigator.clipboard.writeText(DISCOUNT_CODE); } catch { /* code stays visible to copy by hand */ }
@@ -1319,17 +1320,59 @@ export default function PremiumTactics() {
           </div>
         </motion.div>
 
+        {/* ── Mobile category filter — on small screens the full list is a very
+             long scroll, so show one location's tactics at a time. ── */}
+        {isMobileDevice && (
+          <div style={{ display: "flex", gap: 8, marginBottom: 22 }}>
+            {(["home", "away"] as const).map((loc) => {
+              const active = mobileLocFilter === loc;
+              const count = tactics.filter(tc => tc.location === loc).length;
+              return (
+                <button
+                  key={loc}
+                  onClick={() => setMobileLocFilter(loc)}
+                  style={{
+                    flex: 1,
+                    display: "flex", alignItems: "center", justifyContent: "center", gap: 7,
+                    padding: "12px 10px",
+                    borderRadius: 12,
+                    border: active ? "1.5px solid rgba(255,90,0,0.7)" : "1px solid rgba(255,255,255,0.12)",
+                    background: active
+                      ? "linear-gradient(135deg,rgba(255,60,0,0.22),rgba(255,140,0,0.1))"
+                      : "rgba(255,255,255,0.03)",
+                    color: active ? "#ffb066" : "rgba(255,255,255,0.55)",
+                    fontSize: 12.5, fontWeight: 900, textTransform: "uppercase", letterSpacing: "0.06em",
+                    fontFamily: "'Outfit', sans-serif",
+                    cursor: "pointer",
+                    transition: "background 0.15s, border-color 0.15s, color 0.15s",
+                  }}
+                >
+                  {loc === "home" ? t("premium.locHome") : t("premium.locAway")}
+                  <span style={{
+                    fontSize: 10.5, fontWeight: 800, padding: "1px 7px", borderRadius: 999,
+                    background: active ? "rgba(255,110,0,0.28)" : "rgba(255,255,255,0.08)",
+                    color: active ? "#ffcc99" : "rgba(255,255,255,0.4)",
+                  }}>
+                    {count}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+        )}
+
         {/* ── Tactic cards ── */}
         {(() => {
+          const displayTactics = isMobileDevice ? tactics.filter(tc => tc.location === mobileLocFilter) : tactics;
           // Spotlight = every tactic from the most-recently-added batch (by addedAt's
           // year-month). Adding next month's drop with a newer addedAt automatically
           // promotes it here and retires this batch — no manual "is this still current"
           // flag to maintain.
-          const latestAddedAt = tactics.reduce<string | null>((max, tc) => (tc.addedAt && (!max || tc.addedAt > max)) ? tc.addedAt : max, null);
+          const latestAddedAt = displayTactics.reduce<string | null>((max, tc) => (tc.addedAt && (!max || tc.addedAt > max)) ? tc.addedAt : max, null);
           const latestMonthKey = latestAddedAt ? latestAddedAt.slice(0, 7) : null; // "YYYY-MM"
-          const spotlight = latestMonthKey ? tactics.filter(tc => tc.addedAt?.startsWith(latestMonthKey)) : [];
+          const spotlight = latestMonthKey ? displayTactics.filter(tc => tc.addedAt?.startsWith(latestMonthKey)) : [];
           const spotlightIds = new Set(spotlight.map(tc => tc.id));
-          const rest = tactics.filter(tc => !spotlightIds.has(tc.id));
+          const rest = displayTactics.filter(tc => !spotlightIds.has(tc.id));
           const highlights = rest.filter(t => t.fireTactic || t.battleTactic);
           const classics   = rest.filter(t => !t.fireTactic && !t.battleTactic);
 
