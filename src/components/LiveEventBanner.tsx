@@ -21,19 +21,19 @@ export interface OsmEventsConfig {
 
 export const OSM_EVENTS_CONFIG: OsmEventsConfig = {
   year: 2026,
-  month: 6, // July
-  monthLabel: "July 2026",
+  month: 7, // August
+  monthLabel: "August 2026",
   events: [
-    { days: [1, 2],   name: "Golden Oldies × Legends",  details: "Old player progression boosted — Legends on transfer list" },
-    { days: [4, 5],   name: "Transfer Madness",          details: "6 players on list, higher sale chance, Scout in 2H" },
-    { days: [8],      name: "Extreme Training",          details: "Extreme progression — 3H normal / 2H Universal trainers" },
-    { days: [11],     name: "Friendly Frenzy",           details: "Extra training progression with every Friendly match" },
-    { days: [15],     name: "Superfast Trainer",         details: "Faster training: 2H normal trainers, 1H Universal" },
-    { days: [18, 19], name: "Intense Friendlies",        details: "Extra Friendly progression + higher sale chance" },
-    { days: [22],     name: "Training Madness",          details: "Extra progression with every Training session" },
-    { days: [25],     name: "Guaranteed Training Boost", details: "Rare+ boost guaranteed — 4H normal / 3H Universal" },
-    { days: [25, 26], name: "Legends",                   details: "Legend players available on Transfer List" },
-    { days: [29],     name: "Stadium Blitz",             details: "4H Stadium upgrades — 5H regular / 4H Universal trainers" },
+    { days: [1, 2],   name: "Training Talents",         details: "Higher progression for young players (≤24) — 2H normal / 1:30H Universal" },
+    { days: [5],      name: "Stadium Blitz",             details: "4H Stadium upgrades — 5H regular / 4H Universal trainers" },
+    { days: [8, 9],   name: "Intense Friendlies",        details: "Extra Training Progression with every Friendly" },
+    { days: [12, 13], name: "Golden Oldies × Legends",  details: "Old player progression boosted — Legends on transfer list" },
+    { days: [15, 16], name: "Transfer Madness",          details: "6 players on list, higher sale chance, Scout in 2H" },
+    { days: [19],     name: "Super Staff",               details: "Analyst 15min, Scout 4H, Doctor/Lawyer 3H, Trainers 2H/1:30H" },
+    { days: [22, 23], name: "Training Camp Mania",       details: "Higher progression with Training & Friendly — cheaper, stronger Camp & Secret Training" },
+    { days: [26],     name: "Bargain Scout",             details: "Cheaper scouted players — Faster Scout: 2H" },
+    { days: [29],     name: "Friendly Frenzy",           details: "Extra training progression with every Friendly match" },
+    { days: [29, 30], name: "Legends",                   details: "Legend players available on Transfer List" },
   ],
 };
 
@@ -199,7 +199,7 @@ export default function LiveEventBanner() {
           {state.mode === "live"
             ? <LiveContent event={state.event} isMobile={isMobile} />
             : <UpcomingContent events={state.events} startsToday={state.startsToday} isMobile={isMobile} />}
-          <JulyBadge />
+          <MonthBadge />
         </div>
       </div>
     </>
@@ -278,10 +278,10 @@ function LiveContent({ event, isMobile }: { event: OsmEvent; isMobile: boolean }
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// JULY BADGE
+// MONTH BADGE
 // ─────────────────────────────────────────────────────────────────────────────
 
-function JulyBadge() {
+function MonthBadge() {
   return (
     <motion.div
       animate={{ opacity: [0.82, 1, 0.82] }}
@@ -335,7 +335,7 @@ function JulyBadge() {
           textTransform: "uppercase" as const,
           whiteSpace: "nowrap" as const,
         }}>
-          JULY 2026
+          {OSM_EVENTS_CONFIG.monthLabel.toUpperCase()}
         </span>
       </div>
     </motion.div>

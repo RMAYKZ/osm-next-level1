@@ -59,7 +59,12 @@
       "Bash(git commit -m ' *)",
       "mcp__playwright__browser_navigate",
       "mcp__playwright__browser_take_screenshot",
-      "PowerShell(Get-ChildItem -Path \"C:\\\\Users\\\\RMAYK\\\\Desktop\\\\TOPTOPS\" -Recurse -File | Where-Object { $_.Extension -match '\\\\.\\(png|jpg|jpeg|gif|webp|svg|bmp|ico|pdf|txt|log|tmp|md|json\\)$' } | Select-Object FullName, Length, LastWriteTime | Sort-Object Length -Descending)"
+      "PowerShell(Get-ChildItem -Path \"C:\\\\Users\\\\RMAYK\\\\Desktop\\\\TOPTOPS\" -Recurse -File | Where-Object { $_.Extension -match '\\\\.\\(png|jpg|jpeg|gif|webp|svg|bmp|ico|pdf|txt|log|tmp|md|json\\)$' } | Select-Object FullName, Length, LastWriteTime | Sort-Object Length -Descending)",
+      "Bash(git commit *)",
+      "Bash(npx expo *)",
+      "PowerShell(Start-Process -FilePath \"cmd.exe\" -ArgumentList \"/c\", \"cd C:\\\\Users\\\\RMAYK\\\\Desktop\\\\TOPTOPS && npm run dev > dev-server.log 2>&1\" -WindowStyle Hidden)",
+      "PowerShell(npx tsc --noEmit -p .)",
+      "PowerShell(git add *)"
     ]
   }
 }
