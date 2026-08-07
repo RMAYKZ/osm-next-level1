@@ -83,5 +83,13 @@ service cloud.firestore {
       allow read, update, delete: if request.auth != null;
     }
 
+    // ── OSM Events (Discord bot sync) ────────────────────────────────────
+    // Only the syncOsmEvent Cloud Function (Admin SDK, bypasses these rules)
+    // writes here. Public read so the site can display them; no client writes.
+    match /osmEvents/{eventId} {
+      allow read: if true;
+      allow write: if false;
+    }
+
   }
 }

@@ -11,6 +11,7 @@ const db = admin.firestore();
 // ── Secrets ───────────────────────────────────────────────────────────────────
 const openRouterKey = defineSecret("OPENROUTER_API_KEY");
 const resendKey = defineSecret("RESEND_API_KEY");
+const eventsApiKey = defineSecret("EVENTS_API_SECRET_KEY");
 
 // ── Seed: Premium kodları Firestore'a yükle (tek seferlik) ───────────────────
 export const seedPremiumCodes = onRequest(
@@ -155,6 +156,50 @@ export const seedActiveExpiries = onRequest(
       ok: true,
       seeded: subscriptions.map(s => ({ code: s.code, expiresAt: s.expiresAt.toISOString() })),
     });
+  }
+);
+
+// ── OSM Etkinlik Senkronizasyonu — Discord botundan gelen event kaydı ────────
+export const syncOsmEvent = onRequest(
+  { region: "europe-west1", secrets: [eventsApiKey] },
+  async (req, res) => {
+    if (req.method !== "POST") { res.status(405).send("Method Not Allowed"); return; }
+
+    const providedKey = req.header("x-api-key");
+    if (!providedKey || providedKey !== eventsApiKey.value()) {
+      res.status(403).send("forbidden");
+      return;
+    }
+
+    const { title, description, imageUrl, startDate, endDate } = (req.body ?? {}) as {
+      title?: string; description?: string; imageUrl?: string; startDate?: string; endDate?: string;
+    };
+
+    if (!title || !startDate) { res.status(400).send("title ve startDate gerekli"); return; }
+    if (isNaN(Date.parse(startDate))) { res.status(400).send("geçersiz startDate formatı"); return; }
+
+    // Discord mesaj id'si yoksa tarih+başlıktan deterministik bir doc id üret —
+    // aynı mesaj tekrar gönderilirse (bot yeniden başlarsa vb.) kayıt çoğalmaz.
+    const docId = `${startDate}_${title}`
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-+|-+$/g, "")
+      .slice(0, 200);
+
+    await db.collection("osmEvents").doc(docId).set(
+      {
+        title,
+        description: description ?? "",
+        imageUrl: imageUrl ?? "",
+        startDate,
+        endDate: endDate ?? startDate,
+        source: "discord",
+        updatedAt: FieldValue.serverTimestamp(),
+      },
+      { merge: true }
+    );
+
+    res.status(200).json({ ok: true, id: docId });
   }
 );
 

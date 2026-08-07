@@ -94,6 +94,15 @@ const EXPIRED_MSG: Record<string, string> = {
   pt: "Este código expirou. Acesse a página de compra para renovar.",
 };
 
+// Auto-email delivery is temporarily down — points buyers to manual contact instead.
+const EMAIL_NOTICE_MSG: Record<string, { text: string; cta: string }> = {
+  tr: { text: "Kodun mailine gelmedi mi? Mail sistemimizde geçici bir aksaklık var —", cta: "BuyMeACoffee'den mesaj at, kodunu elden gönderelim." },
+  en: { text: "Didn't get your code by email? Our auto-email is temporarily down —", cta: "message us on BuyMeACoffee and we'll send it manually." },
+  hu: { text: "Nem kaptad meg a kódot e-mailben? Az automatikus levélküldő rendszerünk ideiglenesen nem működik —", cta: "írj nekünk a BuyMeACoffee-n, és kézzel elküldjük." },
+  ar: { text: "لم يصلك الكود عبر البريد؟ نظام البريد الآلي لدينا معطل مؤقتًا —", cta: "راسلنا عبر BuyMeACoffee وسنرسله لك يدويًا." },
+  pt: { text: "Não recebeu seu código por e-mail? Nosso envio automático está temporariamente fora do ar —", cta: "envie uma mensagem pelo BuyMeACoffee que enviamos manualmente." },
+};
+
 const LOC_STYLE = {
   home: {
     primary: "#f5a623", secondary: "rgba(245,166,35,0.75)",
@@ -685,6 +694,33 @@ function HighlightTeaserCard({ tactic, index }: { tactic: PremiumTactic; index: 
   );
 }
 
+// ── "Show more" trigger — keeps a full tactic list (locked teasers
+// especially) from dominating the homepage's initial height on any device;
+// the rest reveals on tap. Same cap on every device so the homepage stays
+// short regardless of screen size.
+const SECTION_PREVIEW_COUNT = 3;
+
+function ShowMoreButton({ remaining, onClick }: { remaining: number; onClick: () => void }) {
+  const { t } = useLang();
+  return (
+    <motion.button
+      onClick={onClick}
+      whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
+      style={{
+        display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
+        width: "100%", marginBottom: 32,
+        padding: "13px 20px", borderRadius: 14,
+        background: "rgba(245,166,35,0.07)", border: "1px dashed rgba(245,166,35,0.35)",
+        color: "#ffc852", fontSize: 12.5, fontWeight: 800, letterSpacing: "0.04em",
+        textTransform: "uppercase", cursor: "pointer",
+      }}
+    >
+      <span>{t("premium.showMore").replace("{count}", String(remaining))}</span>
+      <span style={{ fontSize: 14 }}>↓</span>
+    </motion.button>
+  );
+}
+
 // ── Main export ──────────────────────────────────────────────────────
 export default function PremiumTactics() {
   const { isPremium, unlock, lock, unlocking } = usePremium();
@@ -696,6 +732,7 @@ export default function PremiumTactics() {
   const [showCode, setShowCode] = useState(false);
   const [discountCopied, setDiscountCopied] = useState(false);
   const [mobileLocFilter, setMobileLocFilter] = useState<"home" | "away">("home");
+  const [sectionsExpanded, setSectionsExpanded] = useState<{ spotlight: boolean; highlights: boolean; classics: boolean }>({ spotlight: false, highlights: false, classics: false });
 
   async function copyDiscountCode() {
     try { await navigator.clipboard.writeText(DISCOUNT_CODE); } catch { /* code stays visible to copy by hand */ }
@@ -1026,6 +1063,27 @@ export default function PremiumTactics() {
                                 </motion.p>
                               )}
                             </AnimatePresence>
+
+                            {/* Auto-email temporarily down — manual contact fallback */}
+                            <div style={{
+                              marginTop: 12,
+                              display: "flex", alignItems: "flex-start", gap: 8,
+                              background: "rgba(245,166,35,0.06)",
+                              border: "1px solid rgba(245,166,35,0.2)",
+                              borderRadius: 10, padding: "10px 12px",
+                            }}>
+                              <span style={{ fontSize: 13, flexShrink: 0, lineHeight: 1.3 }}>📩</span>
+                              <span style={{ fontSize: 11, fontWeight: 600, color: "rgba(255,198,82,0.75)", lineHeight: 1.55 }}>
+                                {(EMAIL_NOTICE_MSG[lang] ?? EMAIL_NOTICE_MSG.en).text}{" "}
+                                <a
+                                  href={siteConfig.premiumUrl}
+                                  target="_blank" rel="noreferrer"
+                                  style={{ color: "#fbbf24", fontWeight: 800, textDecoration: "underline" }}
+                                >
+                                  {(EMAIL_NOTICE_MSG[lang] ?? EMAIL_NOTICE_MSG.en).cta}
+                                </a>
+                              </span>
+                            </div>
                           </div>
                         </motion.div>
                       )}
@@ -1342,7 +1400,7 @@ export default function PremiumTactics() {
               return (
                 <button
                   key={loc}
-                  onClick={() => setMobileLocFilter(loc)}
+                  onClick={() => { setMobileLocFilter(loc); setSectionsExpanded({ spotlight: false, highlights: false, classics: false }); }}
                   style={{
                     flex: 1,
                     display: "flex", alignItems: "center", justifyContent: "center", gap: 7,
@@ -1388,6 +1446,10 @@ export default function PremiumTactics() {
           const highlights = rest.filter(t => t.fireTactic || t.battleTactic);
           const classics   = rest.filter(t => !t.fireTactic && !t.battleTactic);
 
+          const spotlightVisible  = !sectionsExpanded.spotlight  ? spotlight.slice(0, SECTION_PREVIEW_COUNT)  : spotlight;
+          const highlightsVisible = !sectionsExpanded.highlights ? highlights.slice(0, SECTION_PREVIEW_COUNT) : highlights;
+          const classicsVisible   = !sectionsExpanded.classics   ? classics.slice(0, SECTION_PREVIEW_COUNT)   : classics;
+
           return (
             <>
               {spotlight.length > 0 && (
@@ -1431,13 +1493,16 @@ export default function PremiumTactics() {
                       </div>
                     </div>
                   </motion.div>
-                  <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,300px),1fr))", gap: 18, marginBottom: 32 }}>
-                    {spotlight.map((tactic, i) =>
+                  <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,300px),1fr))", gap: 18, marginBottom: spotlightVisible.length < spotlight.length ? 14 : 32 }}>
+                    {spotlightVisible.map((tactic, i) =>
                       isPremium
                         ? <HighlightCard key={tactic.id} tactic={tactic} index={i} />
                         : <HighlightTeaserCard key={tactic.id} tactic={tactic} index={i} />
                     )}
                   </div>
+                  {spotlightVisible.length < spotlight.length && (
+                    <ShowMoreButton remaining={spotlight.length - spotlightVisible.length} onClick={() => setSectionsExpanded(v => ({ ...v, spotlight: true }))} />
+                  )}
                 </>
               )}
               {highlights.length > 0 && (
@@ -1455,13 +1520,16 @@ export default function PremiumTactics() {
                     </div>
                     <div style={{ height:1, flex:1, background:'linear-gradient(90deg,transparent,rgba(255,80,0,0.5))' }} />
                   </motion.div>
-                  <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(min(100%,300px),1fr))', gap:18, marginBottom:32 }}>
-                    {highlights.map((tactic,i) =>
+                  <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(min(100%,300px),1fr))', gap:18, marginBottom: highlightsVisible.length < highlights.length ? 14 : 32 }}>
+                    {highlightsVisible.map((tactic,i) =>
                       isPremium
                         ? <HighlightCard key={tactic.id} tactic={tactic} index={i} />
                         : <HighlightTeaserCard key={tactic.id} tactic={tactic} index={i} />
                     )}
                   </div>
+                  {highlightsVisible.length < highlights.length && (
+                    <ShowMoreButton remaining={highlights.length - highlightsVisible.length} onClick={() => setSectionsExpanded(v => ({ ...v, highlights: true }))} />
+                  )}
                 </>
               )}
               {classics.length > 0 && (
@@ -1477,13 +1545,16 @@ export default function PremiumTactics() {
                     </div>
                     <div style={{ height:1, flex:1, background:'linear-gradient(90deg,transparent,rgba(245,166,35,0.35))' }} />
                   </motion.div>
-                  <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(min(100%,280px),1fr))', gap:18 }}>
-                    {classics.map((tactic,i) =>
+                  <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(min(100%,280px),1fr))', gap:18, marginBottom: classicsVisible.length < classics.length ? 14 : 0 }}>
+                    {classicsVisible.map((tactic,i) =>
                       isPremium
                         ? <TacticCard key={tactic.id} tactic={tactic} index={i} />
                         : <TeaserCard key={tactic.id} tactic={tactic} index={i} />
                     )}
                   </div>
+                  {classicsVisible.length < classics.length && (
+                    <ShowMoreButton remaining={classics.length - classicsVisible.length} onClick={() => setSectionsExpanded(v => ({ ...v, classics: true }))} />
+                  )}
                 </>
               )}
             </>

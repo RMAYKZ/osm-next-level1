@@ -299,7 +299,10 @@ export default function WeeklyMeta() {
     return () => clearInterval(id);
   }, []);
 
-  const weekRange = useMemo(() => localWeekRange(lang), [lang]);
+  // ukWeek only changes value (and re-renders) when the ISO week actually rolls
+  // over, so keying off it here means the date range self-refreshes for tabs
+  // left open across the boundary — not just on next page load.
+  const weekRange = useMemo(() => localWeekRange(lang), [lang, ukWeek]);
 
   const tacticIdx  = ukWeek % antiTactics.length;
   const baseTactic = antiTactics[tacticIdx];
@@ -411,9 +414,6 @@ export default function WeeklyMeta() {
           <span style={{ borderRadius: 99, border: "1px solid rgba(255,255,255,0.15)", background: "rgba(255,255,255,0.04)", padding: "5px 13px", fontSize: 10.5, fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase", color: "rgba(255,255,255,0.55)" }}>
             {strengthLabel}
           </span>
-          <span style={{ borderRadius: 99, border: "1px solid rgba(255,255,255,0.15)", background: "rgba(255,255,255,0.04)", padding: "5px 13px", fontSize: 10.5, fontWeight: 700, letterSpacing: "0.06em", color: "rgba(255,255,255,0.7)" }}>
-            {weekRange}
-          </span>
         </div>
 
         {/* Live week badge */}
@@ -423,7 +423,7 @@ export default function WeeklyMeta() {
             style={{ width: 6, height: 6, borderRadius: "50%", background: "#ef4444", display: "inline-block" }}
           />
           <span style={{ color: "#f87171", fontSize: 11, fontWeight: 700, letterSpacing: "0.06em" }}>
-            {w.weekLabel} · Week {ukWeek}
+            {w.weekLabel} · {weekRange}
           </span>
           <span style={{ color: "rgba(255,255,255,0.22)", fontSize: 10 }}>·</span>
           <span style={{ color: "rgba(255,255,255,0.35)", fontSize: 10, letterSpacing: "0.03em" }}>{w.weeklyNote}</span>

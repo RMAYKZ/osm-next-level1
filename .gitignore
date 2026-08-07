@@ -39,6 +39,8 @@ Thumbs.db
 scripts/*
 # Exception: required at build time by `npm run build` (see package.json)
 !scripts/generateStaticPages.ts
+# Exception: Discord → syncOsmEvent bot, run long-term via `npm run bot`
+!scripts/osm-bot.js
 
 .vercel
 
