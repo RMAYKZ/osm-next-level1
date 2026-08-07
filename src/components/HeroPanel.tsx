@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { motion, animate, useMotionValue, useReducedMotion } from "framer-motion";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { motion, animate, useAnimationFrame, useMotionValue, useReducedMotion } from "framer-motion";
 import { useLang } from "../contexts/LanguageContext";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
@@ -11,10 +11,6 @@ const TACTICS = [
   { opp: "4-2-3-1", rec: "5-2-3 B",  win: 85 },
   { opp: "6-3-1",   rec: "4-3-3 A",  win: 79 },
 ];
-
-const R = 72;
-const CIRC = 2 * Math.PI * R;
-const TICKS = 24;
 
 // ── Count-up number — re-ticks whenever `value` changes, honours reduced motion ──
 function CountUp({ value, suffix = "", duration = 0.9 }: { value: number; suffix?: string; duration?: number }) {
@@ -32,74 +28,128 @@ function CountUp({ value, suffix = "", duration = 0.9 }: { value: number; suffix
   return <>{display}{suffix}</>;
 }
 
-// ── Radial gauge — real proportion chart (stroke-dashoffset), not decoration ──
-function WinGauge({ percent, size }: { percent: number; size: number }) {
-  const { t } = useLang();
-  const offset = CIRC - (percent / 100) * CIRC;
-  const cx = size / 2;
-  const cy = size / 2;
+// ── Signal chart — animated analysis waveform, not a decorative spinner ──────
+// Each matchup gets its own smooth curve (seeded by index + win%), the line
+// morphs between them, and a comet-style dot continuously rides the path —
+// reads as "live data feed" rather than a looping gauge animation.
+const CHART_W = 100;
+const CHART_H = 40;
+const N_POINTS = 22;
+
+function buildSignalPoints(seed: number, winPct: number): { x: number; y: number }[] {
+  const bias = winPct / 100;
+  const baseline = CHART_H - 7;
+  const amplitude = CHART_H - 14;
+  const pts: { x: number; y: number }[] = [];
+  for (let i = 0; i < N_POINTS; i++) {
+    const t = i / (N_POINTS - 1);
+    const wave =
+      Math.sin(t * Math.PI * 2.4 + seed * 2.1) * 0.5 +
+      Math.sin(t * Math.PI * 5.2 + seed * 4.3) * 0.18;
+    const y = baseline - amplitude * (bias * 0.5 + 0.22 + wave * 0.24);
+    pts.push({ x: t * CHART_W, y: Math.max(3, Math.min(CHART_H - 3, y)) });
+  }
+  return pts;
+}
+
+// Catmull-Rom → cubic Bézier, fixed point count in ⇒ identical "M…C…C…" command
+// structure out, so Framer Motion can interpolate the raw `d` string smoothly.
+function smoothPath(pts: { x: number; y: number }[]): string {
+  if (pts.length < 2) return "";
+  let d = `M ${pts[0].x.toFixed(2)} ${pts[0].y.toFixed(2)}`;
+  for (let i = 0; i < pts.length - 1; i++) {
+    const p0 = pts[i - 1] ?? pts[i];
+    const p1 = pts[i];
+    const p2 = pts[i + 1];
+    const p3 = pts[i + 2] ?? p2;
+    const c1x = p1.x + (p2.x - p0.x) / 6;
+    const c1y = p1.y + (p2.y - p0.y) / 6;
+    const c2x = p2.x - (p3.x - p1.x) / 6;
+    const c2y = p2.y - (p3.y - p1.y) / 6;
+    d += ` C ${c1x.toFixed(2)} ${c1y.toFixed(2)}, ${c2x.toFixed(2)} ${c2y.toFixed(2)}, ${p2.x.toFixed(2)} ${p2.y.toFixed(2)}`;
+  }
+  return d;
+}
+
+function LiveSignalChart({ seed, winPct, height }: { seed: number; winPct: number; height: number }) {
+  const reduceMotion = useReducedMotion();
+  const pathRef = useRef<SVGPathElement>(null);
+  const cx = useMotionValue(0);
+  const cy = useMotionValue(0);
+
+  const linePath = useMemo(() => smoothPath(buildSignalPoints(seed, winPct)), [seed, winPct]);
+  const areaPath = `${linePath} L ${CHART_W} ${CHART_H} L 0 ${CHART_H} Z`;
+
+  useAnimationFrame((elapsed) => {
+    if (reduceMotion) return;
+    const path = pathRef.current;
+    if (!path) return;
+    const len = path.getTotalLength();
+    if (!len) return;
+    const progress = (elapsed * 0.00022) % 1;
+    const pt = path.getPointAtLength(progress * len);
+    cx.set(pt.x);
+    cy.set(pt.y);
+  });
 
   return (
-    <div style={{ position: "relative", width: size, height: size, flexShrink: 0 }}>
-      {/* Slow rotating scanner glow behind the dial — pure CSS, no JS animation loop */}
-      <div aria-hidden style={{
-        position: "absolute", inset: -14,
-        borderRadius: "50%",
-        background: "conic-gradient(from 0deg, transparent 0%, rgba(239,68,68,0.22) 8%, transparent 18%, transparent 100%)",
-        animation: "hp-scan-spin 4.5s linear infinite",
-      }} />
+    <svg
+      viewBox={`0 0 ${CHART_W} ${CHART_H}`}
+      width="100%"
+      height={height}
+      preserveAspectRatio="none"
+      style={{ display: "block", overflow: "visible" }}
+    >
+      <defs>
+        <linearGradient id="hp-signal-stroke" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0%" stopColor="#ef4444" />
+          <stop offset="55%" stopColor="#f97316" />
+          <stop offset="100%" stopColor="#67e8f9" />
+        </linearGradient>
+        <linearGradient id="hp-signal-fill" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="#f97316" stopOpacity="0.24" />
+          <stop offset="100%" stopColor="#f97316" stopOpacity="0" />
+        </linearGradient>
+        <radialGradient id="hp-signal-glow">
+          <stop offset="0%" stopColor="#67e8f9" stopOpacity="0.95" />
+          <stop offset="100%" stopColor="#67e8f9" stopOpacity="0" />
+        </radialGradient>
+      </defs>
 
-      <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} style={{ position: "relative", transform: "rotate(-90deg)" }}>
-        <defs>
-          <linearGradient id="hp-gauge-grad" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%"   stopColor="#ef4444" />
-            <stop offset="55%"  stopColor="#f97316" />
-            <stop offset="100%" stopColor="#67e8f9" />
-          </linearGradient>
-        </defs>
+      {/* Data-terminal grid */}
+      {[0.25, 0.5, 0.75].map((f) => (
+        <line key={f} x1={0} y1={CHART_H * f} x2={CHART_W} y2={CHART_H * f} stroke="rgba(255,255,255,0.05)" strokeWidth={0.4} />
+      ))}
 
-        {/* Tick marks — instrument-dial detail */}
-        {Array.from({ length: TICKS }).map((_, i) => {
-          const angle = (i / TICKS) * 2 * Math.PI;
-          const inner = R + 9;
-          const outer = R + 13;
-          const x1 = cx + Math.cos(angle) * inner;
-          const y1 = cy + Math.sin(angle) * inner;
-          const x2 = cx + Math.cos(angle) * outer;
-          const y2 = cy + Math.sin(angle) * outer;
-          const lit = i / TICKS <= percent / 100;
-          return (
-            <line key={i} x1={x1} y1={y1} x2={x2} y2={y2}
-              stroke={lit ? "rgba(249,115,22,0.55)" : "rgba(255,255,255,0.08)"}
-              strokeWidth={1.5} strokeLinecap="round" />
-          );
-        })}
+      {/* Area fill under the curve */}
+      <motion.path
+        fill="url(#hp-signal-fill)"
+        initial={{ d: areaPath, opacity: 0 }}
+        animate={{ d: areaPath, opacity: 1 }}
+        transition={{ d: { duration: 0.9, ease: EASE }, opacity: { duration: 0.6 } }}
+      />
 
-        {/* Track */}
-        <circle cx={cx} cy={cy} r={R} fill="none" stroke="rgba(255,255,255,0.07)" strokeWidth={7} />
+      {/* Signal line — morphs smoothly between matchups */}
+      <motion.path
+        ref={pathRef}
+        fill="none"
+        stroke="url(#hp-signal-stroke)"
+        strokeWidth={1.6}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        initial={{ d: linePath, opacity: 0 }}
+        animate={{ d: linePath, opacity: 1 }}
+        transition={{ d: { duration: 0.9, ease: EASE }, opacity: { duration: 0.6 } }}
+      />
 
-        {/* Progress arc */}
-        <circle
-          cx={cx} cy={cy} r={R} fill="none"
-          stroke="url(#hp-gauge-grad)" strokeWidth={7} strokeLinecap="round"
-          strokeDasharray={CIRC} strokeDashoffset={offset}
-          style={{ transition: "stroke-dashoffset 0.8s cubic-bezier(0.16,1,0.3,1)" }}
-        />
-      </svg>
-
-      {/* Center readout */}
-      <div style={{
-        position: "absolute", inset: 0,
-        display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
-      }}>
-        <div style={{ fontFamily: "'Bebas Neue', 'Outfit', sans-serif", fontSize: size * 0.26, lineHeight: 1, color: "#ffffff", letterSpacing: "0.01em" }}>
-          <CountUp value={percent} suffix="%" />
-        </div>
-        <div style={{ fontSize: 8.5, fontWeight: 800, letterSpacing: "0.14em", textTransform: "uppercase", color: "rgba(255,255,255,0.35)", marginTop: 3 }}>
-          {t("hp.winRate")}
-        </div>
-      </div>
-    </div>
+      {/* Comet — continuously rides the current signal path */}
+      {!reduceMotion && (
+        <>
+          <motion.circle r={5.5} fill="url(#hp-signal-glow)" style={{ cx, cy }} />
+          <motion.circle r={1.4} fill="#ffffff" style={{ cx, cy }} />
+        </>
+      )}
+    </svg>
   );
 }
 
@@ -122,17 +172,10 @@ export default function HeroPanel({ lite = false }: { lite?: boolean }) {
   }, []);
 
   const current = TACTICS[active];
-  const gaugeSize = lite ? 168 : 200;
+  const chartHeight = lite ? 60 : 74;
 
   return (
     <div style={{ width: "100%" }}>
-      <style>{`
-        @keyframes hp-scan-spin { to { transform: rotate(360deg); } }
-        @media (prefers-reduced-motion: reduce) {
-          .hp-scan-glow { animation: none !important; }
-        }
-      `}</style>
-
       <div style={{
         position: "relative",
         borderRadius: 18,
@@ -159,9 +202,19 @@ export default function HeroPanel({ lite = false }: { lite?: boolean }) {
           </span>
         </div>
 
-        {/* Gauge centerpiece */}
-        <div style={{ display: "flex", justifyContent: "center", padding: lite ? "14px 0 6px" : "18px 0 8px" }}>
-          <WinGauge percent={mounted ? current.win : 0} size={gaugeSize} />
+        {/* KPI + signal chart */}
+        <div style={{ padding: lite ? "14px 16px 4px" : "18px 16px 6px" }}>
+          <div style={{ display: "flex", alignItems: "baseline", gap: 8 }}>
+            <span style={{ fontFamily: "'Bebas Neue', 'Outfit', sans-serif", fontSize: lite ? 32 : 38, lineHeight: 1, color: "#ffffff", letterSpacing: "0.01em" }}>
+              <CountUp value={mounted ? current.win : 0} suffix="%" />
+            </span>
+            <span style={{ fontSize: 8.5, fontWeight: 800, letterSpacing: "0.14em", textTransform: "uppercase", color: "rgba(255,255,255,0.35)" }}>
+              {t("hp.winRate")}
+            </span>
+          </div>
+          <div style={{ marginTop: lite ? 8 : 10 }}>
+            <LiveSignalChart seed={active} winPct={mounted ? current.win : 0} height={chartHeight} />
+          </div>
         </div>
 
         {/* Matchup readout */}
